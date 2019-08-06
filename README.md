@@ -11,7 +11,7 @@ Ansible 2.6 or higher.
 Red Hat Enterprise Linux 7.5.
 Python 2.7.12 or higher.
 Python library for Unisphere (PyU4V) 3.0.0.14 must be installed on the client operating system.
-Please follow Py4UV installation instructions on https://github.com/MichaelMcAleer/PyU4V
+Please follow Py4UV installation instructions on https://pyu4v.readthedocs.io/
 
 Running Ansible Modules
 
