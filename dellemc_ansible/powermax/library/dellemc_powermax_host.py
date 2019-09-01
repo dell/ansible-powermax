@@ -297,7 +297,7 @@ class PowerMaxHost(object):
         Create host with given initiators and host_flags
         '''
         initiator_state = self.module.params['initiator_state']
-        initiators = self.module.params['initiators']
+        initiators = self._get_passed_initiators()
         received_host_flags = self.module.params['host_flags']
 
         if (initiator_state == 'absent-in-host' or initiator_state is None):
@@ -325,6 +325,15 @@ class PowerMaxHost(object):
             self.module.fail_json(msg=errorMsg)
         return None
 
+    def _get_passed_initiators(self):
+        '''
+        Gets Initiators passed in by user and
+        converts it to a safe version for PowerMAX Consumption
+        '''
+        initiators = self.module.params['initiators']     
+        return [x.lower().replace(':','') for x in initiators]
+
+
     def _get_add_initiators(self, existing, requested):
         all_inits = existing + requested
         add_inits = list(set(all_inits) - set(existing))
@@ -340,7 +349,7 @@ class PowerMaxHost(object):
         if host and 'initiator' in host:
             existing_inits = host['initiator']
 
-        if initiators and cmp(existing_inits, initiators) == 0:
+        if initiators and len(set(initiators)-set(existing_inits)) == 0:
             LOG.info('Initiators are already present in host {0}'
                      .format(host_name))
             return False
@@ -408,6 +417,26 @@ class PowerMaxHost(object):
             self.module.fail_json(msg=errorMsg)
             return None
 
+    def _is_dict_same(self,d1, d2, path=""):
+        '''
+        Compares two nested dictionaries to see if there is a difference
+        '''
+        for k in d1.keys():
+            if k not in d2:
+                return False
+            else:
+                if type(d1[k]) is dict:
+                    if path == "":
+                        path = k
+                    else:
+                        path = path + "->" + k
+                    if not self._is_dict_same(d1[k],d2[k], path):
+                        return False
+                else:
+                    if d1[k] != d2[k]:
+                        return False
+        return True
+
     def _create_default_host_flags_dict(self, current_flags):
         for flag in self.host_flags_list:
             self._set_to_default(flag, current_flags)
@@ -472,7 +501,7 @@ class PowerMaxHost(object):
             else:
                 self._enable_consistent_lun(new_flags_dict)
 
-        if cmp(new_flags_dict, current_flags) == 0:
+        if self._is_dict_same(current_flags, new_flags_dict):
             LOG.info('No change detected')
             self.module.exit_json(changed=False)
         else:
@@ -520,7 +549,7 @@ class PowerMaxHost(object):
         state = self.module.params['state']
         intiator_state = self.module.params['initiator_state']
         host_name = self.module.params['host_name']
-        initiators = self.module.params['initiators']
+        initiators = self._get_passed_initiators()
         new_name = self.module.params['new_name']
         host_flags = self.module.params['host_flags']
 
