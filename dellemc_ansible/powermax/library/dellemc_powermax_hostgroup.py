@@ -363,7 +363,7 @@ class PowerMaxHostGroup(object):
             for host in hostgroup['host']:
                 existing_hosts.append(host['hostId'])
 
-        if hosts and cmp(existing_hosts, hosts) == 0:
+        if hosts and len(set(hosts)-set(existing_hosts)) == 0:
             LOG.info('Hosts are already present in host group {0}'
                      .format(hostgroup_name))
             return False
@@ -515,7 +515,7 @@ class PowerMaxHostGroup(object):
             else:
                 self._enable_consistent_lun(new_flags_dict)
 
-        if cmp(new_flags_dict, current_flags) == 0:
+        if self._is_dict_same(new_flags_dict, current_flags):
             LOG.info('No change detected')
             self.module.exit_json(changed=False)
         else:
@@ -532,6 +532,26 @@ class PowerMaxHostGroup(object):
                 LOG.error(errorMsg)
                 self.module.fail_json(msg=errorMsg)
             return None
+
+    def _is_dict_same(self,d1, d2, path=""):
+        '''
+        Compares two nested dictionaries to see if there is a difference
+        '''
+        for k in d1.keys():
+            if k not in d2:
+                return False
+            else:
+                if type(d1[k]) is dict:
+                    if path == "":
+                        path = k
+                    else:
+                        path = path + "->" + k
+                    if not self._is_dict_same(d1[k],d2[k], path):
+                        return False
+                else:
+                    if d1[k] != d2[k]:
+                        return False
+        return True
 
     def _create_result_dict(self, changed):
         self.result['changed'] = changed
