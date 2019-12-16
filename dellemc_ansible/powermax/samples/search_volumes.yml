@@ -1,0 +1,55 @@
+# This playbook fetches all the volumes whose name matches the regex pattern.
+---
+- name: Volumes whose names match the regex pattern in a given storage group
+  hosts: localhost
+  connection: local
+  vars:
+    unispherehost: 'your_unisphere_host_url'
+    universion: "version_of_the_unisphere"
+    verifycert: False
+    user: 'your_username'
+    password: 'your_password'
+    serial_no:   "your_serial_no"
+    sg_name: 'sample_storage_group'
+    pattern: 'your regex pattern'
+
+  tasks:
+    - name: Get details of the Storage Group 
+      dellemc_powermax_storagegroup:
+        unispherehost: "{{unispherehost}}"
+        universion: "{{universion}}"
+        verifycert: "{{verifycert}}"
+        user: "{{user}}"
+        password: "{{password}}"
+        serial_no: "{{serial_no}}"
+        sg_name: "{{sg_name}}"    
+        state: "present" 
+      register: storage_details
+
+  # The set_fact fetches the Id's of all the volumes from the storage group details and creates a list.
+    - set_fact:
+        all_volumes_Id: "{{storage_details.storage_group_volumes | list}}"
+
+  # This task gets the details of all the volumes. This is because the volume details has the attribute volume_identifier which has the name of the volume.
+    - name : Get volume details
+      register: temp_result
+      dellemc_powermax_volume:
+        unispherehost: "{{unispherehost}}"
+        universion: "{{universion}}"
+        verifycert: "{{verifycert}}"
+        user: "{{user}}"
+        password: "{{password}}"
+        serial_no: "{{serial_no}}"
+        vol_id: "{{item}}"
+        sg_name: "{{sg_name}}"
+        state: 'present'
+      loop: "{{ all_volumes_Id }}" 
+
+  # The set_fact generates a list of the volume names using the details of volumes(the output of the previous task).
+    - set_fact:
+        all_volumes_names: "{{ temp_result['results'] | map(attribute='volume_details.volume_identifier') | list }}"
+
+  # This task gets the list of the volumes which match a regular expression. The syntax of the regular expression is same as in python.
+    - name: List of the all the volume names which match the pattern
+      debug:
+           msg: "{{ all_volumes_names  | select('match',pattern ) | list  }}"

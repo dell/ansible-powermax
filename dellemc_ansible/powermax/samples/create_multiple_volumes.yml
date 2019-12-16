@@ -1,0 +1,35 @@
+# This playbook illustrates the creation of multiple volumes sequentially
+---
+- name: Creation of multiple volumes in a Storage Group
+  hosts: localhost
+  connection: local
+  vars:
+    unispherehost: 'your_unisphere_host_url'
+    universion: "version_of_the_unisphere"
+    verifycert: False
+    user: 'your_username'
+    password: 'your_password'
+    serial_no:   "your_serial_no"
+    sg_name: 'sample_storage_group'
+    vol_name: 'sample_volume'
+    cap_unit: 'GB'
+  
+  tasks:
+# This task creates multiple volumes using the loop. 
+  - name: Create volumes
+    register: result
+    dellemc_powermax_volume:
+        unispherehost: "{{unispherehost}}"
+        universion: "{{universion}}"
+        verifycert: "{{verifycert}}"
+        user: "{{user}}"
+        password: "{{password}}"
+        serial_no: "{{serial_no}}"
+        vol_name: "{{vol_name +'_' }}{{item}}"
+        sg_name: "{{sg_name}}"
+        size: 1
+        cap_unit: "{{cap_unit}}"
+        state: 'present'
+# The loop will be executed for the number of elements in the list(created by the range) .
+    loop: "{{ range(1, 10 + 1, 1) | list }}"
+

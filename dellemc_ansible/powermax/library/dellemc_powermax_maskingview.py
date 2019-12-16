@@ -6,7 +6,7 @@ from ansible.module_utils.basic import AnsibleModule
 from ansible.module_utils import dellemc_ansible_utils as utils
 
 __metaclass__ = type
-ANSIBLE_METADATA = {'metadata_version': '1.0',
+ANSIBLE_METADATA = {'metadata_version': '1.1',
                     'status': ['preview'],
                     'supported_by': 'community'
                     }
@@ -29,6 +29,8 @@ description:
   Once a masking view is created, only its name can be changed.
   No underlying entity (portgroup, storagegroup, host or hostgroup)
   can be changed on the MV.
+extends_documentation_fragment:
+  - dellemc.dellemc_powermax
 author:
 - Vasudevu Lakhinana (Vasudevu.Lakhinana@dell.com)
 - Prashant Rakheja (Prashant.Rakheja@dell.com)
@@ -125,6 +127,9 @@ HAS_PYU4V = utils.has_pyu4v_sdk()
 
 PYU4V_VERSION_CHECK = utils.pyu4v_version_check()
 
+# Application Type
+APPLICATION_TYPE = 'ansible_v1.1'
+
 
 class PowerMaxMaskingView(object):
     """Class with masking view operations"""
@@ -142,7 +147,7 @@ class PowerMaxMaskingView(object):
         # initialize the ansible module
         self.module = AnsibleModule(
             argument_spec=self.module_params,
-            supports_check_mode=True,
+            supports_check_mode=False,
             mutually_exclusive=mutually_exclusive
         )
         if HAS_PYU4V is False:
@@ -155,7 +160,17 @@ class PowerMaxMaskingView(object):
             self.module.fail_json(msg=PYU4V_VERSION_CHECK)
             LOG.error(PYU4V_VERSION_CHECK)
 
-        self.u4v_conn = utils.get_U4V_connection(self.module.params)
+        universion_details = utils.universion_check(
+                             self.module.params['universion'])
+        LOG.info("universion_details: {0}".format(universion_details))
+
+        if not universion_details['is_valid_universion']:
+            self.module.fail_json(msg=universion_details['user_message'])
+
+        self.u4v_conn = utils.get_U4V_connection(self.module.params,
+                                                 application_type=
+                                                 APPLICATION_TYPE
+                                                 )
         self.provisioning = self.u4v_conn.provisioning
         LOG.info('Got PyU4V instance for provisioning on PowerMax')
 

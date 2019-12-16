@@ -8,7 +8,7 @@ import copy
 import re
 
 __metaclass__ = type
-ANSIBLE_METADATA = {'metadata_version': '1.0',
+ANSIBLE_METADATA = {'metadata_version': '1.1',
                     'status': ['preview'],
                     'supported_by': 'community'
                     }
@@ -23,6 +23,8 @@ description:
 - Managing host on PowerMax Storage System includes create host with a set of
   initiators and host flags, add/remove initiators to/from host, modify host
   flag values, rename host and delete host
+extends_documentation_fragment:
+  - dellemc.dellemc_powermax
 author:
 - Vasudevu Lakhinana (vasudevu.lakhinana@dell.com)
 - Manisha Agrawal (manisha.agrawal@dell.com)
@@ -184,6 +186,9 @@ HAS_PYU4V = utils.has_pyu4v_sdk()
 
 PYU4V_VERSION_CHECK = utils.pyu4v_version_check()
 
+# Application Type
+APPLICATION_TYPE = 'ansible_v1.1'
+
 
 class PowerMaxHost(object):
 
@@ -196,7 +201,7 @@ class PowerMaxHost(object):
         # initialize the ansible module
         self.module = AnsibleModule(
             argument_spec=self.module_params,
-            supports_check_mode=True
+            supports_check_mode=False
         )
         # result is a dictionary that contains changed status and host details
         self.result = {"changed": False, "host_details": {}}
@@ -210,7 +215,17 @@ class PowerMaxHost(object):
             self.module.fail_json(msg=PYU4V_VERSION_CHECK)
             LOG.error(PYU4V_VERSION_CHECK)
 
-        self.u4v_conn = utils.get_U4V_connection(self.module.params)
+        universion_details = utils.universion_check(
+                             self.module.params['universion'])
+        LOG.info("universion_details: {0}".format(universion_details))
+
+        if not universion_details['is_valid_universion']:
+            self.module.fail_json(msg=universion_details['user_message'])
+
+        self.u4v_conn = utils.get_U4V_connection(self.module.params,
+                                                 application_type=
+                                                 APPLICATION_TYPE
+                                                 )
         self.provisioning = self.u4v_conn.provisioning
         self.host_flags_list = {'volume_set_addressing', 'environ_set',
                                 'disable_q_reset_on_ua', 'openvms',
@@ -340,14 +355,12 @@ class PowerMaxHost(object):
         if host and 'initiator' in host:
             existing_inits = host['initiator']
 
-        if initiators and cmp(existing_inits, initiators) == 0:
+        if initiators and (set(initiators).issubset(set(existing_inits))):
             LOG.info('Initiators are already present in host {0}'
                      .format(host_name))
             return False
 
         add_list = self._get_add_initiators(existing_inits, initiators)
-        LOG.info('add_list'.format(add_list))
-        LOG.info('add_list'.format(*add_list))
         if len(add_list) > 0:
             try:
                 LOG.info('Adding initiators {0} to host {1}'.format(
@@ -472,7 +485,7 @@ class PowerMaxHost(object):
             else:
                 self._enable_consistent_lun(new_flags_dict)
 
-        if cmp(new_flags_dict, current_flags) == 0:
+        if new_flags_dict == current_flags:
             LOG.info('No change detected')
             self.module.exit_json(changed=False)
         else:

@@ -8,7 +8,7 @@ import copy
 import re
 
 __metaclass__ = type
-ANSIBLE_METADATA = {'metadata_version': '1.0',
+ANSIBLE_METADATA = {'metadata_version': '1.1',
                     'status': ['preview'],
                     'supported_by': 'community'
                     }
@@ -23,6 +23,8 @@ description:
 - Managing host group on PowerMax Storage System includes create host group
   with set of hosts, add/remove hosts to/from host group, rename host group,
   modify host flags of host group and delete host group
+extends_documentation_fragment:
+  - dellemc.dellemc_powermax
 author:
 - Vasudevu Lakhinana (Vasudevu.Lakhinana@dell.com)
 - Manisha Agrawal (Manisha.Agrawal@dell.com)
@@ -182,6 +184,9 @@ HAS_PYU4V = utils.has_pyu4v_sdk()
 
 PYU4V_VERSION_CHECK = utils.pyu4v_version_check()
 
+# Application Type
+APPLICATION_TYPE = 'ansible_v1.1'
+
 
 class PowerMaxHostGroup(object):
     '''Class with host group (cascaded initiator group) operations'''
@@ -194,7 +199,7 @@ class PowerMaxHostGroup(object):
         # initialize the ansible module
         self.module = AnsibleModule(
             argument_spec=self.module_params,
-            supports_check_mode=True
+            supports_check_mode=False
         )
         # result is a dictionary that contains changed status and host details
         self.result = {"changed": False, "host_details": {}}
@@ -211,7 +216,17 @@ class PowerMaxHostGroup(object):
             self.module.fail_json(msg=PYU4V_VERSION_CHECK)
             LOG.error(PYU4V_VERSION_CHECK)
 
-        self.u4v_conn = utils.get_U4V_connection(self.module.params)
+        universion_details = utils.universion_check(
+                             self.module.params['universion'])
+        LOG.info("universion_details: {0}".format(universion_details))
+
+        if not universion_details['is_valid_universion']:
+            self.module.fail_json(msg=universion_details['user_message'])
+
+        self.u4v_conn = utils.get_U4V_connection(self.module.params,
+                                                 application_type=
+                                                 APPLICATION_TYPE
+                                                 )
         self.provisioning = self.u4v_conn.provisioning
         LOG.info('Got PyU4V instance for provisioning on to VMAX ')
 
@@ -363,7 +378,7 @@ class PowerMaxHostGroup(object):
             for host in hostgroup['host']:
                 existing_hosts.append(host['hostId'])
 
-        if hosts and cmp(existing_hosts, hosts) == 0:
+        if hosts and (set(hosts).issubset(set(existing_hosts))):
             LOG.info('Hosts are already present in host group {0}'
                      .format(hostgroup_name))
             return False
@@ -515,7 +530,7 @@ class PowerMaxHostGroup(object):
             else:
                 self._enable_consistent_lun(new_flags_dict)
 
-        if cmp(new_flags_dict, current_flags) == 0:
+        if new_flags_dict == current_flags:
             LOG.info('No change detected')
             self.module.exit_json(changed=False)
         else:

@@ -6,7 +6,7 @@ from ansible.module_utils import dellemc_ansible_utils as utils
 import logging
 
 __metaclass__ = type
-ANSIBLE_METADATA = {'metadata_version': '1.0',
+ANSIBLE_METADATA = {'metadata_version': '1.1',
                     'status': ['preview'],
                     'supported_by': 'community'
                     }
@@ -17,8 +17,10 @@ module: dellemc_powermax_volume
 version_added: '2.6'
 short_description:  Manage volumes on PowerMax Storage System
 description:
-- Managing volume on PowerMax Storage System includes
+- Managing volumes on PowerMax Storage System includes
   create volume, rename volume, expand volume and delete volume
+extends_documentation_fragment:
+  - dellemc.dellemc_powermax
 author:
 - Vasudevu Lakhinana (vasudevu.lakhinana@dell.com)
 - Akash Shendge (Akash.Shendge@emc.com)
@@ -37,7 +39,7 @@ options:
     description:
     - The native id of the volume.
     - Required in case of rename and delete volume.
-    required: true 
+    required: true
   size:
     description:
     - The new size of existing volume.
@@ -51,13 +53,16 @@ options:
   new_name:
     description:
     - The new volume identifier for the volume.
+  vol_wwn:
+    description:
+    - The WWN of the volume.
   state:
     description:
-    - Define whether the volume should exist or not.
+    - Defines whether the volume should exist or not.
     required: true
-    choices: [absent, present]  
+    choices: [absent, present]
 Notes:
-- To expand volume, either provide vol_id or vol_name and sg_name
+- To expand volume, either provide vol_id or vol_name or vol_wwn and sg_name
 - size is required to create/expand volume
 - vol_id is required to rename/delete volume
 - vol_name, sg_name and new_sg_name is required to move volume between
@@ -106,7 +111,7 @@ EXAMPLES = r'''
       vol_id: "0059B"
       state: 'present'
 
-- name: Delete volume
+- name: Delete volume using volume ID
     dellemc_powermax_volume:
       unispherehost: "{{unispherehost}}"
       universion: "{{universion}}"
@@ -115,6 +120,17 @@ EXAMPLES = r'''
       password: "{{password}}"
       serial_no: "{{serial_no}}"
       vol_id: "0059B"
+      state: 'absent'
+
+- name: Delete volume using volume WWN
+    dellemc_powermax_volume:
+      unispherehost: "{{unispherehost}}"
+      universion: "{{universion}}"
+      verifycert: "{{verifycert}}"
+      user: "{{user}}"
+      password: "{{password}}"
+      serial_no: "{{serial_no}}"
+      vol_wwn: "60000970000197900237533030303246"
       state: 'absent'
 
 - name: Move volume between storage group
@@ -127,7 +143,7 @@ EXAMPLES = r'''
       serial_no: "{{serial_no}}"
       vol_name: "{{vol_name}}"
       sg_name: "{{sg_name}}"
-      new_sg_name: "{{new_sg_name}}"      
+      new_sg_name: "{{new_sg_name}}"
       state: 'present'
 '''
 
@@ -139,6 +155,9 @@ HAS_PYU4V = utils.has_pyu4v_sdk()
 
 PYU4V_VERSION_CHECK = utils.pyu4v_version_check()
 
+# Application Type
+APPLICATION_TYPE = 'ansible_v1.1'
+
 
 class PowerMaxVolume(object):
     """Class with volume operations"""
@@ -148,10 +167,21 @@ class PowerMaxVolume(object):
         self.module_params = utils.get_powermax_management_host_parameters()
         self.module_params.update(get_powermax_volume_parameters())
 
+        mutually_exclusive = [
+            ['vol_id', 'vol_name'], ['vol_id', 'vol_wwn'],
+            ['vol_name', 'vol_wwn']
+        ]
+
+        required_one_of = [
+            ['vol_id', 'vol_name', 'vol_wwn']
+        ]
+
         # initialize the ansible module
         self.module = AnsibleModule(
             argument_spec=self.module_params,
-            supports_check_mode=True
+            supports_check_mode=False,
+            mutually_exclusive=mutually_exclusive,
+            required_one_of=required_one_of
         )
 
         # result is a dictionary that contains changed status and
@@ -167,7 +197,15 @@ class PowerMaxVolume(object):
             self.module.fail_json(msg=PYU4V_VERSION_CHECK)
             LOG.error(PYU4V_VERSION_CHECK)
 
-        self.u4v_conn = utils.get_U4V_connection(self.module.params)
+        universion_details = utils.universion_check(
+            self.module.params['universion'])
+        LOG.info("universion_details: {0}".format(universion_details))
+
+        if not universion_details['is_valid_universion']:
+            self.module.fail_json(msg=universion_details['user_message'])
+
+        self.u4v_conn = utils.get_U4V_connection(
+            self.module.params, application_type=APPLICATION_TYPE)
         self.provisioning = self.u4v_conn.provisioning
         LOG.info('Got PyU4V instance for provisioning on to VMAX ')
 
@@ -178,16 +216,25 @@ class PowerMaxVolume(object):
         vol_id = self.module.params['vol_id']
         if vol_id is not None:
             return self.get_volume_by_nativeid(vol_id)
-
-        volume_name = self.module.params['vol_name']
         sg_name = self.module.params['sg_name']
-        params = {"storageGroupId": sg_name, "volume_identifier": volume_name}
-        volume_list = self.provisioning.get_volume_list(params)
+
+        volume_list = None
+        volume_name = None
+        if self.module.params['vol_name'] is not None:
+            volume_name = self.module.params['vol_name']
+            params = {"storageGroupId": sg_name,
+                      "volume_identifier": volume_name}
+            volume_list = self.provisioning.get_volume_list(params)
+
+        if self.module.params['vol_wwn'] is not None:
+            vol_wwn = self.module.params['vol_wwn']
+            params = {"storageGroupId": sg_name, "wwn": vol_wwn}
+            volume_list = self.provisioning.get_volume_list(params)
 
         vol = None
         if not volume_list or len(volume_list) == 0:
-            LOG.debug('No volume found with volume identifier {0} in storage '
-                      'group {1}'.format(volume_name, sg_name))
+            LOG.debug('No volume found in storage '
+                      'group {0}'.format(sg_name))
         elif len(volume_list) > 1:
             self.module.fail_json(msg='Duplicate volumes found: '
                                       'There are {0} '
@@ -198,6 +245,17 @@ class PowerMaxVolume(object):
                                   )
         else:
             vol = self.get_volume_by_nativeid(volume_list[0])
+            if self.module.params['vol_wwn'] is not None and "effective_wwn" \
+                    in vol and vol['effective_wwn'] \
+                    != self.module.params['vol_wwn']:
+                msg = 'The given volume with WWN: {0} also has an effective ' \
+                      'WWN: {1} associated with it, which does not match.' \
+                      'It is recommended that the user retries the ' \
+                      'operation with Volume name or ID'.format(
+                          self.module.params['vol_wwn'],
+                          vol['effective_wwn'])
+                LOG.error(msg)
+                self.module.fail_json(msg=msg)
         return vol
 
     def get_volume_by_nativeid(self, native_id):
@@ -274,7 +332,7 @@ class PowerMaxVolume(object):
             elif size_in_gb > existing_vol_size:
                 LOG.info('Expanding volume capacity from {0} GB to {1} GB.'.
                          format(existing_vol_size, size_in_gb))
-                self.provisioning.extend_volume(vol_id, size_in_gb)
+                self.provisioning.extend_volume(vol_id, str(size_in_gb))
                 return True
             else:
                 LOG.info('Current volume size and specified volume size'
@@ -289,6 +347,24 @@ class PowerMaxVolume(object):
     def create_volume(self, vol_name, sg_name, size, cap_unit):
         """Create PowerMax volume in a storage group"""
         try:
+            if self.module.params['vol_name'] is None:
+                self.module.fail_json(msg='vol_name is required'
+                                          ' during volume creation')
+            LOG.info("SG MSG: {0} ".format(sg_name))
+
+            if sg_name is not None:
+
+                storage_group = self.get_storage_group(sg_name)
+                if (storage_group is not None and
+                        not storage_group['unprotected']):
+                    protected_sg_msg = ("Creation of volume in SG {0} "
+                                        "not supported through Ansible"
+                                        " module as this operation for "
+                                        " an SRDF protected SG will render"
+                                        " it unprotected and "
+                                        " unmanageable.".format(sg_name))
+                    self.module.fail_json(msg=protected_sg_msg)
+
             vol_id = self.provisioning.create_volume_from_sg_return_dev_id(
                 vol_name, sg_name, size, cap_unit)
             LOG.info('Created volume native ID: '.format(vol_id))
@@ -296,23 +372,50 @@ class PowerMaxVolume(object):
         except Exception as e:
             LOG.error('Create volume {0} failed with error {1}'.
                       format(vol_name, str(e)))
-            self.module.fail_json(msg='Create volume {0} failed with error '.
-                                  format(vol_name, str(e)))
+            self.module.fail_json(
+                msg='Create volume {0} failed with error {1}'. format(
+                    vol_name, str(e)))
 
-    def move_volume_between_storage_groups(self, vol_id, vol_name, sg_name,
+    def move_volume_between_storage_groups(self, vol, sg_name,
                                            new_sg_name):
         """Move volume between storage group"""
         try:
-            params = {"storageGroupId": new_sg_name,
-                      "volume_identifier": vol_name}
-            volume_list = self.provisioning.get_volume_list(params)
+            volume_list = None
+            vol_name = vol['volume_identifier']
+
+            if vol_name is not None:
+                params = {"storageGroupId": new_sg_name,
+                          "volume_identifier": vol_name}
+                volume_list = self.provisioning.get_volume_list(params)
 
             if volume_list and len(volume_list) > 0:
-                self.module.fail_json(msg="Volume already exists with volume"
-                                          " name {0} in storage group {1}".
-                                      format(vol_name, new_sg_name))
+                self.module.fail_json(msg="Volume already exists with"
+                                          " volume name {0} in storage"
+                                          " group {1}".format(
+                                              vol_name, new_sg_name))
+
+            storage_group_src = self.get_storage_group(sg_name)
+            if not storage_group_src['unprotected']:
+                protected_sg_msg = ("Move volume from Storage group {0} "
+                                    "not supported from Ansible module "
+                                    "as this operation for an SRDF protected"
+                                    " Storage Group will render it "
+                                    "unprotected and "
+                                    "unmanageable.".format(sg_name))
+                self.module.fail_json(msg=protected_sg_msg)
+
+            storage_group_dstn = self.get_storage_group(new_sg_name)
+            if not storage_group_dstn['unprotected']:
+                protected_sg_msg = ("Move volume to Storage group {0} "
+                                    "not supported from Ansible module as"
+                                    " this operation for an SRDF protected"
+                                    " Storage Group will render it "
+                                    "unprotected and unmanageable.".
+                                    format(new_sg_name))
+                self.module.fail_json(msg=protected_sg_msg)
+
             return self.provisioning.move_volumes_between_storage_groups(
-                vol_id, sg_name, new_sg_name)
+                vol['volumeId'], sg_name, new_sg_name)
         except Exception as e:
             error_message = 'Move volume {0} from SG {1} to SG {2} ' \
                             'failed with error {3} '
@@ -321,6 +424,16 @@ class PowerMaxVolume(object):
             self.module.fail_json(msg=error_message.
                                   format(vol_name, sg_name, new_sg_name,
                                          str(e)))
+
+    def get_storage_group(self, sg_name):
+        """Get storage group details"""
+        try:
+            LOG.info('Getting storage group {0} details'.format(sg_name))
+            return self.provisioning.get_storage_group(sg_name)
+        except Exception as e:
+            LOG.info('Got error {0} while getting details of storage group '
+                     '{1}'.format(str(e), sg_name))
+            return None
 
     def perform_module_operation(self):
         """
@@ -336,12 +449,7 @@ class PowerMaxVolume(object):
         cap_unit = self.module.params['cap_unit']
         new_sg_name = self.module.params['new_sg_name']
 
-        if vol_id is None and vol_name is None:
-            self.module.fail_json(msg='Specify Volume ID or Volume name')
-        elif vol_id is not None and vol_name is not None:
-            self.module.fail_json(msg='Specify Volume ID or Volume name,'
-                                      ' not both')
-        elif vol_name is not None and sg_name is None:
+        if vol_name is not None and sg_name is None:
             self.module.fail_json(msg='Specify Storage group name along '
                                       'with volume name')
 
@@ -385,7 +493,7 @@ class PowerMaxVolume(object):
 
         if state == 'present' and vol and new_sg_name:
             changed = self.move_volume_between_storage_groups(
-                vol_id, vol_name, sg_name, new_sg_name) or changed
+                vol, sg_name, new_sg_name) or changed
 
         '''
         Finally update the module changed state and saving updated volume
@@ -407,8 +515,9 @@ def get_powermax_volume_parameters():
         new_sg_name=dict(required=False, type='str'),
         new_name=dict(required=False, type='str'),
         cap_unit=dict(default='GB', choices=['MB', 'GB', 'TB'], type='str'),
+        vol_wwn=dict(required=False, type='str'),
         state=dict(required=True, type='str')
-        )
+    )
 
 
 def main():
