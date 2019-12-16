@@ -1,8 +1,12 @@
 #!/usr/bin/python
 # Copyright: (c) 2019, DellEMC
 
+from ansible.module_utils.basic import AnsibleModule
+from ansible.module_utils import dellemc_ansible_utils as utils
+import logging
+
 __metaclass__ = type
-ANSIBLE_METADATA = {'metadata_version': '1.0',
+ANSIBLE_METADATA = {'metadata_version': '1.1',
                     'status': ['preview'],
                     'supported_by': 'community'
                     }
@@ -22,7 +26,9 @@ description:
   Create new Volumes in an existing Storage Group,
   Modify existing Storage Group attributes,
   Add child Storage Groups inside existing Storage Group(parent),
-  Remove Child Storage Groups from existing parent Storage Group  
+  Remove Child Storage Groups from existing parent Storage Group
+extends_documentation_fragment:
+  - dellemc.dellemc_powermax
 author:
 - Vasudevu Lakhinana (Vasudevu.Lakhinana@dell.com)
 - Prashant Rakheja (Prashant.Rakheja@dell.com)
@@ -36,17 +42,17 @@ options:
     - The Name of SLO.
   srp:
     description:
-    - Name of the storage resource pool. 
-    - This parameter is ignored if service_level is not specified. 
+    - Name of the storage resource pool.
+    - This parameter is ignored if service_level is not specified.
     - Default is to use whichever is the default SRP on the array.
   compression:
     description:
     - compression on storage group.
-    - Compression parameter is ignored if service_level is not specified. 
+    - Compression parameter is ignored if service_level is not specified.
     - Default is true.
   volumes:
     description:
-    - This is a list of volumes. 
+    - This is a list of volumes.
     - Each volume has four attributes-
     - vol_name
     - size
@@ -66,14 +72,14 @@ options:
     choices: [present-in-group , absent-in-group]
   child_storage_groups:
     description:
-    - This is a list of child storage groups 
+    - This is a list of child storage groups
   child_sg_state:
     description:
-    - Describes the state of CSG inside parent SG    
-    choices: [present-in-group, absent-in-group] 
+    - Describes the state of CSG inside parent SG
+    choices: [present-in-group, absent-in-group]
   new_sg_name:
     description:
-     - The new name of the Storage Group  
+     - The new name of the Storage Group
   state:
     description:
     - Define whether the storage group should exist or not.
@@ -89,9 +95,9 @@ EXAMPLES = r'''
       user: "{{user}}"
       password: "{{password}}"
       serial_no: "{{serial_no}}"
-      sg_name: "ansible_sg":      
-      state: "present"         
-- name: Create empty storage group 
+      sg_name: "ansible_sg":
+      state: "present"
+- name: Create empty storage group
     dellemc_powermax_storagegroup:
       unispherehost: "{{unispherehost}}"
       universion: "{{universion}}"
@@ -104,7 +110,7 @@ EXAMPLES = r'''
       srp: "SRP_1"
       compression: True
       state: "present"
-            
+
 - name: Delete the storage Group
     dellemc_powermax_storagegroup:
       unispherehost: "{{unispherehost}}"
@@ -115,7 +121,7 @@ EXAMPLES = r'''
       serial_no: "{{serial_no}}"
       sg_name: "foo"
       state: "absent"
-            
+
 - name: Adding existing volume(s) to existing SG
     dellemc_powermax_storagegroup:
       unispherehost: "{{unispherehost}}"
@@ -130,8 +136,8 @@ EXAMPLES = r'''
         - vol_id: "00028"
         - vol_id: "00018"
         - vol_id: "00025"
-      vol_state: "present-in-group" 
-            
+      vol_state: "present-in-group"
+
 - name: Create new volumes for existing SG
     dellemc_powermax_storagegroup:
       unispherehost: "{{unispherehost}}"
@@ -149,8 +155,8 @@ EXAMPLES = r'''
         - vol_name: "bar"
           size: 1
           cap_unit: "GB"
-      vol_state: "present-in-group" 
-            
+      vol_state: "present-in-group"
+
 - name: Remove volume(s) from existing SG
     dellemc_powermax_storagegroup:
       unispherehost: "{{unispherehost}}"
@@ -165,8 +171,8 @@ EXAMPLES = r'''
         - vol_id: "00028"
         - vol_id: "00018"
         - vol_name: "ansible-vol"
-      vol_state: "absent-in-group" 
-            
+      vol_state: "absent-in-group"
+
 - name: Adding child SG to parent SG
     dellemc_powermax_storagegroup:
       unispherehost: "{{unispherehost}}"
@@ -180,8 +186,8 @@ EXAMPLES = r'''
       child_storage_groups:
         - "pie"
         - "bar"
-      child_sg_state: "present-in-group" 
-            
+      child_sg_state: "present-in-group"
+
 - name: Removing child SG from parent SG
     dellemc_powermax_storagegroup:
       unispherehost: "{{unispherehost}}"
@@ -196,7 +202,7 @@ EXAMPLES = r'''
         - "pie"
         - "bar"
       child_sg_state: "absent-in-group"
-      
+
 - name: Rename Storage Group
     dellemc_powermax_storagegroup:
       unispherehost: "{{unispherehost}}"
@@ -207,24 +213,30 @@ EXAMPLES = r'''
       serial_no: "{{serial_no}}"
       sg_name: "ansible_sg":
       new_sg_name: "ansible_sg_renamed"
-      state: "present"                                                
+      state: "present"
 '''
 
 
 RETURN = r'''
 '''
 
-from ansible.module_utils.basic import AnsibleModule
-from ansible.module_utils import dellemc_ansible_utils as utils
-import logging
-
 LOG = utils.get_logger('dellemc_powermax_storagegroup', log_devel=logging.INFO)
 HAS_PYU4V = utils.has_pyu4v_sdk()
 
 PYU4V_VERSION_CHECK = utils.pyu4v_version_check()
 
+# Application Type
+APPLICATION_TYPE = 'ansible_v1.1'
+
+
 class PowerMaxStorageGroup(object):
     """Class with Storage Group operations"""
+
+    protected_sg_msg = "Modifying a volume(s)/child storagegroup(s)" \
+                       " for an SRDF protected storage group will " \
+                       "render it unprotected and unmanageable." \
+                       " Hence this operation is not allowed through" \
+                       " Ansible Module."
 
     def __init__(self):
         """Define all the parameters required by this module"""
@@ -234,19 +246,28 @@ class PowerMaxStorageGroup(object):
         # initialize the Ansible module
         self.module = AnsibleModule(
             argument_spec=self.module_params,
-            supports_check_mode=True
+            supports_check_mode=False
         )
         if HAS_PYU4V is False:
             self.module.fail_json(msg="Ansible modules for PowerMax require "
                                       "the PyU4V python library to be "
                                       "installed. Please install the library "
                                       "before using these modules.")
-        if PYU4V_VERSION_CHECK is not None :
+        if PYU4V_VERSION_CHECK is not None:
             self.module.fail_json(msg=PYU4V_VERSION_CHECK)
             LOG.error(PYU4V_VERSION_CHECK)
 
-        self.u4v_conn = utils.get_U4V_connection(self.module.params)
+        universion_details = utils.universion_check(
+            self.module.params['universion'])
+        LOG.info("universion_details: {0}".format(universion_details))
+
+        if not universion_details['is_valid_universion']:
+            self.module.fail_json(msg=universion_details['user_message'])
+
+        self.u4v_conn = utils.get_U4V_connection(
+            self.module.params, application_type=APPLICATION_TYPE)
         self.provisioning = self.u4v_conn.provisioning
+        self.replication = self.u4v_conn.replication
         LOG.info('Got PyU4V instance for provisioning on PowerMax ')
 
     def get_volume(self):
@@ -263,14 +284,15 @@ class PowerMaxStorageGroup(object):
                       .format(str(e), vol_id))
             return None
 
-    def get_volumes_storagegroup(self,sg_name):
+    def get_volumes_storagegroup(self, sg_name):
         """Get the list of volumes from a storage group"""
         if sg_name is None:
             errmsg = 'StorageGroup name is required to get the candidate volumes'
             LOG.error(errmsg)
             self.module.fail_json(msg=errmsg)
         try:
-            LOG.info('Getting the list of volumes from storage group {0}'.format(sg_name))
+            LOG.info(
+                'Getting the list of volumes from storage group {0}'.format(sg_name))
             sg_vol_list = self.provisioning.get_vols_from_storagegroup(sg_name)
             LOG.info('{0} volumes present in storage group {1}'.format(
                 len(sg_vol_list), sg_name))
@@ -289,7 +311,7 @@ class PowerMaxStorageGroup(object):
             return self.provisioning.get_storage_group(sg_name)
         except Exception as e:
             LOG.info('Got error {0} while getting details of storage group {1}'
-                      .format(str(e), sg_name))
+                     .format(str(e), sg_name))
             return None
 
     def create_storage_group(self, sg_name):
@@ -307,9 +329,8 @@ class PowerMaxStorageGroup(object):
         disable_compression = not compression
         try:
             LOG.info('Creating empty storage group {0} '.format(sg_name))
-            resp = self.provisioning.create_empty_sg(srp, sg_name, slo,
-                                                     workload=None,
-                                                     disable_compression=disable_compression)
+            resp = self.provisioning.create_empty_sg(
+                srp, sg_name, slo, workload=None, disable_compression=disable_compression)
             return True, resp
         except Exception as e:
             LOG.error('Failed to create storage group {0} with error {1}'
@@ -322,11 +343,14 @@ class PowerMaxStorageGroup(object):
         volumes = self.module.params['volumes']
         LOG.info('Creating new volumes for SG {0}'.format(sg_name))
         changed = False
+        storage_group = self.provisioning.get_storage_group(sg_name)
         for vol in volumes:
             LOG.info('Processing vol {0}'.format(vol))
             if ('vol_id' in vol) and ('vol_name' in vol):
-                LOG.warn('Both name and id are found for volume {0}. No action would be taken. Please specify '
-                         'either name or id'.format(sg_name))
+                LOG.warn(
+                    'Both name and id are found for volume {0}. No action '
+                    'would be taken. Please specify either name or '
+                    'id'.format(sg_name))
                 continue
             elif ('cap_unit' in vol) or ('vol_name' in vol) or ('size' in vol):
                 if 'cap_unit' in vol:
@@ -338,15 +362,15 @@ class PowerMaxStorageGroup(object):
                 else:
                     LOG.error('No valid name was specified for the volume {0}'
                               .format(vol))
-                    self.module.fail_json(msg='No valid name was specified for the volume {0}'
-                                          .format(vol))
+                    self.module.fail_json(
+                        msg='No valid name was specified for the volume {0}' .format(vol))
                 if 'size' in vol:
                     size = vol['size']
                 else:
                     LOG.error('No valid size was specified for the volume {0}'
                               .format(vol))
-                    self.module.fail_json(msg='No valid size was specified for the volume {0}'
-                                          .format(vol))
+                    self.module.fail_json(
+                        msg='No valid size was specified for the volume {0}' .format(vol))
                 try:
                     params = {"storageGroupId": sg_name,
                               "volume_identifier": name}
@@ -356,6 +380,10 @@ class PowerMaxStorageGroup(object):
                             'No volume found with volume identifier {0} '
                             'in storage group {1}'.format(name,
                                                           sg_name))
+                        # SRDF protected SG are not allowed to be modified.
+                        if not storage_group['unprotected']:
+                            self.module.fail_json(msg=self.protected_sg_msg)
+
                         LOG.info('Creating volume with name {0}, size {1} {2}'
                                  .format(name, size, unit))
                         self.provisioning.create_volume_from_sg_return_dev_id(
@@ -372,26 +400,31 @@ class PowerMaxStorageGroup(object):
                                     utils.get_size_in_gb(size, unit):
                                 break
                             else:
-                                self.module.fail_json(msg='A volume with identifier {0} '
-                                                          'but different size {1} GB '
-                                                          'already exists. Please use '
-                                                          'a different identifier for volume creation. '
-                                                          'Currently, we support only unique identifiers '
-                                                          'for volume creation on PowerMax from Ansible'.
-                                                          format(name,
-                                                                 vol_details['cap_gb'])
-                                                      )
+                                self.module.fail_json(
+                                    msg='A volume with identifier {0} '
+                                    'but different size {1} GB '
+                                    'already exists. Please use '
+                                    'a different identifier for'
+                                    ' volume creation.Currently,'
+                                    ' we support only unique '
+                                    'identifiers for '
+                                    'volume creation on '
+                                    'PowerMax from Ansible'. format(
+                                        name, vol_details['cap_gb']))
                 except Exception as e:
-                    LOG.error('Create volume for storage group {0} failed with error {1}'
-                              .format(sg_name, str(e)))
-                    self.module.fail_json(msg='Create volume for storage group {0} failed.'
-                                          .format(sg_name))
-        existing_volumes_in_sg = self.provisioning.get_vols_from_storagegroup(sg_name)
+                    LOG.error(
+                        'Create volume for storage group {0} failed with error {1}' .format(
+                            sg_name, str(e)))
+                    self.module.fail_json(
+                        msg='Create volume for storage group {0} failed.' .format(sg_name))
+        existing_volumes_in_sg = self.provisioning.get_vols_from_storagegroup(
+            sg_name)
         return changed, existing_volumes_in_sg
 
     def delete_storage_group(self, sg_name):
         """Delete storage group from PowerMax"""
         try:
+            self.check_for_linked_snapshots(sg_name)
             self.provisioning.delete_storagegroup(sg_name)
             return True
         except Exception as e:
@@ -403,17 +436,22 @@ class PowerMaxStorageGroup(object):
     def add_existing_volumes_to_sg(self, vol_list, sg_name):
         """Add existing Volumes to existing Storage Group"""
 
-        existing_volumes_in_sg = self.provisioning.get_vols_from_storagegroup(sg_name)
+        storage_group = self.provisioning.get_storage_group(sg_name)
+        existing_volumes_in_sg = self.provisioning.get_vols_from_storagegroup(
+            sg_name)
         vol_ids = []
         for vol in vol_list:
             if ('vol_id' in vol) and ('vol_name' in vol):
-                LOG.warn('Both name and id are found for volume {0}. No action would be taken. Please specify '
-                         'either name or id'.format(vol))
+                LOG.warn(
+                    'Both name and id are found for volume {0}. No action'
+                    'would be taken. Please specify either name or id'.
+                    format(vol))
                 continue
             elif 'vol_id' in vol:
                 vol_ids.append(vol['vol_id'])
 
-        volumes_to_add = [vol for vol in vol_ids if vol not in set(existing_volumes_in_sg)]
+        volumes_to_add = [
+            vol for vol in vol_ids if vol not in set(existing_volumes_in_sg)]
 
         existing_volume_names_in_sg = []
         for vol in existing_volumes_in_sg:
@@ -444,22 +482,31 @@ class PowerMaxStorageGroup(object):
                     format(sg_name))
 
         if not volumes_to_add:
-            LOG.info('The given volumes {0} are already present in storage group {1} '
-                     .format(vol_ids, sg_name))
+            LOG.info(
+                'The given volumes {0} are already present in storage group {1}' .format(
+                    vol_ids, sg_name))
             return False, existing_volumes_in_sg
         try:
+
+            if not storage_group['unprotected']:
+                self.module.fail_json(msg=self.protected_sg_msg)
+
             self.provisioning.add_existing_vol_to_sg(sg_name, volumes_to_add)
-            existing_volumes_in_sg = self.provisioning.get_vols_from_storagegroup(sg_name)
+            existing_volumes_in_sg = self.provisioning.get_vols_from_storagegroup(
+                sg_name)
             return True, existing_volumes_in_sg
         except Exception as e:
-            LOG.error('Add existing volume(s) to storage group {0} failed with error {1} '
-                      .format(sg_name, str(e)))
-            self.module.fail_json(msg='Add existing volumes to storage group {0} failed.'
-                                  .format(sg_name))
+            LOG.error(
+                'Add existing volume(s) to storage group {0} failed with error {1}' .format(
+                    sg_name, str(e)))
+            self.module.fail_json(
+                msg='Add existing volumes to storage group {0} failed.'
+                .format(sg_name))
 
     def remove_volumes_from_sg(self, vol_list, sg_name):
         """Remove volume(s) from Storage Group"""
-        existing_volumes_in_sg = self.provisioning.get_vols_from_storagegroup(sg_name)
+        existing_volumes_in_sg = self.provisioning.get_vols_from_storagegroup(
+            sg_name)
         vol_ids = []
         for vol in vol_list:
             if ('vol_id' in vol) and ('vol_name' in vol):
@@ -476,7 +523,8 @@ class PowerMaxStorageGroup(object):
                 if not volume_list or len(volume_list) == 0:
                     LOG.info(
                         'No volume found with volume identifier {0} '
-                        'in storage group {1}'.format(vol['vol_name'], sg_name))
+                        'in storage group {1}'.format(
+                            vol['vol_name'], sg_name))
                 elif len(volume_list) > 1:
                     self.module.fail_json(msg='Duplicate volumes found: '
                                               'There are {0} volume(s) with '
@@ -489,22 +537,29 @@ class PowerMaxStorageGroup(object):
                 else:
                     vol_ids.append(volume_list[0])
 
-        volumes_to_remove = [vol for vol in vol_ids if vol in set(existing_volumes_in_sg)]
+        volumes_to_remove = [
+            vol for vol in vol_ids if vol in set(existing_volumes_in_sg)]
 
         if not volumes_to_remove:
-            LOG.info('The given volumes {0} are not present on the storage group {1} '
-                     .format(vol_ids, sg_name))
+            LOG.info(
+                'The given volumes {0} are not present on the storage group {1}' .format(
+                    vol_ids, sg_name))
             return False, existing_volumes_in_sg
         try:
+            storage_group = self.provisioning.get_storage_group(sg_name)
+            # SRDF Protected SG are not allowed to be modified.
+            if not storage_group['unprotected']:
+                self.module.fail_json(msg=self.protected_sg_msg)
             for vol in volumes_to_remove:
                 self.provisioning.remove_vol_from_storagegroup(sg_name, vol)
             vol_list = self.provisioning.get_vols_from_storagegroup(sg_name)
             return True, vol_list
         except Exception as e:
-            LOG.error('Remove existing volume from storage group {0} failed with error {1} '
-                      .format(sg_name, str(e)))
-            self.module.fail_json(msg='Remove existing volume from storage group {0} failed.'
-                                  .format(sg_name))
+            LOG.error(
+                'Remove existing volume from storage group {0} failed with error {1} ' .format(
+                    sg_name, str(e)))
+            self.module.fail_json(
+                msg='Remove existing volume from storage group {0} failed.' .format(sg_name))
 
     def modify_sg_srp(self, storage_group, new_srp):
         """Modify SRP of the Storage Group"""
@@ -520,10 +575,11 @@ class PowerMaxStorageGroup(object):
         try:
             self.provisioning.modify_storage_group(storage_group, payload)
         except Exception as e:
-            LOG.error('Modify attribute SRP of storage group {0} failed with error {1} '
-                      .format(storage_group, str(e)))
-            self.module.fail_json(msg='Modify attribute SRP of storage group {0} failed.'
-                                  .format(storage_group))
+            LOG.error(
+                'Modify attribute SRP of storage group {0} failed with error {1} ' .format(
+                    storage_group, str(e)))
+            self.module.fail_json(
+                msg='Modify attribute SRP of storage group {0} failed.' .format(storage_group))
 
     def modify_sg_slo(self, sg_name, new_slo):
         """Modify service level of the Storage Group"""
@@ -545,10 +601,11 @@ class PowerMaxStorageGroup(object):
                          .format(storage_group['slo'], self.module.params['service_level']))
                 self.provisioning.modify_storage_group(sg_name, payload)
             except Exception as e:
-                LOG.error('Modify attribute SLO of storage group {0} failed with error {1} '
-                          .format(sg_name, str(e)))
-                self.module.fail_json(msg='Modify attribute SLO of storage group {0} failed.'
-                                      .format(sg_name))
+                LOG.error(
+                    'Modify attribute SLO of storage group {0} failed with error {1} ' .format(
+                        sg_name, str(e)))
+                self.module.fail_json(
+                    msg='Modify attribute SLO of storage group {0} failed.' .format(sg_name))
 
     def modify_sg_compression(self, sg_name, new_compression):
         """Modify compression of the Storage Group"""
@@ -563,16 +620,20 @@ class PowerMaxStorageGroup(object):
 
         storage_group = self.get_storage_group(sg_name)
 
-        if 'compression' in storage_group and storage_group['compression'] != self.module.params['compression']:
+        if 'compression' in storage_group and storage_group[
+                'compression'] != self.module.params['compression']:
             try:
-                LOG.info('The existing SG compression is {0} and the desired SG compression is {1} '
-                         .format(storage_group['compression'], self.module.params['compression']))
+                LOG.info(
+                    'The existing SG compression is {0} and the desired SG compression is {1} ' .format(
+                        storage_group['compression'],
+                        self.module.params['compression']))
                 self.provisioning.modify_storage_group(sg_name, payload)
             except Exception as e:
-                LOG.error('Modify attribute compression of storage group {0} failed with error {1} '
-                          .format(sg_name, str(e)))
-                self.module.fail_json(msg='Modify attribute SRP of storage group {0} failed.'
-                                      .format(sg_name))
+                LOG.error(
+                    'Modify attribute compression of storage group {0} failed with error {1} ' .format(
+                        sg_name, str(e)))
+                self.module.fail_json(
+                    msg='Modify attribute SRP of storage group {0} failed.' .format(sg_name))
 
     def modify_storage_group_attributes(self, storage_group, modified_param):
         """Modify the Storage group attributes"""
@@ -587,7 +648,8 @@ class PowerMaxStorageGroup(object):
             changed = True
 
         if 'modified_compression' in modified_param:
-            self.modify_sg_compression(storage_group, modified_param['modified_compression'])
+            self.modify_sg_compression(
+                storage_group, modified_param['modified_compression'])
             changed = True
 
         return changed
@@ -596,9 +658,16 @@ class PowerMaxStorageGroup(object):
         """Add a child Storage Group(s) to parent Storage Group"""
         changed = False
         for child_sg in child_sg_list:
-            if not self.provisioning.is_child_sg_in_parent_sg(child_sg, parent_sg):
+            if not self.provisioning.is_child_sg_in_parent_sg(
+                    child_sg, parent_sg):
                 try:
-                    self.provisioning.add_child_sg_to_parent_sg(child_sg, parent_sg)
+                    storage_group = self.provisioning.get_storage_group(
+                        parent_sg)
+                    # SRDF protected SG are not allowed to be modified.
+                    if not storage_group['unprotected']:
+                        self.module.fail_json(msg=self.protected_sg_msg)
+                    self.provisioning.add_child_sg_to_parent_sg(
+                        child_sg, parent_sg)
                     changed = True
                 except Exception as e:
                     error_message = 'Adding child SG {0} to parent storage ' \
@@ -613,10 +682,15 @@ class PowerMaxStorageGroup(object):
     def remove_child_sg_from_parent_sg(self, child_sg_list, parent_sg):
         """Remove a child Storage Group from parent Storage Group"""
         changed = False
+        storage_group = self.provisioning.get_storage_group(parent_sg)
         for child_sg in child_sg_list:
             if self.provisioning.is_child_sg_in_parent_sg(child_sg, parent_sg):
                 try:
-                    self.provisioning.remove_child_sg_from_parent_sg(child_sg, parent_sg)
+                    # SRDF protected SG are not allowed to be modified.
+                    if not storage_group['unprotected']:
+                        self.module.fail_json(msg=self.protected_sg_msg)
+                    self.provisioning.remove_child_sg_from_parent_sg(
+                        child_sg, parent_sg)
                     changed = True
                 except Exception as e:
                     error_message = 'Removing child SG {0} from parent storage group {1} failed with error {2} '
@@ -650,8 +724,9 @@ class PowerMaxStorageGroup(object):
             modified_param['modified_compression'] = self.module.params['compression']
             modified = True
 
-        LOG.info('The storage group {0} needs to be modified and the modified param are {1} '
-                 .format(modified, modified_param))
+        LOG.info(
+            'The storage group {0} needs to be modified and the modified param are {1} ' .format(
+                modified, modified_param))
 
         return modified, modified_param
 
@@ -690,6 +765,27 @@ class PowerMaxStorageGroup(object):
                                          str(e)))
         return changed
 
+    def check_for_linked_snapshots(self, sg_name):
+        snap_list = self.replication.get_storagegroup_snapshot_list(sg_name)
+        for snap in snap_list:
+            gen_list = \
+                self.replication.get_storagegroup_snapshot_generation_list(
+                    storagegroup_id=sg_name,
+                    snap_name=snap)
+            for gen in gen_list:
+                gen_details = \
+                    self.replication.get_snapshot_generation_details(
+                        sg_id=sg_name,
+                        snap_name=snap,
+                        gen_num=gen)
+                if gen_details['isLinked']:
+                    self.module.fail_json(msg="Cannot delete SG {0} "
+                                              "because it "
+                                              "has snapshot(s) in linked "
+                                              "state. "
+                                              "Please unlink the snapshot(s) "
+                                              "and retry.".format(sg_name))
+
     def check_task_validity(self, volumes, vol_state):
         if volumes and vol_state is None:
             self.module.fail_json(msg="Please provide a valid vol_state.")
@@ -712,7 +808,8 @@ class PowerMaxStorageGroup(object):
 
         modified = False
         if storage_group:
-            modified, modified_param = self.is_storage_group_modified(storage_group)
+            modified, modified_param = self.is_storage_group_modified(
+                storage_group)
 
         result = dict(
             changed=False,
@@ -726,53 +823,73 @@ class PowerMaxStorageGroup(object):
             rename_sg='',
             delete_sg='',
             storage_group_volumes='',
+            storage_group_details='',
         )
         if state == 'present' and storage_group and not new_sg_name and not volumes:
             LOG.info('Get volumes for storage group {0}'.format(sg_name))
-            result['storage_group_volumes'] = self.get_volumes_storagegroup(sg_name)
+            result['storage_group_volumes'] = self.get_volumes_storagegroup(
+                sg_name)
         elif state == 'present' and not (storage_group or new_sg_name):
             LOG.info('Creating storage group {0}'.format(sg_name))
-            result['create_sg'], result['storage_group_details'] = self.create_storage_group(sg_name)
+            result['create_sg'], result['storage_group_details'] = self.create_storage_group(
+                sg_name)
             LOG.info('Get volumes for storage group {0}'.format(sg_name))
-            result['storage_group_volumes'] = self.get_volumes_storagegroup(sg_name)
+            result['storage_group_volumes'] = self.get_volumes_storagegroup(
+                sg_name)
         elif state == 'absent' and storage_group:
             LOG.info('Delete storage group {0} '.format(sg_name))
             result['delete_sg'] = self.delete_storage_group(sg_name)
 
         if state == 'present' and vol_state == 'present-in-group' and storage_group and volumes:
-            LOG.info('Create new volume(s) for storage group {0}'.format(sg_name))
-            result['add_new_vols_to_sg'], result['storage_group_volumes'] = self.add_volume_storage_group(sg_name)
-            LOG.info('Add existing volume(s) to storage group {0}'.format(sg_name))
-            result['add_vols_to_sg'], result['storage_group_volumes'] = self.add_existing_volumes_to_sg(volumes,
-                                                                                                        sg_name)
+            LOG.info(
+                'Create new volume(s) for storage group {0}'.format(sg_name))
+            result['add_new_vols_to_sg'], result['storage_group_volumes'] = self.add_volume_storage_group(
+                sg_name)
+            LOG.info(
+                'Add existing volume(s) to storage group {0}'.format(sg_name))
+            result['add_vols_to_sg'], result['storage_group_volumes'] = self.add_existing_volumes_to_sg(
+                volumes, sg_name)
         elif state == 'present' and vol_state == 'absent-in-group' and storage_group and volumes:
-            LOG.info('Remove existing volume(s) from storage group {0}'.format(sg_name))
-            result['remove_vols_from_sg'], result['storage_group_volumes'] = self.remove_volumes_from_sg(volumes,
-                                                                                                         sg_name)
+            LOG.info(
+                'Remove existing volume(s) from storage group {0}'.format(sg_name))
+            result['remove_vols_from_sg'], result['storage_group_volumes'] = self.remove_volumes_from_sg(
+                volumes, sg_name)
 
         if state == 'present' and storage_group and modified:
             LOG.info('Modifying Storage group {0}'.format(sg_name))
-            result['modify_sg'] = self.modify_storage_group_attributes(sg_name, modified_param)
-            result['storage_group_volumes'] = self.get_volumes_storagegroup(sg_name)
+            result['modify_sg'] = self.modify_storage_group_attributes(
+                sg_name, modified_param)
+            result['storage_group_volumes'] = self.get_volumes_storagegroup(
+                sg_name)
 
         if state == 'present' and child_sg_state == 'present-in-group' and storage_group and child_sgs:
-            LOG.info('Adding child SG to parent storage group {0}'.format(sg_name))
-            result['add_child_sg'] = self.add_child_sg_to_parent_sg(child_sgs, sg_name)
+            LOG.info(
+                'Adding child SG to parent storage group {0}'.format(sg_name))
+            result['add_child_sg'] = self.add_child_sg_to_parent_sg(
+                child_sgs, sg_name)
             LOG.info('Get volumes for storage group {0}'.format(sg_name))
-            result['storage_group_volumes'] = self.get_volumes_storagegroup(sg_name)
+            result['storage_group_volumes'] = self.get_volumes_storagegroup(
+                sg_name)
         elif state == 'present' and child_sg_state == 'absent-in-group' and storage_group and child_sgs:
-            LOG.info('Removing child SG from parent storage group {0}'.format(sg_name))
-            result['remove_child_sg'] = self.remove_child_sg_from_parent_sg(child_sgs, sg_name)
+            LOG.info(
+                'Removing child SG from parent storage group {0}'.format(sg_name))
+            result['remove_child_sg'] = self.remove_child_sg_from_parent_sg(
+                child_sgs, sg_name)
             LOG.info('Get volumes for storage group {0}'.format(sg_name))
-            result['storage_group_volumes'] = self.get_volumes_storagegroup(sg_name)
+            result['storage_group_volumes'] = self.get_volumes_storagegroup(
+                sg_name)
 
         if state == 'present' and new_sg_name:
-            LOG.info('Rename SG {0} to new name {1}'.format(sg_name, new_sg_name))
-            result['rename_sg'] = self.rename_storage_group(storage_group, new_sg_name)
+            LOG.info(
+                'Rename SG {0} to new name {1}'.format(
+                    sg_name, new_sg_name))
+            result['rename_sg'] = self.rename_storage_group(
+                storage_group, new_sg_name)
             if result['rename_sg']:
                 sg_name = new_sg_name
                 LOG.info('Get volumes for storage group {0}'.format(sg_name))
-                result['storage_group_volumes'] = self.get_volumes_storagegroup(sg_name)
+                result['storage_group_volumes'] = self.get_volumes_storagegroup(
+                    sg_name)
 
         if state == 'present' and storage_group:
             LOG.info('Found storage group {0}'.format(storage_group))
@@ -790,17 +907,46 @@ class PowerMaxStorageGroup(object):
 
 def get_powermax_storage_group_parameters():
     return dict(
-        sg_name=dict(required=True, type='str'),
-        service_level=dict(required=False, type='str'),
-        srp=dict(required=False, type='str'),
-        compression=dict(required=False, type='bool'),
-        volumes=dict(required=False, type='list'),
-        vol_state=dict(required=False, choices=['absent-in-group', 'present-in-group'], type='str'),
-        child_storage_groups=dict(required=False, type='list'),
-        child_sg_state=dict(required=False, choices=['absent-in-group', 'present-in-group'], type='str'),
-        new_sg_name=dict(required=False, type='str'),
-        state=dict(required=True, choices=['present', 'absent'], type='str'),
-        )
+        sg_name=dict(
+            required=True,
+            type='str'),
+        service_level=dict(
+            required=False,
+            type='str'),
+        srp=dict(
+            required=False,
+            type='str'),
+        compression=dict(
+            required=False,
+            type='bool'),
+        volumes=dict(
+            required=False,
+            type='list'),
+        vol_state=dict(
+            required=False,
+            choices=[
+                'absent-in-group',
+                'present-in-group'],
+            type='str'),
+        child_storage_groups=dict(
+            required=False,
+            type='list'),
+        child_sg_state=dict(
+            required=False,
+            choices=[
+                'absent-in-group',
+                'present-in-group'],
+            type='str'),
+        new_sg_name=dict(
+            required=False,
+            type='str'),
+        state=dict(
+            required=True,
+            choices=[
+                'present',
+                'absent'],
+            type='str'),
+    )
 
 
 def main():

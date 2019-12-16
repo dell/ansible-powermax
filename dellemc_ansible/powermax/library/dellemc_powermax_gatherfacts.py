@@ -6,7 +6,7 @@ from ansible.module_utils import dellemc_ansible_utils as utils
 import logging
 
 __metaclass__ = type
-ANSIBLE_METADATA = {'metadata_version': '1.0',
+ANSIBLE_METADATA = {'metadata_version': '1.1',
                     'status': ['preview'],
                     'supported_by': 'community'
                     }
@@ -20,40 +20,22 @@ description:
 - Gathers the list of specified PowerMax/VMAX Storage System entities, like the
   list of registered arrays, storage groups, hosts, host groups, storage groups,
   storage resource pools, port groups, masking views, etc.
+extends_documentation_fragment:
+  - dellemc.dellemc_powermax
 author:
 - Arindam Datta (arindam.datta@dell.com)
 options:
-  serial_no:
-    description:
-    - the serial number of  PowerMax/VMAX array. It is a required parameter
-      when getting information about specific entities. In absence of this
-      parameter, the script will list all the registered array's serial numbers
-      on the specified Unisphere.
-    - required only if gather_subset is present
-    required: False
-  unispherehost:
-    description:
-    - IP or FQDN of the Unisphere host
-    required: True
-  universion:
-    description:
-    - Unisphere version
-    required: True
-  verifycert:
-    description:
-    - boolean variable to specify whether to validate SSL certificate or not.
-    - True - indicates that the SSL certificate should be verified.
-    - False - indicates that the SSL certificate should not be verified.
-    required: True
-    choices: [ True, False]
-  user:
-    description:
-    - username of the Unisphere host.
-    required: True
-  password:
-    description:
-    - the password of the Unisphere host.
-    required: True
+  tdev_volumes:
+     description:
+     - Boolean variable to filter the volume list.        
+       This will have a small performance impact. 
+       By default it's set to true, only TDEV volumes wil be returned.
+     - True - Will return only the TDEV volumes.
+     - False - Will return all the volumes.
+     required: False
+     type: bool     
+     choices: [ True, False]
+     default: True
   gather_subset:
     description:
     - List of string variables to specify the PowerMax/VMAX entities for which
@@ -68,8 +50,9 @@ options:
     - hg -  host groups
     - port - ports
     - mv - masking views
-    required: False 
-    choices: [vol, srp, sg, pg , host, hg, port, mv]
+    - rdf - rdf groups
+    required: True 
+    choices: [vol, srp, sg, pg , host, hg, port, mv, rdf]
 '''
 
 EXAMPLES = r'''
@@ -82,8 +65,9 @@ EXAMPLES = r'''
       user: "{{user}}"
       password: "{{password}}"
       serial_no: "{{serial_no}}"
+      tdev_volumes: "{{tdev_volumes}}"    
       gather_subset:
-         - vol
+         - vol       
 
 - name: Get array list
     dellemc_powermax_gatherfacts:
@@ -169,6 +153,17 @@ EXAMPLES = r'''
       serial_no: "{{serial_no}}"
       gather_subset:
          - mv
+         
+- name: Get list of RDF Groups
+    dellemc_powermax_gatherfacts:
+      unispherehost: "{{unispherehost}}"
+      universion: "{{universion}}"
+      verifycert: "{{verifycert}}"
+      user: "{{user}}"
+      password: "{{password}}"
+      serial_no: "{{serial_no}}"
+      gather_subset:
+         - rdf
 
 '''
 
@@ -181,6 +176,9 @@ HAS_PYU4V = utils.has_pyu4v_sdk()
 
 PYU4V_VERSION_CHECK = utils.pyu4v_version_check()
 
+# Application Type
+APPLICATION_TYPE = 'ansible_v1.1'
+
 
 class PowerMaxGatherFacts(object):
     """Class with Gather Fact operations"""
@@ -191,7 +189,7 @@ class PowerMaxGatherFacts(object):
         self.module_params = get_powermax_gatherfacts_parameters()
         self.module = AnsibleModule(
             argument_spec=self.module_params,
-            supports_check_mode=True)
+            supports_check_mode=False)
         serial_no = self.module.params['serial_no']
         if HAS_PYU4V is False:
             self.module.fail_json(msg="Ansible modules for PowerMax require "
@@ -202,9 +200,16 @@ class PowerMaxGatherFacts(object):
             self.module.fail_json(msg=PYU4V_VERSION_CHECK)
             LOG.error(PYU4V_VERSION_CHECK)
 
+        universion_details = utils.universion_check(
+                             self.module.params['universion'])
+        LOG.info("universion_details: {0}".format(universion_details))
+
+        if not universion_details['is_valid_universion']:
+            self.module.fail_json(msg=universion_details['user_message'])
+
         if serial_no is '':
             self.u4v_unisphere_con = utils.get_u4v_unisphere_connection(
-                self.module.params)
+                self.module.params, APPLICATION_TYPE)
             self.common = self.u4v_unisphere_con.common
             LOG.info(
                     "Got PyU4V Unisphere instance for common lib method "
@@ -212,20 +217,30 @@ class PowerMaxGatherFacts(object):
         else:
             self.module_params.update(
                 utils.get_powermax_management_host_parameters())
-            self.u4v_conn = utils.get_U4V_connection(self.module.params)
+            self.u4v_conn = utils.get_U4V_connection(self.module.params,
+                                                     application_type=
+                                                     APPLICATION_TYPE
+                                                     )
             self.provisioning = self.u4v_conn.provisioning
             self.u4v_conn.set_array_id(serial_no)
-            LOG.info('Got PyU4V instance for provisioning on to VMAX ')
+            LOG.info('Got PyU4V instance for provisioning on to PowerMax ')
+            self.replication = self.u4v_conn.replication
+            LOG.info('Got PyU4V instance for replication on to PowerMax ')
 
-    def get_volume_list(self):
+    def get_volume_list(self, tdev_volumes=False):
         """Get the list of volumes of a given PowerMax/Vmax storage system"""
 
         try:
             LOG.info('Getting Volume List ')
             array_serial_no = self.module.params['serial_no']
-            vol_list = self.provisioning.get_volume_list()
-            LOG.info('Successfully listed {0} volumes from array {1}' .format(
-                len(vol_list), array_serial_no))
+            if tdev_volumes:
+                vol_list = self.provisioning.get_volume_list(filters={"tdev": True})
+                LOG.info('Successfully listed {0} TDEV volumes from array {1}'.format(
+                         len(vol_list), array_serial_no))
+            else:
+                vol_list = self.provisioning.get_volume_list()
+                LOG.info('Successfully listed {0} volumes from array {1}' .format(
+                         len(vol_list), array_serial_no))
             return vol_list
 
         except Exception as e:
@@ -245,6 +260,7 @@ class PowerMaxGatherFacts(object):
             LOG.info(
                 'Successfully listed {0} Storage Group from array {1}'.format(
                     len(sg_list), array_serial_no))
+
             return sg_list
 
         except Exception as e:
@@ -280,11 +296,23 @@ class PowerMaxGatherFacts(object):
             srp_list = self.provisioning.get_srp_list()
             LOG.info('Got {0} Storage Resource Pool from array {1}'.format(
                 len(srp_list), array_serial_no))
-            return srp_list
+
+            srp_detail_list = []
+            for srp in srp_list:
+                srp_details = self.provisioning.get_srp(srp)
+                srp_detail_list.append(srp_details)
+
+            LOG.info(
+                'Successfully listed {0} Storage Resource Pool details '
+                'from array {1}'.format(
+                 len(srp_detail_list), array_serial_no))
+
+            return srp_detail_list
 
         except Exception as e:
-            msg = ('Get Storage Resource Pool for array {0} failed with error \
-                   {1} '.format(self.module.params['serial_no'], str(e)))
+            msg = ('Get Storage Resource Pool details for array {0} '
+                   'failed with error {1} '.format(
+                   self.module.params['serial_no'], str(e)))
             LOG.error(msg)
             self.module.fail_json(msg=msg)
 
@@ -376,6 +404,23 @@ class PowerMaxGatherFacts(object):
             LOG.error(msg)
             self.module.fail_json(msg=msg)
 
+    def get_rdfgroup_list(self):
+        """Get the list of rdf group of a given PowerMax/Vmax storage system"""
+
+        try:
+            LOG.info('Getting rdf group List ')
+            array_serial_no = self.module.params['serial_no']
+            rdf_list = self.replication.get_rdf_group_list()
+            LOG.info('Successfully listed {0} rdf group from array {1}'.format(
+                len(rdf_list), array_serial_no))
+            return rdf_list
+
+        except Exception as e:
+            msg = 'Get rdf group for array {0} failed with error {1} '.format(
+                self.module.params['serial_no'], str(e))
+            LOG.error(msg)
+            self.module.fail_json(msg=msg)
+
     def perform_module_operation(self):
         serial_no = self.module.params['serial_no']
         if serial_no is '':
@@ -383,6 +428,11 @@ class PowerMaxGatherFacts(object):
             self.module.exit_json(Arrays=array_list)
         else:
             subset = self.module.params['gather_subset']
+            tdev_volumes = self.module.params['tdev_volumes']
+
+            if len(subset) == 0:
+                self.module.fail_json(msg="Please specify gather_subset")
+
             vol = []
             srp = []
             sg = []
@@ -391,8 +441,9 @@ class PowerMaxGatherFacts(object):
             hg = []
             port = []
             mv = []
+            rdf = []
             if 'vol' in str(subset):
-                vol = self.get_volume_list()
+                vol = self.get_volume_list(tdev_volumes)
             if 'sg' in str(subset):
                 sg = self.get_storage_group_list()
             if 'srp' in str(subset):
@@ -407,6 +458,8 @@ class PowerMaxGatherFacts(object):
                 port = self.get_port_list()
             if 'mv' in str(subset):
                 mv = self.get_masking_view_list()
+            if 'rdf' in str(subset):
+                rdf = self.get_rdfgroup_list()
             self.module.exit_json(
                 Volumes=vol,
                 StorageGroups=sg,
@@ -415,11 +468,13 @@ class PowerMaxGatherFacts(object):
                 Hosts=host,
                 HostGroups=hg,
                 Ports=port,
-                MaskingViews=mv)
+                MaskingViews=mv,
+                RDFGroups=rdf)
 
 
 def get_powermax_gatherfacts_parameters():
-    """This method provide the parameters required for the ansible modules on PowerMax"""
+    """This method provide the parameters required for the ansible
+    modules on PowerMax"""
     return dict(
             unispherehost=dict(type='str', required=True),
             universion=dict(type='int', required=True),
@@ -427,7 +482,20 @@ def get_powermax_gatherfacts_parameters():
             user=dict(type='str', required=True),
             password=dict(type='str', required=True, no_log=True),
             serial_no=dict(type='str', required=False, default=''),
-            gather_subset=dict(type='list', required=False, default=[])
+            tdev_volumes=dict(type='bool', required=False,
+                              default=True),
+            gather_subset=dict(type='list', required=False,
+                               choices=['vol',
+                                        'sg',
+                                        'srp',
+                                        'pg',
+                                        'host',
+                                        'hg',
+                                        'port',
+                                        'mv',
+                                        'rdf',
+                                        ]),
+
     )
 
 

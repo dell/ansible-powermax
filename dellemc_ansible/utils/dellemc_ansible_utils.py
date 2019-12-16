@@ -26,11 +26,13 @@ def pyu4v_version_check():
     try:
         from pkg_resources import parse_version
         supported_version = False
-        min_ver = '3.0.0.14'
+        min_ver = '3.1.5'
+        max_ver = '4.0.0'
         curr_version = PyU4V.__version__
         unsupported_version_message = "PyU4V {0} is not supported by this module.Minimum supported version is : " \
-                                      "{1} ".format(curr_version, min_ver)
-        supported_version = parse_version(curr_version) >= parse_version(min_ver)
+                                      "{1} and less than {2} ".format(curr_version, min_ver,max_ver)
+        supported_version = (parse_version(curr_version) >= parse_version(min_ver) and parse_version(
+                            curr_version) < parse_version(max_ver))
         if supported_version is False:
             return unsupported_version_message
         else:
@@ -40,6 +42,40 @@ def pyu4v_version_check():
             str(e))
         return unsupported_version_message
 
+
+'''
+Check if valid Unisphere Version
+'''
+
+
+def universion_check(universion):
+    is_valid_universion = False
+    user_message = ""
+
+    try:
+        if universion == 91:
+            user_message = "Specify universion as \"90\" even" \
+                           " if the Unisphere version is 9.1"
+
+        elif universion == 90:
+            is_valid_universion= True
+
+        else:
+            user_message = "Unsupported unisphere version , please " \
+                           "specify universion as \"90\""
+
+        universion_details = {"is_valid_universion": is_valid_universion,
+                              "user_message": user_message}
+        return universion_details
+
+    except Exception as e:
+        is_valid_universion = False
+        user_message = "Failed to validate the Unisphere version " \
+                       "with error {0}".format(str(e))
+
+        universion_details = {"is_valid_universion": is_valid_universion,
+                              "user_message": user_message}
+        return universion_details
 
 
 '''
@@ -96,15 +132,18 @@ returns connection object to access provisioning and protection sdks
 '''
 
 
-def get_U4V_connection(module_params):
+def get_U4V_connection(module_params, application_type=None):
+
     if HAS_PYU4V:
+
         conn = PyU4V.U4VConn(server_ip=module_params['unispherehost'],
                              port=8443,
                              array_id=module_params['serial_no'],
                              verify=module_params['verifycert'],
                              username=module_params['user'],
                              password=module_params['password'],
-                             u4v_version=module_params['universion'])
+                             u4v_version=module_params['universion'],
+                             application_type=application_type)
         return conn
 
 
@@ -125,13 +164,17 @@ returns connection object to access U4V Unisphere Common sdks
 '''
 
 
-def get_u4v_unisphere_connection(module_params):
+def get_u4v_unisphere_connection(module_params, application_type=None):
+
     if HAS_PYU4V:
-        conn = PyU4V.U4VConn(server_ip=module_params['unispherehost'], port=8443,
+
+        conn = PyU4V.U4VConn(server_ip=module_params['unispherehost'],
+                             port=8443,
                              verify=module_params['verifycert'],
                              username=module_params['user'],
                              password=module_params['password'],
-                             u4v_version=module_params['universion'])
+                             u4v_version=module_params['universion'],
+                             application_type=application_type)
         return conn
 
 
