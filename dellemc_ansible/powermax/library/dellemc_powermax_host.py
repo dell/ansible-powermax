@@ -2,7 +2,8 @@
 # Copyright: (c) 2019, DellEMC
 
 from ansible.module_utils.basic import AnsibleModule
-from ansible.module_utils import dellemc_ansible_utils as utils
+from ansible.module_utils.storage.dell \
+    import dellemc_ansible_powermax_utils as utils
 import logging
 import copy
 import re
@@ -24,10 +25,10 @@ description:
   initiators and host flags, add/remove initiators to/from host, modify host
   flag values, rename host and delete host
 extends_documentation_fragment:
-  - dellemc.dellemc_powermax
+  - dellemc_powermax.dellemc_powermax
 author:
-- Vasudevu Lakhinana (vasudevu.lakhinana@dell.com)
-- Manisha Agrawal (manisha.agrawal@dell.com)
+- Vasudevu Lakhinana (@unknown) <ansible.team@dell.com>
+- Manisha Agrawal (@agrawm3) <ansible.team@dell.com>
 
 options:
   host_name:
@@ -179,6 +180,57 @@ name: Get host details
 '''
 
 RETURN = r'''
+changed:
+    description: Whether or not the resource has changed.
+    returned: always
+    type: bool
+host_details:
+    description: Details of the host.
+    returned: When host exist.
+    type: complex
+    contains:
+		consistent_lun:
+			description: Flag for consistent LUN in host.
+            type: bool
+		enabled_flags:
+			description: List of any enabled port flags overridden by the
+			             initiator.
+            type: list
+		disabled_flags:
+			description: List of any disabled port flags overridden by the
+			             initiator.
+            type: list
+		hostId:
+			description: Host ID.
+            type: str
+		hostgroup:
+			description: List of host groups, host is associated with.
+            type: list
+		initiator:
+			description: List of initiators present in the host.
+            type: list
+		maskingview:
+			description: List of masking view in which host group is present.
+            type: list
+		num_of_hostgroups:
+			description: Number of host groups, host is associated with.
+            type: int
+		num_of_initiators:
+			description: Number of initiators present in the host.
+            type: int
+		num_of_masking_views:
+			description: Number of masking views, host is associated with.
+            type: int
+		num_of_powerpath_hosts:
+			description: Number of powerpath hosts, host is associated with.
+            type: int
+		port_flags_override:
+			description: Whether any of the initiator's port flags are
+			             overridden.
+            type: bool
+		type:
+			description: Type of host.
+            type: str
 '''
 LOG = utils.get_logger('dellemc_powermax_host', log_devel=logging.INFO)
 
@@ -187,13 +239,14 @@ HAS_PYU4V = utils.has_pyu4v_sdk()
 PYU4V_VERSION_CHECK = utils.pyu4v_version_check()
 
 # Application Type
-APPLICATION_TYPE = 'ansible_v1.1'
+APPLICATION_TYPE = 'ansible_v1.2'
 
 
 class PowerMaxHost(object):
 
     '''Class with host(initiator group) operations'''
 
+    u4v_conn = None
     def __init__(self):
         ''' Define all parameters required by this module'''
         self.module_params = utils.get_powermax_management_host_parameters()
@@ -206,26 +259,27 @@ class PowerMaxHost(object):
         # result is a dictionary that contains changed status and host details
         self.result = {"changed": False, "host_details": {}}
         if HAS_PYU4V is False:
-            self.module.fail_json(msg="Ansible modules for PowerMax require "
+            self.show_error_exit(msg="Ansible modules for PowerMax require "
                                       "the PyU4V python library to be "
                                       "installed. Please install the library "
                                       "before using these modules.")
 
         if PYU4V_VERSION_CHECK is not None:
-            self.module.fail_json(msg=PYU4V_VERSION_CHECK)
-            LOG.error(PYU4V_VERSION_CHECK)
+            self.show_error_exit(msg=PYU4V_VERSION_CHECK)
 
-        universion_details = utils.universion_check(
-                             self.module.params['universion'])
-        LOG.info("universion_details: {0}".format(universion_details))
+        if self.module.params['universion'] is not None:
+            universion_details = utils.universion_check(
+                self.module.params['universion'])
+            LOG.info("universion_details: {0}".format(universion_details))
 
-        if not universion_details['is_valid_universion']:
-            self.module.fail_json(msg=universion_details['user_message'])
+            if not universion_details['is_valid_universion']:
+                self.show_error_exit(msg=universion_details['user_message'])
 
-        self.u4v_conn = utils.get_U4V_connection(self.module.params,
-                                                 application_type=
-                                                 APPLICATION_TYPE
-                                                 )
+        try:
+            self.u4v_conn = utils.get_U4V_connection(
+                    self.module.params, application_type=APPLICATION_TYPE)
+        except Exception as e:
+            self.show_error_exit(msg=str(e))
         self.provisioning = self.u4v_conn.provisioning
         self.host_flags_list = {'volume_set_addressing', 'environ_set',
                                 'disable_q_reset_on_ua', 'openvms',
@@ -336,8 +390,7 @@ class PowerMaxHost(object):
         except Exception as e:
             errorMsg = 'Create host {0} failed with error {1}'.format(
                     host_name, str(e))
-            LOG.error(errorMsg)
-            self.module.fail_json(msg=errorMsg)
+            self.show_error_exit(msg=errorMsg)
         return None
 
     def _get_add_initiators(self, existing, requested):
@@ -372,8 +425,7 @@ class PowerMaxHost(object):
                 errorMsg = (("Adding initiators {0} to host {1} failed with"
                              "error {2}").format(
                                      add_list, host_name, str(e)))
-                LOG.error(errorMsg)
-                self.module.fail_json(msg=errorMsg)
+                self.show_error_exit(msg=errorMsg)
         else:
             LOG.info('No initiators to add to host {0}'.format(
                     host_name))
@@ -403,8 +455,7 @@ class PowerMaxHost(object):
                 errorMsg = (("Removing initiators {0} from host {1} failed"
                              "with error {2}").format(remove_list, host_name,
                                                       str(e)))
-                LOG.error(errorMsg)
-                self.module.fail_json(msg=errorMsg)
+                self.show_error_exit(msg=errorMsg)
         else:
             LOG.info('No initiators to remove from host {0}'.format(
                     host_name))
@@ -417,8 +468,7 @@ class PowerMaxHost(object):
         except Exception as e:
             errorMsg = 'Renaming of host {0} failed with error {1}'.format(
                 host_name, str(e))
-            LOG.error(errorMsg)
-            self.module.fail_json(msg=errorMsg)
+            self.show_error_exit(msg=errorMsg)
             return None
 
     def _create_default_host_flags_dict(self, current_flags):
@@ -487,7 +537,7 @@ class PowerMaxHost(object):
 
         if new_flags_dict == current_flags:
             LOG.info('No change detected')
-            self.module.exit_json(changed=False)
+            return False
         else:
             try:
                 LOG.info('Modifying host flags for host {0} with {1}'
@@ -499,8 +549,7 @@ class PowerMaxHost(object):
             except Exception as e:
                 errorMsg = 'Modify host {0} failed with error {1}'.format(
                     host_name, str(e))
-                LOG.error(errorMsg)
-                self.module.fail_json(msg=errorMsg)
+                self.show_error_exit(msg=errorMsg)
             return None
 
     def delete_host(self, host_name):
@@ -514,8 +563,7 @@ class PowerMaxHost(object):
         except Exception as e:
             errorMsg = ('Delete host {0} failed with error {1}'.format(
                     host_name, str(e)))
-            LOG.error(errorMsg)
-            self.module.fail_json(msg=errorMsg)
+            self.show_error_exit(msg=errorMsg)
 
     def _create_result_dict(self, changed):
         self.result['changed'] = changed
@@ -524,6 +572,20 @@ class PowerMaxHost(object):
         else:
             self.result['host_details'] = self.get_host(
                 self.module.params['host_name'])
+
+    def show_error_exit(self, msg):
+        if self.u4v_conn is not None:
+            try:
+                LOG.info("Closing unisphere connection {0}".format(
+                    self.u4v_conn))
+                utils.close_connection(self.u4v_conn)
+                LOG.info("Connection closed successfully")
+            except Exception as e:
+                err_msg = "Failed to close unisphere connection with error:" \
+                          " {0}".format(str(e))
+                LOG.error(err_msg)
+        LOG.error(msg)
+        self.module.fail_json(msg=msg)
 
     def perform_module_operation(self):
         '''
@@ -576,6 +638,9 @@ class PowerMaxHost(object):
         self._create_result_dict(changed)
         # Update the module's final state
         LOG.info('changed {0}'.format(changed))
+        LOG.info("Closing unisphere connection {0}".format(self.u4v_conn))
+        utils.close_connection(self.u4v_conn)
+        LOG.info("Connection closed successfully")
         self.module.exit_json(**self.result)
 
 

@@ -2,7 +2,8 @@
 # Copyright: (c) 2019, DellEMC
 
 from ansible.module_utils.basic import AnsibleModule
-from ansible.module_utils import dellemc_ansible_utils as utils
+from ansible.module_utils.storage.dell \
+    import dellemc_ansible_powermax_utils as utils
 import logging
 
 __metaclass__ = type
@@ -24,9 +25,9 @@ description:
   Change Snapshot link status,
   Delete an existing Storage Group Snapshot.
 extends_documentation_fragment:
-  - dellemc.dellemc_powermax
+  - dellemc_powermax.dellemc_powermax
 author:
-- Prashant Rakheja (Prashant.Rakheja@dell.com)
+- Prashant Rakheja (@prashant-dell) <ansible.team@dell.com>
 options:
   sg_name:
     description:
@@ -159,6 +160,85 @@ EXAMPLES = r'''
 '''
 
 RETURN = r'''
+changed:
+    description: Whether or not the resource has changed.
+    returned: always
+    type: bool
+create_sg_snap:
+    description: Flag sets to true when snapshot is created.
+    returned: When snapshot is created.
+    type: bool
+delete_sg_snap:
+    description: Flag sets to true when snapshot is deleted.
+    returned: When snapshot is deleted.
+    type: bool
+rename_sg_snap:
+    description: Flag sets to true when snapshot is renamed.
+    returned: When snapshot is renamed.
+    type: bool
+sg_snap_details:
+    description: Details of the snapshot.
+    returned: When snapshot exists.
+    type: complex
+    contains:
+		generation:
+			description: The generation number of the Snapshot.
+			type: int
+		isExpired:
+			description: Indicates whether snapshot is expired or not.
+			type: bool
+		isLinked:
+			description: Indicates whether snapshot is linked or not.
+			type: bool
+		isRestored:
+			description: Indicates whether snapshot is restored or not.
+			type: bool
+		name:
+			description: Name of the Snapshot.
+			type: str
+		nonSharedTracks:
+			description: Number of non shared tracks.
+			type: int
+		numSharedTracks:
+			description: Number of shared tracks.
+			type: int
+		numSourceVolumes:
+			description: Number of source volumes.
+			type: int
+		numStorageGroupVolumes:
+			description: Number of storage group volumes.
+			type: int
+		numUniqueTracks:
+			description: Number of unique tracks.
+			type: int
+		sourceVolume:
+			description: Source volume details.
+			type: list
+			contains:
+				capacity:
+					description: Volume capacity.
+					type: int
+				capacity_gb:
+					description: Volume capacity in GB.
+					type: int
+				name:
+					description: Volume ID.
+					type: str
+		state:
+			description: State of snapshot.
+			type: str
+		timeToLiveExpiryDate:
+			description: Time to live expiry date.
+			type: str
+		timestamp:
+			description: Snapshot time stamp.
+			type: str
+		timestamp_utc:
+			description: Snapshot time stamp specified in UTC.
+			type: int
+		tracks:
+			description: Number of tracks.
+			type: int
 '''
 
 LOG = utils.get_logger('dellemc_powermax_snapshot',
@@ -169,12 +249,13 @@ HAS_PYU4V = utils.has_pyu4v_sdk()
 PYU4V_VERSION_CHECK = utils.pyu4v_version_check()
 
 # Application Type
-APPLICATION_TYPE = 'ansible_v1.1'
+APPLICATION_TYPE = 'ansible_v1.2'
 
 
 class PowerMaxSnapshot(object):
     """Class with Snapshot operations"""
 
+    u4v_conn = None
     def __init__(self):
         """Define all the parameters required by this module"""
         self.module_params = utils.get_powermax_management_host_parameters()
@@ -188,27 +269,28 @@ class PowerMaxSnapshot(object):
         )
 
         if HAS_PYU4V is False:
-            self.module.fail_json(
+            self.show_error_exit(
                 msg="Ansible modules for PowerMax require "
                     "the PyU4V python library to be "
                     "installed. Please install the library "
                     "before using these modules.")
 
         if PYU4V_VERSION_CHECK is not None:
-            self.module.fail_json(msg=PYU4V_VERSION_CHECK)
-            LOG.error(PYU4V_VERSION_CHECK)
+            self.show_error_exit(msg=PYU4V_VERSION_CHECK)
 
-        universion_details = utils.universion_check(
-            self.module.params['universion'])
-        LOG.info("universion_details: {0}".format(universion_details))
+        if self.module.params['universion'] is not None:
+            universion_details = utils.universion_check(
+                self.module.params['universion'])
+            LOG.info("universion_details: {0}".format(universion_details))
 
-        if not universion_details['is_valid_universion']:
-            self.module.fail_json(msg=universion_details['user_message'])
+            if not universion_details['is_valid_universion']:
+                self.show_error_exit(msg=universion_details['user_message'])
 
-        self.u4v_conn = utils.get_U4V_connection(self.module.params,
-                                                 application_type=
-                                                 APPLICATION_TYPE
-                                                 )
+        try:
+            self.u4v_conn = utils.get_U4V_connection(
+                    self.module.params, application_type=APPLICATION_TYPE)
+        except Exception as e:
+            self.show_error_exit(msg=str(e))
         self.replication = self.u4v_conn.replication
         self.common = self.u4v_conn.common
         LOG.info('Got PyU4V instance for provisioning on PowerMax ')
@@ -229,8 +311,7 @@ class PowerMaxSnapshot(object):
         except Exception as e:
             error_message = 'Got error: {0} while getting details of ' \
                             'storage group {1} snapshot {2}'
-            LOG.error(error_message.format(str(e), sg_id, snapshot_name))
-            self.module.fail_json(msg=error_message.format(str(e), sg_id,
+            self.show_error_exit(msg=error_message.format(str(e), sg_id,
                                                            snapshot_name))
 
     def create_sg_snapshot(self, sg_id, snap_name, ttl, ttl_unit):
@@ -250,14 +331,13 @@ class PowerMaxSnapshot(object):
         except Exception as e:
             error_message = 'Create Snapshot {0} for SG {1} failed ' \
                             'with error {2} '
-            LOG.error(error_message.format(snap_name, sg_id, str(e)))
-            self.module.fail_json(msg=error_message.format(snap_name, sg_id,
+            self.show_error_exit(msg=error_message.format(snap_name, sg_id,
                                                            str(e)))
 
     def delete_sg_snapshot(self, sg_id, snap_name, generation):
         """Delete Storage Group Snapshot"""
         if generation is None:
-            self.module.fail_json(msg="Please specify a valid generation "
+            self.show_error_exit(msg="Please specify a valid generation "
                                       "to delete a snapshot.")
         try:
             snapshot = self.replication.get_snapshot_generation_details(
@@ -276,8 +356,7 @@ class PowerMaxSnapshot(object):
         except Exception as e:
             error_message = 'Delete SG {0} Snapshot {1} failed with ' \
                             'error {2} '
-            LOG.error(error_message.format(sg_id, snap_name, str(e)))
-            self.module.fail_json(msg=error_message.format(sg_id, snap_name,
+            self.show_error_exit(msg=error_message.format(sg_id, snap_name,
                                                            str(e)))
 
     def rename_sg_snapshot(self, sg_id, snap_name,
@@ -298,8 +377,7 @@ class PowerMaxSnapshot(object):
         except Exception as e:
             error_message = 'Renaming Snapshot {0} for Storage Group {1} ' \
                             'failed with error {2} '
-            LOG.error(error_message.format(snap_name, sg_id, str(e)))
-            self.module.fail_json(msg=error_message.format(snap_name, str(e)))
+            self.show_error_exit(msg=error_message.format(snap_name, str(e)))
 
     def change_snapshot_link_status(self, sg_id, target_sg,
                                     snap_name, link_status, generation):
@@ -307,8 +385,7 @@ class PowerMaxSnapshot(object):
         if generation is None:
             error_message = 'Change SG {0} Snapshot {1} link status failed.' \
                             ' Please provide a valid generation '
-            LOG.error(error_message.format(sg_id, snap_name))
-            self.module.fail_json(msg=error_message.format(sg_id,
+            self.show_error_exit(msg=error_message.format(sg_id,
                                                            snap_name))
         try:
             snapshot = self.get_snapshot(sg_id, snap_name, generation)
@@ -340,9 +417,22 @@ class PowerMaxSnapshot(object):
         except Exception as e:
             error_message = 'Change SG {0} Snapshot {1} link status failed ' \
                             'with error {2} '
-            LOG.error(error_message.format(sg_id, snap_name, str(e)))
-            self.module.fail_json(msg=error_message.format(sg_id,
+            self.show_error_exit(msg=error_message.format(sg_id,
                                                            snap_name, str(e)))
+
+    def show_error_exit(self, msg):
+        if self.u4v_conn is not None:
+            try:
+                LOG.info("Closing unisphere connection {0}".format(
+                    self.u4v_conn))
+                utils.close_connection(self.u4v_conn)
+                LOG.info("Connection closed successfully")
+            except Exception as e:
+                err_msg = "Failed to close unisphere connection with error:" \
+                          " {0}".format(str(e))
+                LOG.error(err_msg)
+        LOG.error(msg)
+        self.module.fail_json(msg=msg)
 
     def perform_module_operation(self):
         """
@@ -417,6 +507,9 @@ class PowerMaxSnapshot(object):
         if result['create_sg_snap'] or result['delete_sg_snap'] or result[
                 'rename_sg_snap'] or result['change_snap_link_status']:
             result['changed'] = True
+        LOG.info("Closing unisphere connection {0}".format(self.u4v_conn))
+        utils.close_connection(self.u4v_conn)
+        LOG.info("Connection closed successfully")
 
         # Finally update the module result!
         self.module.exit_json(**result)

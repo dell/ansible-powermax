@@ -2,6 +2,8 @@
 
 # Copyright: (c) 2019, Dell EMC.
 
+from __future__ import absolute_import, division, print_function
+__metaclass__ = type
 
 class ModuleDocFragment(object):
 
@@ -33,9 +35,10 @@ options:
         required: True
     universion:
         description:
-            - Unisphere version, currently only version '90' is supported.
+            - Unisphere version, currently '91' and '92' versions are 
+              supported.
         type: str
-        required: True
+        required: False
     verifycert:
         description:
             - boolean variable to specify whether to validate SSL

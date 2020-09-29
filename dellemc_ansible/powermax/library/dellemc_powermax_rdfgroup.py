@@ -2,7 +2,8 @@
 # Copyright: (c) 2019, DellEMC
 
 from ansible.module_utils.basic import AnsibleModule
-from ansible.module_utils import dellemc_ansible_utils as utils
+from ansible.module_utils.storage.dell \
+    import dellemc_ansible_powermax_utils as utils
 import logging
 
 __metaclass__ = type
@@ -23,9 +24,9 @@ description:
 - Lists the volumes of a RDF Group from a specified PowerMax/VMAX 
   storage System
 extends_documentation_fragment:
-  - dellemc.dellemc_powermax
+  - dellemc_powermax.dellemc_powermax
 author:
-- Arindam Datta (arindam.datta@dell.com)
+- Arindam Datta (@dattaarindam) <ansible.team@dell.com>
 options:
   rdfgroup_number:
     description:
@@ -47,7 +48,202 @@ EXAMPLES = r'''
       rdfgroup_number: "{{rdfgroup_id}}"
 '''
 
-RETURN = r'''  
+RETURN = r'''
+changed:
+    description: Whether or not the resource has changed.
+    returned: always
+    type: bool
+RDFGroupDetails:
+    description: Details of the RDF group.
+    returned: When the RDF group exist.
+    type: list
+    contains:
+        async:
+            description: Flag sets to true when SRDF pair is in async mode.
+            type: bool
+        biasConfigured:
+            description: Flag for configured bias.
+            type: bool
+        biasEffective:
+            description: Flag for effective bias.
+            type: bool
+        device_polarity:
+            description: Type of device polarity.
+            type: str
+        hardware_compression:
+            description: Flag for hardware compression.
+            type: bool
+        label:
+            description: RDF group label.
+            type: str
+        link_limbo:
+            description:  The amount of time that the array's operating
+                          environment waits after the SRDF link goes down
+                          before updating the link's status. The link limbo
+                          value can be set from 0 to 120 seconds.
+                          The default value is 10 seconds.
+            type: int
+        localOnlinePorts:
+			description: List of local online ports.
+            type: list
+        localPorts:
+			description: List of local ports.
+            type: list
+		metro:
+			description: Flag for metro configuration.
+            type: list
+        modes:
+			description: Mode of SRDF link.
+            type: str
+        numDevices:
+			description: Number of devices involved in the pairing.
+            type: int
+        offline:
+			description: Offline flag.
+            type: bool 
+        rdfa_properties:
+			description: Properties associated with RDF group.
+            type: list
+			contains:
+				average_cycle_time:
+					description: Average cycle time (seconds) configured for
+					             this session in seconds.
+					type: int
+				consistency_exempt_volumes:
+					description: Flag that indicates if consistency is exempt.
+					type: bool
+				cycle_number:
+					description: Number of cycles in seconds.
+					type: int
+				dse_active:
+					description: Flag for active Delta Set Extension.
+					type: bool
+				dse_autostart:
+					description: Indicates DSE autostart state.
+					type: str
+				dse_threshold:
+					description: Flag for DSE threshold.
+					type: int
+				duration_of_last_cycle:
+					description: The cycle time (in secs) of the most recently
+					             completed cycle.
+					type: int
+				duration_of_last_transmit_cycle:
+					description: Duration of last transmitted cycle in
+					             seconds.
+					type: int
+				r1_to_r2_lag_time:
+					description: Time that R2 is behind R1 in seconds.
+					type: int
+				session_priority:
+					description:  Priority used to determine which RDFA
+					              sessions to drop if cache becomes full.
+					              Values range from 1 to 64, with 1 being the
+					              highest priority (last to be dropped).
+					type: int
+				session_uncommitted_tracks:
+					description: Number of uncommitted session tracks.
+					type: int
+				transmit_idle_state:
+					description: Indicates RDFA transmit idle state.
+					type: str
+				transmit_idle_time:
+					description: Time the transmit cycle has been idle.
+					type: int
+				transmit_queue_depth:
+					description: The transmitted queue depth of disks.
+					type: int
+        rdfgNumber:
+			description: RDF group number on primary device.
+			type: int
+        remoteOnlinePorts:
+			description: List of remote online ports.
+			type: list
+        remotePorts:
+			description: List of remote ports.
+			type: list
+        remoteRdfgNumber:
+			description: RDF group number on remote device.
+			type: int
+        remoteSymmetrix:
+			description: Remote device ID.
+			type: int
+        software_compression:
+			description: Flag for software compression.
+			type: bool
+        totalDeviceCapacity:
+			description: Total capacity of RDF group in GB.
+			type: int
+        type:
+			description: Type of RDF group.
+			type: str
+        vasa_group:
+			description: Flag for VASA group member.
+			type: bool
+        witness:
+			description: Flag for witness.
+			type: bool
+        witnessConfigured:
+			description: Flag for configured witness.
+			type: bool
+        witnessDegraded:
+			description: Flag for degraded witness.
+			type: bool
+        witnessEffective:
+			description: Flag for effective witness.
+			type: bool
+        witnessProtectedPhysical:
+			description: Flag for physically protected witness.
+			type: bool
+        witnessProtectedVirtual:
+			description: Flag for virtually protected witness.
+			type: bool
+    RDFGroupVolumes:
+		description: List of various properties of RDF group volume(s).
+		type: list
+		contains:
+			largerRdfSide:
+				description: Larger RDF side among the devices.
+				type: str
+            localRdfGroupNumber:
+				description: RDF group number at primary device.
+				type: int
+            localSymmetrixId:
+				description: Primary device ID.
+				type: int
+            localVolumeName:
+				description: Volume name at primary device.
+				type: str
+            localVolumeState:
+				description: Volume state at primary device
+				type: str
+            local_wwn_external:
+				description: External WWN of volume at primary device.
+				type: int
+            rdfMode:
+				description: SRDF mode of pairing.
+				type: str
+            rdfpairState:
+				description: SRDF state of pairing.
+				type: str
+            remoteRdfGroupNumber:
+				description: RDF group number atr remote device.
+				type: int
+            remoteSymmetrixId:
+				description: Remote device ID.
+				type: int
+            remoteVolumeName:
+				description: Volume name at remote device.
+				type: str
+            remoteVolumeState:
+				description: Volume state at remote device.
+				type: str
+            remote_wwn_external:
+				description: External WWN of volume at remote device.
+				type: int
+            volumeConfig:
+				description: Type of volume.
+				type: str
 '''
 
 LOG = utils.get_logger('dellemc_powermax_rdfgroup', log_devel=logging.INFO)
@@ -57,12 +253,13 @@ HAS_PYU4V = utils.has_pyu4v_sdk()
 PYU4V_VERSION_CHECK = utils.pyu4v_version_check()
 
 # Application Type
-APPLICATION_TYPE = 'ansible_v1.1'
+APPLICATION_TYPE = 'ansible_v1.2'
 
 
 class PowerMaxRDFGroup(object):
     """Class with RDF Group operations"""
 
+    u4v_conn = None
     def __init__(self):
         """Define all the parameters required by this module"""
 
@@ -73,26 +270,27 @@ class PowerMaxRDFGroup(object):
             supports_check_mode=False)
 
         if HAS_PYU4V is False:
-            self.module.fail_json(msg="Ansible modules for PowerMax require "
+            self.show_error_exit(msg="Ansible modules for PowerMax require "
                                       "the PyU4V python library to be "
                                       "installed. Please install the library "
                                       "before using these modules.")
 
         if PYU4V_VERSION_CHECK is not None:
-            self.module.fail_json(msg=PYU4V_VERSION_CHECK)
-            LOG.error(PYU4V_VERSION_CHECK)
+            self.show_error_exit(msg=PYU4V_VERSION_CHECK)
 
-        universion_details = utils.universion_check(
-                             self.module.params['universion'])
-        LOG.info("universion_details: {0}".format(universion_details))
+        if self.module.params['universion'] is not None:
+            universion_details = utils.universion_check(
+                self.module.params['universion'])
+            LOG.info("universion_details: {0}".format(universion_details))
 
-        if not universion_details['is_valid_universion']:
-            self.module.fail_json(msg=universion_details['user_message'])
+            if not universion_details['is_valid_universion']:
+                self.show_error_exit(msg=universion_details['user_message'])
             
-        self.u4v_conn = utils.get_U4V_connection(self.module.params,
-                                                 application_type=
-                                                 APPLICATION_TYPE
-                                                 )
+        try:
+            self.u4v_conn = utils.get_U4V_connection(
+                    self.module.params, application_type=APPLICATION_TYPE)
+        except Exception as e:
+            self.show_error_exit(msg=str(e))
         self.replication = self.u4v_conn.replication
         LOG.info('Got PyU4V instance for replication on to PowerMax ')
 
@@ -121,8 +319,7 @@ class PowerMaxRDFGroup(object):
         except Exception as e:
             msg = 'Get RDF Volumes for RDF Group {0} failed with error {1} '.format(
                    rdf_number, str(e))
-            LOG.error(msg)
-            self.module.fail_json(msg=msg)
+            self.show_error_exit(msg=msg)
 
     def get_rdf_group_details(self, rdf_number):
         """Get the details of the rdf group of a given PowerMax/Vmax storage
@@ -142,8 +339,21 @@ class PowerMaxRDFGroup(object):
         except Exception as e:
             msg = ('Get RDF Group {0} Details failed with error {1}'
                    .format(rdf_number, str(e)))
-            LOG.error(msg)
-            self.module.fail_json(msg=msg)
+            self.show_error_exit(msg=msg)
+
+    def show_error_exit(self, msg):
+        if self.u4v_conn is not None:
+            try:
+                LOG.info("Closing unisphere connection {0}".format(
+                    self.u4v_conn))
+                utils.close_connection(self.u4v_conn)
+                LOG.info("Connection closed successfully")
+            except Exception as e:
+                err_msg = "Failed to close unisphere connection with error:" \
+                          " {0}".format(str(e))
+                LOG.error(err_msg)
+        LOG.error(msg)
+        self.module.fail_json(msg=msg)
 
     def perform_module_operation(self):
 
@@ -151,6 +361,9 @@ class PowerMaxRDFGroup(object):
 
         rdf_group_details = self.get_rdf_group_details(rdfgroup_number)
         rdf_vols_details = self.get_rdf_group_volumes(rdfgroup_number)
+        LOG.info("Closing unisphere connection {0}".format(self.u4v_conn))
+        utils.close_connection(self.u4v_conn)
+        LOG.info("Connection closed successfully")
 
         self.module.exit_json(
             changed=False,
