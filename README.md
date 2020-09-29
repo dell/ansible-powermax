@@ -39,6 +39,7 @@ The modules are written in such a way that all requests are idempotent and hence
 ## Installation
 
 git clone https://github.com/dell/ansible-powermax.git
+
 cd ansible-powermax/dellemc_ansible
   
 ### For python 2.7 environment
