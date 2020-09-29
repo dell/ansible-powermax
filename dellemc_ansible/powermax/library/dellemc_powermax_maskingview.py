@@ -3,7 +3,8 @@
 
 import logging
 from ansible.module_utils.basic import AnsibleModule
-from ansible.module_utils import dellemc_ansible_utils as utils
+from ansible.module_utils.storage.dell \
+    import dellemc_ansible_powermax_utils as utils
 
 __metaclass__ = type
 ANSIBLE_METADATA = {'metadata_version': '1.1',
@@ -30,10 +31,10 @@ description:
   No underlying entity (portgroup, storagegroup, host or hostgroup)
   can be changed on the MV.
 extends_documentation_fragment:
-  - dellemc.dellemc_powermax
+  - dellemc_powermax.dellemc_powermax
 author:
-- Vasudevu Lakhinana (Vasudevu.Lakhinana@dell.com)
-- Prashant Rakheja (Prashant.Rakheja@dell.com)
+- Vasudevu Lakhinana (@unknown) <ansible.team@dell.com>
+- Prashant Rakheja (@prashant-dell) <ansible.team@dell.com>
 options:
   mv_name:
     description:
@@ -119,6 +120,39 @@ EXAMPLES = r'''
 '''
 
 RETURN = r'''
+changed:
+    description: Whether or not the resource has changed.
+    returned: always
+    type: bool
+create_mv:
+	description: Flag sets to true when a new masking view is created.
+	returned: When masking view is created.
+	type: bool
+delete_mv:
+	description: Flag sets to true when a masking view is deleted.
+	returned: When masking view is deleted.
+	type: bool
+modify_mv:
+	description: Flag sets to true when a masking view is modified.
+	returned: When masking view is modified.
+	type: bool
+mv_details:
+	description: Details of masking view.
+	returned: When masking view exist.
+	type: list
+	contains:
+		hostId:
+			description: Host group present in the masking view.
+			type: str
+		maskingViewId:
+			description: Masking view ID.
+			type: str
+		portGroupId:
+			description: Port group present in the masking view.
+			type: str
+		storageGroupId:
+			description: Storage group present in the masking view.
+			type: str
 '''
 
 LOG = utils.get_logger('dellemc_powermax_maskingview',
@@ -128,12 +162,13 @@ HAS_PYU4V = utils.has_pyu4v_sdk()
 PYU4V_VERSION_CHECK = utils.pyu4v_version_check()
 
 # Application Type
-APPLICATION_TYPE = 'ansible_v1.1'
+APPLICATION_TYPE = 'ansible_v1.2'
 
 
 class PowerMaxMaskingView(object):
     """Class with masking view operations"""
 
+    u4v_conn = None
     def __init__(self):
         """Define all the parameters required by this module"""
         self.module_params = utils.get_powermax_management_host_parameters()
@@ -151,26 +186,27 @@ class PowerMaxMaskingView(object):
             mutually_exclusive=mutually_exclusive
         )
         if HAS_PYU4V is False:
-            self.module.fail_json(msg="Ansible modules for PowerMax require "
+            self.show_error_exit(msg="Ansible modules for PowerMax require "
                                       "the PyU4V python library to be "
                                       "installed. Please install the library "
                                       "before using these modules.")
 
         if PYU4V_VERSION_CHECK is not None:
-            self.module.fail_json(msg=PYU4V_VERSION_CHECK)
-            LOG.error(PYU4V_VERSION_CHECK)
+            self.show_error_exit(msg=PYU4V_VERSION_CHECK)
 
-        universion_details = utils.universion_check(
-                             self.module.params['universion'])
-        LOG.info("universion_details: {0}".format(universion_details))
+        if self.module.params['universion'] is not None:
+            universion_details = utils.universion_check(
+                self.module.params['universion'])
+            LOG.info("universion_details: {0}".format(universion_details))
 
-        if not universion_details['is_valid_universion']:
-            self.module.fail_json(msg=universion_details['user_message'])
+            if not universion_details['is_valid_universion']:
+                self.show_error_exit(msg=universion_details['user_message'])
 
-        self.u4v_conn = utils.get_U4V_connection(self.module.params,
-                                                 application_type=
-                                                 APPLICATION_TYPE
-                                                 )
+        try:
+            self.u4v_conn = utils.get_U4V_connection(
+                    self.module.params, application_type=APPLICATION_TYPE)
+        except Exception as e:
+            self.show_error_exit(msg=str(e))
         self.provisioning = self.u4v_conn.provisioning
         LOG.info('Got PyU4V instance for provisioning on PowerMax')
 
@@ -219,8 +255,7 @@ class PowerMaxMaskingView(object):
                             'Host/Host Group) provided for the MV ' \
                             '{0} differ from the state of the MV on the ' \
                             'array.'.format(mv['maskingViewId'])
-            LOG.error(error_message)
-            self.module.fail_json(msg=error_message)
+            self.show_error_exit(msg=error_message)
 
     def create_masking_view(self, mv_name):
         """Create masking view with given SG, PG and Host(s)"""
@@ -234,8 +269,7 @@ class PowerMaxMaskingView(object):
             error_message = 'Failed to create masking view {0},' \
                             'Please provide either host or ' \
                             'hostgroup'.format(mv_name)
-            LOG.error(error_message)
-            self.module.fail_json(msg=error_message)
+            self.show_error_exit(msg=error_message)
             return False
         elif (pg_name is None) or (sg_name is None) or \
                 (host_name is None and hostgroup_name is None):
@@ -243,8 +277,7 @@ class PowerMaxMaskingView(object):
                             ' Please provide SG, PG and host / host ' \
                             'group name' \
                             ' to create masking view'.format(mv_name)
-            LOG.error(error_message)
-            self.module.fail_json(msg=error_message)
+            self.show_error_exit(msg=error_message)
             return False
         try:
             LOG.info('Creating masking view {0}... '
@@ -255,9 +288,7 @@ class PowerMaxMaskingView(object):
                 host_group_name=hostgroup_name)
             return True, resp
         except Exception as e:
-            LOG.error('Failed to create masking view {0} with error {1}'
-                      .format(mv_name, str(e)))
-            self.module.fail_json(msg='Create masking view {0} failed; '
+            self.show_error_exit(msg='Create masking view {0} failed; '
                                       'error {1}'
                                   .format(mv_name, str(e)))
 
@@ -267,9 +298,7 @@ class PowerMaxMaskingView(object):
             self.provisioning.delete_masking_view(mv_name)
             return True
         except Exception as e:
-            LOG.error('Delete masking view {0} failed with error {1} '
-                      .format(mv_name, str(e)))
-            self.module.fail_json(msg='Delete masking view {0} failed '
+            self.show_error_exit(msg='Delete masking view {0} failed '
                                       'with error {1}.'
                                   .format(mv_name, str(e)))
 
@@ -282,12 +311,24 @@ class PowerMaxMaskingView(object):
             self.provisioning.rename_masking_view(mv_name, new_mv_name)
             changed = True
         except Exception as e:
-            LOG.error('Rename masking view {0} failed with error {1} '
-                      .format(mv_name, str(e)))
-            self.module.fail_json(msg='Rename masking view {0} failed '
+            self.show_error_exit(msg='Rename masking view {0} failed '
                                       'with error {1}.'.format(mv_name,
                                                                str(e)))
         return changed
+
+    def show_error_exit(self, msg):
+        if self.u4v_conn is not None:
+            try:
+                LOG.info("Closing unisphere connection {0}".format(
+                    self.u4v_conn))
+                utils.close_connection(self.u4v_conn)
+                LOG.info("Connection closed successfully")
+            except Exception as e:
+                err_msg = "Failed to close unisphere connection with error:" \
+                          " {0}".format(str(e))
+                LOG.error(err_msg)
+        LOG.error(msg)
+        self.module.fail_json(msg=msg)
 
     def perform_module_operation(self):
         """
@@ -332,6 +373,10 @@ class PowerMaxMaskingView(object):
         if result['create_mv'] or result['modify_mv'] or \
                 result['delete_mv']:
             result['changed'] = True
+
+        LOG.info("Closing unisphere connection {0}".format(self.u4v_conn))
+        utils.close_connection(self.u4v_conn)
+        LOG.info("Connection closed successfully")
 
         # Finally update the module changed state!!!
         self.module.exit_json(**result)

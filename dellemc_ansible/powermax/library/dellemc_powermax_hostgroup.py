@@ -3,7 +3,8 @@
 
 import logging
 from ansible.module_utils.basic import AnsibleModule
-from ansible.module_utils import dellemc_ansible_utils as utils
+from ansible.module_utils.storage.dell \
+    import dellemc_ansible_powermax_utils as utils
 import copy
 import re
 
@@ -24,10 +25,10 @@ description:
   with set of hosts, add/remove hosts to/from host group, rename host group,
   modify host flags of host group and delete host group
 extends_documentation_fragment:
-  - dellemc.dellemc_powermax
+  - dellemc_powermax.dellemc_powermax
 author:
-- Vasudevu Lakhinana (Vasudevu.Lakhinana@dell.com)
-- Manisha Agrawal (Manisha.Agrawal@dell.com)
+- Vasudevu Lakhinana (@unknown) <ansible.team@dell.com>
+- Manisha Agrawal (@agrawm3) <ansible.team@dell.com>
 options:
   hostgroup_name:
     description:
@@ -176,6 +177,59 @@ EXAMPLES = r'''
 '''
 
 RETURN = r'''
+changed:
+    description: Whether or not the resource has changed.
+    returned: always
+    type: bool
+hostgroup_details:
+    description: Details of the host group.
+    returned: When host group exist.
+    type: complex
+    contains:
+		consistent_lun:
+			description: Flag for consistent LUN in host group.
+            type: bool
+		enabled_flags:
+			description: List of any enabled port flags overridden by the
+			             initiator.
+            type: list
+		disabled_flags:
+			description: List of any disabled port flags overridden by the
+			             initiator.
+            type: list
+		host:
+			description: list of hosts present in the host group.
+            type: list
+			contains:
+				hostId:
+					description: Unique identifier for the host.
+					type: str
+				initiator:
+					description: List of initiators present in the host.
+					type: list
+		hostGroupId:
+			description: Host group ID.
+            type: str
+		maskingview:
+			description: Masking view in which host group is present.
+            type: list
+		num_of_hosts:
+			description: Number of hosts in the host group.
+            type: int
+		num_of_initiators:
+			description: Number of initiators in the host group.
+            type: int
+		num_of_masking_views:
+			description: Number of masking views, host group is associated
+			             with.
+            type: int
+		port_flags_override:
+			description: Whether any of the initiator's port flags are
+			             overridden.
+            type: bool
+		type:
+			description: Type of host group.
+            type: str
 '''
 
 LOG = utils.get_logger('dellemc_powermax_hostgroup', log_devel=logging.INFO)
@@ -185,12 +239,13 @@ HAS_PYU4V = utils.has_pyu4v_sdk()
 PYU4V_VERSION_CHECK = utils.pyu4v_version_check()
 
 # Application Type
-APPLICATION_TYPE = 'ansible_v1.1'
+APPLICATION_TYPE = 'ansible_v1.2'
 
 
 class PowerMaxHostGroup(object):
     '''Class with host group (cascaded initiator group) operations'''
 
+    u4v_conn = None
     def __init__(self):
         ''' Define all parameters required by this module'''
         self.module_params = utils.get_powermax_management_host_parameters()
@@ -208,25 +263,26 @@ class PowerMaxHostGroup(object):
                                 'avoid_reset_broadcast', 'scsi_3',
                                 'spc2_protocol_version', 'scsi_support1'}
         if HAS_PYU4V is False:
-            self.module.fail_json(msg="Ansible modules for PowerMax require "
+            self.show_error_exit(msg="Ansible modules for PowerMax require "
                                       "the PyU4V python library to be "
                                       "installed. Please install the library "
                                       "before using these modules.")
         if PYU4V_VERSION_CHECK is not None:
-            self.module.fail_json(msg=PYU4V_VERSION_CHECK)
-            LOG.error(PYU4V_VERSION_CHECK)
+            self.show_error_exit(msg=PYU4V_VERSION_CHECK)
 
-        universion_details = utils.universion_check(
-                             self.module.params['universion'])
-        LOG.info("universion_details: {0}".format(universion_details))
+        if self.module.params['universion'] is not None:
+            universion_details = utils.universion_check(
+                self.module.params['universion'])
+            LOG.info("universion_details: {0}".format(universion_details))
 
-        if not universion_details['is_valid_universion']:
-            self.module.fail_json(msg=universion_details['user_message'])
+            if not universion_details['is_valid_universion']:
+                self.show_error_exit(msg=universion_details['user_message'])
 
-        self.u4v_conn = utils.get_U4V_connection(self.module.params,
-                                                 application_type=
-                                                 APPLICATION_TYPE
-                                                 )
+        try:
+            self.u4v_conn = utils.get_U4V_connection(
+                    self.module.params, application_type=APPLICATION_TYPE)
+        except Exception as e:
+            self.show_error_exit(msg=str(e))
         self.provisioning = self.u4v_conn.provisioning
         LOG.info('Got PyU4V instance for provisioning on to VMAX ')
 
@@ -339,11 +395,9 @@ class PowerMaxHostGroup(object):
                     try:
                         self.provisioning.get_host(host_id=host)
                     except Exception as e:
-                        LOG.error('The host {0} is not found on array'.format(host))
                         errorMsg = 'Create host group {0} failed as the host {1} does not exist'.format(
                                 hostgroup_name, host)
-                        LOG.error(errorMsg)
-                        self.module.fail_json(msg=errorMsg)
+                        self.show_error_exit(msg=errorMsg)
                 LOG.info('Creating host group {0} with parameters {1}'
                          .format(hostgroup_name, param_list))
                 self.provisioning.create_hostgroup(hostgroup_name,
@@ -354,8 +408,7 @@ class PowerMaxHostGroup(object):
         except Exception as e:
             errorMsg = 'Create host group {0} failed with error {1}'.format(
                 hostgroup_name, str(e))
-            LOG.error(errorMsg)
-            self.module.fail_json(msg=errorMsg)
+            self.show_error_exit(msg=errorMsg)
         return None
 
     def _get_add_hosts(self, existing, requested):
@@ -395,8 +448,7 @@ class PowerMaxHostGroup(object):
                 errorMsg = (("Adding host {0} to host group {1} failed with"
                              "error {2}").format(
                                      add_list, hostgroup_name, str(e)))
-                LOG.error(errorMsg)
-                self.module.fail_json(msg=errorMsg)
+                self.show_error_exit(msg=errorMsg)
         else:
             LOG.info('No hosts to add to host group {0}'.format(
                     hostgroup_name))
@@ -431,8 +483,7 @@ class PowerMaxHostGroup(object):
                 errorMsg = (("Removing host {0} from host group {1} failed"
                              "with error {2}").format(rem_list, hostgroup_name,
                                                       str(e)))
-                LOG.error(errorMsg)
-                self.module.fail_json(msg=errorMsg)
+                self.show_error_exit(msg=errorMsg)
         else:
             LOG.info('No hosts to remove from host group {0}'.format(
                     hostgroup_name))
@@ -446,8 +497,7 @@ class PowerMaxHostGroup(object):
         except Exception as e:
             errorMsg = ('Renaming of host group {0} failed with error {1}'
                         .format(hostgroup_name, str(e)))
-            LOG.error(errorMsg)
-            self.module.fail_json(msg=errorMsg)
+            self.show_error_exit(msg=errorMsg)
             return None
 
     def delete_hostgroup(self, hostgroup_name):
@@ -461,8 +511,7 @@ class PowerMaxHostGroup(object):
         except Exception as e:
             errorMsg = 'Delete host group {0} failed with error {1}'.format(
                 hostgroup_name, str(e))
-            LOG.error(errorMsg)
-            self.module.fail_json(msg=errorMsg)
+            self.show_error_exit(msg=errorMsg)
 
     def _create_default_host_flags_dict(self, current_flags):
         for flag in self.host_flags_list:
@@ -532,7 +581,7 @@ class PowerMaxHostGroup(object):
 
         if new_flags_dict == current_flags:
             LOG.info('No change detected')
-            self.module.exit_json(changed=False)
+            return False
         else:
             try:
                 LOG.info('Modifying host group flags for host {0} with {1}'
@@ -544,8 +593,7 @@ class PowerMaxHostGroup(object):
             except Exception as e:
                 errorMsg = ('Modify host group {0} failed with error {1}'
                             .format(hostgroup_name, str(e)))
-                LOG.error(errorMsg)
-                self.module.fail_json(msg=errorMsg)
+                self.show_error_exit(msg=errorMsg)
             return None
 
     def _create_result_dict(self, changed):
@@ -555,6 +603,20 @@ class PowerMaxHostGroup(object):
         else:
             self.result['hostgroup_details'] = self.get_hostgroup(
                 self.module.params['hostgroup_name'])
+
+    def show_error_exit(self, msg):
+        if self.u4v_conn is not None:
+            try:
+                LOG.info("Closing unisphere connection {0}".format(
+                    self.u4v_conn))
+                utils.close_connection(self.u4v_conn)
+                LOG.info("Connection closed successfully")
+            except Exception as e:
+                err_msg = "Failed to close unisphere connection with error:" \
+                          " {0}".format(str(e))
+                LOG.error(err_msg)
+        LOG.error(msg)
+        self.module.fail_json(msg=msg)
 
     def perform_module_operation(self):
         '''
@@ -609,6 +671,9 @@ class PowerMaxHostGroup(object):
         self._create_result_dict(changed)
         # Update the module's final state
         LOG.info('changed {0}'.format(changed))
+        LOG.info("Closing unisphere connection {0}".format(self.u4v_conn))
+        utils.close_connection(self.u4v_conn)
+        LOG.info("Connection closed successfully")
         self.module.exit_json(**self.result)
 
 

@@ -1,9 +1,7 @@
 #!/usr/bin/python
 # Copyright: (c) 2019, DellEMC
 
-from ansible.module_utils.basic import AnsibleModule
-from ansible.module_utils import dellemc_ansible_utils as utils
-import logging
+from __future__ import (absolute_import, division, print_function)
 
 __metaclass__ = type
 ANSIBLE_METADATA = {'metadata_version': '1.1',
@@ -21,27 +19,29 @@ description:
   list of registered arrays, storage groups, hosts, host groups, storage groups,
   storage resource pools, port groups, masking views, etc.
 extends_documentation_fragment:
-  - dellemc.dellemc_powermax
+  - dellemc_powermax.dellemc_powermax
 author:
-- Arindam Datta (arindam.datta@dell.com)
+- Arindam Datta (@dattaarindam) <ansible.team@dell.com>
+- Rajshree Khare (@kharer5) <ansible.team@dell.com>
 options:
   tdev_volumes:
      description:
-     - Boolean variable to filter the volume list.        
-       This will have a small performance impact. 
+     - Boolean variable to filter the volume list.
+       This will have a small performance impact.
        By default it's set to true, only TDEV volumes wil be returned.
      - True - Will return only the TDEV volumes.
      - False - Will return all the volumes.
      required: False
-     type: bool     
-     choices: [ True, False]
+     type: bool
+     choices: [True, False]
      default: True
   gather_subset:
     description:
     - List of string variables to specify the PowerMax/VMAX entities for which
       information is required.
     - Required only if serial_no is present
-    - List of all PowerMax/VMAX entities supported by the module - 
+    - List of all PowerMax/VMAX entities supported by the module -
+    - health - health status of a specific PowerMax array
     - vol - volumes
     - srp - storage resource pools
     - sg - storage groups
@@ -51,138 +51,407 @@ options:
     - port - ports
     - mv - masking views
     - rdf - rdf groups
-    required: True 
-    choices: [vol, srp, sg, pg , host, hg, port, mv, rdf]
+    required: False
+    type: list
+    choices: [health, vol, srp, sg, pg , host, hg, port, mv, rdf]
+  filters:
+    description:
+    - List of filters to support filtered output for storage entities.
+    - Each filter is a tuple of {filter_key, filter_operator, filter_value}.
+    - Supports passing of multiple filters.
+    required: False
+    type: list
+    suboptions:
+      filter_key:
+        description:
+        - Name identifier of the filter.
+        type: str
+        required: True
+      filter_operator:
+        description:
+        - Operation to be performed on filter key.
+        type: str
+        choices: [equal, greater, lesser, like]
+        required: True
+      filter_value:
+        description:
+        - Value of the filter key.
+        type: str
+        required: True
 '''
 
 EXAMPLES = r'''
 
-- name: Get list of volumes
-    dellemc_powermax_gatherfacts:
-      unispherehost: "{{unispherehost}}"
-      universion: "{{universion}}"
-      verifycert: "{{verifycert}}"
-      user: "{{user}}"
-      password: "{{password}}"
-      serial_no: "{{serial_no}}"
-      tdev_volumes: "{{tdev_volumes}}"    
-      gather_subset:
-         - vol       
+- name: Get list of volumes with filter -- all TDEV volumes of size equal
+        to 5GB
+  dellemc_powermax_gatherfacts:
+    unispherehost: "{{unispherehost}}"
+    universion: "{{universion}}"
+    verifycert: "{{verifycert}}"
+    user: "{{user}}"
+    password: "{{password}}"
+    serial_no: "{{serial_no}}"
+    gather_subset:
+      - vol
+    filters:
+      - filter_key: "tdev"
+        filter_operator: "equal"
+        filter_value: "True"
+      - filter_key: "cap_gb"
+        filter_operator: "equal"
+        filter_value: "5"
 
-- name: Get array list
-    dellemc_powermax_gatherfacts:
-      unispherehost: "{{unispherehost}}"
-      universion: "{{universion}}"
-      verifycert: "{{verifycert}}"
-      user: "{{user}}"
-      password: "{{password}}"
+- name: Get list of volumes and storage groups with filter
+  dellemc_powermax_gatherfacts:
+    unispherehost: "{{unispherehost}}"
+    universion: "{{universion}}"
+    verifycert: "{{verifycert}}"
+    user: "{{user}}"
+    password: "{{password}}"
+    serial_no: "{{serial_no}}"
+    gather_subset:
+      - vol
+      - sg
+    filters:
+      - filter_key: "tdev"
+        filter_operator: "equal"
+        filter_value: "True"
+      - filter_key: "cap_gb"
+        filter_operator: "equal"
+        filter_value: "5"
+
+- name: Get list of storage groups with capacity between 2GB to 10GB
+  dellemc_powermax_gatherfacts:
+    unispherehost: "{{unispherehost}}"
+    universion: "{{universion}}"
+    verifycert: "{{verifycert}}"
+    user: "{{user}}"
+    password: "{{password}}"
+    serial_no: "{{serial_no}}"
+    gather_subset:
+      - sg
+    filters:
+      - filter_key: "cap_gb"
+        filter_operator: "greater"
+        filter_value: "2"
+      - filter_key: "cap_gb"
+        filter_operator: "lesser"
+        filter_value: "10"
+
+- name: Get the list of arrays for a given Unisphere host
+  dellemc_powermax_gatherfacts:
+    unispherehost: "{{unispherehost}}"
+    universion: "{{universion}}"
+    verifycert: "{{verifycert}}"
+    user: "{{user}}"
+    password: "{{password}}"
+  register: array_list
+- debug:
+    var: array_list
+
+- name: Get list of tdev-volumes
+  dellemc_powermax_gatherfacts:
+    unispherehost: "{{unispherehost}}"
+    universion: "{{universion}}"
+    verifycert: "{{verifycert}}"
+    user: "{{user}}"
+    password: "{{password}}"
+    serial_no: "{{serial_no}}"
+    tdev_volumes: "{{tdev_volumes}}"
+    gather_subset:
+      - vol
+
+- name: Get the list of arrays for a given Unisphere host
+  dellemc_powermax_gatherfacts:
+    unispherehost: "{{unispherehost}}"
+    universion: "{{universion}}"
+    verifycert: "{{verifycert}}"
+    user: "{{user}}"
+    password: "{{password}}"
+
+- name: Get array health status
+  dellemc_powermax_gatherfacts:
+    unispherehost: "{{unispherehost}}"
+    universion: "{{universion}}"
+    verifycert: "{{verifycert}}"
+    user: "{{user}}"
+    password: "{{password}}"
+    serial_no: "{{serial_no}}"
+    gather_subset:
+       - health
 
 - name: Get list of Storage groups
-    dellemc_powermax_gatherfacts:
-      unispherehost: "{{unispherehost}}"
-      universion: "{{universion}}"
-      verifycert: "{{verifycert}}"
-      user: "{{user}}"
-      password: "{{password}}"
-      serial_no: "{{serial_no}}"
-      gather_subset:
-         - sg
+  dellemc_powermax_gatherfacts:
+    unispherehost: "{{unispherehost}}"
+    universion: "{{universion}}"
+    verifycert: "{{verifycert}}"
+    user: "{{user}}"
+    password: "{{password}}"
+    serial_no: "{{serial_no}}"
+    gather_subset:
+       - sg
 
 - name: Get list of Storage Resource Pools
-    dellemc_powermax_gatherfacts:
-      unispherehost: "{{unispherehost}}"
-      universion: "{{universion}}"
-      verifycert: "{{verifycert}}"
-      user: "{{user}}"
-      password: "{{password}}"
-      serial_no: "{{serial_no}}"
-      gather_subset:
-         - srp
-
-- name: Get list of Port Groups
-    dellemc_powermax_gatherfacts:
-      unispherehost: "{{unispherehost}}"
-      universion: "{{universion}}"
-      verifycert: "{{verifycert}}"
-      user: "{{user}}"
-      password: "{{password}}"
-      serial_no: "{{serial_no}}"
-      gather_subset:
-         - pg
-
-- name: Get list of Hosts
-    dellemc_powermax_gatherfacts:
-      unispherehost: "{{unispherehost}}"
-      universion: "{{universion}}"
-      verifycert: "{{verifycert}}"
-      user: "{{user}}"
-      password: "{{password}}"
-      serial_no: "{{serial_no}}"
-      gather_subset:
-         - host
-
-- name: Get list of Host Groups
-    dellemc_powermax_gatherfacts:
-      unispherehost: "{{unispherehost}}"
-      universion: "{{universion}}"
-      verifycert: "{{verifycert}}"
-      user: "{{user}}"
-      password: "{{password}}"
-      serial_no: "{{serial_no}}"
-      gather_subset:
-         - hg
+  dellemc_powermax_gatherfacts:
+    unispherehost: "{{unispherehost}}"
+    universion: "{{universion}}"
+    verifycert: "{{verifycert}}"
+    user: "{{user}}"
+    password: "{{password}}"
+    serial_no: "{{serial_no}}"
+    gather_subset:
+       - srp
 
 - name: Get list of Ports
-    dellemc_powermax_gatherfacts:
-      unispherehost: "{{unispherehost}}"
-      universion: "{{universion}}"
-      verifycert: "{{verifycert}}"
-      user: "{{user}}"
-      password: "{{password}}"
-      serial_no: "{{serial_no}}"
-      gather_subset:
-         - port
+  dellemc_powermax_gatherfacts:
+    unispherehost: "{{unispherehost}}"
+    universion: "{{universion}}"
+    verifycert: "{{verifycert}}"
+    user: "{{user}}"
+    password: "{{password}}"
+    serial_no: "{{serial_no}}"
+    gather_subset:
+       - port
 
-- name: Get list of Maskng Views
-    dellemc_powermax_gatherfacts:
-      unispherehost: "{{unispherehost}}"
-      universion: "{{universion}}"
-      verifycert: "{{verifycert}}"
-      user: "{{user}}"
-      password: "{{password}}"
-      serial_no: "{{serial_no}}"
-      gather_subset:
-         - mv
-         
+- name: Get list of Port Groups
+  dellemc_powermax_gatherfacts:
+    unispherehost: "{{unispherehost}}"
+    universion: "{{universion}}"
+    verifycert: "{{verifycert}}"
+    user: "{{user}}"
+    password: "{{password}}"
+    serial_no: "{{serial_no}}"
+    gather_subset:
+       - pg
+
+- name: Get list of Hosts
+  dellemc_powermax_gatherfacts:
+    unispherehost: "{{unispherehost}}"
+    universion: "{{universion}}"
+    verifycert: "{{verifycert}}"
+    user: "{{user}}"
+    password: "{{password}}"
+    serial_no: "{{serial_no}}"
+    gather_subset:
+       - host
+
+- name: Get list of Host Groups
+  dellemc_powermax_gatherfacts:
+    unispherehost: "{{unispherehost}}"
+    universion: "{{universion}}"
+    verifycert: "{{verifycert}}"
+    user: "{{user}}"
+    password: "{{password}}"
+    serial_no: "{{serial_no}}"
+    gather_subset:
+       - hg
+
+- name: Get list of Masking Views
+  dellemc_powermax_gatherfacts:
+    unispherehost: "{{unispherehost}}"
+    universion: "{{universion}}"
+    verifycert: "{{verifycert}}"
+    user: "{{user}}"
+    password: "{{password}}"
+    serial_no: "{{serial_no}}"
+    gather_subset:
+       - mv
+
 - name: Get list of RDF Groups
-    dellemc_powermax_gatherfacts:
-      unispherehost: "{{unispherehost}}"
-      universion: "{{universion}}"
-      verifycert: "{{verifycert}}"
-      user: "{{user}}"
-      password: "{{password}}"
-      serial_no: "{{serial_no}}"
-      gather_subset:
-         - rdf
-
+  dellemc_powermax_gatherfacts:
+    unispherehost: "{{unispherehost}}"
+    universion: "{{universion}}"
+    verifycert: "{{verifycert}}"
+    user: "{{user}}"
+    password: "{{password}}"
+    serial_no: "{{serial_no}}"
+    gather_subset:
+       - rdf
 '''
 
-RETURN = r'''  '''
+RETURN = r'''
+Arrays:
+    description: List of arrays in the Unisphere.
+    returned: When the Unisphere exist.
+    type: list
+Health:
+    description: Health status of the array.
+    returned: When the array exist.
+    type: complex
+    contains:
+        health_score_metric:
+            description: Overall health score for the specified symmetrix. 
+            type: complex list
+            contains:
+                cached_date:
+                    description: Date Time stamp in epoch format when it was
+                                 cached.
+                    type: int
+                data_date:
+                    description: Date Time stamp in epoch format when it was
+                                 collected.
+                    type: int
+                expired:
+                    description: Flag to indicate the expiry of score.
+                    type: bool
+                health_score:
+                    description: Overall health score in number
+                    type: int
+                instance_metrics:
+                    description: Metrics about a specific instance
+                    type: list
+                    contains:
+                        health_score_instance_metric:
+                            description: Health score of a specific instance.
+                            type: int
+                metric:
+                    description: Information about which sub system , like
+                                 SYSTEM_UTILIZATION, CONFIGURATION,CAPACITY
+                                 etc.
+                    type: str
+        num_failed_disks:
+            description: Numbers of the disk failure in this this system.
+            type: int
+HostGroups:
+    description: List of host groups present on the array.
+    returned: When the hostgroups exist.
+    type: list
+Hosts:
+    description: List of hosts present on the array.
+    returned: When the hosts exist.
+    type: list
+MaskingViews:
+    description: List of masking views present on the array.
+    returned: When the masking views exist.
+    type: list
+PortGroups:
+    description: List of port groups on the array.
+    returned: When the port groups exist.
+    type: list
+Ports:
+    description: List of ports on the array.
+    returned: When the ports exist.
+    type: complex
+    contains:
+        directorId:            
+            description: Director ID of the port.
+            type: str
+        portId:
+            description: Port number of the port.
+            type: str
+RDFGroups:
+    description: List of RDF groups on the array.
+    returned: When the RDF groups exist.
+    type: complex
+    contains:
+        label:        
+            description: Name of the RDF group.
+            type: str
+        rdfgNumber:
+            description: Unique identifier of the RDF group.
+            type: int
+StorageGroups:
+    description: List of storage groups on the array.
+    returned: When the storage groups exist.
+    type: list
+StorageResourcePools:
+    description: List of storage pools on the array.
+   returned: When the storage pools exist.
+    type: complex
+    contains:
+        diskGroupId:
+            description: ID of the disk group.
+            type: list
+        emulation:
+            description: Type of volume emulation.
+            type: str
+        num_of_disk_groups:
+            description: Number of disk groups.
+            type: int
+        rdfa_dse:
+            description: Flag for RDFA Delta Set Extension.
+            type: bool
+        reserved_cap_percent:
+            description: Reserved capacity percentage.
+            type: int
+        srpId:
+            description: Unique Identifier for SRP.
+            type: str
+        srp_capacity:
+            description: List of different entities to measure SRP capacity.
+            type: list
+            contains:
+                effective_used_capacity_percent:
+                    description: Percentage of effectively used capacity.
+                    type: int
+                snapshot_modified_tb:
+                    description: Snapshot modified in TB.
+                    type: int
+                snapshot_total_tb:
+                    description: Total snapshot size in TB.
+                    type: int
+                subscribed_allocated_tb:
+                    description: Subscribed allocated size in TB.
+                    type: int
+                subscribed_total_tb:
+                    description: Subscribed total size in TB.
+                    type: int
+                usable_total_tb:
+                    description: Usable total size in TB.
+                    type: int
+                usable_used_tb:
+                    description: Usable used size in TB.
+                    type: int
+        srp_efficiency:
+            description: List of different entities to measure SRP efficiency.
+            type: list
+            contains:
+                compression_state:
+                    description: Depicts the compression state of the SRP.
+                    type: str
+                data_reduction_enabled_percent:
+                    description: Percentage of data reduction enabled in the
+                                 SRP.
+                    type: int
+                data_reduction_ratio_to_one:
+                    description: Data reduction ratio of SRP.
+                    type: int
+                overall_efficiency_ratio_to_one:
+                    description: Overall effectively ratio of SRP.
+                    type: int
+                snapshot_savings_ratio_to_one:
+                    description: Snapshot savings ratio of SRP.
+                    type: int
+                virtual_provisioning_savings_ratio_to_one:
+                    description: Virtual provisioning savings ratio of SRP.
+                    type: int
+        total_srdf_dse_allocated_cap_gb:
+            description: Total srdf dse allocated capacity in GB.
+            type: int
+Volumes:
+    description: List of volumes on the array.
+    returned: When the volumes exist.
+    type: list
+'''
 
+import logging
+from ansible.module_utils.storage.dell \
+    import dellemc_ansible_powermax_utils as utils
+from ansible.module_utils.basic import AnsibleModule
 
 LOG = utils.get_logger('dellemc_powermax_gatherfacts', log_devel=logging.INFO)
 
 HAS_PYU4V = utils.has_pyu4v_sdk()
-
 PYU4V_VERSION_CHECK = utils.pyu4v_version_check()
 
 # Application Type
-APPLICATION_TYPE = 'ansible_v1.1'
+APPLICATION_TYPE = 'ansible_v1.2'
 
 
 class PowerMaxGatherFacts(object):
     """Class with Gather Fact operations"""
 
+    u4v_conn = None
     def __init__(self):
         """Define all the parameters required by this module"""
 
@@ -192,82 +461,149 @@ class PowerMaxGatherFacts(object):
             supports_check_mode=False)
         serial_no = self.module.params['serial_no']
         if HAS_PYU4V is False:
-            self.module.fail_json(msg="Ansible modules for PowerMax require "
+            self.show_error_exit(msg="Ansible modules for PowerMax require "
                                       "the PyU4V python library to be "
                                       "installed. Please install the library "
                                       "before using these modules.")
         if PYU4V_VERSION_CHECK is not None:
-            self.module.fail_json(msg=PYU4V_VERSION_CHECK)
-            LOG.error(PYU4V_VERSION_CHECK)
+            self.show_error_exit(msg=PYU4V_VERSION_CHECK)
 
-        universion_details = utils.universion_check(
-                             self.module.params['universion'])
-        LOG.info("universion_details: {0}".format(universion_details))
+        if self.module.params['universion'] is not None:
+            universion_details = utils.universion_check(
+                self.module.params['universion'])
+            LOG.info("universion_details: {0}".format(universion_details))
 
-        if not universion_details['is_valid_universion']:
-            self.module.fail_json(msg=universion_details['user_message'])
+            if not universion_details['is_valid_universion']:
+                self.show_error_exit(msg=universion_details['user_message'])
 
-        if serial_no is '':
-            self.u4v_unisphere_con = utils.get_u4v_unisphere_connection(
-                self.module.params, APPLICATION_TYPE)
-            self.common = self.u4v_unisphere_con.common
-            LOG.info(
-                    "Got PyU4V Unisphere instance for common lib method "
-                     "access on VMAX")
-        else:
-            self.module_params.update(
-                utils.get_powermax_management_host_parameters())
-            self.u4v_conn = utils.get_U4V_connection(self.module.params,
-                                                     application_type=
-                                                     APPLICATION_TYPE
-                                                     )
-            self.provisioning = self.u4v_conn.provisioning
-            self.u4v_conn.set_array_id(serial_no)
-            LOG.info('Got PyU4V instance for provisioning on to PowerMax ')
-            self.replication = self.u4v_conn.replication
-            LOG.info('Got PyU4V instance for replication on to PowerMax ')
+        try:
+            if serial_no is '':
+                self.u4v_unisphere_con = utils.get_u4v_unisphere_connection(
+                    self.module.params, APPLICATION_TYPE)
+                self.common = self.u4v_unisphere_con.common
+                LOG.info("Got PyU4V Unisphere instance for common lib method "
+                         "access on Powermax")
+            else:
+                self.module_params.update(
+                    utils.get_powermax_management_host_parameters())
+                self.u4v_conn = utils.get_U4V_connection(
+                    self.module.params, application_type=APPLICATION_TYPE)
+                self.provisioning = self.u4v_conn.provisioning
+                self.u4v_conn.set_array_id(serial_no)
+                LOG.info('Got PyU4V instance for provisioning on to PowerMax')
+                self.replication = self.u4v_conn.replication
+                LOG.info('Got PyU4V instance for replication on to PowerMax')
+        except Exception as e:
+            self.show_error_exit(msg=str(e))
 
-    def get_volume_list(self, tdev_volumes=False):
+    def get_system_health(self):
+        """Get the System Health information PowerMax/VMAX storage system"""
+
+        LOG.info('Getting System Health information ')
+        health_check = self.u4v_conn.system.get_system_health()
+        LOG.info('Successfully listed System Health information ')
+        return health_check
+
+    def get_filters(self, filters=None):
+        """Get the filters to be applied"""
+
+        filters_dict = {}
+        for item in filters:
+            if 'filter_key' in item and 'filter_operator' in item\
+                    and 'filter_value' in item:
+                if item["filter_key"] is None \
+                        or item["filter_operator"] is None \
+                        or item["filter_value"] is None:
+                    error_msg = "Please provide input for filter sub-options."
+                    self.show_error_exit(msg=error_msg)
+                else:
+                    f_key = item["filter_key"]
+                    if item["filter_operator"] == "equal":
+                        f_operator = ""
+                    elif item["filter_operator"] == "greater":
+                        f_operator = ">"
+                    elif item["filter_operator"] == "lesser":
+                        f_operator = "<"
+                    elif item["filter_operator"] == "like":
+                        f_operator = "<like>"
+                    else:
+                        msg = "The filter operator is not supported -- only" \
+                              " 'equal', 'greater', 'lesser' and 'like' " \
+                              "are supported."
+                        self.show_error_exit(msg=msg)
+
+                    val = item["filter_value"]
+                    if val == "True" or val == "False":
+                        f_value = val
+                    else:
+                        f_value = f_operator + val
+                    if f_key in filters_dict:
+                        # multiple filters on same key
+                        if type(filters_dict[f_key]) == list:
+                            # prev_val is list, so append new f_val
+                            filters_dict[f_key].append(f_value)
+                        else:
+                            # prev_val is not list,
+                            # so create list with prev_val & f_val
+                            filters_dict[f_key] = [filters_dict[f_key],
+                                                   f_value]
+                    else:
+                        filters_dict[f_key] = f_value
+            else:
+                msg = 'filter_key and filter_operator and filter_value is ' \
+                      'expected, "%s" given.' % list(item.keys())
+                self.show_error_exit(msg=msg)
+        return filters_dict
+
+    def get_volume_list(self, tdev_volumes=False, filters_dict=None):
         """Get the list of volumes of a given PowerMax/Vmax storage system"""
 
         try:
             LOG.info('Getting Volume List ')
             array_serial_no = self.module.params['serial_no']
             if tdev_volumes:
-                vol_list = self.provisioning.get_volume_list(filters={"tdev": True})
-                LOG.info('Successfully listed {0} TDEV volumes from array {1}'.format(
-                         len(vol_list), array_serial_no))
+                if filters_dict:
+                    if "tdev" not in filters_dict.keys():
+                        filters_dict["tdev"] = True
+                    vol_list = self.provisioning.get_volume_list(
+                        filters=filters_dict)
+                else:
+                    vol_list = self.provisioning.get_volume_list(
+                        filters={"tdev": True})
+            elif filters_dict:
+                vol_list = self.provisioning.get_volume_list(
+                    filters=filters_dict)
             else:
                 vol_list = self.provisioning.get_volume_list()
-                LOG.info('Successfully listed {0} volumes from array {1}' .format(
-                         len(vol_list), array_serial_no))
+            LOG.info('Successfully listed %d volumes from array %s'
+                     % (len(vol_list), array_serial_no))
             return vol_list
 
         except Exception as e:
-            msg = 'Get Volumes for array {0} failed with error {1} '.format(
-                 self.module.params['serial_no'], str(e))
-            LOG.error(msg)
-            self.module.fail_json(msg=msg)
+            msg = 'Get Volumes for array %s failed with error %s '\
+                  % (self.module.params['serial_no'], str(e))
+            self.show_error_exit(msg=msg)
 
-    def get_storage_group_list(self):
+    def get_storage_group_list(self, filters_dict=None):
         """Get the list of storage groups of a given PowerMax/Vmax storage
         system"""
 
         try:
             LOG.info('Getting Storage Group List ')
             array_serial_no = self.module.params['serial_no']
-            sg_list = self.provisioning.get_storage_group_list()
-            LOG.info(
-                'Successfully listed {0} Storage Group from array {1}'.format(
-                    len(sg_list), array_serial_no))
-
+            if filters_dict:
+                sg_list = self.provisioning.get_storage_group_list(
+                    filters=filters_dict)
+            else:
+                sg_list = self.provisioning.get_storage_group_list()
+            LOG.info('Successfully listed %d Storage Group from array %s'
+                     % (len(sg_list), array_serial_no))
             return sg_list
 
         except Exception as e:
-            msg = ('Get Storage Group for array {0} failed with error {1}'
-                   .format(self.module.params['serial_no'], str(e)))
-            LOG.error(msg)
-            self.module.fail_json(msg=msg)
+            msg = ('Get Storage Group for array %s failed with error %s'
+                   % (self.module.params['serial_no'], str(e)))
+            self.show_error_exit(msg=msg)
 
     def get_array_list(self):
         """Get the list of arrays of a given PowerMax/Vmax Unisphere host"""
@@ -275,153 +611,185 @@ class PowerMaxGatherFacts(object):
         try:
             LOG.info('Getting Array List ')
             array_list = self.common.get_array_list()
-            LOG.info('Got {0} Arrays from Unisphere Host  {1}' .format(
-                len(array_list), self.module_params['unispherehost']))
+            LOG.info('Got %s Arrays from Unisphere Host %s'
+                     % (len(array_list), self.module_params['unispherehost']))
             return array_list
 
         except Exception as e:
-            msg = ('Get Array List for Unisphere host {0} failed with error \
-                   {1}'
-                   .format(self.module_params['unispherehost'], str(e)))
-            LOG.error(msg)
-            self.module.fail_json(msg=msg)
+            msg = ('Get Array List for Unisphere host %s failed with error %s'
+                   % (self.module_params['unispherehost'], str(e)))
+            self.show_error_exit(msg=msg)
 
-    def get_srp_list(self):
+    def get_srp_list(self, filters_dict=None):
         """Get the list of Storage Resource Pools of a given PowerMax/Vmax
         storage system"""
 
         try:
             LOG.info('Getting Storage Resource Pool List')
             array_serial_no = self.module.params['serial_no']
-            srp_list = self.provisioning.get_srp_list()
-            LOG.info('Got {0} Storage Resource Pool from array {1}'.format(
-                len(srp_list), array_serial_no))
+            if filters_dict:
+                srp_list = self.provisioning.get_srp_list(filters=filters_dict)
+            else:
+                srp_list = self.provisioning.get_srp_list()
+            LOG.info('Got %d Storage Resource Pool from array %s'
+                     % (len(srp_list), array_serial_no))
 
             srp_detail_list = []
             for srp in srp_list:
                 srp_details = self.provisioning.get_srp(srp)
                 srp_detail_list.append(srp_details)
 
-            LOG.info(
-                'Successfully listed {0} Storage Resource Pool details '
-                'from array {1}'.format(
-                 len(srp_detail_list), array_serial_no))
-
+            LOG.info('Successfully listed %d Storage Resource Pool details '
+                     'from array %s'
+                     % (len(srp_detail_list), array_serial_no))
             return srp_detail_list
 
         except Exception as e:
-            msg = ('Get Storage Resource Pool details for array {0} '
-                   'failed with error {1} '.format(
-                   self.module.params['serial_no'], str(e)))
-            LOG.error(msg)
-            self.module.fail_json(msg=msg)
+            msg = ('Get Storage Resource Pool details for array %s '
+                   'failed with error %s'
+                   % (self.module.params['serial_no'], str(e)))
+            self.show_error_exit(msg=msg)
 
-    def get_portgroup_list(self):
+    def get_portgroup_list(self, filters_dict=None):
         """Get the list of port groups of a given PowerMax/Vmax storage
         system"""
 
         try:
             LOG.info('Getting Port Group List ')
             array_serial_no = self.module.params['serial_no']
-            pg_list = self.provisioning.get_portgroup_list()
-            LOG.info('Got {0} PortGroup from array {1}'.format(
-                len(pg_list), array_serial_no))
+            if filters_dict:
+                pg_list = self.provisioning.get_port_group_list(
+                    filters=filters_dict)
+            else:
+                pg_list = self.provisioning.get_port_group_list()
+            LOG.info('Got %d Port Groups from array %s'
+                     % (len(pg_list), array_serial_no))
             return pg_list
 
         except Exception as e:
-            msg = 'Get Port Group for array {0} failed with error {1} '.format(
-                self.module.params['serial_no'], str(e))
-            LOG.error(msg)
-            self.module.fail_json(msg=msg)
+            msg = 'Get Port Group for array %s failed with error %s '\
+                  % (self.module.params['serial_no'], str(e))
+            self.show_error_exit(msg=msg)
 
-    def get_host_list(self):
+    def get_host_list(self, filters_dict=None):
         """Get the list of hosts of a given PowerMax/Vmax storage system"""
 
         try:
             LOG.info('Getting Host List ')
             array_serial_no = self.module.params['serial_no']
-            host_list = self.provisioning.get_host_list()
-            LOG.info('Got {0} Host from array {1}'.format(
-                len(host_list), array_serial_no))
+            if filters_dict:
+                host_list = self.provisioning.get_host_list(
+                    filters=filters_dict)
+            else:
+                host_list = self.provisioning.get_host_list()
+            LOG.info('Got %d Hosts from array %s'
+                     % (len(host_list), array_serial_no))
             return host_list
 
         except Exception as e:
-            msg = 'Get Host for array {0} failed with error {1} '.format(
-                self.module.params['serial_no'], str(e))
-            LOG.error(msg)
-            self.module.fail_json(msg=msg)
+            msg = 'Get Host for array %s failed with error %s'\
+                  % (self.module.params['serial_no'], str(e))
+            self.show_error_exit(msg=msg)
 
-    def get_hostgroup_list(self):
+    def get_hostgroup_list(self, filters_dict=None):
         """Get the list of host groups of a given PowerMax/Vmax storage
         system"""
 
         try:
             LOG.info('Getting Host Group List ')
             array_serial_no = self.module.params['serial_no']
-            hostgroup_list = self.provisioning.get_hostgroup_list()
-            LOG.info('Got {0} Host Group from array {1}'.format(
-                len(hostgroup_list), array_serial_no))
+            if filters_dict:
+                hostgroup_list = self.provisioning.get_host_group_list(
+                    filters=filters_dict)
+            else:
+                hostgroup_list = self.provisioning.get_host_group_list()
+            LOG.info('Got %d Host Groups from array %s'
+                     % (len(hostgroup_list), array_serial_no))
             return hostgroup_list
 
         except Exception as e:
-            msg = 'Get Host Group for array {0} failed with error {1} '.format(
-                self.module.params['serial_no'], str(e))
-            LOG.error(msg)
-            self.module.fail_json(msg=msg)
+            msg = 'Get Host Group for array %s failed with error %s '\
+                  % (self.module.params['serial_no'], str(e))
+            self.show_error_exit(msg=msg)
 
-    def get_port_list(self):
+    def get_port_list(self, filters_dict=None):
         """Get the list of ports of a given PowerMax/Vmax storage system"""
 
         try:
             LOG.info('Getting Port List ')
             array_serial_no = self.module.params['serial_no']
-            port_list = self.provisioning.get_port_list()
-            LOG.info('Got {0} Port from array {1}'.format(
-                len(port_list), array_serial_no))
+            if filters_dict:
+                port_list = self.provisioning.get_port_list(
+                    filters=filters_dict)
+            else:
+                port_list = self.provisioning.get_port_list()
+            LOG.info('Got %d Ports from array %s'
+                     % (len(port_list), array_serial_no))
             return port_list
 
         except Exception as e:
-            msg = 'Get Port Group for array {0} failed with error {1} '.format(
-                self.module.params['serial_no'], str(e))
-            LOG.error(msg)
-            self.module.fail_json(msg=msg)
+            msg = 'Get Port Group for array %s failed with error %s '\
+                  % (self.module.params['serial_no'], str(e))
+            self.show_error_exit(msg=msg)
 
-    def get_masking_view_list(self):
+    def get_masking_view_list(self, filters_dict=None):
         """Get the list of masking views of a given PowerMax/Vmax storage
         system"""
 
         try:
             LOG.info('Getting Masking View List')
             array_serial_no = self.module.params['serial_no']
-            mv_list = self.provisioning.get_masking_view_list()
-            LOG.info('Got {0} Getting Masking View from array {1}'.format(
-                len(mv_list), array_serial_no))
+            if filters_dict:
+                mv_list = self.provisioning.get_port_list(filters=filters_dict)
+            else:
+                mv_list = self.provisioning.get_masking_view_list()
+            LOG.info('Got %d Getting Masking Views from array %s'
+                     % (len(mv_list), array_serial_no))
             return mv_list
 
         except Exception as e:
-            msg = ('Get Masking View for array {0} failed with error {1}'
-                   .format(self.module.params['serial_no'], str(e)))
-            LOG.error(msg)
-            self.module.fail_json(msg=msg)
+            msg = ('Get Masking View for array %s failed with error %s'
+                   % (self.module.params['serial_no'], str(e)))
+            self.show_error_exit(msg=msg)
 
-    def get_rdfgroup_list(self):
+    def get_rdfgroup_list(self, filters_dict=None):
         """Get the list of rdf group of a given PowerMax/Vmax storage system"""
 
         try:
             LOG.info('Getting rdf group List ')
             array_serial_no = self.module.params['serial_no']
-            rdf_list = self.replication.get_rdf_group_list()
-            LOG.info('Successfully listed {0} rdf group from array {1}'.format(
-                len(rdf_list), array_serial_no))
+            if filters_dict:
+                rdf_list = self.provisioning.get_port_list(
+                    filters=filters_dict)
+            else:
+                rdf_list = self.replication.get_rdf_group_list()
+            LOG.info('Successfully listed %d rdf groups from array %s'
+                     % (len(rdf_list), array_serial_no))
             return rdf_list
 
         except Exception as e:
-            msg = 'Get rdf group for array {0} failed with error {1} '.format(
-                self.module.params['serial_no'], str(e))
-            LOG.error(msg)
-            self.module.fail_json(msg=msg)
+            msg = 'Get rdf group for array %s failed with error %s '\
+                  % (self.module.params['serial_no'], str(e))
+            self.show_error_exit(msg=msg)
+
+    def show_error_exit(self, msg):
+        if self.u4v_conn is not None:
+            try:
+                LOG.info("Closing unisphere connection {0}".format(
+                    self.u4v_conn))
+                utils.close_connection(self.u4v_conn)
+                LOG.info("Connection closed successfully")
+            except Exception as e:
+                err_msg= "Failed to close unisphere connection with error:" \
+                         " {0}".format(str(e))
+                LOG.error(err_msg)
+        LOG.error(msg)
+        self.module.fail_json(msg=msg)
 
     def perform_module_operation(self):
+        """ Perform different actions on Gatherfacts based on user parameters
+            chosen in playbook """
+
         serial_no = self.module.params['serial_no']
         if serial_no is '':
             array_list = self.get_array_list()
@@ -429,10 +797,16 @@ class PowerMaxGatherFacts(object):
         else:
             subset = self.module.params['gather_subset']
             tdev_volumes = self.module.params['tdev_volumes']
-
+            filters = []
+            filters = self.module.params['filters']
             if len(subset) == 0:
-                self.module.fail_json(msg="Please specify gather_subset")
+                self.show_error_exit(msg="Please specify gather_subset")
 
+            filters_dict = {}
+            if filters:
+                filters_dict = self.get_filters(filters=filters)
+
+            health_check = []
             vol = []
             srp = []
             sg = []
@@ -442,25 +816,34 @@ class PowerMaxGatherFacts(object):
             port = []
             mv = []
             rdf = []
+            if 'health' in str(subset):
+                health_check = self.get_system_health()
             if 'vol' in str(subset):
-                vol = self.get_volume_list(tdev_volumes)
+                vol = self.get_volume_list(
+                    tdev_volumes=tdev_volumes, filters_dict=filters_dict)
             if 'sg' in str(subset):
-                sg = self.get_storage_group_list()
+                sg = self.get_storage_group_list(filters_dict=filters_dict)
             if 'srp' in str(subset):
-                srp = self.get_srp_list()
+                srp = self.get_srp_list(filters_dict=filters_dict)
             if 'pg' in str(subset):
-                pg = self.get_portgroup_list()
+                pg = self.get_portgroup_list(filters_dict=filters_dict)
             if 'host' in str(subset):
-                host = self.get_host_list()
+                host = self.get_host_list(filters_dict=filters_dict)
             if 'hg' in str(subset):
-                hg = self.get_hostgroup_list()
+                hg = self.get_hostgroup_list(filters_dict=filters_dict)
             if 'port' in str(subset):
-                port = self.get_port_list()
+                port = self.get_port_list(filters_dict=filters_dict)
             if 'mv' in str(subset):
-                mv = self.get_masking_view_list()
+                mv = self.get_masking_view_list(filters_dict=filters_dict)
             if 'rdf' in str(subset):
-                rdf = self.get_rdfgroup_list()
+                rdf = self.get_rdfgroup_list(filters_dict=filters_dict)
+
+            LOG.info("Closing unisphere connection {0}".format(self.u4v_conn))
+            utils.close_connection(self.u4v_conn)
+            LOG.info("Connection closed successfully")
+
             self.module.exit_json(
+                Health=health_check,
                 Volumes=vol,
                 StorageGroups=sg,
                 StorageResourcePools=srp,
@@ -475,33 +858,43 @@ class PowerMaxGatherFacts(object):
 def get_powermax_gatherfacts_parameters():
     """This method provide the parameters required for the ansible
     modules on PowerMax"""
-    return dict(
-            unispherehost=dict(type='str', required=True),
-            universion=dict(type='int', required=True),
-            verifycert=dict(type='bool', required=True),
-            user=dict(type='str', required=True),
-            password=dict(type='str', required=True, no_log=True),
-            serial_no=dict(type='str', required=False, default=''),
-            tdev_volumes=dict(type='bool', required=False,
-                              default=True),
-            gather_subset=dict(type='list', required=False,
-                               choices=['vol',
-                                        'sg',
-                                        'srp',
-                                        'pg',
-                                        'host',
-                                        'hg',
-                                        'port',
-                                        'mv',
-                                        'rdf',
-                                        ]),
 
+    return dict(
+        unispherehost=dict(type='str', required=True),
+        universion=dict(type='int', required=False, choices= [91,92]),
+        verifycert=dict(type='bool', required=True),
+        user=dict(type='str', required=True),
+        password=dict(type='str', required=True, no_log=True),
+        serial_no=dict(type='str', required=False, default=''),
+        tdev_volumes=dict(type='bool', required=False,
+                          default=True),
+        gather_subset=dict(type='list', required=False,
+                           choices=['health',
+                                    'vol',
+                                    'sg',
+                                    'srp',
+                                    'pg',
+                                    'host',
+                                    'hg',
+                                    'port',
+                                    'mv',
+                                    'rdf',
+                                    ]),
+        filters=dict(type='list', required=False,
+                     options=dict(
+                         filter_key=dict(type='str', required=True),
+                         filter_operator=dict(type='str', required=True,
+                                              choices=['equal', 'greater',
+                                                       'lesser', 'like']),
+                         filter_value=dict(type='str'), required=True)
+                     ),
     )
 
 
 def main():
     """ Create PowerMaxGatherFacts object and perform action on it
         based on user input from playbook """
+
     obj = PowerMaxGatherFacts()
     obj.perform_module_operation()
 
