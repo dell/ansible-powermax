@@ -1,12 +1,7 @@
 #!/usr/bin/python
 # Copyright: (c) 2019, DellEMC
 
-import logging
-from ansible.module_utils.basic import AnsibleModule
-from ansible.module_utils.storage.dell \
-    import dellemc_ansible_powermax_utils as utils
-import copy
-import re
+from __future__ import (absolute_import, division, print_function)
 
 __metaclass__ = type
 ANSIBLE_METADATA = {'metadata_version': '1.1',
@@ -17,15 +12,16 @@ ANSIBLE_METADATA = {'metadata_version': '1.1',
 DOCUMENTATION = r'''
 ---
 module: dellemc_powermax_hostgroup
-version_added: '2.6'
+version_added: '1.0.3'
 short_description:  Manage host group (cascaded initiator group) on
                     PowerMax/VMAX Storage System
 description:
-- Managing host group on PowerMax Storage System includes create host group
-  with set of hosts, add/remove hosts to/from host group, rename host group,
-  modify host flags of host group and delete host group
+- Managing host group on PowerMax storage system includes creating a host
+  group with set of hosts, adding or removing hosts to or from host group,
+  renaming a host group, modifying host flags of a host group, and deleting
+  a host group.
 extends_documentation_fragment:
-  - dellemc_powermax.dellemc_powermax
+  - dellemc.powermax.dellemc_powermax.powermax
 author:
 - Vasudevu Lakhinana (@unknown) <ansible.team@dell.com>
 - Manisha Agrawal (@agrawm3) <ansible.team@dell.com>
@@ -35,11 +31,14 @@ options:
     - The name of the host group. No Special Character support except for _.
       Case sensitive for REST Calls.
     required: true
+    type: str
   hosts:
     description:
-    - List of host names to be added to the host group or removed from host
-      group.
-    - Creation of empty host group is allowed.
+    - List of host names to be added to the host group or removed from the
+      host group.
+    - Creation of an empty host group is allowed.
+    type: list
+    elements: str
   state:
     description:
     - Define whether the host group should be present or absent on the system.
@@ -47,15 +46,18 @@ options:
     - absent - indicates that the host group should be absent on system
     required: true
     choices: [absent, present]
+    type: str
   host_state:
     description:
-    - Define whether the host should be present or absent in host group.
-    - present-in-group - indicates that the hosts should exist in host group
-    - absent-in-group - indicates that the hosts should not exist in host 
+    - Define whether the host should be present or absent in the host group.
+    - present-in-group - indicates that the hosts should exist in the host
+                         group
+    - absent-in-group - indicates that the hosts should not exist in the host
                         group
     choices: [present-in-group, absent-in-group]
+    type: str
   host_flags:
-    description: 
+    description:
     - input as an yaml dictionary
     - List of all host_flags -
     - 1. volume_set_addressing
@@ -67,18 +69,20 @@ options:
     - 7. spc2_protocol_version
     - 8. scsi_support1
     - 9. consistent_lun
+    - Possible values are true, false, unset(default state)
     required: false
-    choices: [true, false, unset(default state)]
+    type: dict
   new_name:
     description:
-    - The new name for host group for renaming function. No Special Character
-      support except for _. Case sensitive for REST Calls
-Notes:
+    - The new name for the host group for the renaming function. No Special
+      Character support except for _. Case sensitive for REST Calls
+    type: str
+notes:
   - In gather facts module, empty host groups will be listed as hosts.
   '''
 
 EXAMPLES = r'''
-- name: Create host group
+  - name: Create host group
     dellemc_powermax_hostgroup:
       unispherehost: "{{unispherehost}}"
       universion: "{{universion}}"
@@ -186,51 +190,58 @@ hostgroup_details:
     returned: When host group exist.
     type: complex
     contains:
-		consistent_lun:
-			description: Flag for consistent LUN in host group.
+        consistent_lun:
+            description: Flag for consistent LUN in the host group.
             type: bool
-		enabled_flags:
-			description: List of any enabled port flags overridden by the
-			             initiator.
+        enabled_flags:
+            description: List of any enabled port flags overridden by the
+                         initiator.
             type: list
-		disabled_flags:
-			description: List of any disabled port flags overridden by the
-			             initiator.
+        disabled_flags:
+            description: List of any disabled port flags overridden by the
+                         initiator.
             type: list
-		host:
-			description: list of hosts present in the host group.
+        host:
+            description: List of hosts present in the host group.
             type: list
-			contains:
-				hostId:
-					description: Unique identifier for the host.
-					type: str
-				initiator:
-					description: List of initiators present in the host.
-					type: list
-		hostGroupId:
-			description: Host group ID.
+            contains:
+                hostId:
+                    description: Unique identifier for the host.
+                    type: str
+                initiator:
+                    description: List of initiators present in the host.
+                    type: list
+        hostGroupId:
+            description: Host group ID.
             type: str
-		maskingview:
-			description: Masking view in which host group is present.
+        maskingview:
+            description: Masking view in which host group is present.
             type: list
-		num_of_hosts:
-			description: Number of hosts in the host group.
+        num_of_hosts:
+            description: Number of hosts in the host group.
             type: int
-		num_of_initiators:
-			description: Number of initiators in the host group.
+        num_of_initiators:
+            description: Number of initiators in the host group.
             type: int
-		num_of_masking_views:
-			description: Number of masking views, host group is associated
-			             with.
+        num_of_masking_views:
+            description: Number of masking views associated with the host
+                         group.
             type: int
-		port_flags_override:
-			description: Whether any of the initiator's port flags are
-			             overridden.
+        port_flags_override:
+            description: Whether any of the initiator's port flags are
+                         overridden.
             type: bool
-		type:
-			description: Type of host group.
+        type:
+            description: Type of host group.
             type: str
 '''
+
+import re
+import copy
+import logging
+from ansible.module_utils.basic import AnsibleModule
+from ansible_collections.dellemc.powermax.plugins.module_utils.storage.dell \
+    import dellemc_ansible_powermax_utils as utils
 
 LOG = utils.get_logger('dellemc_powermax_hostgroup', log_devel=logging.INFO)
 
@@ -246,6 +257,7 @@ class PowerMaxHostGroup(object):
     '''Class with host group (cascaded initiator group) operations'''
 
     u4v_conn = None
+
     def __init__(self):
         ''' Define all parameters required by this module'''
         self.module_params = utils.get_powermax_management_host_parameters()
@@ -264,23 +276,23 @@ class PowerMaxHostGroup(object):
                                 'spc2_protocol_version', 'scsi_support1'}
         if HAS_PYU4V is False:
             self.show_error_exit(msg="Ansible modules for PowerMax require "
-                                      "the PyU4V python library to be "
-                                      "installed. Please install the library "
-                                      "before using these modules.")
+                                 "the PyU4V python library to be "
+                                 "installed. Please install the library "
+                                 "before using these modules.")
         if PYU4V_VERSION_CHECK is not None:
             self.show_error_exit(msg=PYU4V_VERSION_CHECK)
 
         if self.module.params['universion'] is not None:
             universion_details = utils.universion_check(
                 self.module.params['universion'])
-            LOG.info("universion_details: {0}".format(universion_details))
+            LOG.info("universion_details: %s", universion_details)
 
             if not universion_details['is_valid_universion']:
                 self.show_error_exit(msg=universion_details['user_message'])
 
         try:
             self.u4v_conn = utils.get_U4V_connection(
-                    self.module.params, application_type=APPLICATION_TYPE)
+                self.module.params, application_type=APPLICATION_TYPE)
         except Exception as e:
             self.show_error_exit(msg=str(e))
         self.provisioning = self.u4v_conn.provisioning
@@ -289,9 +301,11 @@ class PowerMaxHostGroup(object):
     def get_powermax_hostgroup_parameters(self):
         return dict(
             hostgroup_name=dict(required=True, type='str'),
-            hosts=dict(required=False, type='list'),
-            state=dict(required=True, type='str'),
-            host_state=dict(required=False, type='str'),
+            hosts=dict(required=False, type='list', elements='str'),
+            state=dict(required=True, type='str',
+                       choices=['present', 'absent']),
+            host_state=dict(required=False, type='str',
+                            choices=['present-in-group', 'absent-in-group']),
             host_flags=dict(required=False, type='dict'),
             new_name=dict(type='str', required=False)
         )
@@ -301,14 +315,14 @@ class PowerMaxHostGroup(object):
         Get details of a given host group
         '''
         try:
-            LOG.info('Getting host group {0} details'.format(hostgroup_name))
+            LOG.info('Getting host group %s details', hostgroup_name)
             hostGroupFromGet = self.provisioning.get_hostgroup(hostgroup_name)
             if hostGroupFromGet:
                 return hostGroupFromGet
 
         except Exception as e:
-            LOG.error('Got error {0} while getting details of host group {0}'
-                      .format(str(e), hostgroup_name))
+            LOG.error('Got error %s while getting details of host group %s',
+                      str(e), hostgroup_name)
             return None
 
     def _set_to_enable(self, host_flag_name, host_flag_dict):
@@ -385,8 +399,8 @@ class PowerMaxHostGroup(object):
 
         try:
             if emptyHostGroupFlag:
-                LOG.info('Creating empty HostGroup {0} with parameters {1}'
-                         .format(hostgroup_name, param_list))
+                LOG.info('Creating empty HostGroup %s with parameters %s',
+                         hostgroup_name, param_list)
                 self.provisioning.create_host(hostgroup_name,
                                               host_flags=new_host_flags_dict,
                                               initiator_list=None)
@@ -396,13 +410,12 @@ class PowerMaxHostGroup(object):
                         self.provisioning.get_host(host_id=host)
                     except Exception as e:
                         errorMsg = 'Create host group {0} failed as the host {1} does not exist'.format(
-                                hostgroup_name, host)
+                            hostgroup_name, host)
                         self.show_error_exit(msg=errorMsg)
-                LOG.info('Creating host group {0} with parameters {1}'
-                         .format(hostgroup_name, param_list))
-                self.provisioning.create_hostgroup(hostgroup_name,
-                                                   host_flags=new_host_flags_dict,
-                                                   host_list=hosts)
+                LOG.info('Creating host group %s with parameters %s',
+                         hostgroup_name, param_list)
+                self.provisioning.create_hostgroup(
+                    hostgroup_name, host_flags=new_host_flags_dict, host_list=hosts)
             return True
 
         except Exception as e:
@@ -432,26 +445,24 @@ class PowerMaxHostGroup(object):
                 existing_hosts.append(host['hostId'])
 
         if hosts and (set(hosts).issubset(set(existing_hosts))):
-            LOG.info('Hosts are already present in host group {0}'
-                     .format(hostgroup_name))
+            LOG.info('Hosts are already present in host group %s',
+                     hostgroup_name)
             return False
 
         add_list = self._get_add_hosts(existing_hosts, hosts)
         if len(add_list) > 0:
             try:
-                LOG.info('Adding hosts {0} to host group {1}'.format(
-                        add_list, hostgroup_name))
+                LOG.info('Adding hosts %s to host group %s',
+                         add_list, hostgroup_name)
                 self.provisioning.modify_hostgroup(hostgroup_name,
                                                    add_host_list=add_list)
                 return True
             except Exception as e:
-                errorMsg = (("Adding host {0} to host group {1} failed with"
-                             "error {2}").format(
-                                     add_list, hostgroup_name, str(e)))
+                errorMsg = ("Adding host %s to host group %s failed with"
+                            " error %s" % (add_list, hostgroup_name, str(e)))
                 self.show_error_exit(msg=errorMsg)
         else:
-            LOG.info('No hosts to add to host group {0}'.format(
-                    hostgroup_name))
+            LOG.info('No hosts to add to host group %s', hostgroup_name)
             return False
 
     def remove_hosts_from_hostgroup(self, hostgroup_name, hosts):
@@ -467,26 +478,23 @@ class PowerMaxHostGroup(object):
                 existing_hosts.append(host['hostId'])
 
         if existing_hosts is None or not len(existing_hosts):
-            LOG.info('Hosts are not present in host group {0}'
-                     .format(hostgroup_name))
+            LOG.info('Hosts are not present in host group %s', hostgroup_name)
             return False
 
         rem_list = self._get_remove_hosts(existing_hosts, hosts)
         if len(rem_list) > 0:
             try:
-                LOG.info('Removing hosts {0} from host group {1}'.format(
-                        rem_list, hostgroup_name))
+                LOG.info('Removing hosts %s from host group %s',
+                         rem_list, hostgroup_name)
                 self.provisioning.modify_hostgroup(hostgroup_name,
                                                    remove_host_list=rem_list)
                 return True
             except Exception as e:
-                errorMsg = (("Removing host {0} from host group {1} failed"
-                             "with error {2}").format(rem_list, hostgroup_name,
-                                                      str(e)))
+                errorMsg = ("Removing host %s from host group %s failed with"
+                            " error %s", rem_list, hostgroup_name, str(e))
                 self.show_error_exit(msg=errorMsg)
         else:
-            LOG.info('No hosts to remove from host group {0}'.format(
-                    hostgroup_name))
+            LOG.info('No hosts to remove from host group %s', hostgroup_name)
             return False
 
     def rename_hostgroup(self, hostgroup_name, new_name):
@@ -495,8 +503,8 @@ class PowerMaxHostGroup(object):
                 hostgroup_name, new_name=new_name)
             return True
         except Exception as e:
-            errorMsg = ('Renaming of host group {0} failed with error {1}'
-                        .format(hostgroup_name, str(e)))
+            errorMsg = ('Renaming of host group %s failed with error %s',
+                        hostgroup_name, str(e))
             self.show_error_exit(msg=errorMsg)
             return None
 
@@ -584,15 +592,15 @@ class PowerMaxHostGroup(object):
             return False
         else:
             try:
-                LOG.info('Modifying host group flags for host {0} with {1}'
-                         .format(hostgroup_name, new_flags_dict))
+                LOG.info('Modifying host group flags for host %s with %s',
+                         hostgroup_name, new_flags_dict)
                 self.provisioning.modify_hostgroup(
                     hostgroup_name, new_flags_dict)
                 return True
 
             except Exception as e:
-                errorMsg = ('Modify host group {0} failed with error {1}'
-                            .format(hostgroup_name, str(e)))
+                errorMsg = ('Modify host group %s failed with error %s',
+                            hostgroup_name, str(e))
                 self.show_error_exit(msg=errorMsg)
             return None
 
@@ -601,19 +609,22 @@ class PowerMaxHostGroup(object):
         if self.module.params['state'] == 'absent':
             self.result['hostgroup_details'] = {}
         else:
-            self.result['hostgroup_details'] = self.get_hostgroup(
-                self.module.params['hostgroup_name'])
+            if self.module.params['new_name']:
+                self.result['hostgroup_details'] = self.get_hostgroup(
+                    self.module.params['new_name'])
+            else:
+                self.result['hostgroup_details'] = self.get_hostgroup(
+                    self.module.params['hostgroup_name'])
 
     def show_error_exit(self, msg):
         if self.u4v_conn is not None:
             try:
-                LOG.info("Closing unisphere connection {0}".format(
-                    self.u4v_conn))
+                LOG.info("Closing unisphere connection %s", self.u4v_conn)
                 utils.close_connection(self.u4v_conn)
                 LOG.info("Connection closed successfully")
             except Exception as e:
-                err_msg = "Failed to close unisphere connection with error:" \
-                          " {0}".format(str(e))
+                err_msg = ("Failed to close unisphere connection with error:"
+                           " %s", str(e))
                 LOG.error(err_msg)
         LOG.error(msg)
         self.module.fail_json(msg=msg)
@@ -634,44 +645,41 @@ class PowerMaxHostGroup(object):
         changed = False
 
         if (state == 'present' and not hostgroup and hostgroup_name):
-            LOG.info('Creating host group {0}'.format(hostgroup_name))
+            LOG.info('Creating host group %s', hostgroup_name)
             changed = self.create_hostgroup(hostgroup_name)
 
         if (state == 'present' and host_state == 'present-in-group' and
                 hostgroup and hosts and len(hosts) > 0):
-            LOG.info('Add hosts to host group {0}'.format(hostgroup_name))
+            LOG.info('Add hosts to host group %s', hostgroup_name)
             changed = self.add_hosts_to_hostgroup(
                 hostgroup_name, hosts) or changed
 
         if (state == 'present' and host_state == 'absent-in-group' and
                 hostgroup and hosts and len(hosts) > 0):
-            LOG.info('Remove hosts from host group {0}'.format(hostgroup_name))
+            LOG.info('Remove hosts from host group %s', hostgroup_name)
             changed = self.remove_hosts_from_hostgroup(
                 hostgroup_name, hosts) or changed
 
         if (state == 'present' and hostgroup and host_flags):
-            LOG.info(
-                'Modifying host group flags of hostgroup {0} to {1}'.format(
-                    hostgroup_name, host_flags))
+            LOG.info('Modifying host group flags of hostgroup %s to %s',
+                     hostgroup_name, host_flags)
             changed = (self.modify_host_flags(hostgroup_name, host_flags) or
                        changed)
 
         if (state == 'present' and hostgroup and new_name):
             if hostgroup['hostGroupId'] != new_name:
-                LOG.info(
-                    'Renaming host group {0} to {1}'.format(
-                        hostgroup_name, new_name))
+                LOG.info('Renaming host group %s to %s',
+                         hostgroup_name, new_name)
                 changed = self.rename_hostgroup(hostgroup_name, new_name)
-                self.module.params['hostgroup_name'] = new_name
 
         if (state == 'absent' and hostgroup):
-            LOG.info('Delete host group {0} '.format(hostgroup_name))
+            LOG.info('Delete host group %s ', hostgroup_name)
             changed = self.delete_hostgroup(hostgroup_name) or changed
 
         self._create_result_dict(changed)
         # Update the module's final state
-        LOG.info('changed {0}'.format(changed))
-        LOG.info("Closing unisphere connection {0}".format(self.u4v_conn))
+        LOG.info('changed %s', changed)
+        LOG.info("Closing unisphere connection %s", self.u4v_conn)
         utils.close_connection(self.u4v_conn)
         LOG.info("Connection closed successfully")
         self.module.exit_json(**self.result)

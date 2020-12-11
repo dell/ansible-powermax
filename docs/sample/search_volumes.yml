@@ -13,6 +13,9 @@
     sg_name: 'sample_storage_group'
     pattern: 'your regex pattern'
 
+  collections:
+    - dellemc.powermax
+
   tasks:
     - name: Get details of the Storage Group 
       dellemc_powermax_storagegroup:

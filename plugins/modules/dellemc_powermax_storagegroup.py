@@ -12,21 +12,19 @@ ANSIBLE_METADATA = {'metadata_version': '1.1',
 DOCUMENTATION = r'''
 ---
 module: dellemc_powermax_storagegroup
-version_added: '2.6'
+version_added: '1.0.3'
 short_description:  Manage storage groups on PowerMax/VMAX Storage System
 description:
-- Managing storage group on PowerMax Storage System includes
-  List the volumes of a Storage Group,
-  Create a new Storage Group,
-  Delete an existing Storage Group,
-  Add existing volumes to an existing Storage Group,
-  Remove existing volumes from existing Storage Group,
-  Create new Volumes in an existing Storage Group,
-  Modify existing Storage Group attributes,
-  Add child Storage Groups inside existing Storage Group(parent),
-  Remove Child Storage Groups from existing parent Storage Group
+- Managing storage groups on a PowerMax storage system includes listing the
+  volumes of a storage group, creating a new storage group, deleting an
+  existing storage group, adding existing volumes to an existing storage
+  group, removing existing volumes from an existing storage group, creating
+  new volumes in an existing storage group, modifying existing storage group
+  attributes, adding child storage groups inside an existing storage group
+  (parent), and removing a child storage group from an existing parent storage
+  group.
 extends_documentation_fragment:
-  - dellemc_powermax.dellemc_powermax
+  - dellemc.powermax.dellemc_powermax.powermax
 author:
 - Vasudevu Lakhinana (@unknown) <ansible.team@dell.com>
 - Prashant Rakheja (@prashant-dell) <ansible.team@dell.com>
@@ -36,19 +34,23 @@ options:
     description:
     - The name of the storage group.
     required: true
+    type: str
   service_level:
     description:
     - The Name of SLO.
+    type: str
   srp:
     description:
     - Name of the storage resource pool.
     - This parameter is ignored if service_level is not specified.
     - Default is to use whichever is the default SRP on the array.
+    type: str
   compression:
     description:
     - compression on storage group.
     - Compression parameter is ignored if service_level is not specified.
     - Default is true.
+    type: bool
   volumes:
     description:
     - This is a list of volumes.
@@ -65,24 +67,33 @@ options:
     - cap_unit - The unit in which size is represented. Default unit is GB.
                  Choices are MB, GB, TB.
     - vol_id - This is the volume ID
+    type: list
+    elements: dict
   vol_state:
     description:
-    - Describes the state of volumes inside SG
+    - Describes the state of volumes inside the SG.
     choices: [present-in-group , absent-in-group]
+    type: str
   child_storage_groups:
     description:
     - This is a list of child storage groups
+    type: list
+    elements: str
   child_sg_state:
     description:
     - Describes the state of CSG inside parent SG
     choices: [present-in-group, absent-in-group]
+    type: str
   new_sg_name:
     description:
-     - The new name of the Storage Group
+     - The new name of the storage group.
+    type: str
   state:
     description:
     - Define whether the storage group should exist or not.
     choices: [absent, present]
+    type: str
+    required: true
   '''
 
 EXAMPLES = r'''
@@ -223,35 +234,35 @@ changed:
     returned: always
     type: bool
 add_child_sg:
-    description: Sets to true when child SG is added.
+    description: Sets to true when a child SG is added.
     returned: When value exists.
     type: bool
 add_new_vols_to_sg:
-    description: Sets to true when new volumes added to SG.
+    description: Sets to true when new volumes are added to the SG.
     returned: When value exists.
     type: bool
 add_vols_to_sg:
-    description: Sets to true when existing volumes added to SG.
+    description: Sets to true when existing volumes are added to the SG.
     returned: When value exists.
     type: bool
 added_vols_details:
-    description: Volume Ids of the volumes added.
+    description: Volume IDs of the volumes added.
     returned: When value exists.
     type: list
 create_sg:
-    description: Sets to true when new SG is created.
+    description: Sets to true when a new SG is created.
     returned: When value exists.
     type: bool
 delete_sg:
-    description: Sets to true when SG is deleted.
+    description: Sets to true when an SG is deleted.
     returned: When value exists.
     type: bool
 modify_sg:
-    description: Sets to true when SG is modified.
+    description: Sets to true when an SG is modified.
     returned: When value exists.
     type: bool
 remove_child_sg:
-    description: Sets to true when Child SG is removed.
+    description: Sets to true when a child SG is removed.
     returned: When value exists.
     type: bool
 remove_vols_from_sg:
@@ -259,11 +270,11 @@ remove_vols_from_sg:
     returned: When value exists.
     type: bool
 removed_vols_details:
-    description: Volume Ids of the volumes removed.
+    description: Volume IDs of the volumes removed.
     returned: When value exists.
     type: list
 rename_sg:
-    description: Sets to true when SG is renamed.
+    description: Sets to true when an SG is renamed.
     returned: When value exists.
     type: bool
 storage_group_details:
@@ -272,83 +283,84 @@ storage_group_details:
     type: complex
     contains:
         base_slo_name:
-			description: Base Service Level Objective (SLO) of storage group.
-			type: str
+            description: Base Service Level Objective (SLO) of a storage
+                         group.
+            type: str
         cap_gb:
-			description: Storage group capacity in GB.
-			type: int
+            description: Storage group capacity in GB.
+            type: int
         compression:
-			description: Compression flag.
-			type: bool
+            description: Compression flag.
+            type: bool
         device_emulation:
-			description: Device emulation type.
-			type: str
+            description: Device emulation type.
+            type: str
         num_of_child_sgs:
-			description: Number of child storage groups.
-			type: int
+            description: Number of child storage groups.
+            type: int
         num_of_masking_views:
-			description: Number of masking views where storage group is
-                         associated.
-			type: int
+            description: Number of masking views associated with the storage
+                         group.
+            type: int
         num_of_parent_sgs:
-			description: Number of parent storage groups.
-			type: int
+            description: Number of parent storage groups.
+            type: int
         num_of_snapshots:
-			description: Number of snapshots for the storage group.
-			type: int
+            description: Number of snapshots for the storage group.
+            type: int
         num_of_vols:
-			description: Number of volumes in the storage group.
-			type: int
+            description: Number of volumes in the storage group.
+            type: int
         service_level:
-			description: Type of service level.
-			type: str
+            description: Type of service level.
+            type: str
         slo:
-			description: Service level objective (SLO) type.
-			type: str
+            description: Service level objective (SLO) type.
+            type: str
         slo_compliance:
-			description: Type of SLO compliance.
-			type: str
+            description: Type of SLO compliance.
+            type: str
         srp:
-			description: Storage resource pool.
-			type: str
+            description: Storage resource pool.
+            type: str
         storageGroupId:
-			description: Id for the storage group.
-			type: str
+            description: Id for the storage group.
+            type: str
         type:
-			description: type of storage group.
-			type: str
+            description: type of storage group.
+            type: str
         unprotected:
-			description: Flag for storage group protection.
-			type: bool
+            description: Flag for storage group protection.
+            type: bool
         vp_saved_percent:
-			description: Percentage saved for virtual pools.
-			type: int
+            description: Percentage saved for virtual pools.
+            type: int
 storage_group_volumes_details:
     description: Details of the storage group volumes.
     returned: When storage group volumes exists.
     type: complex
     contains:
         effective_wwn:
-			description: Effective WWN of the volume.
-			type: str
+            description: Effective WWN of the volume.
+            type: str
         type:
-			description: Type of the volume.
-			type: str
+            description: Type of the volume.
+            type: str
         volumeId:
-			description: Unique ID of the volume.
-			type: str
+            description: Unique ID of the volume.
+            type: str
         volume_identifier:
-			description: Name associated with the volume.
-			type: str
+            description: Name associated with the volume.
+            type: str
         wwn:
-			description: WWN of the volume.
-			type: str
+            description: WWN of the volume.
+            type: str
 '''
 
-from ansible.module_utils.basic import AnsibleModule
-from ansible.module_utils.storage.dell \
-    import dellemc_ansible_powermax_utils as utils
 import logging
+from ansible_collections.dellemc.powermax.plugins.module_utils.storage.dell \
+    import dellemc_ansible_powermax_utils as utils
+from ansible.module_utils.basic import AnsibleModule
 
 LOG = utils.get_logger('dellemc_powermax_storagegroup', log_devel=logging.
                        INFO)
@@ -370,6 +382,7 @@ class PowerMaxStorageGroup(object):
                        " Ansible Module."
 
     u4v_conn = None
+
     def __init__(self):
         """Define all the parameters required by this module"""
         self.module_params = utils.get_powermax_management_host_parameters()
@@ -382,9 +395,9 @@ class PowerMaxStorageGroup(object):
         )
         if HAS_PYU4V is False:
             self.show_error_exit(msg="Ansible modules for PowerMax require "
-                                      "the PyU4V python library to be "
-                                      "installed. Please install the library "
-                                      "before using these modules.")
+                                 "the PyU4V python library to be "
+                                 "installed. Please install the library "
+                                 "before using these modules.")
         if PYU4V_VERSION_CHECK is not None:
             self.show_error_exit(msg=PYU4V_VERSION_CHECK)
 
@@ -488,7 +501,7 @@ class PowerMaxStorageGroup(object):
             return True, resp
         except Exception as e:
             self.show_error_exit(msg='Create storage group {0} failed.{1}'
-                                  .format(sg_name, str(e)))
+                                 .format(sg_name, str(e)))
 
     def add_volume_storage_group(self, sg_name):
         """Add new volume(s) to existing storage group"""
@@ -503,7 +516,6 @@ class PowerMaxStorageGroup(object):
                     'Both name and id are found for volume %s. No action '
                     'would be taken. Please specify either name or id',
                     sg_name)
-                continue
             elif ('cap_unit' in vol) or ('vol_name' in vol) or \
                     ('size' in vol):
                 if 'cap_unit' in vol:
@@ -643,16 +655,17 @@ class PowerMaxStorageGroup(object):
                             changed = True
                     elif len(volume_list) >= 1:
                         for volume in volume_list:
+                            isbreak = False
                             vol_details = self.provisioning.get_volume(volume)
-                            if unit == 'GB' and vol_details['cap_gb'] == size:
-                                break
-                            elif unit == 'MB' and vol_details['cap_mb'] == \
-                                    size:
-                                break
-                            elif unit == 'TB' and vol_details['cap_gb'] == \
-                                    utils.get_size_in_gb(size, unit):
-                                break
-                            else:
+                            if ((unit == 'GB' and vol_details['cap_gb']
+                                 == size)
+                                or (unit == 'MB' and vol_details['cap_mb']
+                                    == size)
+                                or (unit == 'TB' and vol_details['cap_gb']
+                                    == utils.get_size_in_gb(size, unit))):
+                                isbreak = True
+
+                            if not isbreak:
                                 self.show_error_exit(
                                     msg='A volume with identifier {0} '
                                     'but different size {1} GB '
@@ -679,8 +692,8 @@ class PowerMaxStorageGroup(object):
             self.provisioning.delete_storage_group(sg_name)
             return True
         except Exception as e:
-            err_msg="Delete storage group %s failed with error %s ", sg_name,\
-                    str(e)
+            err_msg = "Delete storage group %s failed with error %s ", sg_name,\
+                str(e)
             self.show_error_exit(msg=err_msg)
 
     def add_existing_volumes_to_sg(self, vol_list, sg_name):
@@ -695,7 +708,6 @@ class PowerMaxStorageGroup(object):
                 LOG.warn(
                     'Both name and id are found for volume %s. No action'
                     'would be taken. Please specify either name or id', vol)
-                continue
             elif 'vol_id' in vol:
                 vol_ids.append(vol['vol_id'])
 
@@ -761,7 +773,6 @@ class PowerMaxStorageGroup(object):
                 LOG.warn('Both name and id are found for volume %s. '
                          'No action would be taken. Please specify '
                          'either name or id', vol)
-                continue
             elif 'vol_id' in vol:
                 vol_ids.append(vol['vol_id'].upper())
             elif 'vol_name' in vol:
@@ -774,13 +785,13 @@ class PowerMaxStorageGroup(object):
                         ' group %s', vol['vol_name'], sg_name)
                 elif len(volume_list) > 1:
                     self.show_error_exit(msg='Duplicate volumes found: '
-                                              'There are {0} volume(s) with '
-                                              'the same name {1} in '
-                                              'the storage group {2}'.
-                                          format(len(volume_list),
-                                                 vol['vol_name'],
-                                                 sg_name)
-                                          )
+                                         'There are {0} volume(s) with '
+                                         'the same name {1} in '
+                                         'the storage group {2}'.
+                                         format(len(volume_list),
+                                                vol['vol_name'],
+                                                sg_name)
+                                         )
                 else:
                     vol_ids.append(volume_list[0])
 
@@ -1055,13 +1066,15 @@ class PowerMaxStorageGroup(object):
         return changed
 
     def check_for_linked_snapshots(self, sg_name):
-        snap_list= None
+        snap_list = None
         try:
             try:
                 snap_list = self.replication.get_storagegroup_snapshot_list(
-                sg_name)
+                    sg_name)
             except utils.PyU4V.utils.exception.ResourceNotFoundException as e:
-                LOG.info("Got exception error while deleting  storage group: %s", str(e))
+                LOG.info(
+                    "Got exception error while deleting  storage group: %s",
+                    str(e))
                 return snap_list
             for snap in snap_list:
                 gen_list = \
@@ -1076,14 +1089,14 @@ class PowerMaxStorageGroup(object):
                             gen_num=gen)
                     if gen_details['isLinked']:
                         self.show_error_exit(msg="Cannot delete SG {0} "
-                                              "because it "
-                                              "has snapshot(s) in linked "
-                                              "state. "
-                                              "Please unlink the snapshot(s) "
-                                              "and retry.".format(sg_name))
+                                             "because it "
+                                             "has snapshot(s) in linked "
+                                             "state. "
+                                             "Please unlink the snapshot(s) "
+                                             "and retry.".format(sg_name))
         except Exception as e:
-            error_msg="Delete storage group %s failed with error %s ",\
-                      sg_name, str(e)
+            error_msg = "Delete storage group %s failed with error %s ",\
+                sg_name, str(e)
             self.show_error_exit(msg=error_msg)
 
     def check_task_validity(self, volumes, vol_state):
@@ -1093,8 +1106,7 @@ class PowerMaxStorageGroup(object):
     def show_error_exit(self, msg):
         if self.u4v_conn is not None:
             try:
-                LOG.info("Closing unisphere connection {0}".format(
-                    self.u4v_conn))
+                LOG.info("Closing unisphere connection %s", self.u4v_conn)
                 utils.close_connection(self.u4v_conn)
                 LOG.info("Connection closed successfully")
             except Exception as e:
@@ -1232,7 +1244,7 @@ class PowerMaxStorageGroup(object):
         result['removed_vols_details'] = \
             list(set(vols_before_op) - set(vols_after_op))
 
-        LOG.info("Closing unisphere connection {0}".format(self.u4v_conn))
+        LOG.info("Closing unisphere connection %s", self.u4v_conn)
         utils.close_connection(self.u4v_conn)
         LOG.info("Connection closed successfully")
 
@@ -1256,7 +1268,7 @@ def get_powermax_storage_group_parameters():
             type='bool'),
         volumes=dict(
             required=False,
-            type='list'),
+            type='list', elements='dict'),
         vol_state=dict(
             required=False,
             choices=[
@@ -1265,7 +1277,7 @@ def get_powermax_storage_group_parameters():
             type='str'),
         child_storage_groups=dict(
             required=False,
-            type='list'),
+            type='list', elements='str'),
         child_sg_state=dict(
             required=False,
             choices=[

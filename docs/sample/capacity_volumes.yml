@@ -16,6 +16,8 @@
     sg_name: 'sample_storage_group'
     threshold_cap: enter the size in GB
 
+  collections:
+    - dellemc.powermax
 
   tasks:
 

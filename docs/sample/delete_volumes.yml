@@ -13,6 +13,9 @@
     serial_no:   "your_serial_no"
     sg_name: 'sample_storage_group'
 
+  collections:
+    - dellemc.powermax
+
   tasks:
 # This task collects the details of the storage group.
   - name: Get details of the Storage Group

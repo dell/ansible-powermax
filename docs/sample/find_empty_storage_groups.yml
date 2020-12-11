@@ -10,7 +10,9 @@
     user: 'your_username'
     password: 'your_password'
     serial_no:   "your_serial_no"
-    
+
+  collections:
+    - dellemc.powermax
 
   tasks:
   # This task fetches the names of all the storage groups.
