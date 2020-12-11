@@ -12,13 +12,13 @@ ANSIBLE_METADATA = {'metadata_version': '1.1',
 DOCUMENTATION = r'''
 ---
 module: dellemc_powermax_volume
-version_added: '2.6'
+version_added: '1.0.3'
 short_description:  Manage volumes on PowerMax Storage System
 description:
-- Managing volumes on PowerMax Storage System includes
-  create volume, rename volume, expand volume and delete volume
+- Managing volumes on PowerMax storage system includes creating a volume,
+  renaming a volume, expanding a volume, and deleting a volume.
 extends_documentation_fragment:
-  - dellemc_powermax.dellemc_powermax
+  - dellemc.powermax.dellemc_powermax.powermax
 author:
 - Vasudevu Lakhinana (@unknown) <ansible.team@dell.com>
 - Akash Shendge (@shenda1) <ansible.team@dell.com>
@@ -27,45 +27,53 @@ options:
   vol_name:
     description:
     - The name of the volume.
+    type: str
   sg_name:
     description:
-    - The name of the storage group
+    - The name of the storage group.
+    type: str
   new_sg_name:
     description:
-    - The name of the target storage group
+    - The name of the target storage group.
+    type: str
   vol_id:
     description:
     - The native id of the volume.
-    - Required in case of rename and delete volume.
-    required: true
+    - Required for rename and delete volume operations.
+    type: str
   size:
     description:
     - The new size of existing volume.
-    - Required in case of create and expand volume.
-    required: true
+    - Required for create and expand volume operations.
+    type: float
   cap_unit:
     description:
     - volume capacity units
     default: GB
     choices: [ MB, GB, TB ]
+    type: str
   new_name:
     description:
     - The new volume identifier for the volume.
+    type: str
   vol_wwn:
     description:
     - The WWN of the volume.
+    type: str
   state:
     description:
     - Defines whether the volume should exist or not.
     required: true
     choices: [absent, present]
+    type: str
 notes:
-- To expand volume, either provide vol_id or vol_name or vol_wwn and sg_name
-- size is required to create/expand volume
-- vol_id is required to rename/delete volume
-- vol_name, sg_name and new_sg_name is required to move volume between
-  storage group
-- Deletion of volume will fail if storage group is part of masking view
+- To expand a volume, either provide vol_id or vol_name or vol_wwn and sg_name
+- size is required to create/expand a volume
+- vol_id is required to rename/delete a volume
+- vol_name, sg_name and new_sg_name is required to move volumes between
+  storage groups
+- Deletion of volume will fail if the storage group is part of a masking
+  view
 
   '''
 
@@ -156,83 +164,82 @@ volume_details:
     type: complex
     contains:
         allocated_percent:
-			description: Allocated percentage the volume.
-			type: int
+            description: Allocated percentage the volume.
+            type: int
         cap_cyl:
-			description: Number of cylinders.
-			type: int
+            description: Number of cylinders.
+            type: int
         cap_gb:
-			description: Volume capacity in GB.
-			type: int
+            description: Volume capacity in GB.
+            type: int
         cap_mb:
-			description: Volume capacity in MB.
-			type: int
+            description: Volume capacity in MB.
+            type: int
         effective_wwn:
-			description: Effective WWN of the volume.
-			type: str
+            description: Effective WWN of the volume.
+            type: str
         emulation:
-			description: Volume emulation type.
-			type: str
+            description: Volume emulation type.
+            type: str
         encapsulated:
-			description: Flag for encapsulation.
-			type: bool
+            description: Flag for encapsulation.
+            type: bool
         has_effective_wwn:
-			description: Flag for effective WWN presence.
-			type: str
+            description: Flag for effective WWN presence.
+            type: str
         mobility_id_enabled:
-			description: Flag for enabling mobility.
-			type: bool
+            description: Flag for enabling mobility.
+            type: bool
         num_of_front_end_paths:
-			description: Number of front end paths in volume.
-			type: int
+            description: Number of front end paths in the volume.
+            type: int
         num_of_storage_groups:
-			description: Number of storage groups in which volume is present.
-			type: int
+            description: Number of storage groups in which volume is present.
+            type: int
         pinned:
-			description: Pinned flag.
-			type: bool
+            description: Pinned flag.
+            type: bool
         rdfGroupId:
-			description: RDFG number for volume.
-			type: int
+            description: RDFG number for volume.
+            type: int
         reserved:
-			description: Reserved flag.
-			type: bool
+            description: Reserved flag.
+            type: bool
         snapvx_source:
-			description: Source snapvx flag.
-			type: bool
+            description: Source SnapVX flag.
+            type: bool
         snapvx_target:
-			description: Target snapvx flag.
-			type: bool
+            description: Target SnapVX flag.
+            type: bool
         ssid:
-			description: SSID of the volume.
-			type: str
+            description: SSID of the volume.
+            type: str
         status:
-			description: Volume status.
-			type: str
+            description: Volume status.
+            type: str
         storageGroupId:
-			description: Storage group ID of the volume.
-			type: str
+            description: Storage group ID of the volume.
+            type: str
         storage_groups:
-			description: List of storage groups for the volume.
-			type: list
+            description: List of storage groups for the volume.
+            type: list
         type:
-			description: Type of the volume.
-			type: str
+            description: Type of the volume.
+            type: str
         volumeId:
-			description: Unique ID of the volume.
-			type: str
+            description: Unique ID of the volume.
+            type: str
         volume_identifier:
-			description: Name identifier for the volume.
-			type: str
+            description: Name identifier for the volume.
+            type: str
         wwn:
-			description: WWN of the volume.
-			type: str
+            description: WWN of the volume.
+            type: str
 '''
 
-from ansible.module_utils.basic import AnsibleModule
-from ansible.module_utils.storage.dell \
+from ansible_collections.dellemc.powermax.plugins.module_utils.storage.dell \
     import dellemc_ansible_powermax_utils as utils
-from pkg_resources import parse_version
+from ansible.module_utils.basic import AnsibleModule
 import logging
 
 LOG = utils.get_logger('dellemc_powermax_volume', log_devel=logging.INFO)
@@ -249,6 +256,7 @@ class PowerMaxVolume(object):
 
     volume_id = None
     u4v_conn = None
+
     def __init__(self):
         """ Define all parameters required by this module"""
         self.module_params = utils.get_powermax_management_host_parameters()
@@ -276,9 +284,9 @@ class PowerMaxVolume(object):
         self.result = {"changed": False, "volume_details": {}}
         if HAS_PYU4V is False:
             self.show_error_exit(msg="Ansible modules for PowerMax require "
-                                      "the PyU4V python library to be "
-                                      "installed. Please install the library "
-                                      "before using these modules.")
+                                 "the PyU4V python library to be "
+                                 "installed. Please install the library "
+                                 "before using these modules.")
 
         if PYU4V_VERSION_CHECK is not None:
             self.show_error_exit(msg=PYU4V_VERSION_CHECK)
@@ -329,12 +337,12 @@ class PowerMaxVolume(object):
             LOG.debug('No volume found in storage group %s', sg_name)
         elif len(volume_list) > 1:
             self.show_error_exit(msg='Duplicate volumes found: '
-                                      'There are {0} '
-                                      'volume(s) with the same name {1} in '
-                                      'the storage group {2}'.
-                                      format(len(volume_list), volume_name,
-                                             sg_name)
-                                  )
+                                 'There are {0} '
+                                 'volume(s) with the same name {1} in '
+                                 'the storage group {2}'.
+                                 format(len(volume_list), volume_name,
+                                        sg_name)
+                                 )
         else:
             vol = self.get_volume_by_nativeid(volume_list[0])
             if self.module.params['vol_wwn'] is not None and "effective_wwn" \
@@ -344,7 +352,7 @@ class PowerMaxVolume(object):
                        ' WWN: %s associated with it, which does not match. '
                        'It is recommended that the user retries the '
                        'operation with Volume name or ID'
-                       %(self.module.params['vol_wwn'], vol['effective_wwn']))
+                       % (self.module.params['vol_wwn'], vol['effective_wwn']))
                 self.show_error_exit(msg=msg)
         return vol
 
@@ -407,7 +415,7 @@ class PowerMaxVolume(object):
             return True
         except Exception as e:
             self.show_error_exit(msg='Rename volume {0} failed with '
-                                  'error {1}'.format(vol_id, str(e)))
+                                 'error {1}'.format(vol_id, str(e)))
 
     def expand_volume(self, vol_id, size_in_gb, existing_vol_size,
                       rdfg_no=None):
@@ -456,8 +464,8 @@ class PowerMaxVolume(object):
                 hop2_vol_rdf_details['rdfMode'] == 'Active'):
             array_details = self.common.get_array(
                 hop1_vol_rdf_details['localSymmetrixId'])
-            if parse_version(array_details['ucode']) \
-                    < parse_version(self.foxtail_version):
+            if utils.parse_version(array_details['ucode']) \
+                    < utils.parse_version(self.foxtail_version):
                 msg = ("Expansion of SRDF/Metro protected volumes is "
                        "supported from v5978.444.444 onward. Please upgrade "
                        "the array for this support.")
@@ -529,8 +537,8 @@ class PowerMaxVolume(object):
                 if vol_rdf_details['rdfMode'] == 'Active':
                     array_details = self.common.get_array(
                         vol_rdf_details['localSymmetrixId'])
-                    if parse_version(array_details['ucode']) \
-                            < parse_version(self.foxtail_version):
+                    if utils.parse_version(array_details['ucode']) \
+                            < utils.parse_version(self.foxtail_version):
                         msg = ("Expansion of SRDF/Metro protected volumes is"
                                " supported from v5978.444.444 onward. Please "
                                "upgrade the array for this support.")
@@ -569,8 +577,8 @@ class PowerMaxVolume(object):
         try:
             if size_in_gb < existing_vol_size:
                 self.show_error_exit(msg='Current volume size {0} GB is '
-                                          'greater than {1} GB specified.'.
-                                      format(existing_vol_size, size_in_gb))
+                                     'greater than {1} GB specified.'.
+                                     format(existing_vol_size, size_in_gb))
             elif size_in_gb > existing_vol_size:
                 if 'rdfGroupId' in vol:
                     array_id = self.module.params['serial_no']
@@ -599,7 +607,7 @@ class PowerMaxVolume(object):
         try:
             if self.module.params['vol_name'] is None:
                 self.show_error_exit(msg='vol_name is required'
-                                          ' during volume creation')
+                                     ' during volume creation')
             LOG.info("SG MSG: %s ", sg_name)
             remote_array = None
             remote_array_sg = None
@@ -720,8 +728,8 @@ class PowerMaxVolume(object):
 
             if volume_list and len(volume_list) > 0:
                 self.show_error_exit(msg="Volume already exists with volume "
-                                          "name %s in storage group %s"
-                                          % (vol_name, new_sg_name))
+                                     "name %s in storage group %s"
+                                     % (vol_name, new_sg_name))
             storage_group_src = self.get_storage_group(sg_name)
             if not storage_group_src['unprotected']:
                 protected_sg_msg = ("Move volume from Storage group %s "
@@ -745,8 +753,8 @@ class PowerMaxVolume(object):
             return True
         except Exception as e:
             error_message = ('Move volume %s from SG %s to SG %s failed with'
-                             ' error %s' % ( vol_name, sg_name, new_sg_name,
-                             str(e)))
+                             ' error %s' % (vol_name, sg_name, new_sg_name,
+                                            str(e)))
             self.show_error_exit(msg=error_message)
 
     def get_storage_group(self, sg_name):
@@ -755,15 +763,15 @@ class PowerMaxVolume(object):
             LOG.info('Getting storage group %s details', sg_name)
             return self.provisioning.get_storage_group(sg_name)
         except Exception as e:
-            msg='Get storage group %s failed with error %s' % (sg_name,str(e))
+            msg = 'Get storage group %s failed with error %s' % (
+                sg_name, str(e))
             LOG.error(msg)
             self.show_error_exit(msg=msg)
 
     def show_error_exit(self, msg):
         if self.u4v_conn is not None:
             try:
-                LOG.info("Closing unisphere connection {0}".format(
-                    self.u4v_conn))
+                LOG.info("Closing unisphere connection %s", self.u4v_conn)
                 utils.close_connection(self.u4v_conn)
                 LOG.info("Connection closed successfully")
             except Exception as e:
@@ -789,7 +797,7 @@ class PowerMaxVolume(object):
 
         if vol_name is not None and sg_name is None:
             self.show_error_exit(msg='Specify Storage group name along '
-                                      'with volume name')
+                                 'with volume name')
 
         self.volume_id = vol_id
 
@@ -797,7 +805,7 @@ class PowerMaxVolume(object):
 
         existing_vol_size = 0
         if vol is not None:
-            self.volume_id=vol['volumeId']
+            self.volume_id = vol['volumeId']
             vol_id = vol['volumeId']
             existing_vol_size = vol['cap_gb']
 
@@ -845,7 +853,7 @@ class PowerMaxVolume(object):
         self.result["changed"] = changed
         if state == 'present':
             self.result["volume_details"] = self.get_volume()
-        LOG.info("Closing unisphere connection {0}".format(self.u4v_conn))
+        LOG.info("Closing unisphere connection %s", self.u4v_conn)
         utils.close_connection(self.u4v_conn)
         LOG.info("Connection closed successfully")
         self.module.exit_json(**self.result)
@@ -863,7 +871,7 @@ def get_powermax_volume_parameters():
         new_name=dict(required=False, type='str'),
         cap_unit=dict(default='GB', choices=['MB', 'GB', 'TB'], type='str'),
         vol_wwn=dict(required=False, type='str'),
-        state=dict(required=True, type='str')
+        state=dict(required=True, type='str', choices=['absent', 'present'])
     )
 
 

@@ -1,4 +1,10 @@
 """ import powermax sdk"""
+# pylint: disable=raise-missing-from
+from __future__ import (absolute_import, division, print_function)
+from decimal import Decimal
+import logging
+__metaclass__ = type
+
 try:
     import PyU4V
     HAS_PYU4V = True
@@ -13,7 +19,6 @@ try:
 except ImportError:
     PKG_RSRC_IMPORTED = False
 
-import logging
 
 try:
     import urllib3
@@ -24,34 +29,36 @@ except ImportError:
 if HAS_URLLIB:
     urllib3.disable_warnings()
 
-from decimal import Decimal
 
 '''
 Check required libraries
 '''
+
+
 def has_pyu4v_sdk():
     return HAS_PYU4V
+
 
 def pyu4v_version_check():
     '''
     Check if required PyU4V version is installed
     '''
     try:
-        if not PKG_RSRC_IMPORTED :
+        if not PKG_RSRC_IMPORTED:
             unsupported_version_message = "Unable to import " \
                                           "'pkg_resources', please install" \
                                           " the required package"
             return unsupported_version_message
-        min_ver = '9.1.0.0'
+        min_ver = '9.1.2.0'
         max_ver = '9.3.0.0'
         curr_version = PyU4V.__version__
         unsupported_version_message = "PyU4V {0} is not supported by this " \
                                       "module.Minimum supported version " \
                                       "is : {1} and less than {2} ".format(
-            curr_version, min_ver,max_ver)
+                                          curr_version, min_ver, max_ver)
         supported_version = (parse_version(
             min_ver) <= parse_version(curr_version) < parse_version(max_ver)
-                             )
+        )
         if supported_version is False:
             return unsupported_version_message
         return None
@@ -104,7 +111,7 @@ options:
     - Version of univmax SDK.
   verifycert:
     description:
-    - Boolean value to inform system whether to verify client certificate or 
+    - Boolean value to inform system whether to verify client certificate or
     not.
   user:
     description:
@@ -114,7 +121,7 @@ options:
     - password to access on to unispherehost
   serial_no:
     description:
-    - Serial number of Powermax system    
+    - Serial number of Powermax system
 
 '''
 
@@ -122,8 +129,8 @@ options:
 def get_powermax_management_host_parameters():
     return dict(
         unispherehost=dict(type='str', required=True),
-        universion=dict(type='int', required=False, choices=[91,92] ),
-        verifycert=dict(type='bool', required=True),
+        universion=dict(type='int', required=False, choices=[91, 92]),
+        verifycert=dict(type='bool', required=True, choices=[True, False]),
         user=dict(type='str', required=True),
         password=dict(type='str', required=True, no_log=True),
         serial_no=dict(type='str', required=True)
@@ -166,14 +173,14 @@ def get_U4V_connection(module_params, application_type=None):
 This method is to establish connection to PowerMax Unisphere
 using PyU4v SDK.
 parameters:
-  module_params - Ansible module parameters which contain below unisphere 
+  module_params - Ansible module parameters which contain below unisphere
                   details to establish connection on to Unisphere
      - unispherehost: IP/FQDN of unisphere host.
      - universion:Version of univmax SDK.
-     - verifycert: Boolean value to inform system whether to verify client 
+     - verifycert: Boolean value to inform system whether to verify client
                    certificate or not.
      - user:  User name to access on to unispherehost
-     - password: Password to access on to unispherehost     
+     - password: Password to access on to unispherehost
 returns connection object to access U4V Unisphere Common sdks
 '''
 
@@ -190,13 +197,13 @@ def get_u4v_unisphere_connection(module_params, application_type=None):
 
 
 '''
-This method is to initialize logger and return the logger object 
+This method is to initialize logger and return the logger object
 parameters:
      - module_name: Name of module to be part of log message.
      - log_file_name: name of the file in which the log meessages get
       appended.
      - log_devel: log level.
-returns logger object 
+returns logger object
 '''
 
 
@@ -238,15 +245,18 @@ def get_size_bytes(size, cap_units):
 Convert the given size to size in GB, size is restricted to 2 decimal places
 '''
 
+
 def get_size_in_gb(size, cap_units):
     size_in_bytes = get_size_bytes(size, cap_units)
     size = Decimal(size_in_bytes / GB_IN_BYTES)
     size_in_gb = round(size, 2)
     return size_in_gb
 
+
 '''
 Close unisphere connection
 '''
+
 
 def close_connection(module_obj):
     module_obj.close_session()

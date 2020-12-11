@@ -1,10 +1,7 @@
 #!/usr/bin/python
 # Copyright: (c) 2019, DellEMC
 
-import logging
-from ansible.module_utils.basic import AnsibleModule
-from ansible.module_utils.storage.dell \
-    import dellemc_ansible_powermax_utils as utils
+from __future__ import (absolute_import, division, print_function)
 
 __metaclass__ = type
 ANSIBLE_METADATA = {'metadata_version': '1.1',
@@ -15,23 +12,23 @@ ANSIBLE_METADATA = {'metadata_version': '1.1',
 DOCUMENTATION = r'''
 ---
 module: dellemc_powermax_maskingview
-version_added: '2.6'
+version_added: '1.0.3'
 short_description:  Managing masking views on PowerMax/VMAX Storage System
 description:
-- Managing masking views on PowerMax Storage System includes,
-  create masking view with port group, storage group and host or host group,
-  rename masking view and delete masking view
+- Managing masking views on PowerMax storage system includes, creating masking
+  view with port group, storage group and host or host group, renaming
+  masking view and deleting masking view.
 - For creating a masking view -
 - (i) portgroup_name,
 - (ii) sg_name and
 - (iii) any one of host_name or hostgroup_name is required.
 - All three entities must be present on the array.
 - For renaming a masking view, the 'new_mv_name' is required.
-  Once a masking view is created, only its name can be changed.
+  After a masking view is created, only its name can be changed.
   No underlying entity (portgroup, storagegroup, host or hostgroup)
-  can be changed on the MV.
+  can be changed on the masking view.
 extends_documentation_fragment:
-  - dellemc_powermax.dellemc_powermax
+  - dellemc.powermax.dellemc_powermax.powermax
 author:
 - Vasudevu Lakhinana (@unknown) <ansible.team@dell.com>
 - Prashant Rakheja (@prashant-dell) <ansible.team@dell.com>
@@ -41,33 +38,40 @@ options:
     - The name of the masking view. No Special Character support except for _.
       Case sensitive for REST Calls.
     required: true
+    type: str
   portgroup_name:
     description:
     - The name of the existing port group.
+    type:  str
   host_name:
     description:
     - The name of the existing host.
       This parameter is to create an exclusive or host export
+    type:  str
   hostgroup_name:
     description:
     - The name of the existing host group. This parameter is used to create
       cluster export
+    type: str
   sg_name:
     description:
     - The name of the existing storage group.
+    type: str
   new_mv_name:
     description:
-    - The new name for renaming function. No Special Character support
+    - The new name for the renaming function. No Special Character support
       except for _. Case sensitive for REST Calls.
+    type: str
   state:
     description:
     - Defines whether the masking view should exist or not.
     choices: [ absent, present ]
     required: true
+    type: str
   '''
 
 EXAMPLES = r'''
-- name: Create MV with hostgroup
+  - name: Create MV with hostgroup
     dellemc_powermax_maskingview:
       unispherehost: "{{unispherehost}}"
       universion: "{{universion}}"
@@ -81,7 +85,7 @@ EXAMPLES = r'''
       sg_name: "Ansible_Testing_SG"
       state: "present"
 
-- name: Create MV with host
+  - name: Create MV with host
     dellemc_powermax_maskingview:
       unispherehost: "{{unispherehost}}"
       universion: "{{universion}}"
@@ -95,7 +99,7 @@ EXAMPLES = r'''
       sg_name: "Ansible_Testing_SG"
       state: "present"
 
-- name: Rename host masking view
+  - name: Rename host masking view
     dellemc_powermax_maskingview:
       unispherehost: "{{unispherehost}}"
       universion: "{{universion}}"
@@ -107,7 +111,7 @@ EXAMPLES = r'''
       new_mv_name: "Ansible_Testing_mv_renamed"
       state: "present"
 
-- name: Delete host masking view
+  - name: Delete host masking view
     dellemc_powermax_maskingview:
       unispherehost: "{{unispherehost}}"
       universion: "{{universion}}"
@@ -125,35 +129,40 @@ changed:
     returned: always
     type: bool
 create_mv:
-	description: Flag sets to true when a new masking view is created.
-	returned: When masking view is created.
-	type: bool
+    description: Flag sets to true when a new masking view is created.
+    returned: When masking view is created.
+    type: bool
 delete_mv:
-	description: Flag sets to true when a masking view is deleted.
-	returned: When masking view is deleted.
-	type: bool
+    description: Flag sets to true when a masking view is deleted.
+    returned: When masking view is deleted.
+    type: bool
 modify_mv:
-	description: Flag sets to true when a masking view is modified.
-	returned: When masking view is modified.
-	type: bool
+    description: Flag sets to true when a masking view is modified.
+    returned: When masking view is modified.
+    type: bool
 mv_details:
-	description: Details of masking view.
-	returned: When masking view exist.
-	type: list
-	contains:
-		hostId:
-			description: Host group present in the masking view.
-			type: str
-		maskingViewId:
-			description: Masking view ID.
-			type: str
-		portGroupId:
-			description: Port group present in the masking view.
-			type: str
-		storageGroupId:
-			description: Storage group present in the masking view.
-			type: str
+    description: Details of masking view.
+    returned: When masking view exist.
+    type: list
+    contains:
+        hostId:
+            description: Host group present in the masking view.
+            type: str
+        maskingViewId:
+            description: Masking view ID.
+            type: str
+        portGroupId:
+            description: Port group present in the masking view.
+            type: str
+        storageGroupId:
+            description: Storage group present in the masking view.
+            type: str
 '''
+
+import logging
+from ansible_collections.dellemc.powermax.plugins.module_utils.storage.dell \
+    import dellemc_ansible_powermax_utils as utils
+from ansible.module_utils.basic import AnsibleModule
 
 LOG = utils.get_logger('dellemc_powermax_maskingview',
                        log_devel=logging.INFO)
@@ -169,6 +178,7 @@ class PowerMaxMaskingView(object):
     """Class with masking view operations"""
 
     u4v_conn = None
+
     def __init__(self):
         """Define all the parameters required by this module"""
         self.module_params = utils.get_powermax_management_host_parameters()
@@ -187,9 +197,9 @@ class PowerMaxMaskingView(object):
         )
         if HAS_PYU4V is False:
             self.show_error_exit(msg="Ansible modules for PowerMax require "
-                                      "the PyU4V python library to be "
-                                      "installed. Please install the library "
-                                      "before using these modules.")
+                                 "the PyU4V python library to be "
+                                 "installed. Please install the library "
+                                 "before using these modules.")
 
         if PYU4V_VERSION_CHECK is not None:
             self.show_error_exit(msg=PYU4V_VERSION_CHECK)
@@ -197,14 +207,14 @@ class PowerMaxMaskingView(object):
         if self.module.params['universion'] is not None:
             universion_details = utils.universion_check(
                 self.module.params['universion'])
-            LOG.info("universion_details: {0}".format(universion_details))
+            LOG.info("universion_details: %s", universion_details)
 
             if not universion_details['is_valid_universion']:
                 self.show_error_exit(msg=universion_details['user_message'])
 
         try:
             self.u4v_conn = utils.get_U4V_connection(
-                    self.module.params, application_type=APPLICATION_TYPE)
+                self.module.params, application_type=APPLICATION_TYPE)
         except Exception as e:
             self.show_error_exit(msg=str(e))
         self.provisioning = self.u4v_conn.provisioning
@@ -215,14 +225,14 @@ class PowerMaxMaskingView(object):
         try:
             mv_list = self.provisioning.get_masking_view_list()
             if mv_name not in mv_list:
-                LOG.info('Masking view {} is not present in system'
-                         .format(mv_name))
+                LOG.info('Masking view %s is not present in system',
+                         mv_name)
                 return None
-            LOG.info('Getting masking view {0} details'.format(mv_name))
+            LOG.info('Getting masking view %s details', mv_name)
             return self.provisioning.get_masking_view(mv_name)
         except Exception as e:
-            LOG.error('Got error {0} while getting details of masking '
-                      'view {0}'.format(str(e), mv_name))
+            LOG.error('Got error %s while getting details of masking '
+                      'view %s', str(e), mv_name)
             return None
 
     def is_mv_changed(self, mv):
@@ -273,24 +283,21 @@ class PowerMaxMaskingView(object):
             return False
         elif (pg_name is None) or (sg_name is None) or \
                 (host_name is None and hostgroup_name is None):
-            error_message = 'Failed to create masking view {0},' \
-                            ' Please provide SG, PG and host / host ' \
-                            'group name' \
-                            ' to create masking view'.format(mv_name)
+            error_message = ('Failed to create masking view %s, Please '
+                             'provide SG, PG and host / host group name to '
+                             'create masking view', mv_name)
             self.show_error_exit(msg=error_message)
             return False
         try:
-            LOG.info('Creating masking view {0}... '
-                     .format(mv_name))
+            LOG.info('Creating masking view %s... ', mv_name)
             resp = self.provisioning.create_masking_view_existing_components(
                 port_group_name=pg_name, masking_view_name=mv_name,
                 storage_group_name=sg_name, host_name=host_name,
                 host_group_name=hostgroup_name)
             return True, resp
         except Exception as e:
-            self.show_error_exit(msg='Create masking view {0} failed; '
-                                      'error {1}'
-                                  .format(mv_name, str(e)))
+            self.show_error_exit(msg='Create masking view %s failed; error '
+                                     '%s' % (mv_name, str(e)))
 
     def delete_masking_view(self, mv_name):
         """Delete masking view from system"""
@@ -298,9 +305,8 @@ class PowerMaxMaskingView(object):
             self.provisioning.delete_masking_view(mv_name)
             return True
         except Exception as e:
-            self.show_error_exit(msg='Delete masking view {0} failed '
-                                      'with error {1}.'
-                                  .format(mv_name, str(e)))
+            self.show_error_exit(msg='Delete masking view %s failed with '
+                                     'error %s.' % (mv_name, str(e)))
 
     def rename_masking_view(self, mv_name, new_mv_name):
         """Rename existing masking view with given name"""
@@ -312,15 +318,14 @@ class PowerMaxMaskingView(object):
             changed = True
         except Exception as e:
             self.show_error_exit(msg='Rename masking view {0} failed '
-                                      'with error {1}.'.format(mv_name,
-                                                               str(e)))
+                                 'with error {1}.'.format(mv_name,
+                                                          str(e)))
         return changed
 
     def show_error_exit(self, msg):
         if self.u4v_conn is not None:
             try:
-                LOG.info("Closing unisphere connection {0}".format(
-                    self.u4v_conn))
+                LOG.info("Closing unisphere connection %s", self.u4v_conn)
                 utils.close_connection(self.u4v_conn)
                 LOG.info("Connection closed successfully")
             except Exception as e:
@@ -352,18 +357,18 @@ class PowerMaxMaskingView(object):
 
         if state == 'present' and not masking_view and not new_mv_name \
                 and mv_name:
-            LOG.info('Creating masking view {0}'.format(mv_name))
+            LOG.info('Creating masking view %s', mv_name)
             result['create_mv'], result['mv_details'] = \
                 self.create_masking_view(mv_name)
 
         if state == 'present' and masking_view and new_mv_name:
-            LOG.info('Renaming masking view {0}'.format(mv_name))
+            LOG.info('Renaming masking view %s', mv_name)
             result['modify_mv'] = self.rename_masking_view(mv_name,
                                                            new_mv_name)
             mv_name = new_mv_name
 
         if state == 'absent' and masking_view:
-            LOG.info('Delete masking view {0} '.format(mv_name))
+            LOG.info('Delete masking view %s', mv_name)
             result['delete_mv'] = self.delete_masking_view(mv_name)
 
         if state == 'present' and masking_view:
@@ -374,7 +379,7 @@ class PowerMaxMaskingView(object):
                 result['delete_mv']:
             result['changed'] = True
 
-        LOG.info("Closing unisphere connection {0}".format(self.u4v_conn))
+        LOG.info("Closing unisphere connection %s", self.u4v_conn)
         utils.close_connection(self.u4v_conn)
         LOG.info("Connection closed successfully")
 
@@ -393,7 +398,7 @@ def get_powermax_masking_view_parameters():
         sg_name=dict(required=False, type='str'),
         new_mv_name=dict(required=False, type='str'),
         state=dict(required=True, choices=['present', 'absent'], type='str')
-        )
+    )
 
 
 def main():

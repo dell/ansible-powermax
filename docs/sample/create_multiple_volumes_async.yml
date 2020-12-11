@@ -13,6 +13,10 @@
     sg_name: 'sample_storage_group'
     vol_name: 'sample_volume'
     cap_unit: 'GB'
+
+  collections:
+    - dellemc.powermax
+
   tasks:
   - name: Create volume
     register: result

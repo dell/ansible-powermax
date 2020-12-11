@@ -12,16 +12,16 @@ ANSIBLE_METADATA = {'metadata_version': '1.1',
 DOCUMENTATION = r'''
 ---
 module: dellemc_powermax_srdf
-version_added: '2.6'
+version_added: '1.3.0'
 short_description:  Manage SRDF pair on PowerMax/VMAX Storage
                     System
 description:
-- Managing SRDF link on PowerMax Storage System includes creating SRDF pair
-  for a storage group, modify SRDF mode, modify SRDF state of an existing
-  SRDF pair and delete SRDF pair. All create and modify calls are asynchronous
-  by default.
+- Managing SRDF link on a PowerMax storage system includes creating an SRDF
+  pair for a storage group, modifying the SRDF mode, modifying the SRDF state
+  of an existing SRDF pair, and deleting an SRDF pair. All create and modify
+  calls are asynchronous by default.
 extends_documentation_fragment:
-  - dellemc_powermax.dellemc_powermax
+  - dellemc.powermax.dellemc_powermax.powermax
 author:
 - Manisha Agrawal (@agrawm3) <ansible.team@dell.com>
 - Rajshree Khare (@khareRajshree) <ansible.team@dell.com>
@@ -29,33 +29,34 @@ author:
 options:
   sg_name:
     description:
-    - Name of Storage Group. SRDF Pairings are managed at a storage group
+    - Name of storage group. SRDF pairings are managed at a storage group
       level.
     - Required to identify the SRDF link.
+    required: false
     type: str
-    default: None
   serial_no:
     description:
-    - The serial number will refer to the source (R1) PowerMax/VMAX array when
+    - The serial number will refer to the source PowerMax/VMAX array when
       protecting a storage group. However srdf_state operations may be issued
-      from R1 or R2 array.
+      from primary or remote array.
+    required: true
     type: str
-    default: None
   remote_serial_no:
     description:
-    - Integer 12 Digit Serial Number of remote PowerMAX or VMAX array (R2).
+    - Integer 12-digit serial number of remote PowerMax or VMAX array.
     - Required while creating an SRDF link.
+    required: false
     type: str
-    default: None
   rdfg_no:
     description:
     - The RDF group number.
-    - Optional parameter for each call. For create, if specified, the array
-      will reuse the RDF group, otherwise return error. For modify and delete
-      operations, if the RFD group number is not specified, and the storage
-      group is protected by multiple RDF Groups, then an error will be raised.
+    - Optional parameter for each call. For a create operation, if specified,
+      the array will reuse the RDF group, otherwise an error is returned. For
+      modify and delete operations, if the RFD group number is not specified,
+      and the storage group is protected by multiple RDF groups, then an error
+      is raised.
+    required: false
     type: int
-    default: None
   state:
     description:
     - Define whether the SRDF pairing should exist or not.
@@ -67,26 +68,28 @@ options:
   srdf_mode:
     description:
     - The replication mode of the SRDF pair.
-    - Required when creating SRDF pair.
-    - Can be modified by providing required value.
+    - Required when creating an SRDF pair.
+    - Can be modified by providing a required value.
     choices: [Active, Adaptive Copy, Synchronous, Asynchronous]
+    required: false
     type: str
-    default: None
   srdf_state:
     description:
     - Desired state of the SRDF pairing. While creating a new SRDF pair,
-      allowed values are 'Establish' and 'Suspend'. If state is not specified,
-      the pair will be created in 'Suspended' state. When modifying the state,
-      only certain changes are allowed.
+      allowed values are 'Establish' and 'Suspend'. If the state is not
+      specified, the pair will be created in a 'Suspended' state. When
+      modifying the state, only certain changes are allowed.
+    required: false
     type: str
     choices: [Establish, Resume, Restore, Suspend, Swap, Split, Failback,
              Failover, Setbias]
   new_rdf_group:
     description:
-    - Overrides the SRDF Group selection functionality and forces the creation
-      of a new SRDF Group.
+    - Overrides the SRDF group selection functionality and forces the creation
+      of a new SRDF group.
     - PowerMax has a limited number of RDF groups. If this flag is set to True,
       and the RDF groups are exhausted, then SRDF link creation will fail.
+    required: false
     default: false
     type: bool
   wait_for_completion:
@@ -94,24 +97,26 @@ options:
     - Flag to indicate if the operation should be run synchronously or
       asynchronously. True signifies synchronous execution. By default, all
       create and update operations will be run asynchronously.
+    required: false
     default: False
     type: bool
   job_id:
     description:
-    - Job ID of an Asynchronous task. Can be used to get details of a job.
-    default: None
+    - Job ID of an asynchronous task. Can be used to get details of a job.
+    required: false
     type: str
   witness:
     description:
     - Flag to specify use of Witness for a Metro configuration. Setting to
       True signifies to use Witness, setting it to False signifies to use
       Bias. It is recommended to configure a witness for SRDF Metro in a
-      production environment, this is configured via Unipshere for PowerMAX UI
+      production environment, this is configured via Unisphere for PowerMax UI
       or REST.
     - The flag can be set only for modifying srdf_state to either Establish,
-      Suspend or Restore.
-    - While creating a Metro configuration, witness flag must be set to True.
-    default: None
+      Suspend, or Restore.
+    - While creating a Metro configuration, the witness flag must be set to
+      True.
+    required: false
     type: bool
   '''
 
@@ -367,10 +372,10 @@ SRDF_link_details:
             type: str
 '''
 
-from ansible.module_utils.basic import AnsibleModule
-from ansible.module_utils.storage.dell \
-    import dellemc_ansible_powermax_utils as utils
 import logging
+from ansible_collections.dellemc.powermax.plugins.module_utils.storage.dell \
+    import dellemc_ansible_powermax_utils as utils
+from ansible.module_utils.basic import AnsibleModule
 
 LOG = utils.get_logger(
     module_name='dellemc_powermax_srdf',
@@ -389,6 +394,7 @@ class PowerMax_SRDF(object):
     '''Class with srdf operations'''
 
     u4v_conn = None
+
     def __init__(self):
         ''' Define all parameters required by this module'''
         self.module_params = utils.get_powermax_management_host_parameters()
@@ -406,9 +412,9 @@ class PowerMax_SRDF(object):
             "Job_details": {}}
         if HAS_PYU4V is False:
             self.show_error_exit(msg="Ansible modules for PowerMax require "
-                                      "the PyU4V python library to be "
-                                      "installed. Please install the library "
-                                      "before using these modules.")
+                                 "the PyU4V python library to be "
+                                 "installed. Please install the library "
+                                 "before using these modules.")
 
         if PYU4V_VERSION_CHECK is not None:
             self.show_error_exit(msg=PYU4V_VERSION_CHECK)
@@ -465,12 +471,12 @@ class PowerMax_SRDF(object):
                                     'Adaptive Copy',
                                     'Synchronous',
                                     'Asynchronous']),
-            rdfg_no=dict(type='int', required=False, default=None),
-            wait_for_completion=dict(
-                type='bool', required=False, default=False),
-            new_rdf_group=dict(type='bool', required=False, default=False),
-            witness=dict(type='bool', required=False, default=None),
-            job_id=dict(type='str', required=False, default=None))
+            rdfg_no=dict(type='int', required=False),
+            wait_for_completion=dict(type='bool', required=False,
+                                     default=False),
+            new_rdf_group=dict(type='bool', required=False),
+            witness=dict(type='bool', required=False),
+            job_id=dict(type='str', required=False))
 
     def get_srdf_link(self, sg_name):
         '''
@@ -493,7 +499,7 @@ class PowerMax_SRDF(object):
             else:
                 rdfg_list = self.replication\
                     .get_storage_group_srdf_group_list(
-                    sg_name)
+                        sg_name)
                 if len(rdfg_list) == 0:
                     msg = 'No RDF group exists for the given storage group.'
                     LOG.info(msg)
@@ -518,8 +524,8 @@ class PowerMax_SRDF(object):
             return srdf_link_details
         except Exception as e:
             LOG.error("Got error %s while getting SRDF details for "
-                      "storage group %s with rdfg number %s", str(e),
-                      sg_name, rdfg_number)
+                      "storage group %s with rdfg number %s",
+                      str(e), sg_name, rdfg_number)
             srdf_link_details = None
             return srdf_link_details
 
@@ -581,8 +587,8 @@ class PowerMax_SRDF(object):
             return True
 
         except Exception as e:
-            errorMsg = 'Create srdf_link for sg {0} failed with error {1}'\
-                .format(sg_name, str(e))
+            errorMsg = ('Create srdf_link for sg %s failed with error %s' %
+                        (sg_name, str(e)))
             self.show_error_exit(msg=errorMsg)
 
     def _compute_required_establish_flag(self, srdf_state):
@@ -593,8 +599,8 @@ class PowerMax_SRDF(object):
         else:
             errorMsg = (
                 "Creation of SRDF link failed. Allowed states while "
-                "creating SRDF link are only Establish or Suspend. Got {0}"
-                .format(srdf_state))
+                "creating SRDF link are only Establish or Suspend. Got %s."
+                % srdf_state)
             self.show_error_exit(msg=errorMsg)
 
     def modify_srdf_mode(self, srdf_mode):
@@ -628,10 +634,10 @@ class PowerMax_SRDF(object):
             return True
         except Exception as e:
             errorMsg = (
-                "Modifying SRDF mode of srdf_link from {0} to {1} for "
-                "SG {2} failed with error {3}".format(
-                    srdf_link['modes'][0], srdf_mode,
-                    srdf_link['storageGroupName'], str(e)))
+                "Modifying SRDF mode of srdf_link from %s to %s for "
+                "SG %s failed with error %s" %
+                (srdf_link['modes'][0], srdf_mode,
+                 srdf_link['storageGroupName'], str(e)))
             self.show_error_exit(msg=errorMsg)
 
     def modify_srdf_state(self, action):
@@ -677,12 +683,12 @@ class PowerMax_SRDF(object):
                     = remoteSymmetrix
             return True
         except Exception as e:
-            if isinstance(e,utils.PyU4V.utils.exception.PyU4VException ) and \
+            if isinstance(e, utils.PyU4V.utils.exception.PyU4VException) and \
                     "is already in the requested RDF state" in str(e):
                 return False
             errorMsg = ("Modifying SRDF state of srdf_link for storage group "
-                        "{0} failed with error {1}".format(
-                            srdf_link['storageGroupName'], str(e)))
+                        "%s failed with error %s" %
+                        (srdf_link['storageGroupName'], str(e)))
             self.show_error_exit(msg=errorMsg)
 
     def _check_for_SRDF_state_modification(self, new_operation):
@@ -706,8 +712,8 @@ class PowerMax_SRDF(object):
             changed = False
 
         else:
-            LOG.info('Modifying SRDF state from %s to %s', current_state,
-                     new_operation)
+            LOG.info('Modifying SRDF state from %s to %s',
+                     current_state, new_operation)
             changed = self.modify_srdf_state(new_operation)
         return changed
 
@@ -724,8 +730,8 @@ class PowerMax_SRDF(object):
             self.result['SRDF_link_details'] = {}
             return True
         except Exception as e:
-            errorMsg = ('Delete srdf_link {0} failed with error {1}'.format(
-                srdf_link['storageGroupName'], str(e)))
+            errorMsg = ('Delete srdf_link %s failed with error %s' %
+                        (srdf_link['storageGroupName'], str(e)))
             self.show_error_exit(msg=errorMsg)
 
     def get_job_details(self, job_id):
@@ -734,8 +740,8 @@ class PowerMax_SRDF(object):
                 job_id)
         except Exception as e:
             errorMsg = (
-                'Get Job details for job_id {0} failed with error {1}'.format(
-                    job_id, str(e)))
+                'Get Job details for job_id %s failed with error %s' %
+                (job_id, str(e)))
             self.show_error_exit(msg=errorMsg)
 
     def check_for_multiple_rdf_groups(self, srdf_link=None, get_only=True):
@@ -776,13 +782,12 @@ class PowerMax_SRDF(object):
     def show_error_exit(self, msg):
         if self.u4v_conn is not None:
             try:
-                LOG.info("Closing unisphere connection {0}".format(
-                    self.u4v_conn))
+                LOG.info("Closing unisphere connection %s", self.u4v_conn)
                 utils.close_connection(self.u4v_conn)
                 LOG.info("Connection closed successfully")
             except Exception as e:
-                err_msg = "Failed to close unisphere connection with error:" \
-                          " {0}".format(str(e))
+                err_msg = ("Failed to close unisphere connection with error:"
+                           " %s", str(e))
                 LOG.error(err_msg)
         LOG.error(msg)
         self.module.fail_json(msg=msg)
@@ -868,7 +873,7 @@ class PowerMax_SRDF(object):
         # Update the module's final state
         LOG.info('changed %s', changed)
         self.result['changed'] = changed
-        LOG.info("Closing unisphere connection {0}".format(self.u4v_conn))
+        LOG.info("Closing unisphere connection %s", self.u4v_conn)
         utils.close_connection(self.u4v_conn)
         LOG.info("Connection closed successfully")
         self.module.exit_json(**self.result)

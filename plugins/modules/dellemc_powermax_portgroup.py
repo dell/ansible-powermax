@@ -1,10 +1,7 @@
 #!/usr/bin/python
 # Copyright: (c) 2019, DellEMC
 
-from ansible.module_utils.basic import AnsibleModule
-from ansible.module_utils.storage.dell \
-    import dellemc_ansible_powermax_utils as utils
-import logging
+from __future__ import (absolute_import, division, print_function)
 
 __metaclass__ = type
 ANSIBLE_METADATA = {'metadata_version': '1.1',
@@ -15,14 +12,14 @@ ANSIBLE_METADATA = {'metadata_version': '1.1',
 DOCUMENTATION = r'''
 ---
 module: dellemc_powermax_portgroup
-version_added: '2.6'
+version_added: '1.0.3'
 short_description:  Manage port groups on PowerMax/VMAX Storage System
 description:
-- Managing port groups on PowerMax Storage System includes create port group 
-  with set of ports, add/remove single or multiple ports to/from port group, 
-  rename port group and delete port group
+- Managing port groups on PowerMax storage system includes creating a port
+  group with a set of ports, adding or removing single or multiple ports to or
+  from port group, renaming port group and deleting port group.
 extends_documentation_fragment:
-  - dellemc_powermax.dellemc_powermax
+  - dellemc.powermax.dellemc_powermax.powermax
 author:
 - Vasudevu Lakhinana (@unknown) <ansible.team@dell.com>
 - Ashish Verma (@vermaa31) <ansible.team@dell.com>
@@ -33,29 +30,39 @@ options:
     - The name of the port group. No Special Character support except for _.
       Case sensitive for REST Calls.
     required: true
+    type: str
   ports:
     description:
-    - List of Directors and Ports to be added or removed to/from the Port Group
+    - List of directors and ports to be added or removed to or from the port
+      group
+    required: false
+    type: list
+    elements: dict
   new_name:
-      description:
-      - New name of the port group while renaming. No Special Character support
-        except for _. Case sensitive for REST Calls.
-      required: false
+    description:
+    - New name of the port group while renaming. No Special Character support
+      except for _. Case sensitive for REST Calls.
+    required: false
+    type: str
   state:
     description:
     - Define whether the port group should exist or not.
-    - present - indicates that the port group should be present on system
-    - absent - indicates that the port group should not be present on system
+    - present - indicates that the port group should be present on the system
+    - absent - indicates that the port group should not be present on the
+               system
     required: true
     choices: [ absent, present]
+    type: str
   port_state:
     description:
-    - Define whether the port should be present or absent in port group.
-    - present-in-group - indicates that the ports should be present on port
+    - Define whether the port should be present or absent in the port group.
+    - present-in-group - indicates that the ports should be present on a port
       group object
-    - absent-in-group - indicates that the ports should not be present on port
-      group object
+    - absent-in-group - indicates that the ports should not be present on a
+      port group object
+    required: false
     choices: [present-in-group, absent-in-group]
+    type: str
   '''
 
 EXAMPLES = r'''
@@ -155,30 +162,35 @@ portgroup_details:
     returned: When the port group exist.
     type: list
     contains:
-		num_of_masking_views:
-			description: Number of masking views in where port group is
-			             associated.
-			type: int
-		num_of_ports:
-			description: Number of ports in the port group.
-			type: int
-		portGroupId:
-			description: Port group ID.
-			type: str
-		symmetrixPortKey:
-			description: Symmetrix system director and port in the port group.
-			type: list
-			contains:
-				directorId:
-					description: Director ID of the port.
-					type: str
-				portId:
-					description: Port number of the port.
-					type: str
-		type:
-			description: Type of ports in port group.
-			type: str
+        num_of_masking_views:
+            description: Number of masking views in where port group is
+                         associated.
+            type: int
+        num_of_ports:
+            description: Number of ports in the port group.
+            type: int
+        portGroupId:
+            description: Port group ID.
+            type: str
+        symmetrixPortKey:
+            description: Symmetrix system director and port in the port group.
+            type: list
+            contains:
+                directorId:
+                    description: Director ID of the port.
+                    type: str
+                portId:
+                    description: Port number of the port.
+                    type: str
+        type:
+            description: Type of ports in port group.
+            type: str
 '''
+
+import logging
+from ansible_collections.dellemc.powermax.plugins.module_utils.storage.dell \
+    import dellemc_ansible_powermax_utils as utils
+from ansible.module_utils.basic import AnsibleModule
 
 LOG = utils.get_logger('dellemc_powermax_portgroup', log_devel=logging.INFO)
 
@@ -189,10 +201,12 @@ PYU4V_VERSION_CHECK = utils.pyu4v_version_check()
 # Application Type
 APPLICATION_TYPE = 'ansible_v1.2'
 
+
 class PowerMaxPortGroup(object):
     """Class with port group operations"""
 
     u4v_conn = None
+
     def __init__(self):
         """Define all parameters required by this module"""
         self.module_params = utils.get_powermax_management_host_parameters()
@@ -202,14 +216,15 @@ class PowerMaxPortGroup(object):
             argument_spec=self.module_params,
             supports_check_mode=False
         )
-        # result is a dictionary that contains changed status and portgroup details
+        # result is a dictionary that contains changed status and portgroup
+        # details
         self.result = {"changed": False, "portgroup_details": {}}
 
         if HAS_PYU4V is False:
             self.show_error_exit(msg="Ansible modules for PowerMax require "
-                                      "the PyU4V python library to be "
-                                      "installed. Please install the library "
-                                      "before using these modules.")
+                                 "the PyU4V python library to be "
+                                 "installed. Please install the library "
+                                 "before using these modules.")
 
         if PYU4V_VERSION_CHECK is not None:
             self.show_error_exit(msg=PYU4V_VERSION_CHECK)
@@ -217,7 +232,7 @@ class PowerMaxPortGroup(object):
         if self.module.params['universion'] is not None:
             universion_details = utils.universion_check(
                 self.module.params['universion'])
-            LOG.info("universion_details: {0}".format(universion_details))
+            LOG.info("universion_details: %s", universion_details)
 
             if not universion_details['is_valid_universion']:
                 self.show_error_exit(msg=universion_details['user_message'])
@@ -225,7 +240,7 @@ class PowerMaxPortGroup(object):
         # Getting PyU4V instance for provisioning on to VMAX
         try:
             self.u4v_conn = utils.get_U4V_connection(
-                    self.module.params, application_type=APPLICATION_TYPE)
+                self.module.params, application_type=APPLICATION_TYPE)
         except Exception as e:
             self.show_error_exit(msg=str(e))
         self.provisioning = self.u4v_conn.provisioning
@@ -234,11 +249,11 @@ class PowerMaxPortGroup(object):
     def get_portgroup(self, portgroup_name):
         """Get details of a given port group"""
         try:
-            LOG.info('Getting port group {0} details'.format(portgroup_name))
+            LOG.info('Getting port group %s details', portgroup_name)
             return self.provisioning.get_portgroup(portgroup_name)
         except Exception as e:
-            LOG.error('Got error {0} while getting details of port group {0}'
-                      .format(str(e), portgroup_name))
+            LOG.error('Got error %s while getting details of port group %s',
+                      str(e), portgroup_name)
             return None
 
     def create_portgroup(self, portgroup_name):
@@ -249,26 +264,25 @@ class PowerMaxPortGroup(object):
         try:
             if port_state and port_state != 'present-in-group':
                 self.show_error_exit(msg="Invalid port_state: Ports can only "
-                                      "be added while creating portgroup")
+                                     "be added while creating portgroup")
             if ports:
                 for port in ports:
                     port['directorId'] = port.pop('director_id')
                     port['portId'] = port.pop('port_id')
-            LOG.info('Creating port group {0} with ports {1}'.format(
-                    portgroup_name, ports))
+            LOG.info('Creating port group %s with ports %s',
+                     portgroup_name, ports)
             self.provisioning.create_multiport_portgroup(portgroup_name, ports)
             return True
         except Exception as e:
-            self.show_error_exit(msg='Create port group {0} failed; error {1}'
-                                  .format(portgroup_name, str(e)))
+            self.show_error_exit(msg="Create port group %s failed; error %s"
+                                     % (portgroup_name, str(e)))
 
     def _get_add_ports(self, existing, ports):
         add_ports = []
         if ports is not None:
             add_ports = {key: ports[key] for key in ports
                          if key in existing and ports[key] != existing[key]}
-            LOG.debug(' {0} Ports to be added to port group '
-                      .format(add_ports))
+            LOG.debug('%s Ports to be added to port group', add_ports)
         return add_ports
 
     def _get_rem_ports(self, existing, ports):
@@ -276,8 +290,7 @@ class PowerMaxPortGroup(object):
         if ports is not None:
             rem_ports = {key: ports[key] for key in ports
                          if key in existing and ports[key] == existing[key]}
-            LOG.debug(' {0} Ports to be removed from port group'
-                      .format(rem_ports))
+            LOG.debug('%s Ports to be removed from port group', rem_ports)
         return rem_ports
 
     def add_ports_to_portgroup(self, portgroup_name):
@@ -290,8 +303,9 @@ class PowerMaxPortGroup(object):
                 existing_ports = port_group["symmetrixPortKey"]
             add_ports = self.module.params['ports']
             if add_ports is None or len(add_ports) == 0:
-                self.show_error_exit(msg="List of ports to be added is empty for"
-                                  "portgroup {0}".format(portgroup_name))
+                self.show_error_exit(
+                    msg=("List of ports to be added is empty for portgroup "
+                         "%s", portgroup_name))
             '''
             Need to iterate through all the input port parameters
             as there is no update method in SDK to change them at once.
@@ -314,8 +328,9 @@ class PowerMaxPortGroup(object):
                     changed = True
             return changed
         except Exception as e:
-            self.show_error_exit(msg='Add port {0} to port group {1} failed with error {2}.'
-                                  .format(port, portgroup_name, str(e)))
+            self.show_error_exit(
+                msg=('Add port %s to port group %s failed with error %s.' %
+                     (port, portgroup_name, str(e))))
 
     def remove_ports_from_portgroup(self, portgroup_name):
         """Remove ports from portgroup"""
@@ -323,14 +338,14 @@ class PowerMaxPortGroup(object):
         try:
             port_group = self.provisioning.get_portgroup(portgroup_name)
             if 'symmetrixPortKey' not in port_group:
-                LOG.info("No ports in portgroup : {0}".format(portgroup_name))
+                LOG.info("No ports in portgroup : %s", portgroup_name)
                 return False
             existing_ports = port_group["symmetrixPortKey"]
             rem_ports = self.module.params['ports']
             if rem_ports is None or len(rem_ports) == 0:
-                self.show_error_exit(msg='List of ports to be removed is'
-                                          ' empty for portgroup {0}'
-                                      .format(portgroup_name))
+                self.show_error_exit(msg='List of ports to be removed is '
+                                         'empty for portgroup %s'
+                                         % portgroup_name)
             '''
             Need to iterate through all the input port parameters
             as there is no update method in SDK to change them at once.
@@ -339,7 +354,8 @@ class PowerMaxPortGroup(object):
             changed = False
             for port in rem_ports:
                 rem_port = (port["director_id"], port["port_id"])
-                # Need to check whether the port to be removed is present in port-group
+                # Need to check whether the port to be removed is present in
+                # port-group
                 rem_port_present = False
                 for existing_port in existing_ports:
                     if str(str(port["director_id"]) + ':' +
@@ -353,8 +369,9 @@ class PowerMaxPortGroup(object):
                     changed = True
             return changed
         except Exception as e:
-            self.show_error_exit(msg='Remove port {0} from port group {1} failed with error {2}.'
-                                  .format(port, portgroup_name, str(e)))
+            self.show_error_exit(
+                msg=('Remove port %s from port group %s failed with error '
+                     '%s.' % (port, portgroup_name, str(e))))
 
     def delete_portgroup(self, portgroup_name):
         """
@@ -365,8 +382,8 @@ class PowerMaxPortGroup(object):
             self.provisioning.delete_portgroup(portgroup_name)
             return True
         except Exception as e:
-            self.show_error_exit(msg='Delete port group {0} failed.'
-                                  .format(portgroup_name))
+            self.show_error_exit(msg='Delete port group %s failed.' %
+                                 portgroup_name)
 
     def modify_portgroup(self, portgroup_name):
         """
@@ -375,39 +392,38 @@ class PowerMaxPortGroup(object):
         new_name = self.module.params['new_name']
 
         if len(new_name) == 0:
-            LOG.info(' No new name for port group {0}'
-                     .format(portgroup_name))
-            error_msg = 'Please provide new name for the port group {0}' \
-                .format(portgroup_name)
+            LOG.info(' No new name for port group %s', portgroup_name)
+            error_msg = ('Please provide new name for the port group %s',
+                         portgroup_name)
             self.show_error_exit(msg=error_msg)
         '''
         Check if current port group name and new port group name
         are same
         '''
         if new_name == portgroup_name:
-            LOG.info(' New name is same as current port group {0}'
-                     .format(portgroup_name))
+            LOG.info(' New name is same as current port group %s',
+                     portgroup_name)
             return False
         try:
-            LOG.info('Renaming port group {0} with new name {1}'
-                     .format(portgroup_name, new_name))
+            LOG.info('Renaming port group %s with new name %s',
+                     portgroup_name, new_name)
             self.provisioning.modify_portgroup(portgroup_name,
                                                rename_portgroup=new_name)
             return True
         except Exception as e:
-            self.show_error_exit(msg='Modify port group {0} failed with error {1}.'
-                                  .format(portgroup_name, str(e)))
+            self.show_error_exit(
+                msg=('Modify port group %s failed with error %s.' %
+                     (portgroup_name, str(e))))
 
     def show_error_exit(self, msg):
         if self.u4v_conn is not None:
             try:
-                LOG.info("Closing unisphere connection {0}".format(
-                    self.u4v_conn))
+                LOG.info("Closing unisphere connection %s", self.u4v_conn)
                 utils.close_connection(self.u4v_conn)
                 LOG.info("Connection closed successfully")
             except Exception as e:
-                err_msg = "Failed to close unisphere connection with error:" \
-                          " {0}".format(str(e))
+                err_msg = ("Failed to close unisphere connection with "
+                           "error: %s", str(e))
                 LOG.error(err_msg)
         LOG.error(msg)
         self.module.fail_json(msg=msg)
@@ -426,24 +442,26 @@ class PowerMaxPortGroup(object):
         changed = False
         if state == 'present' and not portgroup and \
                 portgroup_name and not new_name:
-            LOG.info('Creating port group {0}'.format(portgroup_name))
+            LOG.info('Creating port group %s', portgroup_name)
             changed = self.create_portgroup(portgroup_name)
         elif state == 'present' and portgroup and new_name:
-            LOG.info('Modifying port group {0}'.format(portgroup_name))
+            LOG.info('Modifying port group %s', portgroup_name)
             changed_name = self.modify_portgroup(portgroup_name)
             if changed_name:
                 portgroup_name = new_name
             changed = changed or changed_name
         if state == 'present' and port_state == 'present-in-group' and \
                 portgroup:
-            LOG.info('Adding ports to port group {0}'.format(portgroup_name))
+            LOG.info('Adding ports to port group %s', portgroup_name)
             changed = self.add_ports_to_portgroup(portgroup_name) or changed
         elif state == 'present' and port_state == 'absent-in-group' and \
                 portgroup:
-            LOG.info('Removing ports from port group {0}'.format(portgroup_name))
-            changed = self.remove_ports_from_portgroup(portgroup_name) or changed
+            LOG.info(
+                'Removing ports from port group %s', portgroup_name)
+            changed = self.remove_ports_from_portgroup(
+                portgroup_name) or changed
         elif state == 'absent' and portgroup:
-            LOG.info('Delete post group {0} '.format(portgroup_name))
+            LOG.info('Delete post group %s', portgroup_name)
             changed = self.delete_portgroup(portgroup_name) or changed
 
         '''
@@ -452,10 +470,11 @@ class PowerMaxPortGroup(object):
         '''
         self.result["changed"] = changed
         if state == 'absent':
-            del self.result["portgroup_details"]
+            self.result["portgroup_details"] = {}
         else:
-            self.result["portgroup_details"] = self.get_portgroup(portgroup_name)
-        LOG.info("Closing unisphere connection {0}".format(self.u4v_conn))
+            self.result["portgroup_details"] = self.get_portgroup(
+                portgroup_name)
+        LOG.info("Closing unisphere connection %s", self.u4v_conn)
         utils.close_connection(self.u4v_conn)
         LOG.info("Connection closed successfully")
         self.module.exit_json(**self.result)
@@ -465,11 +484,12 @@ def get_powermax_portgroup_parameters():
     """This method provide parameter required for the ansible port group modules on PowerMax"""
     return dict(
         portgroup_name=dict(required=True, type='str'),
-        ports=dict(required=False, type='list'),
-        state=dict(required=True, type='str'),
-        port_state=dict(required=False, type='str'),
+        ports=dict(required=False, type='list', elements='dict'),
+        state=dict(required=True, type='str', choices=['present', 'absent']),
+        port_state=dict(required=False, type='str',
+                        choices=['present-in-group', 'absent-in-group']),
         new_name=dict(required=False, type='str')
-        )
+    )
 
 
 def main():

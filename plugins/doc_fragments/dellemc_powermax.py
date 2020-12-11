@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
-
 # Copyright: (c) 2019, Dell EMC.
 
 from __future__ import absolute_import, division, print_function
 __metaclass__ = type
+
 
 class ModuleDocFragment(object):
 
@@ -17,14 +17,14 @@ notes:
 
 '''
 
-    # Documentation fragment for PowerMax (dellemc_powermax)
-    DELLEMC_POWERMAX = r'''
+    # Documentation fragment for PowerMax (powermax)
+    POWERMAX = r'''
 options:
     serial_no:
         description:
-            - the serial number of  PowerMax/VMAX array. It is a
-              required parameter for all array specific operations 
-              except for getting list of arrays in the 
+            - The serial number of  PowerMax/VMAX array. It is a
+              required parameter for all array specific operations
+              except for getting list of arrays in the
               Gatherfacts module.
         type: str
         required: True
@@ -35,13 +35,14 @@ options:
         required: True
     universion:
         description:
-            - Unisphere version, currently '91' and '92' versions are 
+            - Unisphere version, currently '91' and '92' versions are
               supported.
-        type: str
+        type: int
         required: False
+        choices: [91, 92]
     verifycert:
         description:
-            - boolean variable to specify whether to validate SSL
+            - Boolean variable to specify whether to validate SSL
               certificate or not.
             - True - indicates that the SSL certificate should be
                      verified.
@@ -49,21 +50,21 @@ options:
                       verified.
         type: bool
         required: True
-        choices: [ True, False]        
+        choices: [ True, False]
     user:
         description:
-            - username of the Unisphere host.
+            - The username of the Unisphere host.
         type: str
         required: True
     password:
         description:
-            - the password of the Unisphere host.
+            - The password of the Unisphere host.
         type: str
         required: True
 
 requirements:
   - A DellEMC PowerMax Storage device.
-  - Ansible 2.7.
+  - Ansible 2.9 or higher.
 notes:
   - The modules prefixed with dellemc_powermax are built to support the
     DellEMC PowerMax storage platform.

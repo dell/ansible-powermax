@@ -13,7 +13,10 @@
     sg_name: 'sample_storage_group'
     vol_name: 'sample_volume'
     cap_unit: 'GB'
-  
+
+  collections:
+    - dellemc.powermax
+
   tasks:
 # This task creates multiple volumes using the loop. 
   - name: Create volumes
