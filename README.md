@@ -39,6 +39,7 @@ Install python [sdk](https://pypi.org/project/PyU4V/) named 'PyU4V'. It can be i
 ## Installing Collections
 
   * Download the tar build and run the following command to install the collection anywhere in your system:
+        
         ansible-galaxy collection install dellemc-powermax-1.3.0.tar.gz -p ./collections
   * Set the environment variable:
         export ANSIBLE_COLLECTIONS_PATHS=$ANSIBLE_COLLECTIONS_PATHS:<install_path>/collections
