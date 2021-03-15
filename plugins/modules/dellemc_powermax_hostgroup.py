@@ -1,5 +1,5 @@
 #!/usr/bin/python
-# Copyright: (c) 2019, DellEMC
+# Copyright: (c) 2019-2021, DellEMC
 
 from __future__ import (absolute_import, division, print_function)
 
@@ -12,16 +12,17 @@ ANSIBLE_METADATA = {'metadata_version': '1.1',
 DOCUMENTATION = r'''
 ---
 module: dellemc_powermax_hostgroup
-version_added: '1.0.3'
-short_description:  Manage host group (cascaded initiator group) on
-                    PowerMax/VMAX Storage System
+version_added: '1.0.0'
+short_description:  Manage a host group (cascaded initiator group) on a
+                    PowerMax/VMAX storage system
 description:
-- Managing host group on PowerMax storage system includes creating a host
-  group with set of hosts, adding or removing hosts to or from host group,
+- Managing a host group on a PowerMax storage system includes creating a host
+  group with a set of hosts, adding or removing hosts to or from a host group,
   renaming a host group, modifying host flags of a host group, and deleting
   a host group.
 extends_documentation_fragment:
   - dellemc.powermax.dellemc_powermax.powermax
+  - dellemc.powermax.dellemc_powermax.powermax_serial_no
 author:
 - Vasudevu Lakhinana (@unknown) <ansible.team@dell.com>
 - Manisha Agrawal (@agrawm3) <ansible.team@dell.com>
@@ -42,8 +43,8 @@ options:
   state:
     description:
     - Define whether the host group should be present or absent on the system.
-    - present - indicates that the host group should be present on system
-    - absent - indicates that the host group should be absent on system
+    - present - indicates that the host group should be present on the system
+    - absent - indicates that the host group should be absent on the system
     required: true
     choices: [absent, present]
     type: str
@@ -72,17 +73,26 @@ options:
     - Possible values are true, false, unset(default state)
     required: false
     type: dict
+  host_type:
+    description:
+      - Describing the OS type (default or hpux)
+    required: false
+    choices: [default, hpux]
+    type: str
   new_name:
     description:
     - The new name for the host group for the renaming function. No Special
       Character support except for _. Case sensitive for REST Calls
     type: str
 notes:
-  - In gather facts module, empty host groups will be listed as hosts.
+  - In the gather facts module, empty host groups will be listed as hosts.
+  - host_flags and host_type are mutually exclusive parameters.
+  - Hostgroups with 'default' host_type will have 'default' hosts.
+  - Hostgroups with 'hpux' host_type will have 'hpux' hosts.
   '''
 
 EXAMPLES = r'''
-  - name: Create host group
+  - name: Create host group with 'default' host_type
     dellemc_powermax_hostgroup:
       unispherehost: "{{unispherehost}}"
       universion: "{{universion}}"
@@ -90,16 +100,47 @@ EXAMPLES = r'''
       user: "{{user}}"
       password: "{{password}}"
       serial_no: "{{serial_no}}"
-      hostgroup_name: "{{hostgroup_name}}"
+      hostgroup_name: "ansible_test_HG_1"
+      host_type: "default"
       hosts:
-      - Ansible_Testing_host
+      - ansible_test_1
+      host_state: 'present-in-group'
+      state: 'present'
+
+  - name: Create host group with 'hpux' host_type
+    dellemc_powermax_hostgroup:
+      unispherehost: "{{unispherehost}}"
+      universion: "{{universion}}"
+      verifycert: "{{verifycert}}"
+      user: "{{user}}"
+      password: "{{password}}"
+      serial_no: "{{serial_no}}"
+      hostgroup_name: "ansible_test_HG_2"
+      host_type: "hpux"
+      hosts:
+      - ansible_test_2
+      host_state: 'present-in-group'
+      state: 'present'
+
+  - name: Create host group with host_flags
+    dellemc_powermax_hostgroup:
+      unispherehost: "{{unispherehost}}"
+      universion: "{{universion}}"
+      verifycert: "{{verifycert}}"
+      user: "{{user}}"
+      password: "{{password}}"
+      serial_no: "{{serial_no}}"
+      hostgroup_name: "ansible_test_HG_3"
+      hosts:
+      - ansible_test_3
       state: 'present'
       host_state: 'present-in-group'
       host_flags:
           spc2_protocol_version: true
           consistent_lun: true
+          volume_set_addressing: 'unset'
           disable_q_reset_on_ua: false
-          openvms: unset
+          openvms: 'unset'
 
   - name: Get host group details
     dellemc_powermax_hostgroup:
@@ -109,7 +150,7 @@ EXAMPLES = r'''
       user: "{{user}}"
       password: "{{password}}"
       serial_no: "{{serial_no}}"
-      hostgroup_name: "{{hostgroup_name}}"
+      hostgroup_name: "ansible_test_HG_1"
       state: 'present'
 
   - name: Adding host to host group
@@ -120,7 +161,7 @@ EXAMPLES = r'''
       user: "{{user}}"
       password: "{{password}}"
       serial_no: "{{serial_no}}"
-      hostgroup_name: "{{hostgroup_name}}"
+      hostgroup_name: "ansible_test_HG_1"
       hosts:
       - Ansible_Testing_host2
       state: 'present'
@@ -134,13 +175,13 @@ EXAMPLES = r'''
       user: "{{user}}"
       password: "{{password}}"
       serial_no: "{{serial_no}}"
-      hostgroup_name: "{{hostgroup_name}}"
+      hostgroup_name: "ansible_test_HG_1"
       hosts:
       - Ansible_Testing_host2
       state: 'present'
       host_state: 'absent-in-group'
 
-  - name: Modify flags of host group
+  - name: Modify host group using host_type
     dellemc_powermax_hostgroup:
       unispherehost: "{{unispherehost}}"
       universion: "{{universion}}"
@@ -148,7 +189,19 @@ EXAMPLES = r'''
       user: "{{user}}"
       password: "{{password}}"
       serial_no: "{{serial_no}}"
-      hostgroup_name: "{{hostgroup_name}}"
+      hostgroup_name: "ansible_test_HG_1"
+      host_type: "hpux"
+      state: 'present'
+
+  - name: Modify host group using host_flags
+    dellemc_powermax_hostgroup:
+      unispherehost: "{{unispherehost}}"
+      universion: "{{universion}}"
+      verifycert: "{{verifycert}}"
+      user: "{{user}}"
+      password: "{{password}}"
+      serial_no: "{{serial_no}}"
+      hostgroup_name: "ansible_test_HG_1"
       host_flags:
           spc2_protocol_version: unset
           disable_q_reset_on_ua: false
@@ -164,8 +217,8 @@ EXAMPLES = r'''
       user: "{{user}}"
       password: "{{password}}"
       serial_no: "{{serial_no}}"
-      hostgroup_name: "{{hostgroup_name}}"
-      new_name: "Ansible_Testing_hostgroup2"
+      hostgroup_name: "ansible_test_HG_1"
+      new_name: "ansible_test_hostgroup_1"
       state: 'present'
 
   - name: Delete host group
@@ -176,7 +229,7 @@ EXAMPLES = r'''
       user: "{{user}}"
       password: "{{password}}"
       serial_no: "{{serial_no}}"
-      hostgroup_name: "Ansible_Testing_hostgroup2"
+      hostgroup_name: "ansible_test_hostgroup_1"
       state: 'absent'
 '''
 
@@ -232,7 +285,7 @@ hostgroup_details:
                          overridden.
             type: bool
         type:
-            description: Type of host group.
+            description: Type of initiator.
             type: str
 '''
 
@@ -250,7 +303,42 @@ HAS_PYU4V = utils.has_pyu4v_sdk()
 PYU4V_VERSION_CHECK = utils.pyu4v_version_check()
 
 # Application Type
-APPLICATION_TYPE = 'ansible_v1.2'
+APPLICATION_TYPE = 'ansible_v1.4'
+
+BASE_FLAGS = {'volume_set_addressing': {'enabled': False, 'override': False},
+              'disable_q_reset_on_ua': {'enabled': False, 'override': False},
+              'environ_set': {'enabled': False, 'override': False},
+              'avoid_reset_broadcast': {'enabled': False, 'override': False},
+              'openvms': {'enabled': False, 'override': False},
+              'scsi_3': {'enabled': False, 'override': False},
+              'spc2_protocol_version': {'enabled': False, 'override': False},
+              'scsi_support1': {'enabled': False, 'override': False},
+              'consistent_lun': False
+              }
+
+
+def flags_default():
+    """
+    Build Host Flags for the default host_type
+    :return: (dict)
+    """
+    return BASE_FLAGS
+
+
+def flags_hpux():
+    """
+    Build Host Flags for HPUX host_type
+    :return: (dict)
+    """
+    flags = BASE_FLAGS.copy()
+    flags['volume_set_addressing'] = {'enabled': True, 'override': True}
+    flags['spc2_protocol_version'] = {'enabled': True, 'override': True}
+    flags['openvms'] = {'enabled': False, 'override': True}
+    return flags
+
+
+HOST_FLAGS = {'default': flags_default(),
+              'hpux': flags_hpux()}
 
 
 class PowerMaxHostGroup(object):
@@ -263,10 +351,13 @@ class PowerMaxHostGroup(object):
         self.module_params = utils.get_powermax_management_host_parameters()
         self.module_params.update(self.get_powermax_hostgroup_parameters())
 
+        mutually_exclusive = [['host_flags', 'host_type']]
+
         # initialize the ansible module
         self.module = AnsibleModule(
             argument_spec=self.module_params,
-            supports_check_mode=False
+            supports_check_mode=False,
+            mutually_exclusive=mutually_exclusive
         )
         # result is a dictionary that contains changed status and host details
         self.result = {"changed": False, "host_details": {}}
@@ -307,6 +398,8 @@ class PowerMaxHostGroup(object):
             host_state=dict(required=False, type='str',
                             choices=['present-in-group', 'absent-in-group']),
             host_flags=dict(required=False, type='dict'),
+            host_type=dict(type='str', required=False, choices=['default',
+                                                                'hpux']),
             new_name=dict(type='str', required=False)
         )
 
@@ -316,7 +409,7 @@ class PowerMaxHostGroup(object):
         '''
         try:
             LOG.info('Getting host group %s details', hostgroup_name)
-            hostGroupFromGet = self.provisioning.get_hostgroup(hostgroup_name)
+            hostGroupFromGet = self.provisioning.get_host_group(hostgroup_name)
             if hostGroupFromGet:
                 return hostGroupFromGet
 
@@ -356,7 +449,8 @@ class PowerMaxHostGroup(object):
         '''
         for host_flag_name in self.host_flags_list:
             if (host_flag_name not in received_host_flags or
-                    received_host_flags[host_flag_name] in ['unset', 'Unset']):
+                    received_host_flags[host_flag_name]
+                    in ['unset', 'Unset']):
                 self._set_to_default(host_flag_name, new_host_flags_dict)
 
             elif (received_host_flags[host_flag_name] is False or
@@ -382,6 +476,7 @@ class PowerMaxHostGroup(object):
         hosts = self.module.params['hosts']
         host_state = self.module.params['host_state']
         received_host_flags = self.module.params['host_flags']
+        host_type = self.module.params['host_type']
         emptyHostGroupFlag = False
         param_list = [hostgroup_name]
         new_host_flags_dict = {}
@@ -396,6 +491,10 @@ class PowerMaxHostGroup(object):
             self._create_host_flags_dict(
                 received_host_flags, new_host_flags_dict)
             param_list.append(new_host_flags_dict)
+        elif host_type:
+            new_host_flags_dict = HOST_FLAGS[host_type]
+        else:
+            new_host_flags_dict = None
 
         try:
             if emptyHostGroupFlag:
@@ -409,13 +508,15 @@ class PowerMaxHostGroup(object):
                     try:
                         self.provisioning.get_host(host_id=host)
                     except Exception as e:
-                        errorMsg = 'Create host group {0} failed as the host {1} does not exist'.format(
-                            hostgroup_name, host)
+                        errorMsg = 'Create host group {0} failed as the ' \
+                                   'host {1} does not exist'\
+                            .format(hostgroup_name, host)
                         self.show_error_exit(msg=errorMsg)
                 LOG.info('Creating host group %s with parameters %s',
                          hostgroup_name, param_list)
-                self.provisioning.create_hostgroup(
-                    hostgroup_name, host_flags=new_host_flags_dict, host_list=hosts)
+                self.provisioning.create_host_group(
+                    hostgroup_name, host_flags=new_host_flags_dict,
+                    host_list=hosts)
             return True
 
         except Exception as e:
@@ -454,8 +555,8 @@ class PowerMaxHostGroup(object):
             try:
                 LOG.info('Adding hosts %s to host group %s',
                          add_list, hostgroup_name)
-                self.provisioning.modify_hostgroup(hostgroup_name,
-                                                   add_host_list=add_list)
+                self.provisioning.modify_host_group(hostgroup_name,
+                                                    add_host_list=add_list)
                 return True
             except Exception as e:
                 errorMsg = ("Adding host %s to host group %s failed with"
@@ -486,8 +587,8 @@ class PowerMaxHostGroup(object):
             try:
                 LOG.info('Removing hosts %s from host group %s',
                          rem_list, hostgroup_name)
-                self.provisioning.modify_hostgroup(hostgroup_name,
-                                                   remove_host_list=rem_list)
+                self.provisioning.modify_host_group(hostgroup_name,
+                                                    remove_host_list=rem_list)
                 return True
             except Exception as e:
                 errorMsg = ("Removing host %s from host group %s failed with"
@@ -499,7 +600,7 @@ class PowerMaxHostGroup(object):
 
     def rename_hostgroup(self, hostgroup_name, new_name):
         try:
-            self.provisioning.modify_hostgroup(
+            self.provisioning.modify_host_group(
                 hostgroup_name, new_name=new_name)
             return True
         except Exception as e:
@@ -514,7 +615,7 @@ class PowerMaxHostGroup(object):
         A host group cannot be deleted if it is associated with a masking view.
         '''
         try:
-            self.provisioning.delete_hostgroup(hostgroup_name)
+            self.provisioning.delete_host_group(hostgroup_name)
             return True
         except Exception as e:
             errorMsg = 'Delete host group {0} failed with error {1}'.format(
@@ -560,32 +661,36 @@ class PowerMaxHostGroup(object):
         else:
             self._enable_consistent_lun(current_flags)
 
-    def modify_host_flags(self, hostgroup_name, received_host_flags):
+    def modify_host_flags(self, hostgroup_name, received_host_flags=None,
+                          host_type=None):
         current_flags = {}
         self._recreate_host_flag_dict(
             self.get_hostgroup(hostgroup_name), current_flags)
         new_flags_dict = copy.deepcopy(current_flags)
 
-        for flag in received_host_flags:
-            if flag != 'consistent_lun':
-                if (received_host_flags[flag] is True or
-                        received_host_flags[flag] in ['True', 'true']):
-                    self._set_to_enable(flag, new_flags_dict)
+        if host_type:
+            new_flags_dict = HOST_FLAGS[host_type]
+        elif received_host_flags:
+            for flag in received_host_flags:
+                if flag != 'consistent_lun':
+                    if (received_host_flags[flag] is True or
+                            received_host_flags[flag] in ['True', 'true']):
+                        self._set_to_enable(flag, new_flags_dict)
 
-                elif (received_host_flags[flag] is False or
-                      received_host_flags[flag] in ['false', 'False']):
-                    self._set_to_disable(flag, new_flags_dict)
+                    elif (received_host_flags[flag] is False or
+                          received_host_flags[flag] in ['false', 'False']):
+                        self._set_to_disable(flag, new_flags_dict)
 
+                    else:
+                        self._set_to_default(flag, new_flags_dict)
+
+                elif (received_host_flags['consistent_lun'] is False or
+                      received_host_flags['consistent_lun'] in
+                      ['False', 'false', 'unset', 'Unset']):
+
+                    self._disable_consistent_lun(new_flags_dict)
                 else:
-                    self._set_to_default(flag, new_flags_dict)
-
-            elif (received_host_flags['consistent_lun'] is False or
-                  received_host_flags['consistent_lun'] in
-                  ['False', 'false', 'unset', 'Unset']):
-
-                self._disable_consistent_lun(new_flags_dict)
-            else:
-                self._enable_consistent_lun(new_flags_dict)
+                    self._enable_consistent_lun(new_flags_dict)
 
         if new_flags_dict == current_flags:
             LOG.info('No change detected')
@@ -594,13 +699,13 @@ class PowerMaxHostGroup(object):
             try:
                 LOG.info('Modifying host group flags for host %s with %s',
                          hostgroup_name, new_flags_dict)
-                self.provisioning.modify_hostgroup(
+                self.provisioning.modify_host_group(
                     hostgroup_name, new_flags_dict)
                 return True
 
             except Exception as e:
-                errorMsg = ('Modify host group %s failed with error %s',
-                            hostgroup_name, str(e))
+                errorMsg = ('Modify host group %s failed with error %s'
+                            % (hostgroup_name, str(e)))
                 self.show_error_exit(msg=errorMsg)
             return None
 
@@ -640,6 +745,7 @@ class PowerMaxHostGroup(object):
         hosts = self.module.params['hosts']
         new_name = self.module.params['new_name']
         host_flags = self.module.params['host_flags']
+        host_type = self.module.params['host_type']
 
         hostgroup = self.get_hostgroup(hostgroup_name)
         changed = False
@@ -660,11 +766,12 @@ class PowerMaxHostGroup(object):
             changed = self.remove_hosts_from_hostgroup(
                 hostgroup_name, hosts) or changed
 
-        if (state == 'present' and hostgroup and host_flags):
-            LOG.info('Modifying host group flags of hostgroup %s to %s',
-                     hostgroup_name, host_flags)
-            changed = (self.modify_host_flags(hostgroup_name, host_flags) or
-                       changed)
+        if (state == 'present' and hostgroup and (host_flags or host_type)):
+            LOG.info('Modifying host group flags of hostgroup %s',
+                     hostgroup_name)
+            changed = (self.modify_host_flags(hostgroup_name,
+                                              received_host_flags=host_flags,
+                                              host_type=host_type) or changed)
 
         if (state == 'present' and hostgroup and new_name):
             if hostgroup['hostGroupId'] != new_name:

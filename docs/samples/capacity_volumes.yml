@@ -39,7 +39,7 @@
       all_volumes_Id: "{{storage_details.storage_group_volumes | list}}"
 
 #  This task uses the volume id's assigned to variable all_volume_Id to get the volume details. 
-  - name : Get the details of all volume in the storage group
+  - name: Get the details of all volume in the storage group
     register: temp_result
     dellemc_powermax_volume:
       unispherehost: "{{unispherehost}}"

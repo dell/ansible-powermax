@@ -1,5 +1,5 @@
 #!/usr/bin/python
-# Copyright: (c) 2019, DellEMC
+# Copyright: (c) 2019-2021, DellEMC
 
 from __future__ import (absolute_import, division, print_function)
 
@@ -12,15 +12,16 @@ ANSIBLE_METADATA = {'metadata_version': '1.1',
 DOCUMENTATION = r'''
 ---
 module: dellemc_powermax_host
-version_added: '1.0.3'
+version_added: '1.0.0'
 short_description:  Manage host (initiator group) on PowerMax/VMAX Storage
                     System
 description:
-- Managing hosts on a PowerMax storage system includes creating host with a
+- Managing hosts on a PowerMax storage system includes creating a host with a
   set of initiators and host flags, adding and removing initiators to or from
-  host, modifying host flag values, renaming host, and deleting host.
+  a host, modifying host flag values, renaming a host, and deleting a host.
 extends_documentation_fragment:
   - dellemc.powermax.dellemc_powermax.powermax
+  - dellemc.powermax.dellemc_powermax.powermax_serial_no
 author:
 - Vasudevu Lakhinana (@unknown) <ansible.team@dell.com>
 - Manisha Agrawal (@agrawm3) <ansible.team@dell.com>
@@ -49,9 +50,10 @@ options:
     type: str
   initiator_state:
     description:
-    - Define whether the initiators should be present or absent in the host.
-    - present-in-host - indicates that the initiators should exist on host
-    - absent-in-host - indicates that the initiators should not exist on host
+    - Define whether the initiators should be present or absent on the host.
+    - present-in-host - indicates that the initiators should exist on the host
+    - absent-in-host - indicates that the initiators should not exist on the
+      host
     - Required when creating a host with initiators or adding and removing
       initiators to or from an existing host
     choices: [present-in-host, absent-in-host]
@@ -72,15 +74,23 @@ options:
     - Possible values are true, false, unset(default state)
     required: false
     type: dict
+  host_type:
+    description:
+      - Describing the OS type (default or hpux)
+    required: false
+    choices: [default, hpux]
+    type: str
   new_name:
     description:
     - The new name of the host for the renaming function. No Special Character
       support except for _. Case sensitive for REST Calls
     type: str
+notes:
+  - host_flags and host_type are mutually exclusive parameters.
   '''
 
 EXAMPLES = r'''
-  - name: Create host
+  - name: Create host with host_type 'default'
     dellemc_powermax_host:
       unispherehost: "{{unispherehost}}"
       universion: "{{universion}}"
@@ -88,7 +98,31 @@ EXAMPLES = r'''
       user: "{{user}}"
       password: "{{password}}"
       serial_no: "{{serial_no}}"
-      host_name: "{{host_name}}"
+      host_name: "ansible_test_1"
+      host_type: "default"
+      state: 'present'
+
+  - name: Create host with host_type 'hpux'
+    dellemc_powermax_host:
+      unispherehost: "{{unispherehost}}"
+      universion: "{{universion}}"
+      verifycert: "{{verifycert}}"
+      user: "{{user}}"
+      password: "{{password}}"
+      serial_no: "{{serial_no}}"
+      host_name: "ansible_test_2"
+      host_type: "hpux"
+      state: 'present'
+
+  - name: Create host with host_flags
+    dellemc_powermax_host:
+      unispherehost: "{{unispherehost}}"
+      universion: "{{universion}}"
+      verifycert: "{{verifycert}}"
+      user: "{{user}}"
+      password: "{{password}}"
+      serial_no: "{{serial_no}}"
+      host_name: "ansible_test_3"
       initiators:
       - 10000090fa7b4e85
       host_flags:
@@ -108,7 +142,7 @@ EXAMPLES = r'''
       user: "{{user}}"
       password: "{{password}}"
       serial_no: "{{serial_no}}"
-      host_name: "{{host_name}}"
+      host_name: "ansible_test_1"
       state: 'present'
 
   - name: Adding initiator to host
@@ -119,7 +153,7 @@ EXAMPLES = r'''
       user: "{{user}}"
       password: "{{password}}"
       serial_no: "{{serial_no}}"
-      host_name: "{{host_name}}"
+      host_name: "ansible_test_1"
       initiators:
       - 10000090fa3d303e
       initiator_state: 'present-in-host'
@@ -133,13 +167,13 @@ EXAMPLES = r'''
       user: "{{user}}"
       password: "{{password}}"
       serial_no: "{{serial_no}}"
-      host_name: "{{host_name}}"
+      host_name: "ansible_test_1"
       initiators:
       - 10000090fa3d303e
       initiator_state: 'absent-in-host'
       state: 'present'
 
-  - name: Modify flags of host
+  - name: Modify host using host_type
     dellemc_powermax_host:
       unispherehost: "{{unispherehost}}"
       universion: "{{universion}}"
@@ -147,7 +181,19 @@ EXAMPLES = r'''
       user: "{{user}}"
       password: "{{password}}"
       serial_no: "{{serial_no}}"
-      host_name: "{{host_name}}"
+      host_name: "ansible_test_1"
+      host_type: "hpux"
+      state: 'present'
+
+  - name: Modify host using host_flags
+    dellemc_powermax_host:
+      unispherehost: "{{unispherehost}}"
+      universion: "{{universion}}"
+      verifycert: "{{verifycert}}"
+      user: "{{user}}"
+      password: "{{password}}"
+      serial_no: "{{serial_no}}"
+      host_name: "ansible_test_1"
       host_flags:
           spc2_protocol_version: unset
           consistent_lun: unset
@@ -165,8 +211,8 @@ EXAMPLES = r'''
       user: "{{user}}"
       password: "{{password}}"
       serial_no: "{{serial_no}}"
-      host_name: "{{host_name}}"
-      new_name: "{{new_host_name}}"
+      host_name: "ansible_test_1"
+      new_name: "ansible_test_1_host"
       state: 'present'
 
   - name: Delete host
@@ -177,7 +223,7 @@ EXAMPLES = r'''
       user: "{{user}}"
       password: "{{password}}"
       serial_no: "{{serial_no}}"
-      host_name: "{{new_host_name}}"
+      host_name: "ansible_test_1_host"
       state: 'absent'
 '''
 
@@ -232,7 +278,7 @@ host_details:
                          overridden.
             type: bool
         type:
-            description: Type of host.
+            description: Type of initiator.
             type: str
 '''
 
@@ -250,7 +296,42 @@ HAS_PYU4V = utils.has_pyu4v_sdk()
 PYU4V_VERSION_CHECK = utils.pyu4v_version_check()
 
 # Application Type
-APPLICATION_TYPE = 'ansible_v1.2'
+APPLICATION_TYPE = 'ansible_v1.4'
+
+BASE_FLAGS = {'volume_set_addressing': {'enabled': False, 'override': False},
+              'disable_q_reset_on_ua': {'enabled': False, 'override': False},
+              'environ_set': {'enabled': False, 'override': False},
+              'avoid_reset_broadcast': {'enabled': False, 'override': False},
+              'openvms': {'enabled': False, 'override': False},
+              'scsi_3': {'enabled': False, 'override': False},
+              'spc2_protocol_version': {'enabled': False, 'override': False},
+              'scsi_support1': {'enabled': False, 'override': False},
+              'consistent_lun': False
+              }
+
+
+def flags_default():
+    """
+    Build Host Flags for the default host_type
+    :return: (dict)
+    """
+    return BASE_FLAGS
+
+
+def flags_hpux():
+    """
+    Build Host Flags for HPUX host_type
+    :return: (dict)
+    """
+    flags = BASE_FLAGS.copy()
+    flags['volume_set_addressing'] = {'enabled': True, 'override': True}
+    flags['spc2_protocol_version'] = {'enabled': True, 'override': True}
+    flags['openvms'] = {'enabled': False, 'override': True}
+    return flags
+
+
+HOST_FLAGS = {'default': flags_default(),
+              'hpux': flags_hpux()}
 
 
 class PowerMaxHost(object):
@@ -263,10 +344,14 @@ class PowerMaxHost(object):
         ''' Define all parameters required by this module'''
         self.module_params = utils.get_powermax_management_host_parameters()
         self.module_params.update(self.get_powermax_host_parameters())
+
+        mutually_exclusive = [['host_flags', 'host_type']]
+
         # initialize the ansible module
         self.module = AnsibleModule(
             argument_spec=self.module_params,
-            supports_check_mode=False
+            supports_check_mode=False,
+            mutually_exclusive=mutually_exclusive
         )
         # result is a dictionary that contains changed status and host details
         self.result = {"changed": False, "host_details": {}}
@@ -309,6 +394,8 @@ class PowerMaxHost(object):
                                  choices=['present-in-host',
                                           'absent-in-host']),
             host_flags=dict(required=False, type='dict'),
+            host_type=dict(type='str', required=False, choices=['default',
+                                                                'hpux']),
             new_name=dict(type='str', required=False)
         )
 
@@ -383,21 +470,24 @@ class PowerMaxHost(object):
         initiator_state = self.module.params['initiator_state']
         initiators = self.module.params['initiators']
         received_host_flags = self.module.params['host_flags']
+        host_type = self.module.params['host_type']
 
         if (initiator_state == 'absent-in-host' or initiator_state is None):
             initiators = None
 
-        if received_host_flags:
-            new_host_flags_dict = {}
+        new_host_flags_dict = {}
+        if host_type:
+            new_host_flags_dict = HOST_FLAGS[host_type]
+        elif received_host_flags:
             self._create_host_flags_dict(received_host_flags,
                                          new_host_flags_dict)
         else:
             new_host_flags_dict = None
 
         try:
-            msg = ("Creating host %s with parameters:initiators=%s,"
-                   "host_flags=%s", host_name, initiators,
-                   new_host_flags_dict)
+            msg = "Creating host %s with parameters:initiators=%s, " \
+                  "host_flags=%s" % (host_name, initiators,
+                                     new_host_flags_dict)
             LOG.info(msg)
             self.provisioning.create_host(host_name,
                                           initiator_list=initiators,
@@ -522,30 +612,34 @@ class PowerMaxHost(object):
         else:
             self._enable_consistent_lun(current_flags)
 
-    def modify_host_flags(self, host_name, received_host_flags):
+    def modify_host_flags(self, host_name, received_host_flags=None,
+                          host_type=None):
         current_flags = {}
         self._recreate_host_flag_dict(self.get_host(host_name), current_flags)
         new_flags_dict = copy.deepcopy(current_flags)
 
-        for flag in received_host_flags:
-            if flag != 'consistent_lun':
-                if (received_host_flags[flag] is True or
-                        received_host_flags[flag] in ['True', 'true']):
-                    self._set_to_enable(flag, new_flags_dict)
+        if host_type:
+            new_flags_dict = HOST_FLAGS[host_type]
+        elif received_host_flags:
+            for flag in received_host_flags:
+                if flag != 'consistent_lun':
+                    if (received_host_flags[flag] is True or
+                            received_host_flags[flag] in ['True', 'true']):
+                        self._set_to_enable(flag, new_flags_dict)
 
-                elif (received_host_flags[flag] is False or
-                      received_host_flags[flag] in ['false', 'False']):
-                    self._set_to_disable(flag, new_flags_dict)
+                    elif (received_host_flags[flag] is False or
+                          received_host_flags[flag] in ['false', 'False']):
+                        self._set_to_disable(flag, new_flags_dict)
 
+                    else:
+                        self._set_to_default(flag, new_flags_dict)
+
+                elif (received_host_flags['consistent_lun'] is False or
+                      received_host_flags['consistent_lun'] in
+                      ['False', 'false', 'unset', 'Unset']):
+                    self._disable_consistent_lun(new_flags_dict)
                 else:
-                    self._set_to_default(flag, new_flags_dict)
-
-            elif (received_host_flags['consistent_lun'] is False or
-                  received_host_flags['consistent_lun'] in
-                  ['False', 'false', 'unset', 'Unset']):
-                self._disable_consistent_lun(new_flags_dict)
-            else:
-                self._enable_consistent_lun(new_flags_dict)
+                    self._enable_consistent_lun(new_flags_dict)
 
         if new_flags_dict == current_flags:
             LOG.info('No change detected')
@@ -559,8 +653,8 @@ class PowerMaxHost(object):
                 return True
 
             except Exception as e:
-                errorMsg = ('Modify host %s failed with error %s',
-                            host_name, str(e))
+                errorMsg = ('Modify host %s failed with error %s'
+                            % (host_name, str(e)))
                 self.show_error_exit(msg=errorMsg)
             return None
 
@@ -614,6 +708,7 @@ class PowerMaxHost(object):
         initiators = self.module.params['initiators']
         new_name = self.module.params['new_name']
         host_flags = self.module.params['host_flags']
+        host_type = self.module.params['host_type']
 
         host = self.get_host(host_name)
         changed = False
@@ -634,10 +729,12 @@ class PowerMaxHost(object):
             changed = (self.remove_host_initiators(host_name, initiators)
                        or changed)
 
-        if state == 'present' and host and host_flags:
-            LOG.info('Modifying host flags of host %s to %s',
-                     host_name, host_flags)
-            changed = self.modify_host_flags(host_name, host_flags) or changed
+        if state == 'present' and host and (host_flags or host_type):
+            LOG.info('Modifying host flags of host %s ',
+                     host_name)
+            changed = self.modify_host_flags(host_name,
+                                             received_host_flags=host_flags,
+                                             host_type=host_type) or changed
 
         if state == 'present' and host and new_name:
             if host['hostId'] != new_name:

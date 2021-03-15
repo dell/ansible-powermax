@@ -12,14 +12,15 @@ ANSIBLE_METADATA = {'metadata_version': '1.1',
 DOCUMENTATION = r'''
 ---
 module: dellemc_powermax_portgroup
-version_added: '1.0.3'
+version_added: '1.0.0'
 short_description:  Manage port groups on PowerMax/VMAX Storage System
 description:
-- Managing port groups on PowerMax storage system includes creating a port
+- Managing port groups on a PowerMax storage system includes creating a port
   group with a set of ports, adding or removing single or multiple ports to or
-  from port group, renaming port group and deleting port group.
+  from the port group, renaming the port group and deleting the port group.
 extends_documentation_fragment:
   - dellemc.powermax.dellemc_powermax.powermax
+  - dellemc.powermax.dellemc_powermax.powermax_serial_no
 author:
 - Vasudevu Lakhinana (@unknown) <ansible.team@dell.com>
 - Ashish Verma (@vermaa31) <ansible.team@dell.com>
@@ -199,7 +200,7 @@ HAS_PYU4V = utils.has_pyu4v_sdk()
 PYU4V_VERSION_CHECK = utils.pyu4v_version_check()
 
 # Application Type
-APPLICATION_TYPE = 'ansible_v1.2'
+APPLICATION_TYPE = 'ansible_v1.4'
 
 
 class PowerMaxPortGroup(object):
@@ -250,7 +251,7 @@ class PowerMaxPortGroup(object):
         """Get details of a given port group"""
         try:
             LOG.info('Getting port group %s details', portgroup_name)
-            return self.provisioning.get_portgroup(portgroup_name)
+            return self.provisioning.get_port_group(portgroup_name)
         except Exception as e:
             LOG.error('Got error %s while getting details of port group %s',
                       str(e), portgroup_name)
@@ -271,7 +272,8 @@ class PowerMaxPortGroup(object):
                     port['portId'] = port.pop('port_id')
             LOG.info('Creating port group %s with ports %s',
                      portgroup_name, ports)
-            self.provisioning.create_multiport_portgroup(portgroup_name, ports)
+            self.provisioning.\
+                create_multiport_port_group(portgroup_name, ports)
             return True
         except Exception as e:
             self.show_error_exit(msg="Create port group %s failed; error %s"
@@ -298,7 +300,7 @@ class PowerMaxPortGroup(object):
 
         try:
             existing_ports = ""
-            port_group = self.provisioning.get_portgroup(portgroup_name)
+            port_group = self.provisioning.get_port_group(portgroup_name)
             if 'symmetrixPortKey' in port_group:
                 existing_ports = port_group["symmetrixPortKey"]
             add_ports = self.module.params['ports']
@@ -323,8 +325,8 @@ class PowerMaxPortGroup(object):
                         add_port_present = True
                 if not add_port_present:
                     # if port is not already present, then port is added
-                    self.provisioning.modify_portgroup(portgroup_name,
-                                                       add_port=add_port)
+                    self.provisioning.modify_port_group(portgroup_name,
+                                                        add_port=add_port)
                     changed = True
             return changed
         except Exception as e:
@@ -336,7 +338,7 @@ class PowerMaxPortGroup(object):
         """Remove ports from portgroup"""
 
         try:
-            port_group = self.provisioning.get_portgroup(portgroup_name)
+            port_group = self.provisioning.get_port_group(portgroup_name)
             if 'symmetrixPortKey' not in port_group:
                 LOG.info("No ports in portgroup : %s", portgroup_name)
                 return False
@@ -364,8 +366,8 @@ class PowerMaxPortGroup(object):
                                 str(existing_port["portId"])):
                         rem_port_present = True
                 if rem_port_present:
-                    self.provisioning.modify_portgroup(portgroup_name,
-                                                       remove_port=rem_port)
+                    self.provisioning.modify_port_group(portgroup_name,
+                                                        remove_port=rem_port)
                     changed = True
             return changed
         except Exception as e:
@@ -379,7 +381,7 @@ class PowerMaxPortGroup(object):
         A port group cannot be deleted if it is associated with a masking view.
         """
         try:
-            self.provisioning.delete_portgroup(portgroup_name)
+            self.provisioning.delete_port_group(portgroup_name)
             return True
         except Exception as e:
             self.show_error_exit(msg='Delete port group %s failed.' %
@@ -407,8 +409,8 @@ class PowerMaxPortGroup(object):
         try:
             LOG.info('Renaming port group %s with new name %s',
                      portgroup_name, new_name)
-            self.provisioning.modify_portgroup(portgroup_name,
-                                               rename_portgroup=new_name)
+            self.provisioning.modify_port_group(portgroup_name,
+                                                rename_port_group=new_name)
             return True
         except Exception as e:
             self.show_error_exit(

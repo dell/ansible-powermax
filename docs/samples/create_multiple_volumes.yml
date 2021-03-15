@@ -35,4 +35,3 @@
         state: 'present'
 # The loop will be executed for the number of elements in the list(created by the range) .
     loop: "{{ range(1, 10 + 1, 1) | list }}"
-

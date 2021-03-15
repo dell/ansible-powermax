@@ -21,6 +21,7 @@ description:
   system
 extends_documentation_fragment:
   - dellemc.powermax.dellemc_powermax.powermax
+  - dellemc.powermax.dellemc_powermax.powermax_serial_no
 author:
 - Arindam Datta (@dattaarindam) <ansible.team@dell.com>
 options:
@@ -222,7 +223,7 @@ RDFGroupDetails:
                     description: SRDF state of pairing.
                     type: str
                 remoteRdfGroupNumber:
-                    description: RDF group number atr remote device.
+                    description: RDF group number at remote device.
                     type: int
                 remoteSymmetrixId:
                     description: Remote device ID.
@@ -253,7 +254,7 @@ HAS_PYU4V = utils.has_pyu4v_sdk()
 PYU4V_VERSION_CHECK = utils.pyu4v_version_check()
 
 # Application Type
-APPLICATION_TYPE = 'ansible_v1.2'
+APPLICATION_TYPE = 'ansible_v1.4'
 
 
 class PowerMaxRDFGroup(object):

@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright: (c) 2019, Dell EMC.
+# Copyright: (c) 2019-2021, Dell EMC.
 
 from __future__ import absolute_import, division, print_function
 __metaclass__ = type
@@ -9,25 +9,17 @@ class ModuleDocFragment(object):
 
     DOCUMENTATION = r'''
 options:
-  - See respective platform section for more details
+  - See the respective platform documentation for more details
 requirements:
-  - See respective platform section for more details
+  - See the respective platform documentation for more details
 notes:
-  - Ansible modules are available for EMC PowerMax Storage Platform
+  - Ansible modules are available for the Dell EMC PowerMax storage platform
 
 '''
 
     # Documentation fragment for PowerMax (powermax)
     POWERMAX = r'''
 options:
-    serial_no:
-        description:
-            - The serial number of  PowerMax/VMAX array. It is a
-              required parameter for all array specific operations
-              except for getting list of arrays in the
-              Gatherfacts module.
-        type: str
-        required: True
     unispherehost:
         description:
             - IP or FQDN of the Unisphere host
@@ -63,9 +55,22 @@ options:
         required: True
 
 requirements:
-  - A DellEMC PowerMax Storage device.
-  - Ansible 2.9 or higher.
+  - A DellEMC PowerMax storage system.
+  - Ansible 2.9 or later.
 notes:
   - The modules prefixed with dellemc_powermax are built to support the
     DellEMC PowerMax storage platform.
+'''
+
+    # Documentation fragment for PowerMax with serial_no (powermax_serial_no)
+    POWERMAX_SERIAL_NO = r'''
+options:
+    serial_no:
+        description:
+            - The serial number of the PowerMax/VMAX array. It is a
+              required parameter for all array-specific operations
+              except for getting a list of arrays in the
+              Gatherfacts module.
+        type: str
+        required: True
 '''

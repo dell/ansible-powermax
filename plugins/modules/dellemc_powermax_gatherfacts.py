@@ -1,5 +1,5 @@
 #!/usr/bin/python
-# Copyright: (c) 2019, DellEMC
+# Copyright: (c) 2019-2021, DellEMC
 
 from __future__ import (absolute_import, division, print_function)
 
@@ -12,30 +12,31 @@ ANSIBLE_METADATA = {'metadata_version': '1.1',
 DOCUMENTATION = r'''
 ---
 module: dellemc_powermax_gatherfacts
-version_added: '1.0.3'
+version_added: '1.0.0'
 short_description: Gathers information about PowerMax/VMAX Storage entities
 description:
 - Gathers the list of specified PowerMax/VMAX Storage System entities, such as
   the list of registered arrays, storage groups, hosts, host groups, storage
   groups, storage resource pools, port groups, masking views, array health
-  status and alerts, and so on.
+  status, alerts and metro DR environments, etc.
 extends_documentation_fragment:
   - dellemc.powermax.dellemc_powermax.powermax
+  - dellemc.powermax.dellemc_powermax.powermax_serial_no
 author:
 - Arindam Datta (@dattaarindam) <ansible.team@dell.com>
 - Rajshree Khare (@kharer5) <ansible.team@dell.com>
 options:
   serial_no:
     description:
-    - The serial number of  PowerMax/VMAX array. It is not required for
-     getting list of arrays.
+    - The serial number of the PowerMax/VMAX array. It is not required for
+     getting the list of arrays.
     type: str
     required: False
   tdev_volumes:
      description:
      - Boolean variable to filter the volume list.
        This will have a small performance impact.
-       By default it is set to true, only TDEV volumes wil be returned.
+       By default it is set to true, only TDEV volumes will be returned.
      - True - Will return only the TDEV volumes.
      - False - Will return all the volumes.
      required: False
@@ -47,7 +48,7 @@ options:
     - List of string variables to specify the PowerMax/VMAX entities for which
       information is required.
     - Required only if the serial_no is present
-    - List of all PowerMax/VMAX entities supported by the module -
+    - List of all PowerMax/VMAX entities supported by the module
     - alert - gets alert summary information
     - health - health status of a specific PowerMax array
     - vol - volumes
@@ -59,15 +60,19 @@ options:
     - port - ports
     - mv - masking views
     - rdf - rdf groups
+    - metro_dr_env - metro DR environments
     required: False
     type: list
     elements: str
-    choices: [alert, health, vol, srp, sg, pg , host, hg, port, mv, rdf]
+    choices: [alert, health, vol, srp, sg, pg , host, hg, port, mv, rdf,
+              metro_dr_env]
   filters:
     description:
     - List of filters to support filtered output for storage entities.
     - Each filter is a tuple of {filter_key, filter_operator, filter_value}.
     - Supports passing of multiple filters.
+    - The storage entities, 'rdf' and 'metro_dr_env', does not support
+      filters. Filters will be ignored if passed.
     required: False
     type: list
     elements: dict
@@ -167,7 +172,7 @@ EXAMPLES = r'''
     user: "{{user}}"
     password: "{{password}}"
     serial_no: "{{serial_no}}"
-    tdev_volumes: "{{tdev_volumes}}"
+    tdev_volumes: True
     gather_subset:
       - vol
 
@@ -200,6 +205,17 @@ EXAMPLES = r'''
     serial_no: "{{serial_no}}"
     gather_subset:
        - alert
+
+- name: Get the list of metro DR environments for a given Unisphere host
+  dellemc_powermax_gatherfacts:
+    unispherehost: "{{unispherehost}}"
+    universion: "{{universion}}"
+    verifycert: "{{verifycert}}"
+    user: "{{user}}"
+    password: "{{password}}"
+    serial_no: "{{serial_no}}"
+    gather_subset:
+       - metro_dr_env
 
 - name: Get list of Storage groups
   dellemc_powermax_gatherfacts:
@@ -437,8 +453,8 @@ StorageResourcePools:
             description: Unique Identifier for SRP.
             type: str
         srp_capacity:
-            description: List of different entities to measure SRP capacity.
-            type: list
+            description: Different entities to measure SRP capacity.
+            type: dict
             contains:
                 effective_used_capacity_percent:
                     description: Percentage of effectively used capacity.
@@ -462,8 +478,8 @@ StorageResourcePools:
                     description: Usable used size in TB.
                     type: int
         srp_efficiency:
-            description: List of different entities to measure SRP efficiency.
-            type: list
+            description: Different entities to measure SRP efficiency.
+            type: dict
             contains:
                 compression_state:
                     description: Depicts the compression state of the SRP.
@@ -491,6 +507,10 @@ Volumes:
     description: List of volumes on the array.
     returned: When the volumes exist.
     type: list
+MetroDREnvironments:
+    description: List of metro DR environments on the array.
+    returned: When environment exists.
+    type: list
 '''
 
 from ansible_collections.dellemc.powermax.plugins.module_utils.storage.dell \
@@ -503,7 +523,7 @@ HAS_PYU4V = utils.has_pyu4v_sdk()
 PYU4V_VERSION_CHECK = utils.pyu4v_version_check()
 
 # Application Type
-APPLICATION_TYPE = 'ansible_v1.3'
+APPLICATION_TYPE = 'ansible_v1.4'
 
 
 class PowerMaxGatherFacts(object):
@@ -536,7 +556,7 @@ class PowerMaxGatherFacts(object):
                 self.show_error_exit(msg=universion_details['user_message'])
 
         try:
-            if serial_no is '':
+            if serial_no == '':
                 self.u4v_unisphere_con = utils.get_u4v_unisphere_connection(
                     self.module.params, APPLICATION_TYPE)
                 self.common = self.u4v_unisphere_con.common
@@ -555,6 +575,19 @@ class PowerMaxGatherFacts(object):
         except Exception as e:
             self.show_error_exit(msg=str(e))
 
+    def pre_check_for_PyU4V_version(self):
+        """ Performs pre-check for PyU4V version"""
+        curr_version = utils.PyU4V.__version__
+        supp_version = "9.2"
+        is_supported_version = utils.pkg_resources.parse_version(
+            curr_version) >= utils.pkg_resources.parse_version(supp_version)
+
+        if not is_supported_version:
+            msg = "Listing of 'MetroDR Environments' and 'Alerts' are " \
+                  "not supported currently by PyU4V version " \
+                  "{0}".format(curr_version)
+            self.show_error_exit(msg)
+
     def get_system_health(self):
         """Get the System Health information PowerMax/VMAX storage system"""
         try:
@@ -568,17 +601,7 @@ class PowerMaxGatherFacts(object):
     def get_system_alerts(self, filters_dict=None):
         """Get the alerts information PowerMax/VMAX storage system"""
         try:
-            curr_version = utils.PyU4V.__version__
-            sup_pyu4v_ver = "9.2"
-
-            supported_version = (utils.pkg_resources.parse_version(
-                curr_version) >= utils.pkg_resources.parse_version(sup_pyu4v_ver))
-
-            if not supported_version:
-                msg = "This functionality is not supported by PyU4V " \
-                      "Version {0}".format(curr_version)
-                self.show_error_exit(msg=msg)
-
+            self.pre_check_for_PyU4V_version()
             alerts = []
             supported_filters = ['type', 'severity', 'state',
                                  'created_date', 'object',
@@ -605,7 +628,7 @@ class PowerMaxGatherFacts(object):
             LOG.info('Successfully listed %d alerts', len(alerts))
             return alerts
         except Exception as e:
-            msg = "Failed to get the alerts with error {0}".format(str(e))
+            msg = "Failed to get the alerts with error %s" % str(e)
             LOG.error(msg)
             self.show_error_exit(msg=msg)
 
@@ -706,8 +729,8 @@ class PowerMaxGatherFacts(object):
             return sg_list
 
         except Exception as e:
-            msg = ('Get Storage Group for array %s failed with error %s',
-                   self.module.params['serial_no'], str(e))
+            msg = 'Get Storage Group for array %s failed with error %s' \
+                  % (self.module.params['serial_no'], str(e))
             self.show_error_exit(msg=msg)
 
     def get_array_list(self):
@@ -721,8 +744,8 @@ class PowerMaxGatherFacts(object):
             return array_list
 
         except Exception as e:
-            msg = ('Get Array List for Unisphere host %s failed with error '
-                   '%s', self.module_params['unispherehost'], str(e))
+            msg = 'Get Array List for Unisphere host %s failed with error ' \
+                  '%s' % (self.module_params['unispherehost'], str(e))
             self.show_error_exit(msg=msg)
 
     def get_srp_list(self, filters_dict=None):
@@ -733,7 +756,8 @@ class PowerMaxGatherFacts(object):
             LOG.info('Getting Storage Resource Pool List')
             array_serial_no = self.module.params['serial_no']
             if filters_dict:
-                srp_list = self.provisioning.get_srp_list(filters=filters_dict)
+                srp_list \
+                    = self.provisioning.get_srp_list(filters=filters_dict)
             else:
                 srp_list = self.provisioning.get_srp_list()
             LOG.info('Got %d Storage Resource Pool from array %s',
@@ -749,9 +773,8 @@ class PowerMaxGatherFacts(object):
             return srp_detail_list
 
         except Exception as e:
-            msg = ('Get Storage Resource Pool details for array %s '
-                   'failed with error %s',
-                   self.module.params['serial_no'], str(e))
+            msg = 'Get Storage Resource Pool details for array %s failed ' \
+                  'with error %s' % (self.module.params['serial_no'], str(e))
             self.show_error_exit(msg=msg)
 
     def get_portgroup_list(self, filters_dict=None):
@@ -771,8 +794,8 @@ class PowerMaxGatherFacts(object):
             return pg_list
 
         except Exception as e:
-            msg = 'Get Port Group for array %s failed with error %s', \
-                  self.module.params['serial_no'], str(e)
+            msg = 'Get Port Group for array %s failed with error %s' \
+                  % (self.module.params['serial_no'], str(e))
             self.show_error_exit(msg=msg)
 
     def get_host_list(self, filters_dict=None):
@@ -791,7 +814,7 @@ class PowerMaxGatherFacts(object):
             return host_list
 
         except Exception as e:
-            msg = 'Get Host for array %s failed with error %s'\
+            msg = 'Get Host for array %s failed with error %s' \
                   % (self.module.params['serial_no'], str(e))
             self.show_error_exit(msg=msg)
 
@@ -812,8 +835,8 @@ class PowerMaxGatherFacts(object):
             return hostgroup_list
 
         except Exception as e:
-            msg = 'Get Host Group for array %s failed with error %s ',\
-                  self.module.params['serial_no'], str(e)
+            msg = 'Get Host Group for array %s failed with error %s ' \
+                  % (self.module.params['serial_no'], str(e))
             self.show_error_exit(msg=msg)
 
     def get_port_list(self, filters_dict=None):
@@ -832,8 +855,8 @@ class PowerMaxGatherFacts(object):
             return port_list
 
         except Exception as e:
-            msg = 'Get Port Group for array %s failed with error %s ',\
-                  self.module.params['serial_no'], str(e)
+            msg = 'Get Port for array %s failed with error %s ' \
+                  % (self.module.params['serial_no'], str(e))
             self.show_error_exit(msg=msg)
 
     def get_masking_view_list(self, filters_dict=None):
@@ -844,7 +867,8 @@ class PowerMaxGatherFacts(object):
             LOG.info('Getting Masking View List')
             array_serial_no = self.module.params['serial_no']
             if filters_dict:
-                mv_list = self.provisioning.get_port_list(filters=filters_dict)
+                mv_list = self.provisioning.\
+                    get_masking_view_list(filters=filters_dict)
             else:
                 mv_list = self.provisioning.get_masking_view_list()
             LOG.info('Got %d Getting Masking Views from array %s',
@@ -852,28 +876,47 @@ class PowerMaxGatherFacts(object):
             return mv_list
 
         except Exception as e:
-            msg = ('Get Masking View for array %s failed with error %s',
-                   self.module.params['serial_no'], str(e))
+            msg = 'Get Masking View for array %s failed with error %s' \
+                  % (self.module.params['serial_no'], str(e))
             self.show_error_exit(msg=msg)
 
-    def get_rdfgroup_list(self, filters_dict=None):
-        """Get the list of rdf group of a given PowerMax/Vmax storage system"""
+    def get_rdfgroup_list(self):
+        """Get the list of rdf group of a given PowerMax/Vmax storage system
+        """
 
         try:
             LOG.info('Getting rdf group List ')
             array_serial_no = self.module.params['serial_no']
-            if filters_dict:
-                rdf_list = self.provisioning.get_port_list(
-                    filters=filters_dict)
-            else:
-                rdf_list = self.replication.get_rdf_group_list()
+            rdf_list = self.replication.get_rdf_group_list()
             LOG.info('Successfully listed %d rdf groups from array %s',
                      len(rdf_list), array_serial_no)
             return rdf_list
 
         except Exception as e:
-            msg = 'Get rdf group for array %s failed with error %s ',\
-                  self.module.params['serial_no'], str(e)
+            msg = 'Get rdf group for array %s failed with error %s ' \
+                  % (self.module.params['serial_no'], str(e))
+            self.show_error_exit(msg=msg)
+
+    def get_metro_dr_env_list(self):
+        """Get the list of metro DR environments of a given PowerMax/Vmax
+        storage system"""
+
+        try:
+
+            self.pre_check_for_PyU4V_version()
+            self.metro = self.u4v_conn.metro_dr
+            LOG.info("Got PyU4V instance for metro DR on to PowerMax")
+
+            LOG.info('Getting metro DR environment list ')
+            array_serial_no = self.module.params['serial_no']
+            metro_dr_env_list = self.metro.get_metrodr_environment_list()
+            LOG.info('Successfully listed %d metro DR environments from array'
+                     ' %s', len(metro_dr_env_list), array_serial_no)
+            return metro_dr_env_list
+
+        except Exception as e:
+            msg = 'Get metro DR environment for array %s failed with error ' \
+                  '%s ' % (self.module.params['serial_no'], str(e))
             self.show_error_exit(msg=msg)
 
     def show_error_exit(self, msg):
@@ -894,7 +937,7 @@ class PowerMaxGatherFacts(object):
             chosen in playbook """
 
         serial_no = self.module.params['serial_no']
-        if serial_no is '':
+        if serial_no == '':
             array_list = self.get_array_list()
             self.module.exit_json(Arrays=array_list)
         else:
@@ -920,6 +963,7 @@ class PowerMaxGatherFacts(object):
             mv = []
             rdf = []
             alert = []
+            metro_dr_env = []
             if 'alert' in str(subset):
                 alert = self.get_system_alerts(filters_dict=filters_dict)
             if 'health' in str(subset):
@@ -942,7 +986,10 @@ class PowerMaxGatherFacts(object):
             if 'mv' in str(subset):
                 mv = self.get_masking_view_list(filters_dict=filters_dict)
             if 'rdf' in str(subset):
-                rdf = self.get_rdfgroup_list(filters_dict=filters_dict)
+                rdf = self.get_rdfgroup_list()
+            if 'metro_dr_env' in str(subset):
+                metro_dr_env = \
+                    self.get_metro_dr_env_list()
 
             LOG.info("Closing unisphere connection %s", self.u4v_conn)
             utils.close_connection(self.u4v_conn)
@@ -959,7 +1006,8 @@ class PowerMaxGatherFacts(object):
                 HostGroups=hg,
                 Ports=port,
                 MaskingViews=mv,
-                RDFGroups=rdf)
+                RDFGroups=rdf,
+                MetroDREnvironments=metro_dr_env)
 
 
 def get_powermax_gatherfacts_parameters():
@@ -987,6 +1035,7 @@ def get_powermax_gatherfacts_parameters():
                                     'port',
                                     'mv',
                                     'rdf',
+                                    'metro_dr_env'
                                     ]),
         filters=dict(type='list', required=False, elements='dict',
                      options=dict(

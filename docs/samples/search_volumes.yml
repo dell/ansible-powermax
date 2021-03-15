@@ -34,7 +34,7 @@
         all_volumes_Id: "{{storage_details.storage_group_volumes | list}}"
 
   # This task gets the details of all the volumes. This is because the volume details has the attribute volume_identifier which has the name of the volume.
-    - name : Get volume details
+    - name: Get volume details
       register: temp_result
       dellemc_powermax_volume:
         unispherehost: "{{unispherehost}}"
