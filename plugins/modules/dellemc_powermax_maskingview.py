@@ -12,7 +12,7 @@ ANSIBLE_METADATA = {'metadata_version': '1.1',
 DOCUMENTATION = r'''
 ---
 module: dellemc_powermax_maskingview
-version_added: '1.0.3'
+version_added: '1.0.0'
 short_description:  Managing masking views on PowerMax/VMAX Storage System
 description:
 - Managing masking views on PowerMax storage system includes, creating masking
@@ -29,6 +29,7 @@ description:
   can be changed on the masking view.
 extends_documentation_fragment:
   - dellemc.powermax.dellemc_powermax.powermax
+  - dellemc.powermax.dellemc_powermax.powermax_serial_no
 author:
 - Vasudevu Lakhinana (@unknown) <ansible.team@dell.com>
 - Prashant Rakheja (@prashant-dell) <ansible.team@dell.com>
@@ -171,7 +172,7 @@ HAS_PYU4V = utils.has_pyu4v_sdk()
 PYU4V_VERSION_CHECK = utils.pyu4v_version_check()
 
 # Application Type
-APPLICATION_TYPE = 'ansible_v1.2'
+APPLICATION_TYPE = 'ansible_v1.4'
 
 
 class PowerMaxMaskingView(object):

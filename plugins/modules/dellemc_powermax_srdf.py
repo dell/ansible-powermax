@@ -1,5 +1,5 @@
 #!/usr/bin/python
-# Copyright: (c) 2019, DellEMC
+# Copyright: (c) 2019-2021, DellEMC
 
 from __future__ import (absolute_import, division, print_function)
 
@@ -22,6 +22,7 @@ description:
   calls are asynchronous by default.
 extends_documentation_fragment:
   - dellemc.powermax.dellemc_powermax.powermax
+  - dellemc.powermax.dellemc_powermax.powermax_serial_no
 author:
 - Manisha Agrawal (@agrawm3) <ansible.team@dell.com>
 - Rajshree Khare (@khareRajshree) <ansible.team@dell.com>
@@ -89,8 +90,8 @@ options:
       of a new SRDF group.
     - PowerMax has a limited number of RDF groups. If this flag is set to True,
       and the RDF groups are exhausted, then SRDF link creation will fail.
+    - If not specified, default value is 'false'.
     required: false
-    default: false
     type: bool
   wait_for_completion:
     description:
@@ -282,7 +283,7 @@ changed:
     description: Whether or not the resource has changed.
     returned: always
     type: bool
-job_details:
+Job_details:
     description: Details of the job.
     returned: When job exist.
     type: list
@@ -315,7 +316,7 @@ job_details:
             description: Details about the job.
             type: list
         username:
-            description: Unishpere username.
+            description: Unisphere username.
             type: str
 SRDF_link_details:
     description: Details of the SRDF link.
@@ -386,7 +387,7 @@ HAS_PYU4V = utils.has_pyu4v_sdk()
 PYU4V_VERSION_CHECK = utils.pyu4v_version_check()
 
 # Application Type
-APPLICATION_TYPE = 'ansible_v1.2'
+APPLICATION_TYPE = 'ansible_v1.4'
 
 
 class PowerMax_SRDF(object):
@@ -832,8 +833,9 @@ class PowerMax_SRDF(object):
                     changed = self.create_srdf_link()
 
                 # Create 2nd link for Multisite SRDF
-                elif self.result['SRDF_link_details']\
-                        and self.module.params['remote_serial_no']:
+                if self.result['SRDF_link_details']\
+                        and self.module.params['remote_serial_no'] \
+                        and not changed:
                     LOG.debug('srdf_link details found.')
                     remoteSymmetrixIDcount = len(srdf_link)
                     for id in range(remoteSymmetrixIDcount):
@@ -844,8 +846,8 @@ class PowerMax_SRDF(object):
                     if remote_serial_no not in remoteSymmetrixIDs:
                         changed = self.create_srdf_link()
 
-                elif self.result['SRDF_link_details'] \
-                        and (srdf_mode or srdf_state):
+                if self.result['SRDF_link_details'] \
+                        and (srdf_mode or srdf_state) and not changed:
                     LOG.info('Modifying SRDF mode/state')
                     self.current_rdfg_no\
                         = self.check_for_multiple_rdf_groups(srdf_link, False)

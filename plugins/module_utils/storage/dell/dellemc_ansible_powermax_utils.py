@@ -1,5 +1,5 @@
 """ import powermax sdk"""
-# pylint: disable=raise-missing-from
+
 from __future__ import (absolute_import, division, print_function)
 from decimal import Decimal
 import logging
@@ -7,6 +7,7 @@ __metaclass__ = type
 
 try:
     import PyU4V
+    from PyU4V.utils.exception import ResourceNotFoundException
     HAS_PYU4V = True
 except ImportError:
     HAS_PYU4V = False
@@ -138,6 +139,40 @@ def get_powermax_management_host_parameters():
 
 
 '''
+This method provides common access parameters required for the ansible modules
+ on PowerMax Unisphere
+options:
+  unispherehost:
+    description:
+    - IP/FQDN of unisphere host.
+    required: true
+  universion:
+    description:
+    - Version of univmax SDK.
+  verifycert:
+    description:
+    - Boolean value to inform system whether to verify client certificate or
+    not.
+  user:
+    description:
+    - User name to access on to unispherehost
+  password:
+    description:
+    - password to access on to unispherehost
+'''
+
+
+def get_u4v_unisphere_connection_parameters():
+    return dict(
+        unispherehost=dict(type='str', required=True),
+        universion=dict(type='int', required=False, choices=[91, 92]),
+        verifycert=dict(type='bool', required=True, choices=[True, False]),
+        user=dict(type='str', required=True),
+        password=dict(type='str', required=True, no_log=True)
+    )
+
+
+'''
 This method is to establish connection to PowerMax
 using PyU4v SDK.
 parameters:
@@ -156,17 +191,14 @@ returns connection object to access provisioning and protection sdks
 
 def get_U4V_connection(module_params, application_type=None):
     if HAS_PYU4V:
-        try:
-            conn = PyU4V.U4VConn(server_ip=module_params['unispherehost'],
-                                 port=8443,
-                                 array_id=module_params['serial_no'],
-                                 verify=module_params['verifycert'],
-                                 username=module_params['user'],
-                                 password=module_params['password'],
-                                 application_type=application_type)
-            return conn
-        except Exception as e:
-            raise Exception(str(e))
+        conn = PyU4V.U4VConn(server_ip=module_params['unispherehost'],
+                             port=8443,
+                             array_id=module_params['serial_no'],
+                             verify=module_params['verifycert'],
+                             username=module_params['user'],
+                             password=module_params['password'],
+                             application_type=application_type)
+        return conn
 
 
 '''

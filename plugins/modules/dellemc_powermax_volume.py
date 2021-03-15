@@ -1,5 +1,5 @@
 #!/usr/bin/python
-# Copyright: (c) 2019, DellEMC
+# Copyright: (c) 2019-2021, DellEMC
 
 from __future__ import (absolute_import, division, print_function)
 
@@ -12,13 +12,14 @@ ANSIBLE_METADATA = {'metadata_version': '1.1',
 DOCUMENTATION = r'''
 ---
 module: dellemc_powermax_volume
-version_added: '1.0.3'
+version_added: '1.0.0'
 short_description:  Manage volumes on PowerMax Storage System
 description:
 - Managing volumes on PowerMax storage system includes creating a volume,
   renaming a volume, expanding a volume, and deleting a volume.
 extends_documentation_fragment:
   - dellemc.powermax.dellemc_powermax.powermax
+  - dellemc.powermax.dellemc_powermax.powermax_serial_no
 author:
 - Vasudevu Lakhinana (@unknown) <ansible.team@dell.com>
 - Akash Shendge (@shenda1) <ansible.team@dell.com>
@@ -248,7 +249,7 @@ HAS_PYU4V = utils.has_pyu4v_sdk()
 PYU4V_VERSION_CHECK = utils.pyu4v_version_check()
 
 # Application Type
-APPLICATION_TYPE = 'ansible_v1.2'
+APPLICATION_TYPE = 'ansible_v1.4'
 
 
 class PowerMaxVolume(object):
@@ -374,8 +375,8 @@ class PowerMaxVolume(object):
             self.provisioning.delete_volume(vol_id)
             return True
         except Exception as e:
-            error_msg = ('Delete volume %s failed with error %s ',
-                         vol_id, str(e))
+            error_msg = 'Delete volume %s failed with error %s ' \
+                        % (vol_id, str(e))
             self.show_error_exit(msg=error_msg)
 
     def delete_volume(self, vol_id):
@@ -390,14 +391,14 @@ class PowerMaxVolume(object):
                 self.delete_volume_deallocate(vol_id)
                 return True
             else:
-                error_msg = ('Delete volume %s failed with error %s ',
-                             vol_id, str(e))
+                error_msg = 'Delete volume %s failed with error %s ' \
+                            % (vol_id, str(e))
                 self.show_error_exit(msg=error_msg)
 
     def rename_volume(self, vol_id, vol_new_name):
         """Rename the volume's identifier"""
         try:
-            volume_sg_list = self.provisioning.get_storagegroup_from_vol(
+            volume_sg_list = self.provisioning.get_storage_group_from_volume(
                 vol_id)
             if volume_sg_list is not None:
                 for sg in volume_sg_list:
@@ -420,8 +421,8 @@ class PowerMaxVolume(object):
     def expand_volume(self, vol_id, size_in_gb, existing_vol_size,
                       rdfg_no=None):
         msg = ("Expanding volume capacity from %s GB to %s GB with rdf group "
-               "no %s and vol_id %s", existing_vol_size, size_in_gb,
-               rdfg_no, vol_id)
+               "no %s and vol_id %s" % (existing_vol_size, size_in_gb,
+                                        rdfg_no, vol_id))
         LOG.info(msg)
         self.provisioning.extend_volume(
             vol_id, str(size_in_gb), rdf_group_num=rdfg_no)
@@ -454,10 +455,12 @@ class PowerMaxVolume(object):
                 |
                 R2
         '''
+        # TODO:  will revisit after PyU4V implements unique way of
+        #  identifying Metro DR replication
         if (len(hop1_volume_details['rdfGroupId']) > 1 or
                 len(hop2_volume_details['rdfGroupId']) > 1):
-            msg = ("Expansion of volumes in cascaded configurations is not "
-                   "supported by Ansible modules")
+            msg = ("Expansion of volume in Cascaded / Metro DR "
+                   "configurations is not supported by Ansible modules")
             self.show_error_exit(msg=msg)
 
         if (hop1_vol_rdf_details['rdfMode'] == 'Active' or
@@ -508,11 +511,13 @@ class PowerMaxVolume(object):
     def srdf_volume_expansion(self, vol, size_in_gb, existing_vol_size):
         rdfg_list = vol['rdfGroupId']
         try:
+            # TODO:  will revisit after PyU4V implements unique way of
+            #  identifying Metro DR replication
             if len(rdfg_list) == 2 and (vol['type'] == 'RDF2+TDEV' or
                                         vol['type'] == 'RDF21+TDEV'):
                 # cascaded configuration detected
-                msg = ("Expansion of volume in Cascaded configuration is not "
-                       "supported by Ansible module")
+                msg = ("Expansion of volume in Cascaded / Metro DR "
+                       "configurations is not supported by Ansible modules")
                 self.show_error_exit(msg=msg)
 
             elif len(rdfg_list) == 1 and (vol['type'] == 'RDF2+TDEV' or
@@ -549,9 +554,12 @@ class PowerMaxVolume(object):
                     array_id=vol_rdf_details['remoteSymmetrixId'])
                 remote_volume_details = self.get_volume_by_nativeid(
                     vol_rdf_details['remoteVolumeName'])
+                # TODO:  will revisit after PyU4V implements unique way of
+                #  identifying Metro DR replication
                 if len(remote_volume_details['rdfGroupId']) > 1:
-                    msg = ("Expansion of volumes in cascaded configurations "
-                           "is not supported by Ansible modules")
+                    msg = ("Expansion of volume in Cascaded / Metro DR "
+                           "configurations is not supported by Ansible "
+                           "modules")
                     self.show_error_exit(msg=msg)
 
                 self.u4v_conn.set_array_id(
@@ -598,8 +606,8 @@ class PowerMaxVolume(object):
                      ' are equal')
             return False
         except Exception as e:
-            error_message = ('Expand volume %s failed with error: %s',
-                             vol_id, str(e))
+            error_message = 'Expand volume %s failed with error: %s' \
+                            % (vol_id, str(e))
             self.show_error_exit(msg=error_message)
 
     def create_volume(self, vol_name, sg_name, size, cap_unit):
@@ -711,8 +719,8 @@ class PowerMaxVolume(object):
             LOG.info('Created volume native ID: %s', vol_id)
             return vol_id
         except Exception as e:
-            error_message = ('Create volume %s failed with error %s',
-                             vol_name, str(e))
+            error_message = 'Create volume %s failed with error %s' \
+                            % (vol_name, str(e))
             self.show_error_exit(msg=error_message)
 
     def move_volume_between_storage_groups(self, vol, sg_name,

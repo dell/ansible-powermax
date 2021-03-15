@@ -12,7 +12,7 @@ ANSIBLE_METADATA = {'metadata_version': '1.1',
 DOCUMENTATION = r'''
 ---
 module: dellemc_powermax_snapshot
-version_added: '1.0.3'
+version_added: '1.0.0'
 short_description: Manage Snapshots on PowerMax/VMAX Storage System
 description:
 - Managing snapshots on a PowerMax storage system includes creating a new
@@ -21,6 +21,7 @@ description:
   existing storage group snapshot.
 extends_documentation_fragment:
   - dellemc.powermax.dellemc_powermax.powermax
+  - dellemc.powermax.dellemc_powermax.powermax_serial_no
 author:
 - Prashant Rakheja (@prashant-dell) <ansible.team@dell.com>
 options:
@@ -259,7 +260,7 @@ HAS_PYU4V = utils.has_pyu4v_sdk()
 PYU4V_VERSION_CHECK = utils.pyu4v_version_check()
 
 # Application Type
-APPLICATION_TYPE = 'ansible_v1.2'
+APPLICATION_TYPE = 'ansible_v1.4'
 
 
 class PowerMaxSnapshot(object):
@@ -313,8 +314,8 @@ class PowerMaxSnapshot(object):
                      sg_id, snapshot_name)
             if generation is None:
                 return self.replication.\
-                    get_storagegroup_snapshot_generation_list(sg_id,
-                                                              snapshot_name)
+                    get_storage_group_snapshot_generation_list(sg_id,
+                                                               snapshot_name)
             return self.replication.\
                 get_snapshot_generation_details(sg_id,
                                                 snapshot_name,
@@ -334,10 +335,10 @@ class PowerMaxSnapshot(object):
                 ttl_unit = True
             if ttl == 'None':
                 ttl = None
-            resp = self.replication.create_storagegroup_snap(sg_id,
-                                                             snap_name,
-                                                             ttl,
-                                                             ttl_unit)
+            resp = self.replication.create_storage_group_snapshot(sg_id,
+                                                                  snap_name,
+                                                                  ttl,
+                                                                  ttl_unit)
             return True, resp
         except Exception as e:
             error_message = 'Create Snapshot {0} for SG {1} failed ' \
@@ -360,9 +361,9 @@ class PowerMaxSnapshot(object):
         try:
 
             if snapshot:
-                self.replication.delete_storagegroup_snapshot(sg_id,
-                                                              snap_name,
-                                                              generation)
+                self.replication.delete_storage_group_snapshot(sg_id,
+                                                               snap_name,
+                                                               generation)
             return True
         except Exception as e:
             error_message = 'Delete SG {0} Snapshot {1} failed with ' \
@@ -378,12 +379,12 @@ class PowerMaxSnapshot(object):
             if snap_name == new_snap_name:
                 return False, snapshot
             resp = self.replication. \
-                modify_storagegroup_snap(sg_id,
-                                         "None",
-                                         snap_name,
-                                         generation,
-                                         new_name=new_snap_name
-                                         )
+                modify_storage_group_snapshot(sg_id,
+                                              "None",
+                                              snap_name,
+                                              generation,
+                                              new_name=new_snap_name
+                                              )
             return True, resp
         except Exception as e:
             error_message = 'Renaming Snapshot {0} for Storage Group {1} ' \
@@ -418,12 +419,12 @@ class PowerMaxSnapshot(object):
                 link = False
                 unlink = True
             resp = self.replication. \
-                modify_storagegroup_snap(sg_id,
-                                         target_sg,
-                                         snap_name,
-                                         link=link,
-                                         unlink=unlink,
-                                         gen_num=generation)
+                modify_storage_group_snapshot(sg_id,
+                                              target_sg,
+                                              snap_name,
+                                              link=link,
+                                              unlink=unlink,
+                                              gen_num=generation)
             return True, resp
         except Exception as e:
             error_message = 'Change SG {0} Snapshot {1} link status failed ' \
