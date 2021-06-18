@@ -92,145 +92,145 @@ notes:
   '''
 
 EXAMPLES = r'''
-  - name: Create host group with 'default' host_type
-    dellemc_powermax_hostgroup:
-      unispherehost: "{{unispherehost}}"
-      universion: "{{universion}}"
-      verifycert: "{{verifycert}}"
-      user: "{{user}}"
-      password: "{{password}}"
-      serial_no: "{{serial_no}}"
-      hostgroup_name: "ansible_test_HG_1"
-      host_type: "default"
-      hosts:
+- name: Create host group with 'default' host_type
+  dellemc_powermax_hostgroup:
+    unispherehost: "{{unispherehost}}"
+    universion: "{{universion}}"
+    verifycert: "{{verifycert}}"
+    user: "{{user}}"
+    password: "{{password}}"
+    serial_no: "{{serial_no}}"
+    hostgroup_name: "ansible_test_HG_1"
+    host_type: "default"
+    hosts:
       - ansible_test_1
-      host_state: 'present-in-group'
-      state: 'present'
+    host_state: 'present-in-group'
+    state: 'present'
 
-  - name: Create host group with 'hpux' host_type
-    dellemc_powermax_hostgroup:
-      unispherehost: "{{unispherehost}}"
-      universion: "{{universion}}"
-      verifycert: "{{verifycert}}"
-      user: "{{user}}"
-      password: "{{password}}"
-      serial_no: "{{serial_no}}"
-      hostgroup_name: "ansible_test_HG_2"
-      host_type: "hpux"
-      hosts:
+- name: Create host group with 'hpux' host_type
+  dellemc_powermax_hostgroup:
+    unispherehost: "{{unispherehost}}"
+    universion: "{{universion}}"
+    verifycert: "{{verifycert}}"
+    user: "{{user}}"
+    password: "{{password}}"
+    serial_no: "{{serial_no}}"
+    hostgroup_name: "ansible_test_HG_2"
+    host_type: "hpux"
+    hosts:
       - ansible_test_2
-      host_state: 'present-in-group'
-      state: 'present'
+    host_state: 'present-in-group'
+    state: 'present'
 
-  - name: Create host group with host_flags
-    dellemc_powermax_hostgroup:
-      unispherehost: "{{unispherehost}}"
-      universion: "{{universion}}"
-      verifycert: "{{verifycert}}"
-      user: "{{user}}"
-      password: "{{password}}"
-      serial_no: "{{serial_no}}"
-      hostgroup_name: "ansible_test_HG_3"
-      hosts:
+- name: Create host group with host_flags
+  dellemc_powermax_hostgroup:
+    unispherehost: "{{unispherehost}}"
+    universion: "{{universion}}"
+    verifycert: "{{verifycert}}"
+    user: "{{user}}"
+    password: "{{password}}"
+    serial_no: "{{serial_no}}"
+    hostgroup_name: "ansible_test_HG_3"
+    hosts:
       - ansible_test_3
-      state: 'present'
-      host_state: 'present-in-group'
-      host_flags:
-          spc2_protocol_version: true
-          consistent_lun: true
-          volume_set_addressing: 'unset'
-          disable_q_reset_on_ua: false
-          openvms: 'unset'
+    state: 'present'
+    host_state: 'present-in-group'
+    host_flags:
+      spc2_protocol_version: true
+      consistent_lun: true
+      volume_set_addressing: 'unset'
+      disable_q_reset_on_ua: false
+      openvms: 'unset'
 
-  - name: Get host group details
-    dellemc_powermax_hostgroup:
-      unispherehost: "{{unispherehost}}"
-      universion: "{{universion}}"
-      verifycert: "{{verifycert}}"
-      user: "{{user}}"
-      password: "{{password}}"
-      serial_no: "{{serial_no}}"
-      hostgroup_name: "ansible_test_HG_1"
-      state: 'present'
+- name: Get host group details
+  dellemc_powermax_hostgroup:
+    unispherehost: "{{unispherehost}}"
+    universion: "{{universion}}"
+    verifycert: "{{verifycert}}"
+    user: "{{user}}"
+    password: "{{password}}"
+    serial_no: "{{serial_no}}"
+    hostgroup_name: "ansible_test_HG_1"
+    state: 'present'
 
-  - name: Adding host to host group
-    dellemc_powermax_hostgroup:
-      unispherehost: "{{unispherehost}}"
-      universion: "{{universion}}"
-      verifycert: "{{verifycert}}"
-      user: "{{user}}"
-      password: "{{password}}"
-      serial_no: "{{serial_no}}"
-      hostgroup_name: "ansible_test_HG_1"
-      hosts:
+- name: Adding host to host group
+  dellemc_powermax_hostgroup:
+    unispherehost: "{{unispherehost}}"
+    universion: "{{universion}}"
+    verifycert: "{{verifycert}}"
+    user: "{{user}}"
+    password: "{{password}}"
+    serial_no: "{{serial_no}}"
+    hostgroup_name: "ansible_test_HG_1"
+    hosts:
       - Ansible_Testing_host2
-      state: 'present'
-      host_state: 'present-in-group'
+    state: 'present'
+    host_state: 'present-in-group'
 
-  - name: Removing host from host group
-    dellemc_powermax_hostgroup:
-      unispherehost: "{{unispherehost}}"
-      universion: "{{universion}}"
-      verifycert: "{{verifycert}}"
-      user: "{{user}}"
-      password: "{{password}}"
-      serial_no: "{{serial_no}}"
-      hostgroup_name: "ansible_test_HG_1"
-      hosts:
+- name: Removing host from host group
+  dellemc_powermax_hostgroup:
+    unispherehost: "{{unispherehost}}"
+    universion: "{{universion}}"
+    verifycert: "{{verifycert}}"
+    user: "{{user}}"
+    password: "{{password}}"
+    serial_no: "{{serial_no}}"
+    hostgroup_name: "ansible_test_HG_1"
+    hosts:
       - Ansible_Testing_host2
-      state: 'present'
-      host_state: 'absent-in-group'
+    state: 'present'
+    host_state: 'absent-in-group'
 
-  - name: Modify host group using host_type
-    dellemc_powermax_hostgroup:
-      unispherehost: "{{unispherehost}}"
-      universion: "{{universion}}"
-      verifycert: "{{verifycert}}"
-      user: "{{user}}"
-      password: "{{password}}"
-      serial_no: "{{serial_no}}"
-      hostgroup_name: "ansible_test_HG_1"
-      host_type: "hpux"
-      state: 'present'
+- name: Modify host group using host_type
+  dellemc_powermax_hostgroup:
+    unispherehost: "{{unispherehost}}"
+    universion: "{{universion}}"
+    verifycert: "{{verifycert}}"
+    user: "{{user}}"
+    password: "{{password}}"
+    serial_no: "{{serial_no}}"
+    hostgroup_name: "ansible_test_HG_1"
+    host_type: "hpux"
+    state: 'present'
 
-  - name: Modify host group using host_flags
-    dellemc_powermax_hostgroup:
-      unispherehost: "{{unispherehost}}"
-      universion: "{{universion}}"
-      verifycert: "{{verifycert}}"
-      user: "{{user}}"
-      password: "{{password}}"
-      serial_no: "{{serial_no}}"
-      hostgroup_name: "ansible_test_HG_1"
-      host_flags:
-          spc2_protocol_version: unset
-          disable_q_reset_on_ua: false
-          openvms: false
-          avoid_reset_broadcast: true
-      state: 'present'
+- name: Modify host group using host_flags
+  dellemc_powermax_hostgroup:
+    unispherehost: "{{unispherehost}}"
+    universion: "{{universion}}"
+    verifycert: "{{verifycert}}"
+    user: "{{user}}"
+    password: "{{password}}"
+    serial_no: "{{serial_no}}"
+    hostgroup_name: "ansible_test_HG_1"
+    host_flags:
+      spc2_protocol_version: unset
+      disable_q_reset_on_ua: false
+      openvms: false
+      avoid_reset_broadcast: true
+    state: 'present'
 
-  - name: Rename host group
-    dellemc_powermax_hostgroup:
-      unispherehost: "{{unispherehost}}"
-      universion: "{{universion}}"
-      verifycert: "{{verifycert}}"
-      user: "{{user}}"
-      password: "{{password}}"
-      serial_no: "{{serial_no}}"
-      hostgroup_name: "ansible_test_HG_1"
-      new_name: "ansible_test_hostgroup_1"
-      state: 'present'
+- name: Rename host group
+  dellemc_powermax_hostgroup:
+    unispherehost: "{{unispherehost}}"
+    universion: "{{universion}}"
+    verifycert: "{{verifycert}}"
+    user: "{{user}}"
+    password: "{{password}}"
+    serial_no: "{{serial_no}}"
+    hostgroup_name: "ansible_test_HG_1"
+    new_name: "ansible_test_hostgroup_1"
+    state: 'present'
 
-  - name: Delete host group
-    dellemc_powermax_hostgroup:
-      unispherehost: "{{unispherehost}}"
-      universion: "{{universion}}"
-      verifycert: "{{verifycert}}"
-      user: "{{user}}"
-      password: "{{password}}"
-      serial_no: "{{serial_no}}"
-      hostgroup_name: "ansible_test_hostgroup_1"
-      state: 'absent'
+- name: Delete host group
+  dellemc_powermax_hostgroup:
+    unispherehost: "{{unispherehost}}"
+    universion: "{{universion}}"
+    verifycert: "{{verifycert}}"
+    user: "{{user}}"
+    password: "{{password}}"
+    serial_no: "{{serial_no}}"
+    hostgroup_name: "ansible_test_hostgroup_1"
+    state: 'absent'
 '''
 
 RETURN = r'''
@@ -285,7 +285,7 @@ hostgroup_details:
                          overridden.
             type: bool
         type:
-            description: Type of initiator.
+            description: Type of initiator of the hosts of the host group.
             type: str
 '''
 
@@ -303,7 +303,7 @@ HAS_PYU4V = utils.has_pyu4v_sdk()
 PYU4V_VERSION_CHECK = utils.pyu4v_version_check()
 
 # Application Type
-APPLICATION_TYPE = 'ansible_v1.4'
+APPLICATION_TYPE = 'ansible_v1.5.0'
 
 BASE_FLAGS = {'volume_set_addressing': {'enabled': False, 'override': False},
               'disable_q_reset_on_ua': {'enabled': False, 'override': False},
@@ -349,18 +349,20 @@ class PowerMaxHostGroup(object):
     def __init__(self):
         ''' Define all parameters required by this module'''
         self.module_params = utils.get_powermax_management_host_parameters()
-        self.module_params.update(self.get_powermax_hostgroup_parameters())
+        self.module_params.update(get_powermax_hostgroup_parameters())
 
         mutually_exclusive = [['host_flags', 'host_type']]
+        required_together = [['hosts', 'host_state']]
 
         # initialize the ansible module
         self.module = AnsibleModule(
             argument_spec=self.module_params,
-            supports_check_mode=False,
-            mutually_exclusive=mutually_exclusive
+            supports_check_mode=True,
+            mutually_exclusive=mutually_exclusive,
+            required_together=required_together
         )
         # result is a dictionary that contains changed status and host details
-        self.result = {"changed": False, "host_details": {}}
+        self.result = {"changed": False, "hostgroup_details": {}}
         self.host_flags_list = {'volume_set_addressing', 'environ_set',
                                 'disable_q_reset_on_ua', 'openvms',
                                 'avoid_reset_broadcast', 'scsi_3',
@@ -387,21 +389,8 @@ class PowerMaxHostGroup(object):
         except Exception as e:
             self.show_error_exit(msg=str(e))
         self.provisioning = self.u4v_conn.provisioning
+        LOG.info('Check Mode Flag %s', self.module.check_mode)
         LOG.info('Got PyU4V instance for provisioning on to VMAX ')
-
-    def get_powermax_hostgroup_parameters(self):
-        return dict(
-            hostgroup_name=dict(required=True, type='str'),
-            hosts=dict(required=False, type='list', elements='str'),
-            state=dict(required=True, type='str',
-                       choices=['present', 'absent']),
-            host_state=dict(required=False, type='str',
-                            choices=['present-in-group', 'absent-in-group']),
-            host_flags=dict(required=False, type='dict'),
-            host_type=dict(type='str', required=False, choices=['default',
-                                                                'hpux']),
-            new_name=dict(type='str', required=False)
-        )
 
     def get_hostgroup(self, hostgroup_name):
         '''
@@ -416,7 +405,7 @@ class PowerMaxHostGroup(object):
         except Exception as e:
             LOG.error('Got error %s while getting details of host group %s',
                       str(e), hostgroup_name)
-            return None
+        return None
 
     def _set_to_enable(self, host_flag_name, host_flag_dict):
         host_flag_dict[host_flag_name.lower()] = {
@@ -481,8 +470,7 @@ class PowerMaxHostGroup(object):
         param_list = [hostgroup_name]
         new_host_flags_dict = {}
 
-        if (hosts is None or len(hosts) == 0 or not host_state or
-                host_state == 'absent-in-group'):
+        if not hosts or host_state == 'absent-in-group':
             emptyHostGroupFlag = True
         else:
             param_list.append(hosts)
@@ -514,16 +502,16 @@ class PowerMaxHostGroup(object):
                         self.show_error_exit(msg=errorMsg)
                 LOG.info('Creating host group %s with parameters %s',
                          hostgroup_name, param_list)
-                self.provisioning.create_host_group(
-                    hostgroup_name, host_flags=new_host_flags_dict,
-                    host_list=hosts)
+                if not self.module.check_mode:
+                    self.provisioning.create_host_group(
+                        hostgroup_name, host_flags=new_host_flags_dict,
+                        host_list=hosts)
             return True
 
         except Exception as e:
             errorMsg = 'Create host group {0} failed with error {1}'.format(
                 hostgroup_name, str(e))
             self.show_error_exit(msg=errorMsg)
-        return None
 
     def _get_add_hosts(self, existing, requested):
         add_hosts = list(set(existing + requested) - set(existing))
@@ -555,8 +543,9 @@ class PowerMaxHostGroup(object):
             try:
                 LOG.info('Adding hosts %s to host group %s',
                          add_list, hostgroup_name)
-                self.provisioning.modify_host_group(hostgroup_name,
-                                                    add_host_list=add_list)
+                if not self.module.check_mode:
+                    self.provisioning.modify_host_group(
+                        hostgroup_name, add_host_list=add_list)
                 return True
             except Exception as e:
                 errorMsg = ("Adding host %s to host group %s failed with"
@@ -572,13 +561,13 @@ class PowerMaxHostGroup(object):
         '''
         Get the existing host and validate with input hosts
         before modifying host group.
-        API does not allow removoval of non-existing hosts from host group
+        API does not allow removal of non-existing hosts from host group
         '''
         if hostgroup and 'host' in hostgroup:
             for host in hostgroup['host']:
                 existing_hosts.append(host['hostId'])
 
-        if existing_hosts is None or not len(existing_hosts):
+        if not existing_hosts or not len(existing_hosts):
             LOG.info('Hosts are not present in host group %s', hostgroup_name)
             return False
 
@@ -587,8 +576,9 @@ class PowerMaxHostGroup(object):
             try:
                 LOG.info('Removing hosts %s from host group %s',
                          rem_list, hostgroup_name)
-                self.provisioning.modify_host_group(hostgroup_name,
-                                                    remove_host_list=rem_list)
+                if not self.module.check_mode:
+                    self.provisioning.modify_host_group(
+                        hostgroup_name, remove_host_list=rem_list)
                 return True
             except Exception as e:
                 errorMsg = ("Removing host %s from host group %s failed with"
@@ -600,14 +590,14 @@ class PowerMaxHostGroup(object):
 
     def rename_hostgroup(self, hostgroup_name, new_name):
         try:
-            self.provisioning.modify_host_group(
-                hostgroup_name, new_name=new_name)
+            if not self.module.check_mode:
+                self.provisioning.modify_host_group(hostgroup_name,
+                                                    new_name=new_name)
             return True
         except Exception as e:
-            errorMsg = ('Renaming of host group %s failed with error %s',
-                        hostgroup_name, str(e))
+            errorMsg = 'Renaming of host group {0} failed with ' \
+                       'error {1}'.format(hostgroup_name, str(e))
             self.show_error_exit(msg=errorMsg)
-            return None
 
     def delete_hostgroup(self, hostgroup_name):
         '''
@@ -615,7 +605,8 @@ class PowerMaxHostGroup(object):
         A host group cannot be deleted if it is associated with a masking view.
         '''
         try:
-            self.provisioning.delete_host_group(hostgroup_name)
+            if not self.module.check_mode:
+                self.provisioning.delete_host_group(hostgroup_name)
             return True
         except Exception as e:
             errorMsg = 'Delete host group {0} failed with error {1}'.format(
@@ -699,22 +690,23 @@ class PowerMaxHostGroup(object):
             try:
                 LOG.info('Modifying host group flags for host %s with %s',
                          hostgroup_name, new_flags_dict)
-                self.provisioning.modify_host_group(
-                    hostgroup_name, new_flags_dict)
+                if not self.module.check_mode:
+                    self.provisioning.modify_host_group(hostgroup_name,
+                                                        new_flags_dict)
                 return True
 
             except Exception as e:
                 errorMsg = ('Modify host group %s failed with error %s'
                             % (hostgroup_name, str(e)))
                 self.show_error_exit(msg=errorMsg)
-            return None
 
-    def _create_result_dict(self, changed):
+    def _create_result_dict(self, changed, hostgroup):
         self.result['changed'] = changed
-        if self.module.params['state'] == 'absent':
+        if self.module.params['state'] == 'absent' or \
+                (not hostgroup and self.module.check_mode):
             self.result['hostgroup_details'] = {}
         else:
-            if self.module.params['new_name']:
+            if self.module.params['new_name'] and not self.module.check_mode:
                 self.result['hostgroup_details'] = self.get_hostgroup(
                     self.module.params['new_name'])
             else:
@@ -737,7 +729,7 @@ class PowerMaxHostGroup(object):
     def perform_module_operation(self):
         '''
         Perform different actions on host group based on user parameter
-        choosen in playbook
+        chosen in playbook
         '''
         state = self.module.params['state']
         host_state = self.module.params['host_state']
@@ -747,10 +739,29 @@ class PowerMaxHostGroup(object):
         host_flags = self.module.params['host_flags']
         host_type = self.module.params['host_type']
 
+        if (hostgroup_name is None) or (hostgroup_name is not None and
+                                        len(hostgroup_name.strip()) == 0):
+            error_msg = "hostgroup_name is mandatory parameter. Please " \
+                        "provide valid host group name."
+            LOG.error(error_msg)
+            self.module.fail_json(msg=error_msg)
+
         hostgroup = self.get_hostgroup(hostgroup_name)
         changed = False
 
-        if (state == 'present' and not hostgroup and hostgroup_name):
+        if state == 'present' and not hostgroup and hostgroup_name:
+            if new_name:
+                error_msg = "Invalid argument 'new_name' while " \
+                            "creating a host"
+                LOG.error(error_msg)
+                self.show_error_exit(msg=error_msg)
+
+            if host_state and host_state != "present-in-group":
+                error_msg = "Incorrect host_state specified for Create" \
+                            " hostgroup functionality"
+                LOG.error(error_msg)
+                self.show_error_exit(msg=error_msg)
+
             LOG.info('Creating host group %s', hostgroup_name)
             changed = self.create_hostgroup(hostgroup_name)
 
@@ -766,30 +777,48 @@ class PowerMaxHostGroup(object):
             changed = self.remove_hosts_from_hostgroup(
                 hostgroup_name, hosts) or changed
 
-        if (state == 'present' and hostgroup and (host_flags or host_type)):
+        if state == 'present' and hostgroup and (host_flags or host_type):
             LOG.info('Modifying host group flags of hostgroup %s',
                      hostgroup_name)
             changed = (self.modify_host_flags(hostgroup_name,
                                               received_host_flags=host_flags,
                                               host_type=host_type) or changed)
 
-        if (state == 'present' and hostgroup and new_name):
+        if state == 'present' and hostgroup and new_name is not None:
+            if len(new_name.strip()) == 0:
+                self.show_error_exit(msg="Please provide valid hostgroup "
+                                         "name.")
+
             if hostgroup['hostGroupId'] != new_name:
                 LOG.info('Renaming host group %s to %s',
                          hostgroup_name, new_name)
                 changed = self.rename_hostgroup(hostgroup_name, new_name)
 
-        if (state == 'absent' and hostgroup):
+        if state == 'absent' and hostgroup:
             LOG.info('Delete host group %s ', hostgroup_name)
             changed = self.delete_hostgroup(hostgroup_name) or changed
 
-        self._create_result_dict(changed)
+        self._create_result_dict(changed, hostgroup)
         # Update the module's final state
         LOG.info('changed %s', changed)
         LOG.info("Closing unisphere connection %s", self.u4v_conn)
         utils.close_connection(self.u4v_conn)
         LOG.info("Connection closed successfully")
         self.module.exit_json(**self.result)
+
+
+def get_powermax_hostgroup_parameters():
+    return dict(
+        hostgroup_name=dict(required=True, type='str'),
+        hosts=dict(required=False, type='list', elements='str'),
+        state=dict(required=True, type='str', choices=['present', 'absent']),
+        host_state=dict(required=False, type='str',
+                        choices=['present-in-group', 'absent-in-group']),
+        host_flags=dict(required=False, type='dict'),
+        host_type=dict(type='str', required=False,
+                       choices=['default', 'hpux']),
+        new_name=dict(type='str', required=False)
+    )
 
 
 def main():

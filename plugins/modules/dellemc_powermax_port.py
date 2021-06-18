@@ -32,18 +32,18 @@ options:
 """
 
 EXAMPLES = r"""
-  - name: Get details of single/multiple ports
-    dellemc_powermax_port:
-      unispherehost: "{{unispherehost}}"
-      verifycert: "{{verifycert}}"
-      user: "{{user}}"
-      password: "{{password}}"
-      serial_no: "{{array_id}}"
-      ports:
-      - director_id: "FA-1D"
-        port_id: "5"
-      - director_id: "SE-1F"
-        port_id: "29"
+- name: Get details of single/multiple ports
+  dellemc_powermax_port:
+    unispherehost: "{{unispherehost}}"
+    verifycert: "{{verifycert}}"
+    user: "{{user}}"
+    password: "{{password}}"
+    serial_no: "{{array_id}}"
+    ports:
+    - director_id: "FA-1D"
+      port_id: "5"
+    - director_id: "SE-1F"
+      port_id: "29"
 """
 
 RETURN = r'''
@@ -207,7 +207,7 @@ HAS_PYU4V = utils.has_pyu4v_sdk()
 PYU4V_VERSION_CHECK = utils.pyu4v_version_check()
 
 # Application Type
-APPLICATION_TYPE = 'ansible_v1.4'
+APPLICATION_TYPE = 'ansible_v1.5.0'
 
 
 class PowerMaxPort(object):

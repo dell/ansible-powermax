@@ -1,0 +1,35 @@
+# This sample fetches the list of all the volume IDs whose size is greater than the threshold capacity.
+# This example depicts the usage of capacity in GB.
+
+---
+- name: List of all the volume IDs whose size is greater than the threshold capacity
+  hosts: localhost
+  connection: local
+
+  vars:
+    unispherehost: "your_unisphere_host_url"
+    universion: "version_of_the_unisphere"
+    verifycert: False
+    user: "your_username"
+    password: "your_password"
+    serial_no: "your_serial_no"
+    threshold_cap: <enter the size in GB>
+
+  collections:
+    - dellemc.powermax
+
+  tasks:
+    - name: List of all the volume IDs whose size is greater than the threshold capacity
+      dellemc_powermax_gatherfacts:
+        unispherehost: "{{unispherehost}}"
+        serial_no:  "{{serial_no}}"
+        universion: "{{universion}}"
+        verifycert: "{{verifycert}}"
+        user: "{{user}}"
+        password: "{{password}}"
+        gather_subset:
+          - vol
+        filters:
+          - filter_key: "cap_gb"
+            filter_operator: "greater"
+            filter_value: "{{threshold_cap}}"

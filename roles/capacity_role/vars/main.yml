@@ -1,0 +1,4 @@
+---
+# vars file for capacity_role
+pools: ""
+size_gb: ""

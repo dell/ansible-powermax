@@ -18,12 +18,13 @@ description:
 - Managing snapshots on a PowerMax storage system includes creating a new
   storage group (SG) snapshot, getting details of the SG snapshot, renaming
   the SG snapshot, changing the snapshot link status, and deleting an
-  existing storage group snapshot.
+  existing SG snapshot.
 extends_documentation_fragment:
   - dellemc.powermax.dellemc_powermax.powermax
   - dellemc.powermax.dellemc_powermax.powermax_serial_no
 author:
 - Prashant Rakheja (@prashant-dell) <ansible.team@dell.com>
+- Rajshree Khare (@khareRajshree) <ansible.team@dell.com>
 options:
   sg_name:
     description:
@@ -38,7 +39,7 @@ options:
   ttl:
     description:
     - The Time To Live (TTL) value for the snapshot.
-    - If the ttl is not specified, the storage group snap details would be
+    - If the TTL is not specified, the storage group snap details are
       returned.
     - However, to create a SG snap - TTL must be given.
     - If the SG snap should not have any TTL - specify TTL as "None"
@@ -52,12 +53,18 @@ options:
     type: str
   generation:
     description:
-    - The generation number of the Snapshot.
-    - Generation is mandatory for link, unlink, rename and delete operations.
+    - The generation number of the snapshot.
+    - Generation is required for link, unlink, rename and delete operations.
     - Optional for Get snapshot details.
-    - Create snapshot will always create a new snapshot with generation
+    - Create snapshot will always create a new snapshot with a generation
       number 0.
     - Rename is supported only for generation number 0.
+    type: int
+  snapshot_id:
+    description:
+    - Unique ID of the snapshot.
+    - snapshot_id is required for link, unlink, rename and delete operations.
+    - Optional for Get snapshot details.
     type: int
   new_snapshot_name:
     description:
@@ -78,91 +85,180 @@ options:
     required: true
     choices: [absent, present]
     type: str
-  '''
+notes:
+  - Paramters 'generation' and 'snapshot_id' are mutually exclusive.
+  - If 'generation' or 'snapshot_id' is not provided then a list of generation
+    versus snapshot_id is returned.
+  - Use of 'snapshot_id' over 'generation' is preferably recommended for
+    PowerMax microcode version 5978.669.669 and onwards.
+'''
 
 EXAMPLES = r'''
-  - name: Create a Snapshot for a Storage Group
-    dellemc_powermax_snapshot:
-      unispherehost: "{{unispherehost}}"
-      universion: "{{universion}}"
-      verifycert: "{{verifycert}}"
-      user: "{{user}}"
-      password: "{{password}}"
-      serial_no: "{{serial_no}}"
-      sg_name: "ansible_sg"
-      snapshot_name: "ansible_sg_snap"
-      ttl: "2"
-      ttl_unit: "days"
-      state: "present"
+- name: Create a Snapshot for a Storage Group
+  dellemc_powermax_snapshot:
+    unispherehost: "{{unispherehost}}"
+    universion: "{{universion}}"
+    verifycert: "{{verifycert}}"
+    user: "{{user}}"
+    password: "{{password}}"
+    serial_no: "{{serial_no}}"
+    sg_name: "ansible_sg"
+    snapshot_name: "ansible_sg_snap"
+    ttl: "2"
+    ttl_unit: "days"
+    state: "present"
 
-  - name: Get Storage Group Snapshot details
-    dellemc_powermax_snapshot:
-      unispherehost: "{{unispherehost}}"
-      universion: "{{universion}}"
-      verifycert: "{{verifycert}}"
-      user: "{{user}}"
-      password: "{{password}}"
-      serial_no: "{{serial_no}}"
-      sg_name: "ansible_sg"
-      snapshot_name: "ansible_sg_snap"
-      state: "present"
+- name: Get Storage Group Snapshot details
+  dellemc_powermax_snapshot:
+    unispherehost: "{{unispherehost}}"
+    universion: "{{universion}}"
+    verifycert: "{{verifycert}}"
+    user: "{{user}}"
+    password: "{{password}}"
+    serial_no: "{{serial_no}}"
+    sg_name: "ansible_sg"
+    snapshot_name: "ansible_sg_snap"
+    state: "present"
 
-  - name: Delete Storage Group Snapshot
-    dellemc_powermax_snapshot:
-      unispherehost: "{{unispherehost}}"
-      universion: "{{universion}}"
-      verifycert: "{{verifycert}}"
-      user: "{{user}}"
-      password: "{{password}}"
-      serial_no: "{{serial_no}}"
-      sg_name: "ansible_sg"
-      snapshot_name: "ansible_sg_snap"
-      generation: 1
-      state: "absent"
+- name: Get Storage Group Snapshot details using generation
+  dellemc_powermax_snapshot:
+    unispherehost: "{{unispherehost}}"
+    universion: "{{universion}}"
+    verifycert: "{{verifycert}}"
+    user: "{{user}}"
+    password: "{{password}}"
+    serial_no: "{{serial_no}}"
+    sg_name: "ansible_sg"
+    snapshot_name: "ansible_sg_snap"
+    generation: 1
+    state: "present"
 
-  - name: Rename Storage Group Snapshot
-    dellemc_powermax_snapshot:
-      unispherehost: "{{unispherehost}}"
-      universion: "{{universion}}"
-      verifycert: "{{verifycert}}"
-      user: "{{user}}"
-      password: "{{password}}"
-      serial_no: "{{serial_no}}"
-      sg_name: "ansible_sg"
-      snapshot_name: "ansible_sg_snap"
-      new_snapshot_name: "ansible_snap_new"
-      generation: 0
-      state: "present"
+- name: Get Storage Group Snapshot details using snapshot_id
+  dellemc_powermax_snapshot:
+    unispherehost: "{{unispherehost}}"
+    universion: "{{universion}}"
+    verifycert: "{{verifycert}}"
+    user: "{{user}}"
+    password: "{{password}}"
+    serial_no: "{{serial_no}}"
+    sg_name: "ansible_sg"
+    snapshot_name: "ansible_sg_snap"
+    snapshot_id: 135023964929
+    state: "present"
 
-  - name: Change Snapshot Link Status to Linked
-    dellemc_powermax_snapshot:
-      unispherehost: "{{unispherehost}}"
-      universion: "{{universion}}"
-      verifycert: "{{verifycert}}"
-      user: "{{user}}"
-      password: "{{password}}"
-      serial_no: "{{serial_no}}"
-      sg_name: "ansible_sg"
-      snapshot_name: "ansible_snap_new"
-      generation: 1
-      target_sg_name: "ansible_sg_target"
-      link_status: "linked"
-      state: "present"
+- name: Rename Storage Group Snapshot using generation
+  dellemc_powermax_snapshot:
+    unispherehost: "{{unispherehost}}"
+    universion: "{{universion}}"
+    verifycert: "{{verifycert}}"
+    user: "{{user}}"
+    password: "{{password}}"
+    serial_no: "{{serial_no}}"
+    sg_name: "ansible_sg"
+    snapshot_name: "ansible_sg_snap"
+    new_snapshot_name: "ansible_snap_new"
+    generation: 0
+    state: "present"
 
-  - name: Change Snapshot Link Status to UnLinked
-    dellemc_powermax_snapshot:
-      unispherehost: "{{unispherehost}}"
-      universion: "{{universion}}"
-      verifycert: "{{verifycert}}"
-      user: "{{user}}"
-      password: "{{password}}"
-      serial_no: "{{serial_no}}"
-      sg_name: "ansible_sg"
-      snapshot_name: "ansible_snap_new"
-      generation: 1
-      target_sg_name: "ansible_sg_target"
-      link_status: "unlinked"
-      state: "present"
+- name: Rename Storage Group Snapshot using snapshot_id
+  dellemc_powermax_snapshot:
+    unispherehost: "{{unispherehost}}"
+    universion: "{{universion}}"
+    verifycert: "{{verifycert}}"
+    user: "{{user}}"
+    password: "{{password}}"
+    serial_no: "{{serial_no}}"
+    sg_name: "ansible_sg"
+    snapshot_name: "ansible_sg_snap"
+    new_snapshot_name: "ansible_snap_new"
+    snapshot_id: 135023964929
+    state: "present"
+
+- name: Change Snapshot Link Status to Linked using generation
+  dellemc_powermax_snapshot:
+    unispherehost: "{{unispherehost}}"
+    universion: "{{universion}}"
+    verifycert: "{{verifycert}}"
+    user: "{{user}}"
+    password: "{{password}}"
+    serial_no: "{{serial_no}}"
+    sg_name: "ansible_sg"
+    snapshot_name: "ansible_snap_new"
+    generation: 1
+    target_sg_name: "ansible_sg_target"
+    link_status: "linked"
+    state: "present"
+
+- name: Change Snapshot Link Status to UnLinked using generation
+  dellemc_powermax_snapshot:
+    unispherehost: "{{unispherehost}}"
+    universion: "{{universion}}"
+    verifycert: "{{verifycert}}"
+    user: "{{user}}"
+    password: "{{password}}"
+    serial_no: "{{serial_no}}"
+    sg_name: "ansible_sg"
+    snapshot_name: "ansible_snap_new"
+    generation: 1
+    target_sg_name: "ansible_sg_target"
+    link_status: "unlinked"
+    state: "present"
+
+- name: Change Snapshot Link Status to Linked using snapshot_id
+  dellemc_powermax_snapshot:
+    unispherehost: "{{unispherehost}}"
+    universion: "{{universion}}"
+    verifycert: "{{verifycert}}"
+    user: "{{user}}"
+    password: "{{password}}"
+    serial_no: "{{serial_no}}"
+    sg_name: "ansible_sg"
+    snapshot_name: "ansible_snap_new"
+    snapshot_id: 135023964515
+    target_sg_name: "ansible_sg_target"
+    link_status: "linked"
+    state: "present"
+
+- name: Change Snapshot Link Status to UnLinked using snapshot_id
+  dellemc_powermax_snapshot:
+    unispherehost: "{{unispherehost}}"
+    universion: "{{universion}}"
+    verifycert: "{{verifycert}}"
+    user: "{{user}}"
+    password: "{{password}}"
+    serial_no: "{{serial_no}}"
+    sg_name: "ansible_sg"
+    snapshot_name: "ansible_snap_new"
+    snapshot_id: 135023964515
+    target_sg_name: "ansible_sg_target"
+    link_status: "unlinked"
+    state: "present"
+
+- name: Delete Storage Group Snapshot using generation
+  dellemc_powermax_snapshot:
+    unispherehost: "{{unispherehost}}"
+    universion: "{{universion}}"
+    verifycert: "{{verifycert}}"
+    user: "{{user}}"
+    password: "{{password}}"
+    serial_no: "{{serial_no}}"
+    sg_name: "ansible_sg"
+    snapshot_name: "ansible_sg_snap"
+    generation: 1
+    state: "absent"
+
+- name: Delete Storage Group Snapshot using snapshot_id
+  dellemc_powermax_snapshot:
+    unispherehost: "{{unispherehost}}"
+    universion: "{{universion}}"
+    verifycert: "{{verifycert}}"
+    user: "{{user}}"
+    password: "{{password}}"
+    serial_no: "{{serial_no}}"
+    sg_name: "ansible_sg"
+    snapshot_name: "ansible_sg_snap"
+    snapshot_id: 135023964929
+    state: "absent"
 '''
 
 RETURN = r'''
@@ -187,37 +283,31 @@ sg_snap_details:
     returned: When snapshot exists.
     type: complex
     contains:
-        generation:
-            description: The generation number of the snapshot.
+        generation/snapid:
+            description: The generation/snapshot ID of the snapshot.
             type: int
-        isExpired:
+        expired:
             description: Indicates whether the snapshot is expired or not.
             type: bool
-        isLinked:
+        linked:
             description: Indicates whether the snapshot is linked or not.
             type: bool
-        isRestored:
+        restored:
             description: Indicates whether the snapshot is restored or not.
             type: bool
         name:
             description: Name of the snapshot.
             type: str
-        nonSharedTracks:
+        non_shared_tracks:
             description: Number of non-shared tracks.
             type: int
-        numSharedTracks:
-            description: Number of shared tracks.
-            type: int
-        numSourceVolumes:
+        num_source_volumes:
             description: Number of source volumes.
             type: int
-        numStorageGroupVolumes:
+        num_storage_group_volumes:
             description: Number of storage group volumes.
             type: int
-        numUniqueTracks:
-            description: Number of unique tracks.
-            type: int
-        sourceVolume:
+        source_volume:
             description: Source volume details.
             type: list
             contains:
@@ -233,7 +323,7 @@ sg_snap_details:
         state:
             description: State of the snapshot.
             type: str
-        timeToLiveExpiryDate:
+        time_to_live_expiry_date:
             description: Time to live expiry date.
             type: str
         timestamp:
@@ -260,7 +350,7 @@ HAS_PYU4V = utils.has_pyu4v_sdk()
 PYU4V_VERSION_CHECK = utils.pyu4v_version_check()
 
 # Application Type
-APPLICATION_TYPE = 'ansible_v1.4'
+APPLICATION_TYPE = 'ansible_v1.5.0'
 
 
 class PowerMaxSnapshot(object):
@@ -275,8 +365,10 @@ class PowerMaxSnapshot(object):
             get_powermax_snapshot_parameters())
 
         # initialize the Ansible module
+        mutually_exclusive = [['generation', 'snapshot_id']]
         self.module = AnsibleModule(
             argument_spec=self.module_params,
+            mutually_exclusive=mutually_exclusive,
             supports_check_mode=False
         )
 
@@ -307,19 +399,68 @@ class PowerMaxSnapshot(object):
         self.common = self.u4v_conn.common
         LOG.info('Got PyU4V instance for provisioning on PowerMax ')
 
-    def get_snapshot(self, sg_id, snapshot_name, generation):
+    def is_snap_id_supported(self):
+        """check if the operation need to be performed by snapshot_id,
+        snapshot_id will be supported for microcode 5978.669.669 & above."""
+
+        try:
+            supported_array_version = "5978.669.669"
+            supported_sdk_version = "9.2.0.8"
+
+            curr_version = utils.PyU4V.__version__
+            array_details = self.common.get_array(self.module.params
+                                                  ['serial_no'])
+            if ((utils.pkg_resources.parse_version(
+                curr_version) >= utils.pkg_resources.parse_version(
+                supported_sdk_version))
+                    and
+                    (utils.parse_version(
+                        array_details['ucode']) >= utils.parse_version(
+                        supported_array_version))):
+                return True
+            return False
+        except Exception as e:
+            err_msg = "Failed to determine the platform details with error" \
+                      " %s" % str(e)
+            self.show_error_exit(msg=err_msg)
+
+    def get_snapshot(self, sg_id, snapshot_name, generation=None,
+                     snap_id=None):
         """Get snapshot details"""
         try:
             LOG.info('Getting storage group %s snapshot %s details',
                      sg_id, snapshot_name)
-            if generation is None:
-                return self.replication.\
+            if not (isinstance(generation, int) or isinstance(snap_id, int)):
+                snapshots = []
+                generations = self.replication.\
                     get_storage_group_snapshot_generation_list(sg_id,
                                                                snapshot_name)
-            return self.replication.\
-                get_snapshot_generation_details(sg_id,
-                                                snapshot_name,
-                                                generation)
+                for gen in generations:
+                    snapshots.append({'generation': gen})
+
+                if self.is_snap_id_supported():
+                    snap_ids = self.replication.\
+                        get_storage_group_snapshot_snap_id_list(
+                            storage_group_id=sg_id,
+                            snap_name=snapshot_name)
+                    if snap_ids and generations \
+                            and (len(generations) == len(snap_ids)):
+                        snapshots = []
+                        for gen_id, snap_id in zip(generations,
+                                                   snap_ids):
+                            snapshots.append({'generation': gen_id,
+                                              'snapid': snap_id})
+                return snapshots
+            if generation is not None:
+                return self.replication.get_snapshot_generation_details(
+                    sg_id,
+                    snapshot_name,
+                    generation)
+            if snap_id is not None:
+                return self.replication.get_snapshot_snap_id_details(
+                    sg_id=sg_id,
+                    snap_name=snapshot_name,
+                    snap_id=snap_id)
         except Exception as e:
             error_message = 'Got error: {0} while getting details of ' \
                             'storage group {1} snapshot {2}'
@@ -346,24 +487,35 @@ class PowerMaxSnapshot(object):
             self.show_error_exit(msg=error_message.format(snap_name, sg_id,
                                                           str(e)))
 
-    def delete_sg_snapshot(self, sg_id, snap_name, generation):
+    def delete_sg_snapshot(self, sg_id, snap_name, generation=None,
+                           snap_id=None):
         """Delete Storage Group Snapshot"""
-        if generation is None:
-            self.show_error_exit(msg="Please specify a valid generation "
-                                 "to delete a snapshot.")
+        snapshot = None
         try:
-            snapshot = self.replication.get_snapshot_generation_details(
-                sg_id,
-                snap_name,
-                generation)
+            if generation is not None:
+                snapshot = self.replication.get_snapshot_generation_details(
+                    sg_id,
+                    snap_name,
+                    generation)
+            if snap_id is not None:
+                snapshot = self.replication.get_snapshot_snap_id_details(
+                    sg_id=sg_id,
+                    snap_name=snap_name,
+                    snap_id=snap_id)
         except Exception as e:
+            LOG.info("snapshot_id or generation not found,"
+                     " got error: %s", str(e))
             return False
         try:
-
-            if snapshot:
+            if snapshot and (generation is not None):
                 self.replication.delete_storage_group_snapshot(sg_id,
                                                                snap_name,
                                                                generation)
+            if snapshot and (snap_id is not None):
+                self.replication.delete_storage_group_snapshot_by_snap_id(
+                    sg_id,
+                    snap_name,
+                    snap_id)
             return True
         except Exception as e:
             error_message = 'Delete SG {0} Snapshot {1} failed with ' \
@@ -372,60 +524,99 @@ class PowerMaxSnapshot(object):
                                                           str(e)))
 
     def rename_sg_snapshot(self, sg_id, snap_name,
-                           new_snap_name, generation):
+                           new_snap_name, generation=None, snap_id=None):
         """Rename Storage Group Snapshot"""
         try:
-            snapshot = self.get_snapshot(sg_id, snap_name, generation)
+            snapshot = self.get_snapshot(sg_id, snap_name, generation,
+                                         snap_id)
             if snap_name == new_snap_name:
                 return False, snapshot
-            resp = self.replication. \
-                modify_storage_group_snapshot(sg_id,
-                                              "None",
-                                              snap_name,
-                                              generation,
-                                              new_name=new_snap_name
-                                              )
+
+            if snapshot and (generation is not None):
+                resp = self.replication.\
+                    modify_storage_group_snapshot(sg_id,
+                                                  None,
+                                                  snap_name,
+                                                  generation,
+                                                  new_name=new_snap_name
+                                                  )
+            if snapshot and (snap_id is not None):
+                resp = self.replication.\
+                    modify_storage_group_snapshot_by_snap_id(
+                        src_storage_grp_id=sg_id,
+                        tgt_storage_grp_id=None,
+                        snap_name=snap_name,
+                        snap_id=snap_id,
+                        new_name=new_snap_name)
             return True, resp
         except Exception as e:
             error_message = 'Renaming Snapshot {0} for Storage Group {1} ' \
                             'failed with error {2} '
-            self.show_error_exit(msg=error_message.format(snap_name, str(e)))
+            self.show_error_exit(msg=error_message.format(snap_name, sg_id,
+                                                          str(e)))
 
     def change_snapshot_link_status(self, sg_id, target_sg,
-                                    snap_name, link_status, generation):
+                                    snap_name, link_status, generation=None,
+                                    snap_id=None):
         """Change Snapshot Link status"""
-        if generation is None:
-            error_message = 'Change SG {0} Snapshot {1} link status failed.' \
-                            ' Please provide a valid generation '
-            self.show_error_exit(msg=error_message.format(sg_id,
-                                                          snap_name))
         try:
-            snapshot = self.get_snapshot(sg_id, snap_name, generation)
+            snapshot = self.get_snapshot(sg_id, snap_name, generation,
+                                         snap_id)
 
-            if snapshot['isLinked'] is True and link_status == 'linked':
-                for linked_sg in snapshot['linkedStorageGroup']:
-                    linked = False
-                    if linked_sg['name'] == target_sg:
-                        linked = True
-                        break
-                if linked:
+            # 'isLinked' key is returned in snapshot details w.r.t. generation
+            if 'isLinked' in snapshot:
+                if snapshot['isLinked'] is True and link_status == 'linked':
+                    for linked_sg in snapshot['linkedStorageGroup']:
+                        linked = False
+                        if linked_sg['name'] == target_sg:
+                            linked = True
+                            break
+                    if linked:
+                        return False, snapshot
+                elif snapshot['isLinked'] is False \
+                        and link_status == 'unlinked':
                     return False, snapshot
-            elif snapshot['isLinked'] is False and link_status == 'unlinked':
-                return False, snapshot
+
+            # 'linked' key is returned in snapshot details w.r.t. snapshot_id
+            if 'linked' in snapshot:
+                if snapshot['linked'] is True and link_status == 'linked':
+                    for linked_sg in snapshot['linked_storage_group']:
+                        linked = False
+                        if linked_sg['name'] == target_sg:
+                            linked = True
+                            break
+                    if linked:
+                        return False, snapshot
+                elif snapshot['linked'] is False \
+                        and link_status == 'unlinked':
+                    return False, snapshot
+
             if link_status == 'linked':
                 link = True
                 unlink = False
             else:
                 link = False
                 unlink = True
-            resp = self.replication. \
-                modify_storage_group_snapshot(sg_id,
-                                              target_sg,
-                                              snap_name,
-                                              link=link,
-                                              unlink=unlink,
-                                              gen_num=generation)
-            return True, resp
+
+            if snapshot and (generation is not None):
+                resp = self.replication. \
+                    modify_storage_group_snapshot(sg_id,
+                                                  target_sg,
+                                                  snap_name,
+                                                  link=link,
+                                                  unlink=unlink,
+                                                  gen_num=generation)
+                return True, resp
+            if snapshot and (snap_id is not None):
+                resp = self.replication.\
+                    modify_storage_group_snapshot_by_snap_id(
+                        src_storage_grp_id=sg_id,
+                        tgt_storage_grp_id=target_sg,
+                        snap_name=snap_name,
+                        link=link,
+                        unlink=unlink,
+                        snap_id=snap_id)
+                return True, resp
         except Exception as e:
             error_message = 'Change SG {0} Snapshot {1} link status failed ' \
                             'with error {2} '
@@ -456,6 +647,7 @@ class PowerMaxSnapshot(object):
         ttl = self.module.params['ttl']
         ttl_unit = self.module.params['ttl_unit']
         generation = self.module.params['generation']
+        snap_id = self.module.params['snapshot_id']
         new_snapshot_name = self.module.params['new_snapshot_name']
         target_sg_name = self.module.params['target_sg_name']
         link = self.module.params['link_status']
@@ -469,6 +661,10 @@ class PowerMaxSnapshot(object):
             change_snap_link_status='',
         )
 
+        if snap_id is not None and not self.is_snap_id_supported():
+            self.show_error_exit("snapshot_id is not supported by this"
+                                 " platform")
+
         if state == 'present' and ttl and not \
                 (new_snapshot_name or link):
             LOG.info('Creating snapshot %s for storage group %s ',
@@ -479,33 +675,51 @@ class PowerMaxSnapshot(object):
                                         ttl,
                                         ttl_unit)
         elif state == 'absent':
-            LOG.info('Delete storage group %s snapshot %s generation %s ',
-                     sg_name, snapshot_name, generation)
-            result['delete_sg_snap'] = self.delete_sg_snapshot(sg_name,
-                                                               snapshot_name,
-                                                               generation)
+            if not (isinstance(generation, int) or isinstance(snap_id, int)):
+                self.show_error_exit(msg="Please specify a valid generation "
+                                         "or a snapshot_id to delete a "
+                                         "snapshot.")
+            else:
+                LOG.info('Delete storage group %s snapshot %s generation %s ',
+                         sg_name, snapshot_name, generation)
+                result['delete_sg_snap'] = self.delete_sg_snapshot(
+                    sg_name,
+                    snapshot_name,
+                    generation,
+                    snap_id)
 
         if state == 'present' and snapshot_name \
                 and link and target_sg_name:
-            LOG.info('Change storage group %s snapshot %s link status ',
-                     sg_name, snapshot_name)
-            result['change_snap_link_status'], \
-                result['sg_snap_link_details'] = \
-                self.change_snapshot_link_status(sg_name,
-                                                 target_sg_name,
-                                                 snapshot_name,
-                                                 link,
-                                                 generation)
+            if not (isinstance(generation, int) or isinstance(snap_id, int)):
+                self.show_error_exit(msg="Please specify a valid generation "
+                                         "or a snapshot_id to change the "
+                                         "link status of a snapshot.")
+            else:
+                LOG.info('Change storage group %s snapshot %s link status ',
+                         sg_name, snapshot_name)
+                result['change_snap_link_status'], \
+                    result['sg_snap_link_details'] = \
+                    self.change_snapshot_link_status(sg_name,
+                                                     target_sg_name,
+                                                     snapshot_name,
+                                                     link,
+                                                     generation,
+                                                     snap_id)
 
         if state == 'present' and sg_name and snapshot_name and \
-                new_snapshot_name and generation == 0:
-            LOG.info('Rename storage group %s snapshot %s ',
-                     sg_name, snapshot_name)
-            result['rename_sg_snap'], result['sg_snap_rename_details'] = \
-                self.rename_sg_snapshot(sg_name,
-                                        snapshot_name,
-                                        new_snapshot_name,
-                                        generation)
+                new_snapshot_name:
+            if not (isinstance(generation, int) or isinstance(snap_id, int)):
+                self.show_error_exit("Please specify a valid generation or "
+                                     "a snapshot_id to rename a snapshot.")
+            elif snap_id is not None or generation == 0:
+                LOG.info('Rename storage group %s snapshot %s ',
+                         sg_name, snapshot_name)
+                result['rename_sg_snap'], result['sg_snap_rename_details'] = \
+                    self.rename_sg_snapshot(sg_name,
+                                            snapshot_name,
+                                            new_snapshot_name,
+                                            generation,
+                                            snap_id)
 
         if state == 'present' and not ttl and not link and \
                 not new_snapshot_name:
@@ -513,7 +727,8 @@ class PowerMaxSnapshot(object):
                      sg_name, snapshot_name)
             result['sg_snap_details'] = self.get_snapshot(sg_name,
                                                           snapshot_name,
-                                                          generation)
+                                                          generation,
+                                                          snap_id)
 
         if result['create_sg_snap'] or result['delete_sg_snap'] or result[
                 'rename_sg_snap'] or result['change_snap_link_status']:
@@ -534,6 +749,7 @@ def get_powermax_snapshot_parameters():
         ttl_unit=dict(required=False, default='days',
                       choices=['hours', 'days'], type='str'),
         generation=dict(required=False, type='int'),
+        snapshot_id=dict(required=False, type='int'),
         new_snapshot_name=dict(required=False, type='str'),
         target_sg_name=dict(required=False, type='str'),
         link_status=dict(required=False, choices=['linked', 'unlinked'],

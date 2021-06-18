@@ -20,17 +20,6 @@ try:
 except ImportError:
     PKG_RSRC_IMPORTED = False
 
-
-try:
-    import urllib3
-    HAS_URLLIB = True
-except ImportError:
-    HAS_URLLIB = False
-
-if HAS_URLLIB:
-    urllib3.disable_warnings()
-
-
 '''
 Check required libraries
 '''

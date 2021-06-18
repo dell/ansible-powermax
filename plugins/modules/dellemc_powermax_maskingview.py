@@ -72,56 +72,56 @@ options:
   '''
 
 EXAMPLES = r'''
-  - name: Create MV with hostgroup
-    dellemc_powermax_maskingview:
-      unispherehost: "{{unispherehost}}"
-      universion: "{{universion}}"
-      verifycert: "{{verifycert}}"
-      user: "{{user}}"
-      password: "{{password}}"
-      serial_no: "{{serial_no}}"
-      mv_name: "{{mv_name}}"
-      portgroup_name: "Ansible_Testing_portgroup"
-      hostgroup_name: "Ansible_Testing_hostgroup"
-      sg_name: "Ansible_Testing_SG"
-      state: "present"
+- name: Create MV with hostgroup
+  dellemc_powermax_maskingview:
+    unispherehost: "{{unispherehost}}"
+    universion: "{{universion}}"
+    verifycert: "{{verifycert}}"
+    user: "{{user}}"
+    password: "{{password}}"
+    serial_no: "{{serial_no}}"
+    mv_name: "{{mv_name}}"
+    portgroup_name: "Ansible_Testing_portgroup"
+    hostgroup_name: "Ansible_Testing_hostgroup"
+    sg_name: "Ansible_Testing_SG"
+    state: "present"
 
-  - name: Create MV with host
-    dellemc_powermax_maskingview:
-      unispherehost: "{{unispherehost}}"
-      universion: "{{universion}}"
-      verifycert: "{{verifycert}}"
-      user: "{{user}}"
-      password: "{{password}}"
-      serial_no: "{{serial_no}}"
-      mv_name: "{{mv_name}}"
-      portgroup_name: "Ansible_Testing_portgroup"
-      host_name: "Ansible_Testing_host"
-      sg_name: "Ansible_Testing_SG"
-      state: "present"
+- name: Create MV with host
+  dellemc_powermax_maskingview:
+    unispherehost: "{{unispherehost}}"
+    universion: "{{universion}}"
+    verifycert: "{{verifycert}}"
+    user: "{{user}}"
+    password: "{{password}}"
+    serial_no: "{{serial_no}}"
+    mv_name: "{{mv_name}}"
+    portgroup_name: "Ansible_Testing_portgroup"
+    host_name: "Ansible_Testing_host"
+    sg_name: "Ansible_Testing_SG"
+    state: "present"
 
-  - name: Rename host masking view
-    dellemc_powermax_maskingview:
-      unispherehost: "{{unispherehost}}"
-      universion: "{{universion}}"
-      verifycert: "{{verifycert}}"
-      user: "{{user}}"
-      password: "{{password}}"
-      serial_no: "{{serial_no}}"
-      mv_name: "{{mv_name}}"
-      new_mv_name: "Ansible_Testing_mv_renamed"
-      state: "present"
+- name: Rename host masking view
+  dellemc_powermax_maskingview:
+    unispherehost: "{{unispherehost}}"
+    universion: "{{universion}}"
+    verifycert: "{{verifycert}}"
+    user: "{{user}}"
+    password: "{{password}}"
+    serial_no: "{{serial_no}}"
+    mv_name: "{{mv_name}}"
+    new_mv_name: "Ansible_Testing_mv_renamed"
+    state: "present"
 
-  - name: Delete host masking view
-    dellemc_powermax_maskingview:
-      unispherehost: "{{unispherehost}}"
-      universion: "{{universion}}"
-      verifycert: "{{verifycert}}"
-      user: "{{user}}"
-      password: "{{password}}"
-      serial_no: "{{serial_no}}"
-      mv_name: "Ansible_Testing_mv_renamed"
-      state: "absent"
+- name: Delete host masking view
+  dellemc_powermax_maskingview:
+    unispherehost: "{{unispherehost}}"
+    universion: "{{universion}}"
+    verifycert: "{{verifycert}}"
+    user: "{{user}}"
+    password: "{{password}}"
+    serial_no: "{{serial_no}}"
+    mv_name: "Ansible_Testing_mv_renamed"
+    state: "absent"
 '''
 
 RETURN = r'''
@@ -172,7 +172,7 @@ HAS_PYU4V = utils.has_pyu4v_sdk()
 PYU4V_VERSION_CHECK = utils.pyu4v_version_check()
 
 # Application Type
-APPLICATION_TYPE = 'ansible_v1.4'
+APPLICATION_TYPE = 'ansible_v1.5.0'
 
 
 class PowerMaxMaskingView(object):

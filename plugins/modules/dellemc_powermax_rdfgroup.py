@@ -33,15 +33,15 @@ options:
 '''
 
 EXAMPLES = r'''
-  - name: Get the details of rdf group and volumes
-    dellemc_powermax_rdfgroup:
-      unispherehost: "{{unispherehost}}"
-      universion: "{{universion}}"
-      verifycert: "{{verifycert}}"
-      user: "{{user}}"
-      password: "{{password}}"
-      serial_no: "{{serial_no}}"
-      rdfgroup_number: "{{rdfgroup_id}}"
+- name: Get the details of rdf group and volumes
+  dellemc_powermax_rdfgroup:
+    unispherehost: "{{unispherehost}}"
+    universion: "{{universion}}"
+    verifycert: "{{verifycert}}"
+    user: "{{user}}"
+    password: "{{password}}"
+    serial_no: "{{serial_no}}"
+    rdfgroup_number: "{{rdfgroup_id}}"
 '''
 
 RETURN = r'''
@@ -254,7 +254,7 @@ HAS_PYU4V = utils.has_pyu4v_sdk()
 PYU4V_VERSION_CHECK = utils.pyu4v_version_check()
 
 # Application Type
-APPLICATION_TYPE = 'ansible_v1.4'
+APPLICATION_TYPE = 'ansible_v1.5.0'
 
 
 class PowerMaxRDFGroup(object):

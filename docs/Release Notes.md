@@ -1,7 +1,7 @@
 
 **Ansible Modules for Dell EMC PowerMax** 
 =========================================
-### Release Notes 1.4
+### Release Notes 1.5.0
 
 >   © 2021 Dell Inc. or its subsidiaries. All rights reserved. Dell
 >   EMC, and other trademarks are trademarks of Dell Inc. or its
@@ -26,14 +26,14 @@ Revision History
 
 | **Date** | **Document revision** | **Description of changes** |
 |----------|-----------------------|----------------------------|
-| February 2021 | 01 | Ansible Modules for Dell EMC PowerMax release 1.4 |
+| May 2021 | 01 | Ansible Modules for Dell EMC PowerMax release 1.5.0 |
 
 Product Description
 -------------------
 
 The Ansible Modules for Dell EMC PowerMax are used for managing volumes,
 storage groups, ports, port groups, host, host groups, masking views,
-SRDF links, RDF groups, snapshots, job and Metro DR environments for PowerMax
+SRDF links, RDF groups, snapshots, job, snapshot policies, storage pools, role for automatic volume provisioning and Metro DR environments for PowerMax
 arrays. The modules use playbooks to list, show, create, delete, and modify
 each of the entities.
 
@@ -41,48 +41,55 @@ The Ansible Modules for Dell EMC PowerMax supports the following
 features:
 
 -   Create volumes, storage groups, hosts, host groups, port groups,
-    masking views, Metro DR environments, and snapshots of a storage group.
+    masking views, Metro DR environments, snapshot policies,
+    and snapshots of a storage group.
 -   Modify volumes, storage groups, hosts, host groups, Metro DR environments,
-    and port groups in the array.
+    snapshot policies, and port groups in the array.
 -   Delete volumes, storage groups, hosts, host groups, port groups,
-    masking views, Metro DR environments, and snapshots of a storage group.
+    masking views, Metro DR environments, snapshot policies, and snapshots of a storage group.
 -   Get details of volumes, storage groups, hosts, host groups, port,
-    port groups, masking views, Metro DR environments, Job, RDF groups and
-    snapshots of a storage group.
+    port groups, masking views, Metro DR environments, Job, RDF groups, 
+    snapshot policies, storage pools, and snapshots of a storage group.
 
 New Features & Enhancements
 ---------------------------
 
-The Ansible Modules for Dell EMC PowerMax release 1.4 supports the
+The Ansible Modules for Dell EMC PowerMax release 1.5.0 supports the
 following features:
 
-- The Metro DR module supports the following functionalities:
-    - Create a Metro DR environment with the following replication modes:
-        - Asynchronous
-        - Adaptive copy
-    - Get details of any specific Metro DR environment.
-    - Convert an existing storage group into a Metro DR environment.
-    - Modify Metro DR environment attributes.
-    - Perform the following srdf_state change operations:
-        - Split
-        - Restore
-        - SetMode
-        - Failback
-        - Failover
-        - Establish
-        - Suspend
-        - UpdateR1
-        - Recover
-    - Delete a Metro DR environment.
-- The Job module supports the following functionality:
-    - Get Job details for a given Job ID.
+- The Snapshot policy module supports the following functionalities:
+    - Create a snapshot policy.
+    - Get details of any specific snapshot policy.
+    - Modify the snapshot policy attributes.
+    - Delete a snapshot policy.
+      > **NOTE:** Supports PyU4V 9.2.1.3 and above.
+- The storage pool module supports the following functionality:
+    - Get storage pool details for a given storage pool.
 - The following enhancements have been made to the gatherfacts module:
-   - Get list of Metro DR environments present on the PowerMax array.
-     > **NOTE:** Supports PyU4V 9.2.0 and above for Metro DR environments.
+   - Get list of snapshot policies present on the PowerMax array.
+     > **NOTE:** Supports PyU4V 9.2.1.3 and above for getting snapshot policy details
+       and PyU4V 9.2.0.8 and above for getting snapshot details.
+- The following enhancements have been made to the storage group module:
+    - Snapshot policy can be associated/disassociated to/from a storage group.
+      > **NOTE:** Supports PyU4V 9.2.1.3 and above.
+- The following enhancements have been made to the snapshot module:
+    - New parameter 'snapshot_id' has been added which indicates unique ID of snapshot.
+    - snapshot_id is required for link, unlink, rename and delete operations.It is
+      optional for getting details of snapshot.
+      > **NOTE:** Supports PyU4V 9.2.0.8 and above.
+- Following functionalities are available for ansible role for automatic volume placement:
+    - Finding if there is enough capacity of the given service level in any array.
+    - If multiple arrays available, return which is least used as 'assigned_pool'.
+    - assigned_pool includes:
+       - serial_no
+       - srp_id
+       - sg_name (if passed)
 - The following enhancements have been made to the host module:
-    - Host flags for host can be set explicitly by specifying the host_type.
+    - Check mode feature of ansible is enabled for host module.
 - The following enhancements have been made to the host group module:
-    - Host flags for host group can be set explicitly by specifying the host_type.
+    - Check mode feature of ansible is enabled for host group module.    
+- The following enhancements have been made to the volume module:
+    - Check mode feature of ansible is enabled for volume module.
 -   Support for Unisphere 9.1 and above
 -   Support for Python version 2.8 and above
 -   Support for PyU4V python library version 9.1.2.0 and above
@@ -93,9 +100,11 @@ following features:
 
 Known issues
 ------------
-- Modify state operation from Establish to Suspend in Adaptive Copy mode in
-  presence of force flag is not implemented. The REST API does not support
-  this hence Python SDK (PyU4V) has no support for this operation.
+- Modify state operation from Establish to Suspend in Adaptive Copy mode in presence of force flag is not implemented. 
+  The REST API does not support this hence Python SDK (PyU4V) has no support for this operation.
+  
+- Task to link a snapshot to a target storage group which is already linked is not implemented.
+  The REST API does not support this hence Python SDK (PyU4V) has no support for this operation.
 
 Limitations
 -----------

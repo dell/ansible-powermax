@@ -1,0 +1,34 @@
+# This sample fetches the list of all the Storage Groups names those name contains the search_string
+
+---
+- name: List of all the Storage Groups names those name contains the search_string
+  hosts: localhost
+  connection: local
+
+  vars:
+    unispherehost: "your_unisphere_host_url"
+    universion: "version_of_the_unisphere"
+    verifycert: False
+    user: "your_username"
+    password: "your_password"
+    serial_no: "your_serial_no"
+    search_string: "AnsibleSG"
+
+  collections:
+    - dellemc.powermax
+
+  tasks:
+    - name: List of all the Storage Groups names those name contains the search_string
+      dellemc_powermax_gatherfacts:
+        unispherehost: "{{unispherehost}}"
+        serial_no:  "{{serial_no}}"
+        universion: "{{universion}}"
+        verifycert: "{{verifycert}}"
+        user: "{{user}}"
+        password: "{{password}}"
+        gather_subset:
+          - sg
+        filters:
+          - filter_key: "storageGroupId"
+            filter_operator: "like"
+            filter_value: "{{search_string}}"

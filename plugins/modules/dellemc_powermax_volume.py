@@ -50,7 +50,7 @@ options:
   cap_unit:
     description:
     - volume capacity units
-    default: GB
+    - If not specified, default value is GB.
     choices: [ MB, GB, TB ]
     type: str
   new_name:
@@ -249,7 +249,7 @@ HAS_PYU4V = utils.has_pyu4v_sdk()
 PYU4V_VERSION_CHECK = utils.pyu4v_version_check()
 
 # Application Type
-APPLICATION_TYPE = 'ansible_v1.4'
+APPLICATION_TYPE = 'ansible_v1.5.0'
 
 
 class PowerMaxVolume(object):
@@ -275,7 +275,7 @@ class PowerMaxVolume(object):
         # initialize the ansible module
         self.module = AnsibleModule(
             argument_spec=self.module_params,
-            supports_check_mode=False,
+            supports_check_mode=True,
             mutually_exclusive=mutually_exclusive,
             required_one_of=required_one_of
         )
@@ -305,6 +305,7 @@ class PowerMaxVolume(object):
                 self.module.params, application_type=APPLICATION_TYPE)
         except Exception as e:
             self.show_error_exit(msg=str(e))
+        LOG.info('Check Mode Flag %s', self.module.check_mode)
         LOG.info('Got PyU4V instance for provisioning on to VMAX ')
         self.provisioning = self.u4v_conn.provisioning
         self.replication = self.u4v_conn.replication
@@ -371,8 +372,9 @@ class PowerMaxVolume(object):
         Deallocate a volume first and then delete it
         """
         try:
-            self.provisioning.deallocate_volume(vol_id)
-            self.provisioning.delete_volume(vol_id)
+            if not self.module.check_mode:
+                self.provisioning.deallocate_volume(vol_id)
+                self.provisioning.delete_volume(vol_id)
             return True
         except Exception as e:
             error_msg = 'Delete volume %s failed with error %s ' \
@@ -384,11 +386,13 @@ class PowerMaxVolume(object):
         Delete volume from system
         """
         try:
-            self.provisioning.delete_volume(vol_id)
+            if not self.module.check_mode:
+                self.provisioning.delete_volume(vol_id)
             return True
         except Exception as e:
             if "A free of all allocations is required" in str(e):
-                self.delete_volume_deallocate(vol_id)
+                if not self.module.check_mode:
+                    self.delete_volume_deallocate(vol_id)
                 return True
             else:
                 error_msg = 'Delete volume %s failed with error %s ' \
@@ -406,13 +410,14 @@ class PowerMaxVolume(object):
                               "volume_identifier": vol_new_name}
                     volume_list = self.provisioning.get_volume_list(params)
 
-                    if volume_list and len(volume_list) > 0:
+                    if volume_list:
                         self.show_error_exit(
                             msg="Volume already exists with volume"
                                 " name {0} in storage group {1}".
                             format(vol_new_name, sg))
 
-            self.provisioning.rename_volume(vol_id, vol_new_name)
+            if not self.module.check_mode:
+                self.provisioning.rename_volume(vol_id, vol_new_name)
             return True
         except Exception as e:
             self.show_error_exit(msg='Rename volume {0} failed with '
@@ -424,8 +429,9 @@ class PowerMaxVolume(object):
                "no %s and vol_id %s" % (existing_vol_size, size_in_gb,
                                         rdfg_no, vol_id))
         LOG.info(msg)
-        self.provisioning.extend_volume(
-            vol_id, str(size_in_gb), rdf_group_num=rdfg_no)
+        if not self.module.check_mode:
+            self.provisioning.extend_volume(
+                vol_id, str(size_in_gb), rdf_group_num=rdfg_no)
         return True
 
     def expand_concurrent_configuration(self, vol, size_in_gb,
@@ -575,7 +581,7 @@ class PowerMaxVolume(object):
                                                         existing_vol_size)
 
         except Exception as e:
-            msg = ('Expand volume {0} failed with error: {1}').format(
+            msg = 'Expand volume {0} failed with error: {1}'.format(
                 vol['volumeId'], str(e))
             self.show_error_exit(msg=msg)
 
@@ -623,12 +629,13 @@ class PowerMaxVolume(object):
             remote_array_1_sg = None
             remote_array_2 = None
             remote_array_2_sg = None
+            vol_id = None
 
             # Check SRDF protected SG
             if sg_name is not None:
                 storage_group = self.get_storage_group(sg_name)
                 if (storage_group is not None and
-                        not storage_group['unprotected']):
+                        self.if_srdf_protected(storage_group)):
                     array_id = self.module.params['serial_no']
                     array_details = self.common.get_array(array_id=array_id)
                     if utils.parse_version(array_details['ucode']) \
@@ -671,17 +678,18 @@ class PowerMaxVolume(object):
                                remote_array_2_sg
                                )
                         LOG.info(msg)
-                        self.provisioning.add_new_volume_to_storage_group(
-                            storage_group_id=sg_name, num_vols=1,
-                            vol_size=size,
-                            cap_unit=cap_unit, vol_name=vol_name,
-                            create_new_volumes=True,
-                            remote_array_1_id=remote_array_1,
-                            remote_array_1_sgs=remote_array_1_sg,
-                            remote_array_2_id=remote_array_2,
-                            remote_array_2_sgs=remote_array_2_sg)
-                        vol_id = self.provisioning.find_volume_device_id(
-                            volume_name=vol_name)
+                        if not self.module.check_mode:
+                            self.provisioning.add_new_volume_to_storage_group(
+                                storage_group_id=sg_name, num_vols=1,
+                                vol_size=size,
+                                cap_unit=cap_unit, vol_name=vol_name,
+                                create_new_volumes=True,
+                                remote_array_1_id=remote_array_1,
+                                remote_array_1_sgs=remote_array_1_sg,
+                                remote_array_2_id=remote_array_2,
+                                remote_array_2_sgs=remote_array_2_sg)
+                            vol_id = self.provisioning.find_volume_device_id(
+                                volume_name=vol_name)
                         LOG.info('Created volume native ID: %s', vol_id)
                         return vol_id
 
@@ -709,13 +717,14 @@ class PowerMaxVolume(object):
                    ', remote_array_1_sgs= ',
                    remote_array_1_sg)
             LOG.info(msg)
-            self.provisioning.add_new_volume_to_storage_group(
-                storage_group_id=sg_name, num_vols=1, vol_size=size,
-                cap_unit=cap_unit, vol_name=vol_name,
-                create_new_volumes=True, remote_array_1_id=remote_array,
-                remote_array_1_sgs=remote_array_sg)
-            vol_id = self.provisioning.find_volume_device_id(
-                volume_name=vol_name)
+            if not self.module.check_mode:
+                self.provisioning.add_new_volume_to_storage_group(
+                    storage_group_id=sg_name, num_vols=1, vol_size=size,
+                    cap_unit=cap_unit, vol_name=vol_name,
+                    create_new_volumes=True, remote_array_1_id=remote_array,
+                    remote_array_1_sgs=remote_array_sg)
+                vol_id = self.provisioning.find_volume_device_id(
+                    volume_name=vol_name)
             LOG.info('Created volume native ID: %s', vol_id)
             return vol_id
         except Exception as e:
@@ -734,36 +743,51 @@ class PowerMaxVolume(object):
                           "volume_identifier": vol_name}
                 volume_list = self.provisioning.get_volume_list(params)
 
-            if volume_list and len(volume_list) > 0:
+            if volume_list:
                 self.show_error_exit(msg="Volume already exists with volume "
                                      "name %s in storage group %s"
                                      % (vol_name, new_sg_name))
             storage_group_src = self.get_storage_group(sg_name)
-            if not storage_group_src['unprotected']:
+            if self.if_srdf_protected(storage_group_src):
                 protected_sg_msg = ("Move volume from Storage group %s "
                                     "not supported from Ansible module "
                                     "as this operation for an SRDF protected"
                                     " Storage Group will render it "
-                                    "unprotected and unmanageable.", sg_name)
+                                    "unprotected and unmanageable." % sg_name)
                 self.show_error_exit(msg=protected_sg_msg)
 
             storage_group_dstn = self.get_storage_group(new_sg_name)
-            if not storage_group_dstn['unprotected']:
+            if self.if_srdf_protected(storage_group_dstn):
                 protected_sg_msg = ("Move volume to Storage group %s "
                                     "not supported from Ansible module as"
                                     " this operation for an SRDF protected"
                                     " Storage Group will render it "
-                                    "unprotected and unmanageable.",
+                                    "unprotected and unmanageable." %
                                     new_sg_name)
                 self.show_error_exit(msg=protected_sg_msg)
-            self.provisioning.move_volumes_between_storage_groups(
-                vol['volumeId'], sg_name, new_sg_name)
+            if not self.module.check_mode:
+                self.provisioning.move_volumes_between_storage_groups(
+                    vol['volumeId'], sg_name, new_sg_name)
             return True
         except Exception as e:
             error_message = ('Move volume %s from SG %s to SG %s failed with'
                              ' error %s' % (vol_name, sg_name, new_sg_name,
                                             str(e)))
             self.show_error_exit(msg=error_message)
+
+    def if_srdf_protected(self, sg_details):
+        """Check if this storage group is protected with srdf"""
+        try:
+            if not sg_details['unprotected']:
+                srdf_sgs = self.replication.get_replication_enabled_storage_groups(has_srdf=True)
+                if sg_details['storageGroupId'] in srdf_sgs:
+                    return True
+            return False
+        except Exception as e:
+            msg = "Failed to determine if storage group %s is srdf protected, " \
+                  "with error %s" % (sg_details['storageGroupId'], str(e))
+            LOG.error(msg)
+            self.show_error_exit(msg=msg)
 
     def get_storage_group(self, sg_name):
         """Get storage group details"""
@@ -807,6 +831,11 @@ class PowerMaxVolume(object):
             self.show_error_exit(msg='Specify Storage group name along '
                                  'with volume name')
 
+        if size and cap_unit is None:
+            cap_unit = 'GB'
+        elif cap_unit and size is None:
+            self.show_error_exit(msg='Parameters size and cap_unit are '
+                                     'required together')
         self.volume_id = vol_id
 
         vol = self.get_volume()
@@ -821,6 +850,9 @@ class PowerMaxVolume(object):
 
         # Call to create volume in storage group
         if state == 'present' and vol is None:
+            if new_name:
+                self.show_error_exit(msg="Invalid argument new_name "
+                                         "while creating a volume")
             if size is None:
                 self.show_error_exit(msg='Size is required to create volume')
             vol_id = self.create_volume(vol_name, sg_name, size, cap_unit)
@@ -831,13 +863,16 @@ class PowerMaxVolume(object):
                 self.show_error_exit(msg='Size is required to expand volume')
             # Convert the given size to GB
             if size is not None and size > 0:
-                size = utils.get_size_in_gb(size, self.module.params[
-                    'cap_unit'])
+                size = utils.get_size_in_gb(size, cap_unit)
                 LOG.info('Existing Size: %s GB, Specified Size: %s GB',
                          existing_vol_size, size)
             changed = self.expand_volume_helper(vol, size, existing_vol_size)
 
-        if state == 'present' and vol and new_name:
+        if state == 'present' and vol and new_name is not None:
+            if len(new_name.strip()) == 0:
+                self.show_error_exit(msg="Please provide valid volume "
+                                         "name.")
+
             vol_name = vol['volume_identifier']
             if new_name != vol_name:
                 LOG.info('Changing the name of volume %s to %s',
@@ -849,8 +884,11 @@ class PowerMaxVolume(object):
             changed = self.delete_volume(vol_id) or changed
 
         if state == 'present' and vol and new_sg_name:
-            changed = self.move_volume_between_storage_groups(
-                vol, sg_name, new_sg_name) or changed
+            vol_sg = vol['storageGroupId'][0]
+            if vol_sg != new_sg_name:
+                LOG.info('Moving volume from %s to %s', vol_sg, new_name)
+                changed = self.move_volume_between_storage_groups(
+                    vol, sg_name, new_sg_name) or changed
 
         '''
         Finally update the module changed state and saving updated volume
@@ -873,11 +911,11 @@ def get_powermax_volume_parameters():
     return dict(
         vol_name=dict(required=False, type='str'),
         vol_id=dict(required=False, type='str'),
-        size=dict(type='float', default=None),
+        size=dict(type='float'),
         sg_name=dict(required=False, type='str'),
         new_sg_name=dict(required=False, type='str'),
         new_name=dict(required=False, type='str'),
-        cap_unit=dict(default='GB', choices=['MB', 'GB', 'TB'], type='str'),
+        cap_unit=dict(choices=['MB', 'GB', 'TB'], type='str'),
         vol_wwn=dict(required=False, type='str'),
         state=dict(required=True, type='str', choices=['absent', 'present'])
     )
