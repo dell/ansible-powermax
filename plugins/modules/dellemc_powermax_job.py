@@ -21,7 +21,7 @@ description:
 extends_documentation_fragment:
   - dellemc.powermax.dellemc_powermax.powermax
 author:
-- Rajshree Khare (@kharer5) <ansible.team@dell.com>
+- Rajshree Khare (@khareRajshree) <ansible.team@dell.com>
 options:
   job_id:
     description:
@@ -31,14 +31,14 @@ options:
 '''
 
 EXAMPLES = r'''
-  - name: Get the details of a Job.
-    dellemc_powermax_job:
-      unispherehost: "{{unispherehost}}"
-      universion: "{{universion}}"
-      verifycert: "{{verifycert}}"
-      user: "{{user}}"
-      password: "{{password}}"
-      job_id: "1570622921504"
+- name: Get the details of a Job.
+  dellemc_powermax_job:
+    unispherehost: "{{unispherehost}}"
+    universion: "{{universion}}"
+    verifycert: "{{verifycert}}"
+    user: "{{user}}"
+    password: "{{password}}"
+    job_id: "1570622921504"
 '''
 
 RETURN = r'''
@@ -95,7 +95,7 @@ HAS_PYU4V = utils.has_pyu4v_sdk()
 PYU4V_VERSION_CHECK = utils.pyu4v_version_check()
 
 # Application Type
-APPLICATION_TYPE = 'ansible_v1.4'
+APPLICATION_TYPE = 'ansible_v1.5.0'
 
 
 class PowerMaxJob(object):

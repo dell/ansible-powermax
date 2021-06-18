@@ -1,96 +1,118 @@
-**Ansible Modules for Dell EMC PowerMax** 
-=========================================
-### Product Guide 1.4
 
->   © 2021 Dell Inc. or its subsidiaries. All rights reserved. Dell
->   EMC, and other trademarks are trademarks of Dell Inc. or its
->   subsidiaries. Other trademarks may be trademarks of their respective
->   owners.
+**Ansible Modules for Dell EMC PowerMax**
+=========================================
+### Product Guide 1.5.0
+
+>© 2021 Dell Inc. or its subsidiaries. All rights reserved. Dell 
+> EMC, and other trademarks are trademarks of Dell Inc. or its 
+> subsidiaries. Other trademarks may be trademarks of their respective 
+> owners.
 
 Contents
 --------
--   [Common Parameters](#common-parameters)
+- [Common Parameters](#common-parameters)
 -   [Gatherfacts Module](#gatherfacts-module)
-    -   [Synopsis](#synopsis)			 
+    -   [Synopsis](#synopsis)
     -   [Parameters](#parameters)
+    -   [Notes](#notes)
     -   [Examples](#examples)
     -   [Return Values](#return-values)
     -   [Authors](#authors)
--   [Host Module](#host-module)																										 
+-   [Host Module](#host-module)
     -   [Synopsis](#synopsis-1)
     -   [Parameters](#parameters-1)
-    -   [Notes](#notes)
+    -   [Notes](#notes-1)
     -   [Examples](#examples-1)
     -   [Return Values](#return-values-1)
-    -   [Authors](#authors-1)						   
+    -   [Authors](#authors-1)
 -   [Host Group Module](#host-group-module)
     -   [Synopsis](#synopsis-2)
     -   [Parameters](#parameters-2)
-    -   [Notes](#notes-1)
+    -   [Notes](#notes-2)
     -   [Examples](#examples-2)
     -   [Return Values](#return-values-2)
     -   [Authors](#authors-2)
--   [Masking View Module](#masking-view-module)															   
-    -   [Synopsis](#synopsis-3)	   
+-   [Job Module](#job-module)
+    -   [Synopsis](#synopsis-3)
     -   [Parameters](#parameters-3)
     -   [Examples](#examples-3)
     -   [Return Values](#return-values-3)
     -   [Authors](#authors-3)
--   [Port Module](#port-module)																  
-    -   [Synopsis](#synopsis-4)	   
+-   [Masking View Module](#masking-view-module)
+    -   [Synopsis](#synopsis-4)
     -   [Parameters](#parameters-4)
     -   [Examples](#examples-4)
     -   [Return Values](#return-values-4)
     -   [Authors](#authors-4)
--   [Port Group Module](#port-group-module)																 
+-   [Metro DR Module](#metro-dr-module)
     -   [Synopsis](#synopsis-5)
     -   [Parameters](#parameters-5)
     -   [Examples](#examples-5)
     -   [Return Values](#return-values-5)
     -   [Authors](#authors-5)
--   [RDF Group Module](#rdf-group-module)																								
+-   [Port Module](#port-module)
     -   [Synopsis](#synopsis-6)
     -   [Parameters](#parameters-6)
     -   [Examples](#examples-6)
     -   [Return Values](#return-values-6)
     -   [Authors](#authors-6)
--   [Snapshot Module](#snapshot-module)
+-   [Port Group Module](#port-group-module)
     -   [Synopsis](#synopsis-7)
     -   [Parameters](#parameters-7)
     -   [Examples](#examples-7)
     -   [Return Values](#return-values-7)
     -   [Authors](#authors-7)
--   [SRDF Module](#srdf-module)																  
-    -   [Synopsis](#synopsis-8)	   
+-   [RDF Group Module](#rdf-group-module)
+    -   [Synopsis](#synopsis-8)
     -   [Parameters](#parameters-8)
     -   [Examples](#examples-8)
     -   [Return Values](#return-values-8)
     -   [Authors](#authors-8)
--   [Storage Group Module](#storage-group-module)																   
+-   [Snapshot Module](#snapshot-module)
     -   [Synopsis](#synopsis-9)
     -   [Parameters](#parameters-9)
+    -   [Notes](#notes-3)
     -   [Examples](#examples-9)
     -   [Return Values](#return-values-9)
     -   [Authors](#authors-9)
--   [Volume Module](#volume-module)														  
+-   [Snapshot Policy Module](#snapshot-policy-module)
     -   [Synopsis](#synopsis-10)
     -   [Parameters](#parameters-10)
-    -   [Notes](#notes-2)
+    -   [Notes](#notes-4)
     -   [Examples](#examples-10)
     -   [Return Values](#return-values-10)
     -   [Authors](#authors-10)
--   [Metro DR Module](#metro-dr-module)
+-   [SRDF Module](#srdf-module)
     -   [Synopsis](#synopsis-11)
     -   [Parameters](#parameters-11)
     -   [Examples](#examples-11)
     -   [Return Values](#return-values-11)
     -   [Authors](#authors-11)
--   [Job Module](#job-module)
+-   [Storage Group Module](#storage-group-module)
     -   [Synopsis](#synopsis-12)
     -   [Parameters](#parameters-12)
     -   [Examples](#examples-12)
     -   [Return Values](#return-values-12)
     -   [Authors](#authors-12)
+-   [Storage Pool Module](#storage-pool-module)
+    -   [Synopsis](#synopsis-13)
+    -   [Parameters](#parameters-13)
+    -   [Examples](#examples-13)
+    -   [Return Values](#return-values-13)
+    -   [Authors](#authors-13)
+-   [Volume Module](#volume-module)
+    -   [Synopsis](#synopsis-14)
+    -   [Parameters](#parameters-14)
+    -   [Notes](#notes-5)
+    -   [Examples](#examples-14)
+    -   [Return Values](#return-values-14)
+    -   [Authors](#authors-14)
+-   [Process Storage Pool Dict Module](#process-storage-pool-dict-module)
+    -   [Synopsis](#synopsis-15)
+    -   [Parameters](#parameters-15)
+    -   [Examples](#examples-15)
+    -   [Return Values](#return-values-15)
+    -   [Authors](#authors-15)
 
 Common Parameters
 =================
@@ -215,11 +237,10 @@ Gatherfacts Module
 
 Synopsis
 --------
-
-Gathers the list of specified PowerMax/VMAX Storage System entities,
+Gathers the list of specified PowerMax/VMAX storage system entities,
 such as the list of registered arrays, storage groups, hosts, host
 groups, storage groups, storage resource pools, port groups, masking
-views, array health status, alerts and metro DR environments, etc.
+views, array health status, alerts and metro DR environments, so on.
 
 Parameters
 ----------
@@ -246,7 +267,7 @@ Parameters
                                         <div>List of filters to support filtered output for storage entities.</div>
                                         <div>Each filter is a tuple of {filter_key, filter_operator, filter_value}.</div>
                                         <div>Supports passing of multiple filters.</div>
-                                        <div>The storage entities, &#x27;rdf&#x27; and &#x27;metro_dr_env&#x27;, does not support filters. Filters will be ignored if passed.</div>
+                                        <div>The storage entities, &#x27;rdf&#x27;, &#x27;health&#x27;, &#x27;snapshot_policies&#x27; and &#x27;metro_dr_env&#x27;, does not support filters. Filters will be ignored if passed.</div>
                                                     </td>
         </tr>
                                     <tr>
@@ -256,8 +277,8 @@ Parameters
                 <b>filter_key</b>
                 <a class="ansibleOptionLink" href="#parameter-filters/filter_key" title="Permalink to this option"></a>
                 <div style="font-size: small">
-                    <span style="color: purple">type=string</span>,
-                    <br>
+                    <span style="color: purple">type=string</span>
+                    <br>                         
                     <span style="color: red">required=true</span>                    </div>
                                                     </td>
                             <td>
@@ -273,7 +294,7 @@ Parameters
                 <b>filter_operator</b>
                 <a class="ansibleOptionLink" href="#parameter-filters/filter_operator" title="Permalink to this option"></a>
                 <div style="font-size: small">
-                    <span style="color: purple">type=string</span>,
+                    <span style="color: purple">type=string</span>
                     <br>
                     <span style="color: red">required=true</span>                    </div>
                                                     </td>
@@ -296,7 +317,7 @@ Parameters
                 <b>filter_value</b>
                 <a class="ansibleOptionLink" href="#parameter-filters/filter_value" title="Permalink to this option"></a>
                 <div style="font-size: small">
-                    <span style="color: purple">type=string</span>,
+                    <span style="color: purple">type=string</span>
                     <br>
                     <span style="color: red">required=true</span>                    </div>
                                                     </td>
@@ -330,6 +351,7 @@ Parameters
                                                                                                                                                                                             <li>mv</li>
                                                                                                                                                                                             <li>rdf</li>
                                                                                                                                                                                             <li>metro_dr_env</li>
+                                                                                                                                                                                            <li>snapshot_policies</li>
                                                                                 </ul>
                                                                         </td>
                                                             <td>
@@ -348,9 +370,10 @@ Parameters
                                         <div>mv - masking views</div>
                                         <div>rdf - rdf groups</div>
                                         <div>metro_dr_env - metro DR environments</div>
+                                        <div>snapshot_policies - snapshot policies</div>
                                                     </td>
         </tr>
-                            <tr>
+                                    <tr>
                                                             <td colspan="2">
                 <div class="ansibleOptionAnchor" id="parameter-serial_no"></div>
                 <b>serial_no</b>
@@ -386,7 +409,55 @@ Parameters
                                         <div>False - Will return all the volumes.</div>
                                                     </td>
         </tr>
-                    </table>
+                     </table>
+
+Notes
+-----
+
+- Filter functionality will be supported only for the following
+  'filter\_key' against specific 'gather\_subset'. 
+  - vol -
+    allocated\_percent, associated, available\_thin\_volumes, bound\_tdev,
+    cap\_cyl, cap\_gb, cap\_mb, cap\_tb, cu\_image\_num, cu\_image\_ssid,
+    data\_volume, dld, drv, effective\_wwn, emulation, encapsulated,
+    encapsulated\_wwn, gatekeeper, has\_effective\_wwn, mapped,
+    mobility\_id\_enabled, num\_of\_front\_end\_paths,
+    num\_of\_masking\_views, num\_of\_storage\_groups,
+    oracle\_instance\_name, physical\_name, pinned, private\_volumes,
+    rdf\_group\_number, reserved, split\_name, status, storageGroupId,
+    symmlun, tdev, thin\_bcv, type, vdev, virtual\_volumes,
+    volume\_identifier, wwn. 
+  - srp - compression\_state, description, 
+    effective\_used\_capacity\_percent, emulation, num\_of\_disk\_groups, 
+    num\_of\_srp\_sg\_demands, num\_of\_srp\_slo\_demands, rdfa\_dse, 
+    reserved\_cap\_percent, total\_allocated\_cap\_gb, 
+    total\_srdf\_dse\_allocated\_cap\_gb, total\_subscribed\_cap\_gb, 
+    total\_usable\_cap\_gb. 
+  - sg - base\_slo\_name, cap\_gb, child, 
+    child\_sg\_name, ckd, compression, compression\_ratio\_to\_one, fba, 
+    num\_of\_child\_sgs, num\_of\_masking\_views, num\_of\_parent\_sgs, 
+    num\_of\_snapshots, num\_of\_vols, parent, parent\_sg\_name, 
+    slo\_compliance, slo\_name, srp\_name, storageGroupId, tag, volumeId. 
+  - pg - dir\_port, fibre, iscsi, num\_of\_masking\_views, num\_of\_ports
+  - host - host\_group\_name, num\_of\_host\_groups, num\_of\_initiators, 
+    num\_of\_masking\_views, num\_of\_powerpath\_hosts, powerPathHostId.
+  - hg - host\_name, num\_of\_hosts, num\_of\_masking\_views.
+  - port - aclx, avoid\_reset\_broadcast, common\_serial\_number, director\_status, 
+    disable\_q\_reset\_on\_ua, enable\_auto\_negotive, environ\_set, 
+    hp\_3000\_mode, identifier, init\_point\_to\_point, ip\_list, 
+    ipv4\_address, ipv6\_address, iscsi\_target, max\_speed, 
+    negotiated\_speed, neqotiate\_reset, no\_participating, node\_wwn, 
+    num\_of\_cores, num\_of\_hypers, num\_of\_mapped\_vols, 
+    num\_of\_masking\_views, num\_of\_port\_groups, port\_interface, 
+    port\_status, rdf\_hardware\_compression, 
+    rdf\_hardware\_compression\_supported, rdf\_software\_compression, 
+    rdf\_software\_compression\_supported, scsi\_3, scsi\_support1, siemens, 
+    soft\_reset, spc2\_protocol\_version, sunapee, type, unique\_wwn, 
+    vcm\_state, vnx\_attached, volume\_set\_addressing, wwn\_node.
+  - mv - host\_or\_host\_group\_name, port\_group\_name, 
+    protocol\_endpoint\_masking\_view, storage\_group\_name.
+  - alert - acknowledged, array, created\_date, created\_date\_milliseconds, 
+    description, object, object\_type, severity, state, type.
 
 Examples
 --------
@@ -599,12 +670,22 @@ Examples
     serial_no: "{{serial_no}}"
     gather_subset:
        - rdf
-```
 
+- name: Get list of snapshot policies
+  dellemc_powermax_gatherfacts:
+    unispherehost: "{{unispherehost}}"
+    universion: "{{universion}}"
+    verifycert: "{{verifycert}}"
+    user: "{{user}}"
+    password: "{{password}}"
+    serial_no: "{{serial_no}}"
+    gather_subset:
+     - snapshot_policies
+```
 Return Values
 -------------
 
-The following are the return value fields unique to this module:
+The following are the fields unique to this module:
 
 <table border=0 cellpadding=0 class="documentation-table">
     <tr>
@@ -835,7 +916,7 @@ The following are the return value fields unique to this module:
                                     <br/>
                                 </td>
         </tr>
-                            <tr>
+                                    <tr>
                                 <td class="elbow-placeholder">&nbsp;</td>
                             <td colspan="3">
                 <div class="ansibleOptionAnchor" id="return-Health/health_score_metric"></div>
@@ -852,7 +933,7 @@ The following are the return value fields unique to this module:
                                     <br/>
                                 </td>
         </tr>
-                            <tr>
+                                    <tr>
                                 <td class="elbow-placeholder">&nbsp;</td>
                                 <td class="elbow-placeholder">&nbsp;</td>
                             <td colspan="2">
@@ -1165,6 +1246,22 @@ The following are the return value fields unique to this module:
         </tr>
                             <tr>
                             <td colspan="4">
+                <div class="ansibleOptionAnchor" id="return-SnapshotPolicies"></div>
+                <b>SnapshotPolicies</b>
+                <a class="ansibleOptionLink" href="#return-SnapshotPolicies" title="Permalink to this return value"></a>
+                <div style="font-size: small">
+                  <span style="color: purple">type=list</span>
+                  <br>
+                  <span style="color: purple">elements=string</span>                    </div>
+                                </td>
+            <td>When snapshot policy exists.</td>
+            <td>
+                                        <div>List of snapshot policies on the array.</div>
+                                    <br/>
+                                </td>
+        </tr>
+                            <tr>
+                            <td colspan="4">
                 <div class="ansibleOptionAnchor" id="return-StorageGroups"></div>
                 <b>StorageGroups</b>
                 <a class="ansibleOptionLink" href="#return-StorageGroups" title="Permalink to this return value"></a>
@@ -1282,9 +1379,8 @@ The following are the return value fields unique to this module:
                 <b>srp_capacity</b>
                 <a class="ansibleOptionLink" href="#return-StorageResourcePools/srp_capacity" title="Permalink to this return value"></a>
                 <div style="font-size: small">
-                  <span style="color: purple">type=dict</span>
-                  <br>
-                  <span style="color: purple">elements=string</span>                    </div>
+                  <span style="color: purple">type=dictionary</span>
+                                      </div>
                                 </td>
             <td>success</td>
             <td>
@@ -1418,9 +1514,8 @@ The following are the return value fields unique to this module:
                 <b>srp_efficiency</b>
                 <a class="ansibleOptionLink" href="#return-StorageResourcePools/srp_efficiency" title="Permalink to this return value"></a>
                 <div style="font-size: small">
-                  <span style="color: purple">type=dict</span>
-                  <br>
-                  <span style="color: purple">elements=string</span>                    </div>
+                  <span style="color: purple">type=dictionary</span>
+                                      </div>
                                 </td>
             <td>success</td>
             <td>
@@ -1584,7 +1679,7 @@ Authors
 -------
 
 -   Arindam Datta (@dattaarindam) &lt;<ansible.team@dell.com>&gt;
--   Rajshree Khare (@kharer5) &lt;<ansible.team@dell.com>&gt;
+-   Rajshree Khare (@khareRajshree) &lt;<ansible.team@dell.com>&gt;
 
 Host Module
 ===========
@@ -1629,7 +1724,7 @@ Parameters
                                         <div>7. spc2_protocol_version</div>
                                         <div>8. scsi_support1</div>
                                         <div>9. consistent_lun</div>
-                                        <div>Possible values are true, false, unset(default state)</div>
+                                        <div>Possible values are true, false, unset (default state)</div>
                                                     </td>
         </tr>
                             <tr>
@@ -1638,10 +1733,10 @@ Parameters
                 <b>host_name</b>
                 <a class="ansibleOptionLink" href="#parameter-host_name" title="Permalink to this option"></a>
                 <div style="font-size: small">
-                    <span style="color: purple">type=string</span>,
+                    <span style="color: purple">type=string</span>
                     <br>
-                    <span style="color: purple">required=true</span>                    </div>
-                                </td>
+                    <span style="color: red">required=true</span>                    </div>
+                                                    </td>
                             <td>
                                                                                                                                                         </td>
                                                             <td>
@@ -1727,7 +1822,7 @@ Parameters
                 <b>state</b>
                 <a class="ansibleOptionLink" href="#parameter-state" title="Permalink to this option"></a>
                 <div style="font-size: small">
-                    <span style="color: purple">type=string</span>,
+                    <span style="color: purple">type=string</span>
                     <br>
                     <span style="color: red">required=true</span>                    </div>
                                                     </td>
@@ -1743,12 +1838,12 @@ Parameters
                                         <div>absent - indicates that the host should not exist in the system</div>
                                                     </td>
         </tr>
-                    </table>
+                            </table>
 
 Notes
 -----
 
-- host\_flags and host\_type are mutually exclusive parameters.
+- host\_flags and host\_type are mutually exclusive parameters. 
 
 Examples
 --------
@@ -1788,13 +1883,13 @@ Examples
     serial_no: "{{serial_no}}"
     host_name: "ansible_test_3"
     initiators:
-    - 10000090fa7b4e85
+      - 10000090fa7b4e85
     host_flags:
-        spc2_protocol_version: true
-        consistent_lun: true
-        volume_set_addressing: 'unset'
-        disable_q_reset_on_ua: false
-        openvms: 'unset'
+      spc2_protocol_version: true
+      consistent_lun: true
+      volume_set_addressing: 'unset'
+      disable_q_reset_on_ua: false
+      openvms: 'unset'
     state: 'present'
     initiator_state: 'present-in-host'
 
@@ -1819,7 +1914,7 @@ Examples
     serial_no: "{{serial_no}}"
     host_name: "ansible_test_1"
     initiators:
-    - 10000090fa3d303e
+      - 10000090fa3d303e
     initiator_state: 'present-in-host'
     state: 'present'
 
@@ -1833,7 +1928,7 @@ Examples
     serial_no: "{{serial_no}}"
     host_name: "ansible_test_1"
     initiators:
-    - 10000090fa3d303e
+      - 10000090fa3d303e
     initiator_state: 'absent-in-host'
     state: 'present'
 
@@ -1859,12 +1954,12 @@ Examples
     serial_no: "{{serial_no}}"
     host_name: "ansible_test_1"
     host_flags:
-        spc2_protocol_version: unset
-        consistent_lun: unset
-        volume_set_addressing: true
-        disable_q_reset_on_ua: false
-        openvms: false
-        avoid_reset_broadcast: true
+      spc2_protocol_version: unset
+      consistent_lun: unset
+      volume_set_addressing: true
+      disable_q_reset_on_ua: false
+      openvms: false
+      avoid_reset_broadcast: true
     state: 'present'
 
 - name: Rename host
@@ -1894,7 +1989,7 @@ Examples
 Return Values
 -------------
 
-The following are the return value fields unique to this module:
+The following are the fields unique to this module:
 
 <table border=0 cellpadding=0 class="documentation-table">
     <tr>
@@ -1933,6 +2028,22 @@ The following are the return value fields unique to this module:
                                 </td>
         </tr>
                                     <tr>
+                                <td class="elbow-placeholder">&nbsp;</td>
+                            <td colspan="1">
+                <div class="ansibleOptionAnchor" id="return-host_details/bw_limit"></div>
+                <b>bw_limit</b>
+                <a class="ansibleOptionLink" href="#return-host_details/bw_limit" title="Permalink to this return value"></a>
+                <div style="font-size: small">
+                  <span style="color: purple">type=integer</span>
+                                      </div>
+                                </td>
+            <td>success</td>
+            <td>
+                                        <div>Bandwidth limit of the host.</div>
+                                    <br/>
+                                </td>
+        </tr>
+                            <tr>
                                 <td class="elbow-placeholder">&nbsp;</td>
                             <td colspan="1">
                 <div class="ansibleOptionAnchor" id="return-host_details/consistent_lun"></div>
@@ -2245,10 +2356,10 @@ Parameters
                 <b>hostgroup_name</b>
                 <a class="ansibleOptionLink" href="#parameter-hostgroup_name" title="Permalink to this option"></a>
                 <div style="font-size: small">
-                    <span style="color: purple">type=string</span>,
+                    <span style="color: purple">type=string</span>
                     <br>
-                    <span style="color: purple">required=true</span>                    </div>
-                                </td>
+                    <span style="color: red">required=true</span>                    </div>
+                                                    </td>
                             <td>
                                                                                                                                                         </td>
                                                             <td>
@@ -2293,10 +2404,10 @@ Parameters
                 <b>state</b>
                 <a class="ansibleOptionLink" href="#parameter-state" title="Permalink to this option"></a>
                 <div style="font-size: small">
-                    <span style="color: purple">type=string</span>,
+                    <span style="color: purple">type=string</span>
                     <br>
-                    <span style="color: purple">required=true</span>                    </div>
-                                </td>
+                    <span style="color: red">required=true</span>                    </div>
+                                                    </td>
                             <td>
                                                                                                                         <ul style="margin: 0; padding: 0"><b>Choices:</b>
                                                                                                                                                             <li>absent</li>
@@ -2314,11 +2425,12 @@ Parameters
 Notes
 -----
 
-- In the gather facts module, empty host groups will be listed as
-hosts.
+- In the gather facts module, empty host groups will be listed as hosts.
 - host\_flags and host\_type are mutually exclusive parameters.
 - Hostgroups with 'default' host\_type will have 'default' hosts.
 - Hostgroups with 'hpux' host\_type will have 'hpux' hosts.
+
+
 
 Examples
 --------
@@ -2335,7 +2447,7 @@ Examples
     hostgroup_name: "ansible_test_HG_1"
     host_type: "default"
     hosts:
-    - ansible_test_1
+      - ansible_test_1
     host_state: 'present-in-group'
     state: 'present'
 
@@ -2350,7 +2462,7 @@ Examples
     hostgroup_name: "ansible_test_HG_2"
     host_type: "hpux"
     hosts:
-    - ansible_test_2
+      - ansible_test_2
     host_state: 'present-in-group'
     state: 'present'
 
@@ -2364,15 +2476,15 @@ Examples
     serial_no: "{{serial_no}}"
     hostgroup_name: "ansible_test_HG_3"
     hosts:
-    - ansible_test_3
+      - ansible_test_3
     state: 'present'
     host_state: 'present-in-group'
     host_flags:
-        spc2_protocol_version: true
-        consistent_lun: true
-        volume_set_addressing: 'unset'
-        disable_q_reset_on_ua: false
-        openvms: 'unset'
+      spc2_protocol_version: true
+      consistent_lun: true
+      volume_set_addressing: 'unset'
+      disable_q_reset_on_ua: false
+      openvms: 'unset'
 
 - name: Get host group details
   dellemc_powermax_hostgroup:
@@ -2395,7 +2507,7 @@ Examples
     serial_no: "{{serial_no}}"
     hostgroup_name: "ansible_test_HG_1"
     hosts:
-    - Ansible_Testing_host2
+      - Ansible_Testing_host2
     state: 'present'
     host_state: 'present-in-group'
 
@@ -2409,7 +2521,7 @@ Examples
     serial_no: "{{serial_no}}"
     hostgroup_name: "ansible_test_HG_1"
     hosts:
-    - Ansible_Testing_host2
+      - Ansible_Testing_host2
     state: 'present'
     host_state: 'absent-in-group'
 
@@ -2435,10 +2547,10 @@ Examples
     serial_no: "{{serial_no}}"
     hostgroup_name: "ansible_test_HG_1"
     host_flags:
-        spc2_protocol_version: unset
-        disable_q_reset_on_ua: false
-        openvms: false
-        avoid_reset_broadcast: true
+      spc2_protocol_version: unset
+      disable_q_reset_on_ua: false
+      openvms: false
+      avoid_reset_broadcast: true
     state: 'present'
 
 - name: Rename host group
@@ -2468,7 +2580,7 @@ Examples
 Return Values
 -------------
 
-The following are the return value fields unique to this module:
+The following are the fields unique to this module:
 
 <table border=0 cellpadding=0 class="documentation-table">
     <tr>
@@ -2717,7 +2829,7 @@ The following are the return value fields unique to this module:
                                 </td>
             <td>success</td>
             <td>
-                                        <div>Type of initiator.</div>
+                                        <div>Type of initiator of the hosts of the host group.</div>
                                     <br/>
                                 </td>
         </tr>
@@ -2729,24 +2841,289 @@ Authors
 -   Vasudevu Lakhinana (@unknown) &lt;<ansible.team@dell.com>&gt;
 -   Manisha Agrawal (@agrawm3) &lt;<ansible.team@dell.com>&gt;
 
+Job Module
+==========
+
+Synopsis
+--------
+
+-   Gets the details of a Job from a specified PowerMax/VMAX storage system.
+-   The details listed are of an asynchronous task.
+
+Parameters
+----------
+
+<table  border=0 cellpadding=0 class="documentation-table">
+    <tr>
+        <th colspan="1">Parameter</th>
+        <th>Choices/<font color="blue">Defaults</font></th>
+                    <th width="100%">Comments</th>
+    </tr>
+                <tr>
+                                                            <td colspan="1">
+                <div class="ansibleOptionAnchor" id="parameter-job_id"></div>
+                <b>job_id</b>
+                <a class="ansibleOptionLink" href="#parameter-job_id" title="Permalink to this option"></a>
+                <div style="font-size: small">
+                    <span style="color: purple">type=string</span>
+                    <br> 
+                    <span style="color: red">required=true</span>                    </div>
+                                                    </td>
+                            <td>
+                                                                                                                                                        </td>
+                                                            <td>
+                                        <div>Job ID of an asynchronous task, used for getting details of a job.</div>
+                                                    </td>
+        </tr>
+                    </table>
+
+Examples
+--------
+
+``` yaml+jinja
+- name: Get the details of a Job.
+  dellemc_powermax_job:
+    unispherehost: "{{unispherehost}}"
+    universion: "{{universion}}"
+    verifycert: "{{verifycert}}"
+    user: "{{user}}"
+    password: "{{password}}"
+    job_id: "1570622921504"
+```
+
+Return Values
+-------------
+
+The following are the fields unique to this module:
+
+<table border=0 cellpadding=0 class="documentation-table">
+    <tr>
+        <th colspan="2">Key</th>
+        <th>Returned</th>
+        <th width="100%">Description</th>
+    </tr>
+                <tr>
+                            <td colspan="2">
+                <div class="ansibleOptionAnchor" id="return-changed"></div>
+                <b>changed</b>
+                <a class="ansibleOptionLink" href="#return-changed" title="Permalink to this return value"></a>
+                <div style="font-size: small">
+                  <span style="color: purple">type=boolean</span>
+                                      </div>
+                                </td>
+            <td>always</td>
+            <td>
+                                        <div>Whether or not the resource has changed.</div>
+                                    <br/>
+                                </td>
+        </tr>
+                            <tr>
+                            <td colspan="2">
+                <div class="ansibleOptionAnchor" id="return-Job_details"></div>
+                <b>Job_details</b>
+                <a class="ansibleOptionLink" href="#return-Job_details" title="Permalink to this return value"></a>
+                <div style="font-size: small">
+                  <span style="color: purple">type=dictionary</span>
+                                      </div>
+                                </td>
+            <td>When job exist.</td>
+            <td>
+                                        <div>Details of the job.</div>
+                                    <br/>
+                                </td>
+        </tr>
+                                    <tr>
+                                <td class="elbow-placeholder">&nbsp;</td>
+                            <td colspan="1">
+                <div class="ansibleOptionAnchor" id="return-Job_details/completed_date_milliseconds"></div>
+                <b>completed_date_milliseconds</b>
+                <a class="ansibleOptionLink" href="#return-Job_details/completed_date_milliseconds" title="Permalink to this return value"></a>
+                <div style="font-size: small">
+                  <span style="color: purple">type=integer</span>
+                                      </div>
+                                </td>
+            <td>success</td>
+            <td>
+                                        <div>Date of job completion in milliseconds.</div>
+                                    <br/>
+                                </td>
+        </tr>
+                            <tr>
+                                <td class="elbow-placeholder">&nbsp;</td>
+                            <td colspan="1">
+                <div class="ansibleOptionAnchor" id="return-Job_details/jobId"></div>
+                <b>jobId</b>
+                <a class="ansibleOptionLink" href="#return-Job_details/jobId" title="Permalink to this return value"></a>
+                <div style="font-size: small">
+                  <span style="color: purple">type=string</span>
+                                      </div>
+                                </td>
+            <td>success</td>
+            <td>
+                                        <div>Unique identifier of the job.</div>
+                                    <br/>
+                                </td>
+        </tr>
+                            <tr>
+                                <td class="elbow-placeholder">&nbsp;</td>
+                            <td colspan="1">
+                <div class="ansibleOptionAnchor" id="return-Job_details/last_modified_date"></div>
+                <b>last_modified_date</b>
+                <a class="ansibleOptionLink" href="#return-Job_details/last_modified_date" title="Permalink to this return value"></a>
+                <div style="font-size: small">
+                  <span style="color: purple">type=string</span>
+                                      </div>
+                                </td>
+            <td>success</td>
+            <td>
+                                        <div>Last modified date of job.</div>
+                                    <br/>
+                                </td>
+        </tr>
+                            <tr>
+                                <td class="elbow-placeholder">&nbsp;</td>
+                            <td colspan="1">
+                <div class="ansibleOptionAnchor" id="return-Job_details/last_modified_date_milliseconds"></div>
+                <b>last_modified_date_milliseconds</b>
+                <a class="ansibleOptionLink" href="#return-Job_details/last_modified_date_milliseconds" title="Permalink to this return value"></a>
+                <div style="font-size: small">
+                  <span style="color: purple">type=integer</span>
+                                      </div>
+                                </td>
+            <td>success</td>
+            <td>
+                                        <div>Last modified date of job in milliseconds.</div>
+                                    <br/>
+                                </td>
+        </tr>
+                            <tr>
+                                <td class="elbow-placeholder">&nbsp;</td>
+                            <td colspan="1">
+                <div class="ansibleOptionAnchor" id="return-Job_details/name"></div>
+                <b>name</b>
+                <a class="ansibleOptionLink" href="#return-Job_details/name" title="Permalink to this return value"></a>
+                <div style="font-size: small">
+                  <span style="color: purple">type=string</span>
+                                      </div>
+                                </td>
+            <td>success</td>
+            <td>
+                                        <div>Name of the job.</div>
+                                    <br/>
+                                </td>
+        </tr>
+                            <tr>
+                                <td class="elbow-placeholder">&nbsp;</td>
+                            <td colspan="1">
+                <div class="ansibleOptionAnchor" id="return-Job_details/resourceLink"></div>
+                <b>resourceLink</b>
+                <a class="ansibleOptionLink" href="#return-Job_details/resourceLink" title="Permalink to this return value"></a>
+                <div style="font-size: small">
+                  <span style="color: purple">type=string</span>
+                                      </div>
+                                </td>
+            <td>success</td>
+            <td>
+                                        <div>Resource link w.r.t Unisphere.</div>
+                                    <br/>
+                                </td>
+        </tr>
+                            <tr>
+                                <td class="elbow-placeholder">&nbsp;</td>
+                            <td colspan="1">
+                <div class="ansibleOptionAnchor" id="return-Job_details/result"></div>
+                <b>result</b>
+                <a class="ansibleOptionLink" href="#return-Job_details/result" title="Permalink to this return value"></a>
+                <div style="font-size: small">
+                  <span style="color: purple">type=string</span>
+                                      </div>
+                                </td>
+            <td>success</td>
+            <td>
+                                        <div>Job description</div>
+                                    <br/>
+                                </td>
+        </tr>
+                            <tr>
+                                <td class="elbow-placeholder">&nbsp;</td>
+                            <td colspan="1">
+                <div class="ansibleOptionAnchor" id="return-Job_details/status"></div>
+                <b>status</b>
+                <a class="ansibleOptionLink" href="#return-Job_details/status" title="Permalink to this return value"></a>
+                <div style="font-size: small">
+                  <span style="color: purple">type=string</span>
+                                      </div>
+                                </td>
+            <td>success</td>
+            <td>
+                                        <div>Status of the job.</div>
+                                    <br/>
+                                </td>
+        </tr>
+                            <tr>
+                                <td class="elbow-placeholder">&nbsp;</td>
+                            <td colspan="1">
+                <div class="ansibleOptionAnchor" id="return-Job_details/task"></div>
+                <b>task</b>
+                <a class="ansibleOptionLink" href="#return-Job_details/task" title="Permalink to this return value"></a>
+                <div style="font-size: small">
+                  <span style="color: purple">type=list</span>
+                  <br>
+                  <span style="color: purple">elements=string</span>                    </div>
+                                </td>
+            <td>success</td>
+            <td>
+                                        <div>Details about the job.</div>
+                                    <br/>
+                                </td>
+        </tr>
+                            <tr>
+                                <td class="elbow-placeholder">&nbsp;</td>
+                            <td colspan="1">
+                <div class="ansibleOptionAnchor" id="return-Job_details/username"></div>
+                <b>username</b>
+                <a class="ansibleOptionLink" href="#return-Job_details/username" title="Permalink to this return value"></a>
+                <div style="font-size: small">
+                  <span style="color: purple">type=string</span>
+                                      </div>
+                                </td>
+            <td>success</td>
+            <td>
+                                        <div>Unisphere username.</div>
+                                    <br/>
+                                </td>
+        </tr>
+                    </table>
+
+Authors
+-------
+
+-   Rajshree Khare (@khareRajshree) &lt;<ansible.team@dell.com>&gt;
+
 Masking View Module
 ===================
 
 Synopsis
 --------
 
--   Managing masking views on PowerMax storage system includes, creating
-    masking view with port group, storage group and host or host group,
-    renaming masking view and deleting masking view.
--   For creating a masking view -
-    - portgroup\_name
-    - sg\_name and
-    - any one of host\_name or hostgroup\_name is required.
--   All three entities must be present on the array.
--   For renaming a masking view, the 'new\_mv\_name' is required. After
-    a masking view is created, only its name can be changed. No
-    underlying entity (portgroup, storagegroup, host or hostgroup) can
-    be changed on the masking view.
+- Managing masking views on PowerMax storage system includes, creating 
+masking view with port group, storage group and host or host group,
+renaming masking view and deleting masking view.
+
+- For creating a masking view -
+
+   1.  portgroup\_name,
+
+   2.  sg\_name and
+
+   3.  any one of host\_name or hostgroup\_name is required.
+  
+- All three entities must be present on the array.
+
+- For renaming a masking view, the 'new\_mv\_name' is required. After
+  a masking view is created, only its name can be changed. No
+  underlying entity (portgroup, storagegroup, host or hostgroup) can
+  be changed on the masking view.
 
 Parameters
 ----------
@@ -2793,10 +3170,10 @@ Parameters
                 <b>mv_name</b>
                 <a class="ansibleOptionLink" href="#parameter-mv_name" title="Permalink to this option"></a>
                 <div style="font-size: small">
-                    <span style="color: purple">type=string</span>,
+                    <span style="color: purple">type=string</span>
                     <br>
-                    <span style="color: purple">required=true</span>                    </div>
-                                </td>
+                    <span style="color: red">required=true</span>                    </div>
+                                                    </td>
                             <td>
                                                                                                                                                         </td>
                                                             <td>
@@ -2818,7 +3195,7 @@ Parameters
                                         <div>The new name for the renaming function. No Special Character support except for _. Case sensitive for REST Calls.</div>
                                                     </td>
         </tr>
-                            <tr>
+                                    <tr>
                                                             <td colspan="1">
                 <div class="ansibleOptionAnchor" id="parameter-portgroup_name"></div>
                 <b>portgroup_name</b>
@@ -2854,10 +3231,10 @@ Parameters
                 <b>state</b>
                 <a class="ansibleOptionLink" href="#parameter-state" title="Permalink to this option"></a>
                 <div style="font-size: small">
-                    <span style="color: purple">type=string</span>,
+                    <span style="color: purple">type=string</span>
                     <br>
-                    <span style="color: purple">required=true</span>                    </div>
-                                </td>
+                    <span style="color: red">required=true</span>                    </div>
+                                                    </td>
                             <td>
                                                                                                                         <ul style="margin: 0; padding: 0"><b>Choices:</b>
                                                                                                                                                             <li>absent</li>
@@ -2882,7 +3259,7 @@ Examples
     user: "{{user}}"
     password: "{{password}}"
     serial_no: "{{serial_no}}"
-    mv_name: "{{mv_name}}"
+    mv_name: "Ansible_Testing_MaskingView_HostGroup"
     portgroup_name: "Ansible_Testing_portgroup"
     hostgroup_name: "Ansible_Testing_hostgroup"
     sg_name: "Ansible_Testing_SG"
@@ -2896,7 +3273,7 @@ Examples
     user: "{{user}}"
     password: "{{password}}"
     serial_no: "{{serial_no}}"
-    mv_name: "{{mv_name}}"
+    mv_name: "Ansible_Testing_MaskingView_Host"
     portgroup_name: "Ansible_Testing_portgroup"
     host_name: "Ansible_Testing_host"
     sg_name: "Ansible_Testing_SG"
@@ -2910,7 +3287,7 @@ Examples
     user: "{{user}}"
     password: "{{password}}"
     serial_no: "{{serial_no}}"
-    mv_name: "{{mv_name}}"
+    mv_name: "Ansible_Testing_MaskingView_Host"
     new_mv_name: "Ansible_Testing_mv_renamed"
     state: "present"
 
@@ -2929,7 +3306,7 @@ Examples
 Return Values
 -------------
 
-The following are the return value fields unique to this module:
+The following are the fields unique to this module:
 
 <table border=0 cellpadding=0 class="documentation-table">
     <tr>
@@ -3085,14 +3462,953 @@ Authors
 -   Vasudevu Lakhinana (@unknown) &lt;<ansible.team@dell.com>&gt;
 -   Prashant Rakheja (@prashant-dell) &lt;<ansible.team@dell.com>&gt;
 
-Port Module
-===========
+Metro DR Module
+===============
 
 Synopsis
 --------
 
-Managing ports on PowerMax storage system includes getting details
-of a port.
+Managing a metro DR environment on a PowerMax storage system
+includes getting details of any specific metro DR environment,
+creating a metro DR environment, converting an existing SG into a
+metro DR environment, modifying metro DR environment attributes and
+deleting a metro DR environment.
+
+Parameters
+----------
+
+<table  border=0 cellpadding=0 class="documentation-table">
+    <tr>
+        <th colspan="2">Parameter</th>
+        <th>Choices/<font color="blue">Defaults</font></th>
+                    <th width="100%">Comments</th>
+    </tr>
+                <tr>
+                                                            <td colspan="2">
+                <div class="ansibleOptionAnchor" id="parameter-dr_serial_no"></div>
+                <b>dr_serial_no</b>
+                <a class="ansibleOptionLink" href="#parameter-dr_serial_no" title="Permalink to this option"></a>
+                <div style="font-size: small">
+                    <span style="color: purple">type=string</span>
+                                                                </div>
+                                                    </td>
+                            <td>
+                                                                                                                                                        </td>
+                                                            <td>
+                                        <div>Serial number of the DR array.</div>
+                                        <div>It is required in create and convert operations.</div>
+                                                    </td>
+        </tr>
+                            <tr>
+                                                            <td colspan="2">
+                <div class="ansibleOptionAnchor" id="parameter-env_name"></div>
+                <b>env_name</b>
+                <a class="ansibleOptionLink" href="#parameter-env_name" title="Permalink to this option"></a>
+                <div style="font-size: small">
+                    <span style="color: purple">type=string</span>
+                    <br>
+                    <span style="color: red">required=true</span>                    </div>
+                                                    </td>
+                            <td>
+                                                                                                                                                        </td>
+                                                            <td>
+                                        <div>Name of the metro DR environment.</div>
+                                        <div>Metro DR environment name will be unique across PowerMax.</div>
+                                                    </td>
+        </tr>
+                            <tr>
+                                                            <td colspan="2">
+                <div class="ansibleOptionAnchor" id="parameter-metro_serial_no"></div>
+                <b>metro_serial_no</b>
+                <a class="ansibleOptionLink" href="#parameter-metro_serial_no" title="Permalink to this option"></a>
+                <div style="font-size: small">
+                    <span style="color: purple">type=string</span>
+                                                                </div>
+                                                    </td>
+                            <td>
+                                                                                                                                                        </td>
+                                                            <td>
+                                        <div>Serial number of the remote metro array.</div>
+                                        <div>It is required only in create and convert operations.</div>
+                                                    </td>
+        </tr>
+                            <tr>
+                                                            <td colspan="2">
+                <div class="ansibleOptionAnchor" id="parameter-new_rdf_group_r1"></div>
+                <b>new_rdf_group_r1</b>
+                <a class="ansibleOptionLink" href="#parameter-new_rdf_group_r1" title="Permalink to this option"></a>
+                <div style="font-size: small">
+                    <span style="color: purple">type=boolean</span>
+                                                                </div>
+                                                    </td>
+                            <td>
+                                                                                                                                                                                                                <ul style="margin: 0; padding: 0"><b>Choices:</b>
+                                                                                                                                                            <li>no</li>
+                                                                                                                                                                                            <li><div style="color: blue"><b>yes</b>&nbsp;&larr;</div></li>
+                                                                                </ul>
+                                                                        </td>
+                                                            <td>
+                                        <div>The flag indicates whether or not to create a new RDFG for a Metro R1 array to a DR array, or to autoselect from an existing one.</div>
+                                        <div>Used in only create operation.</div>
+                                                    </td>
+        </tr>
+                            <tr>
+                                                            <td colspan="2">
+                <div class="ansibleOptionAnchor" id="parameter-new_rdf_group_r2"></div>
+                <b>new_rdf_group_r2</b>
+                <a class="ansibleOptionLink" href="#parameter-new_rdf_group_r2" title="Permalink to this option"></a>
+                <div style="font-size: small">
+                    <span style="color: purple">type=boolean</span>
+                                                                </div>
+                                                    </td>
+                            <td>
+                                                                                                                                                                                                                <ul style="margin: 0; padding: 0"><b>Choices:</b>
+                                                                                                                                                            <li>no</li>
+                                                                                                                                                                                            <li><div style="color: blue"><b>yes</b>&nbsp;&larr;</div></li>
+                                                                                </ul>
+                                                                        </td>
+                                                            <td>
+                                        <div>The flag indicates whether or not to create a new RDFG for a Metro R2 array to a DR array, or to autoselect from an existing one.</div>
+                                        <div>It is used only in create operation.</div>
+                                                    </td>
+        </tr>
+                                    <tr>
+                                                            <td colspan="2">
+                <div class="ansibleOptionAnchor" id="parameter-remove_r1_dr_rdfg"></div>
+                <b>remove_r1_dr_rdfg</b>
+                <a class="ansibleOptionLink" href="#parameter-remove_r1_dr_rdfg" title="Permalink to this option"></a>
+                <div style="font-size: small">
+                    <span style="color: purple">type=boolean</span>
+                                                                </div>
+                                                    </td>
+                            <td>
+                                                                                                                                                                                                                <ul style="margin: 0; padding: 0"><b>Choices:</b>
+                                                                                                                                                            <li><div style="color: blue"><b>no</b>&nbsp;&larr;</div></li>
+                                                                                                                                                                                            <li>yes</li>
+                                                                                </ul>
+                                                                        </td>
+                                                            <td>
+                                        <div>The flag indicates whether or not to override default behavior and delete R11-R2 RDFG from the metro R1 side.</div>
+                                        <div>It is used only in delete operations.</div>
+                                                    </td>
+        </tr>
+                            <tr>
+                                                            <td colspan="2">
+                <div class="ansibleOptionAnchor" id="parameter-replication_mode"></div>
+                <b>replication_mode</b>
+                <a class="ansibleOptionLink" href="#parameter-replication_mode" title="Permalink to this option"></a>
+                <div style="font-size: small">
+                    <span style="color: purple">type=string</span>
+                                                                </div>
+                                                    </td>
+                            <td>
+                                                                                                                        <ul style="margin: 0; padding: 0"><b>Choices:</b>
+                                                                                                                                                            <li>Asynchronous</li>
+                                                                                                                                                                                            <li>Adaptive Copy</li>
+                                                                                </ul>
+                                                                        </td>
+                                                            <td>
+                                        <div>Replication mode whose value will indicate how the data will be replicated.</div>
+                                        <div>It is required in create and modify operations.</div>
+                                        <div>It is a mandatory parameter in a create operation but optional in a modify operation.</div>
+                                                    </td>
+        </tr>
+                            <tr>
+                                                            <td colspan="2">
+                <div class="ansibleOptionAnchor" id="parameter-serial_no"></div>
+                <b>serial_no</b>
+                <a class="ansibleOptionLink" href="#parameter-serial_no" title="Permalink to this option"></a>
+                <div style="font-size: small">
+                    <span style="color: purple">type=string</span>
+                    <br>                        
+                    <span style="color: red">required=true</span>                    </div>
+                                                    </td>
+                            <td>
+                                                                                                                                                        </td>
+                                                            <td>
+                                        <div>Serial number of the primary metro array.</div>
+                                                    </td>
+        </tr>
+                            <tr>
+                                                            <td colspan="2">
+                <div class="ansibleOptionAnchor" id="parameter-sg_name"></div>
+                <b>sg_name</b>
+                <a class="ansibleOptionLink" href="#parameter-sg_name" title="Permalink to this option"></a>
+                <div style="font-size: small">
+                    <span style="color: purple">type=string</span>
+                                                                </div>
+                                                    </td>
+                            <td>
+                                                                                                                                                        </td>
+                                                            <td>
+                                        <div>Name of the storage group.</div>
+                                        <div>Storage group will be present on the primary metro array and a storage group with the same name will be created on remote and DR arrays in a create operation.</div>
+                                        <div>Storage group name is required in &#x27;create metro DR environment&#x27; and &#x27;convert SG into metro DR environment&#x27; operations.</div>
+                                                    </td>
+        </tr>
+                            <tr>
+                                                            <td colspan="2">
+                <div class="ansibleOptionAnchor" id="parameter-srdf_param"></div>
+                <b>srdf_param</b>
+                <a class="ansibleOptionLink" href="#parameter-srdf_param" title="Permalink to this option"></a>
+                <div style="font-size: small">
+                    <span style="color: purple">type=dictionary</span>
+                                                                </div>
+                                                    </td>
+                            <td>
+                                                                                                                                                        </td>
+                                                            <td>
+                                        <div>It contains parameters related to SRDF links.</div>
+                                        <div>It is used only in modify operations.</div>
+                                                    </td>
+        </tr>
+                                    <tr>
+                                                <td class="elbow-placeholder"></td>
+                                            <td colspan="1">
+                <div class="ansibleOptionAnchor" id="parameter-srdf_param/dr"></div>
+                <b>dr</b>
+                <a class="ansibleOptionLink" href="#parameter-srdf_param/dr" title="Permalink to this option"></a>
+                <div style="font-size: small">
+                    <span style="color: purple">type=boolean</span>
+                                                                </div>
+                                                    </td>
+                            <td>
+                                                                                                                                                                                                                <ul style="margin: 0; padding: 0"><b>Choices:</b>
+                                                                                                                                                            <li><div style="color: blue"><b>no</b>&nbsp;&larr;</div></li>
+                                                                                                                                                                                            <li>yes</li>
+                                                                                </ul>
+                                                                        </td>
+                                                            <td>
+                                        <div>The flag indicates whether or not to direct srdf_state change towards device pairs on the disaster recovery leg of the metro DR environment.</div>
+                                                    </td>
+        </tr>
+                            <tr>
+                                                <td class="elbow-placeholder"></td>
+                                            <td colspan="1">
+                <div class="ansibleOptionAnchor" id="parameter-srdf_param/keep_r2"></div>
+                <b>keep_r2</b>
+                <a class="ansibleOptionLink" href="#parameter-srdf_param/keep_r2" title="Permalink to this option"></a>
+                <div style="font-size: small">
+                    <span style="color: purple">type=boolean</span>
+                                                                </div>
+                                                    </td>
+                            <td>
+                                                                                                                                                                                                                <ul style="margin: 0; padding: 0"><b>Choices:</b>
+                                                                                                                                                            <li><div style="color: blue"><b>no</b>&nbsp;&larr;</div></li>
+                                                                                                                                                                                            <li>yes</li>
+                                                                                </ul>
+                                                                        </td>
+                                                            <td>
+                                        <div>The flag indicates whether or not in the case of srdf state suspend to make R2 data on metro available to the host.</div>
+                                                    </td>
+        </tr>
+                            <tr>
+                                                <td class="elbow-placeholder"></td>
+                                            <td colspan="1">
+                <div class="ansibleOptionAnchor" id="parameter-srdf_param/metro"></div>
+                <b>metro</b>
+                <a class="ansibleOptionLink" href="#parameter-srdf_param/metro" title="Permalink to this option"></a>
+                <div style="font-size: small">
+                    <span style="color: purple">type=boolean</span>
+                                                                </div>
+                                                    </td>
+                            <td>
+                                                                                                                                                                                                                <ul style="margin: 0; padding: 0"><b>Choices:</b>
+                                                                                                                                                            <li><div style="color: blue"><b>no</b>&nbsp;&larr;</div></li>
+                                                                                                                                                                                            <li>yes</li>
+                                                                                </ul>
+                                                                        </td>
+                                                            <td>
+                                        <div>The flag indicates whether or not to direct srdf_state change towards the R1--R2 Metro Device leg of the metro DR environment.</div>
+                                                    </td>
+        </tr>
+                            <tr>
+                                                <td class="elbow-placeholder"></td>
+                                            <td colspan="1">
+                <div class="ansibleOptionAnchor" id="parameter-srdf_param/srdf_state"></div>
+                <b>srdf_state</b>
+                <a class="ansibleOptionLink" href="#parameter-srdf_param/srdf_state" title="Permalink to this option"></a>
+                <div style="font-size: small">
+                    <span style="color: purple">type=string</span>
+                    <br>
+                    <span style="color: red">required=true</span>                    </div>
+                                                    </td>
+                            <td>
+                                                                                                                        <ul style="margin: 0; padding: 0"><b>Choices:</b>
+                                                                                                                                                            <li>Split</li>
+                                                                                                                                                                                            <li>Restore</li>
+                                                                                                                                                                                            <li>SetMode</li>
+                                                                                                                                                                                            <li>Failback</li>
+                                                                                                                                                                                            <li>Failover</li>
+                                                                                                                                                                                            <li>Establish</li>
+                                                                                                                                                                                            <li>Suspend</li>
+                                                                                                                                                                                            <li>UpdateR1</li>
+                                                                                                                                                                                            <li>Recover</li>
+                                                                                </ul>
+                                                                        </td>
+                                                            <td>
+                                        <div>State of the SRDF link.</div>
+                                        <div>It is a mandatory parameter for modify operations.</div>
+                                                    </td>
+        </tr>
+                            <tr>
+                                                            <td colspan="2">
+                <div class="ansibleOptionAnchor" id="parameter-state"></div>
+                <b>state</b>
+                <a class="ansibleOptionLink" href="#parameter-state" title="Permalink to this option"></a>
+                <div style="font-size: small">
+                    <span style="color: purple">type=string</span>
+                    <br>
+                    <span style="color: red">required=true</span>                    </div>
+                                                    </td>
+                            <td>
+                                                                                                                        <ul style="margin: 0; padding: 0"><b>Choices:</b>
+                                                                                                                                                            <li>absent</li>
+                                                                                                                                                                                            <li>present</li>
+                                                                                </ul>
+                                                                        </td>
+                                                            <td>
+                                        <div>State variable to determine whether metro DR environment will exist or not.</div>
+                                                    </td>
+        </tr>
+                            <tr>
+                                                            <td colspan="2">
+                <div class="ansibleOptionAnchor" id="parameter-wait_for_completion"></div>
+                <b>wait_for_completion</b>
+                <a class="ansibleOptionLink" href="#parameter-wait_for_completion" title="Permalink to this option"></a>
+                <div style="font-size: small">
+                    <span style="color: purple">type=boolean</span>
+                                                                </div>
+                                                    </td>
+                            <td>
+                                                                                                                                                                                                                <ul style="margin: 0; padding: 0"><b>Choices:</b>
+                                                                                                                                                            <li><div style="color: blue"><b>no</b>&nbsp;&larr;</div></li>
+                                                                                                                                                                                            <li>yes</li>
+                                                                                </ul>
+                                                                        </td>
+                                                            <td>
+                                        <div>The flag indicates if the operation should be run synchronously or asynchronously.</div>
+                                        <div>True signifies synchronous execution.</div>
+                                        <div>By default, create and convert are asynchronous operations, whereas modify is a synchronous operation.</div>
+                                                    </td>
+        </tr>
+                    </table>
+
+Examples
+--------
+
+``` yaml+jinja
+- name: Get metro environment details
+  dellemc_powermax_metrodr:
+    unispherehost: "{{unispherehost}}"
+    universion: "{{universion}}"
+    verifycert: "{{verifycert}}"
+    user: "{{user}}"
+    password: "{{password}}"
+    serial_no: "{{serial_no}}"
+    env_name: "ansible_metrodr_env"
+    state: "present"
+
+- name: Convert SG to metro DR environment
+  dellemc_powermax_metrodr:
+    unispherehost: "{{unispherehost}}"
+    universion: "{{universion}}"
+    verifycert: "{{verifycert}}"
+    user: "{{user}}"
+    password: "{{password}}"
+    sg_name: "ansible_sg"
+    env_name: "ansible_metrodr_env"
+    serial_no: "{{serial_no}}"
+    metro_serial_no: "{{metro_serial_no}}"
+    dr_serial_no: "{{dr_serial_no}}"
+    replication_mode: "Asynchronous"
+    wait_for_completion: False
+    state: "present"
+
+- name: Create metro DR environment
+  dellemc_powermax_metrodr:
+    unispherehost: "{{unispherehost}}"
+    universion: "{{universion}}"
+    verifycert: "{{verifycert}}"
+    user: "{{user}}"
+    password: "{{password}}"
+    sg_name: "ansible_sg"
+    env_name: "ansible_metrodr_env"
+    serial_no: "{{serial_no}}"
+    metro_serial_no: "{{metro_serial_no}}"
+    dr_serial_no: "{{dr_serial_no}}"
+    replication_mode: "Asynchronous"
+    new_rdf_group_r1: True
+    new_rdf_group_r2: True
+    wait_for_completion: False
+    state: "present"
+
+- name: Modify metro DR environment
+  dellemc_powermax_metrodr:
+    unispherehost: "{{unispherehost}}"
+    universion: "{{universion}}"
+    verifycert: "{{verifycert}}"
+    user: "{{user}}"
+    password: "{{password}}"
+    serial_no: "{{serial_no}}"
+    env_name: "ansible_metrodr_env"
+    srdf_param:
+      srdf_state: "Suspend"
+      metro: True
+      dr: True
+      keep_r2: True
+    wait_for_completion: True
+    state: "present"
+
+- name: Delete metro DR environment
+  dellemc_powermax_metrodr:
+    unispherehost: "{{unispherehost}}"
+    universion: "{{universion}}"
+    verifycert: "{{verifycert}}"
+    user: "{{user}}"
+    password: "{{password}}"
+    serial_no: "{{serial_no}}"
+    env_name: "ansible_metrodr_env"
+    remove_r1_dr_rdfg: True
+    state: 'absent'
+```
+
+Return Values
+-------------
+
+The following are the fields unique to this module:
+
+<table border=0 cellpadding=0 class="documentation-table">
+    <tr>
+        <th colspan="2">Key</th>
+        <th>Returned</th>
+        <th width="100%">Description</th>
+    </tr>
+                <tr>
+                            <td colspan="2">
+                <div class="ansibleOptionAnchor" id="return-changed"></div>
+                <b>changed</b>
+                <a class="ansibleOptionLink" href="#return-changed" title="Permalink to this return value"></a>
+                <div style="font-size: small">
+                  <span style="color: purple">type=boolean</span>
+                                      </div>
+                                </td>
+            <td>always</td>
+            <td>
+                                        <div>Whether or not the resource has changed.</div>
+                                    <br/>
+                                </td>
+        </tr>
+                            <tr>
+                            <td colspan="2">
+                <div class="ansibleOptionAnchor" id="return-Job_details"></div>
+                <b>Job_details</b>
+                <a class="ansibleOptionLink" href="#return-Job_details" title="Permalink to this return value"></a>
+                <div style="font-size: small">
+                  <span style="color: purple">type=dictionary</span>
+                                      </div>
+                                </td>
+            <td>When job exist.</td>
+            <td>
+                                        <div>Details of the job.</div>
+                                    <br/>
+                                </td>
+        </tr>
+                                    <tr>
+                                <td class="elbow-placeholder">&nbsp;</td>
+                            <td colspan="1">
+                <div class="ansibleOptionAnchor" id="return-Job_details/completed_date_milliseconds"></div>
+                <b>completed_date_milliseconds</b>
+                <a class="ansibleOptionLink" href="#return-Job_details/completed_date_milliseconds" title="Permalink to this return value"></a>
+                <div style="font-size: small">
+                  <span style="color: purple">type=integer</span>
+                                      </div>
+                                </td>
+            <td>success</td>
+            <td>
+                                        <div>Date of job completion in milliseconds.</div>
+                                    <br/>
+                                </td>
+        </tr>
+                            <tr>
+                                <td class="elbow-placeholder">&nbsp;</td>
+                            <td colspan="1">
+                <div class="ansibleOptionAnchor" id="return-Job_details/jobId"></div>
+                <b>jobId</b>
+                <a class="ansibleOptionLink" href="#return-Job_details/jobId" title="Permalink to this return value"></a>
+                <div style="font-size: small">
+                  <span style="color: purple">type=string</span>
+                                      </div>
+                                </td>
+            <td>success</td>
+            <td>
+                                        <div>Unique identifier of the job.</div>
+                                    <br/>
+                                </td>
+        </tr>
+                            <tr>
+                                <td class="elbow-placeholder">&nbsp;</td>
+                            <td colspan="1">
+                <div class="ansibleOptionAnchor" id="return-Job_details/last_modified_date"></div>
+                <b>last_modified_date</b>
+                <a class="ansibleOptionLink" href="#return-Job_details/last_modified_date" title="Permalink to this return value"></a>
+                <div style="font-size: small">
+                  <span style="color: purple">type=string</span>
+                                      </div>
+                                </td>
+            <td>success</td>
+            <td>
+                                        <div>Last modified date of job.</div>
+                                    <br/>
+                                </td>
+        </tr>
+                            <tr>
+                                <td class="elbow-placeholder">&nbsp;</td>
+                            <td colspan="1">
+                <div class="ansibleOptionAnchor" id="return-Job_details/last_modified_date_milliseconds"></div>
+                <b>last_modified_date_milliseconds</b>
+                <a class="ansibleOptionLink" href="#return-Job_details/last_modified_date_milliseconds" title="Permalink to this return value"></a>
+                <div style="font-size: small">
+                  <span style="color: purple">type=integer</span>
+                                      </div>
+                                </td>
+            <td>success</td>
+            <td>
+                                        <div>Last modified date of job in milliseconds.</div>
+                                    <br/>
+                                </td>
+        </tr>
+                            <tr>
+                                <td class="elbow-placeholder">&nbsp;</td>
+                            <td colspan="1">
+                <div class="ansibleOptionAnchor" id="return-Job_details/name"></div>
+                <b>name</b>
+                <a class="ansibleOptionLink" href="#return-Job_details/name" title="Permalink to this return value"></a>
+                <div style="font-size: small">
+                  <span style="color: purple">type=string</span>
+                                      </div>
+                                </td>
+            <td>success</td>
+            <td>
+                                        <div>Name of the job.</div>
+                                    <br/>
+                                </td>
+        </tr>
+                            <tr>
+                                <td class="elbow-placeholder">&nbsp;</td>
+                            <td colspan="1">
+                <div class="ansibleOptionAnchor" id="return-Job_details/resourceLink"></div>
+                <b>resourceLink</b>
+                <a class="ansibleOptionLink" href="#return-Job_details/resourceLink" title="Permalink to this return value"></a>
+                <div style="font-size: small">
+                  <span style="color: purple">type=string</span>
+                                      </div>
+                                </td>
+            <td>success</td>
+            <td>
+                                        <div>Resource link w.r.t Unisphere.</div>
+                                    <br/>
+                                </td>
+        </tr>
+                            <tr>
+                                <td class="elbow-placeholder">&nbsp;</td>
+                            <td colspan="1">
+                <div class="ansibleOptionAnchor" id="return-Job_details/result"></div>
+                <b>result</b>
+                <a class="ansibleOptionLink" href="#return-Job_details/result" title="Permalink to this return value"></a>
+                <div style="font-size: small">
+                  <span style="color: purple">type=string</span>
+                                      </div>
+                                </td>
+            <td>success</td>
+            <td>
+                                        <div>Job description</div>
+                                    <br/>
+                                </td>
+        </tr>
+                            <tr>
+                                <td class="elbow-placeholder">&nbsp;</td>
+                            <td colspan="1">
+                <div class="ansibleOptionAnchor" id="return-Job_details/status"></div>
+                <b>status</b>
+                <a class="ansibleOptionLink" href="#return-Job_details/status" title="Permalink to this return value"></a>
+                <div style="font-size: small">
+                  <span style="color: purple">type=string</span>
+                                      </div>
+                                </td>
+            <td>success</td>
+            <td>
+                                        <div>Status of the job.</div>
+                                    <br/>
+                                </td>
+        </tr>
+                            <tr>
+                                <td class="elbow-placeholder">&nbsp;</td>
+                            <td colspan="1">
+                <div class="ansibleOptionAnchor" id="return-Job_details/task"></div>
+                <b>task</b>
+                <a class="ansibleOptionLink" href="#return-Job_details/task" title="Permalink to this return value"></a>
+                <div style="font-size: small">
+                  <span style="color: purple">type=list</span>
+                  <br>
+                  <span style="color: purple">elements=string</span>                    </div>
+                                </td>
+            <td>success</td>
+            <td>
+                                        <div>Details about the job.</div>
+                                    <br/>
+                                </td>
+        </tr>
+                            <tr>
+                                <td class="elbow-placeholder">&nbsp;</td>
+                            <td colspan="1">
+                <div class="ansibleOptionAnchor" id="return-Job_details/username"></div>
+                <b>username</b>
+                <a class="ansibleOptionLink" href="#return-Job_details/username" title="Permalink to this return value"></a>
+                <div style="font-size: small">
+                  <span style="color: purple">type=string</span>
+                                      </div>
+                                </td>
+            <td>success</td>
+            <td>
+                                        <div>Unisphere username.</div>
+                                    <br/>
+                                </td>
+        </tr>
+                            <tr>
+                            <td colspan="2">
+                <div class="ansibleOptionAnchor" id="return-metrodr_env_details"></div>
+                <b>metrodr_env_details</b>
+                <a class="ansibleOptionLink" href="#return-metrodr_env_details" title="Permalink to this return value"></a>
+                <div style="font-size: small">
+                  <span style="color: purple">type=dictionary</span>
+                                      </div>
+                                </td>
+            <td>When environment exists.</td>
+            <td>
+                                        <div>Details of the metro DR environment link.</div>
+                                    <br/>
+                                </td>
+        </tr>
+                                    <tr>
+                                <td class="elbow-placeholder">&nbsp;</td>
+                            <td colspan="1">
+                <div class="ansibleOptionAnchor" id="return-metrodr_env_details/capacity_gb"></div>
+                <b>capacity_gb</b>
+                <a class="ansibleOptionLink" href="#return-metrodr_env_details/capacity_gb" title="Permalink to this return value"></a>
+                <div style="font-size: small">
+                  <span style="color: purple">type=float</span>
+                                      </div>
+                                </td>
+            <td>success</td>
+            <td>
+                                        <div>Size of volume in GB.</div>
+                                    <br/>
+                                </td>
+        </tr>
+                            <tr>
+                                <td class="elbow-placeholder">&nbsp;</td>
+                            <td colspan="1">
+                <div class="ansibleOptionAnchor" id="return-metrodr_env_details/dr_exempt"></div>
+                <b>dr_exempt</b>
+                <a class="ansibleOptionLink" href="#return-metrodr_env_details/dr_exempt" title="Permalink to this return value"></a>
+                <div style="font-size: small">
+                  <span style="color: purple">type=boolean</span>
+                                      </div>
+                                </td>
+            <td>success</td>
+            <td>
+                                        <div>Flag to indication that if there are exempt devices (volumes) in the DR site or not.</div>
+                                    <br/>
+                                </td>
+        </tr>
+                            <tr>
+                                <td class="elbow-placeholder">&nbsp;</td>
+                            <td colspan="1">
+                <div class="ansibleOptionAnchor" id="return-metrodr_env_details/dr_link_state"></div>
+                <b>dr_link_state</b>
+                <a class="ansibleOptionLink" href="#return-metrodr_env_details/dr_link_state" title="Permalink to this return value"></a>
+                <div style="font-size: small">
+                  <span style="color: purple">type=string</span>
+                                      </div>
+                                </td>
+            <td>success</td>
+            <td>
+                                        <div>Status of DR site.</div>
+                                    <br/>
+                                </td>
+        </tr>
+                            <tr>
+                                <td class="elbow-placeholder">&nbsp;</td>
+                            <td colspan="1">
+                <div class="ansibleOptionAnchor" id="return-metrodr_env_details/dr_percent_complete"></div>
+                <b>dr_percent_complete</b>
+                <a class="ansibleOptionLink" href="#return-metrodr_env_details/dr_percent_complete" title="Permalink to this return value"></a>
+                <div style="font-size: small">
+                  <span style="color: purple">type=integer</span>
+                                      </div>
+                                </td>
+            <td>success</td>
+            <td>
+                                        <div>Percentage synchronized in DR session.</div>
+                                    <br/>
+                                </td>
+        </tr>
+                            <tr>
+                                <td class="elbow-placeholder">&nbsp;</td>
+                            <td colspan="1">
+                <div class="ansibleOptionAnchor" id="return-metrodr_env_details/dr_rdf_mode"></div>
+                <b>dr_rdf_mode</b>
+                <a class="ansibleOptionLink" href="#return-metrodr_env_details/dr_rdf_mode" title="Permalink to this return value"></a>
+                <div style="font-size: small">
+                  <span style="color: purple">type=string</span>
+                                      </div>
+                                </td>
+            <td>success</td>
+            <td>
+                                        <div>Replication mode with DR site.</div>
+                                    <br/>
+                                </td>
+        </tr>
+                            <tr>
+                                <td class="elbow-placeholder">&nbsp;</td>
+                            <td colspan="1">
+                <div class="ansibleOptionAnchor" id="return-metrodr_env_details/dr_remain_capacity_to_copy_mb"></div>
+                <b>dr_remain_capacity_to_copy_mb</b>
+                <a class="ansibleOptionLink" href="#return-metrodr_env_details/dr_remain_capacity_to_copy_mb" title="Permalink to this return value"></a>
+                <div style="font-size: small">
+                  <span style="color: purple">type=integer</span>
+                                      </div>
+                                </td>
+            <td>success</td>
+            <td>
+                                        <div>Remaining capacity to copy at DR site.</div>
+                                    <br/>
+                                </td>
+        </tr>
+                            <tr>
+                                <td class="elbow-placeholder">&nbsp;</td>
+                            <td colspan="1">
+                <div class="ansibleOptionAnchor" id="return-metrodr_env_details/dr_service_state"></div>
+                <b>dr_service_state</b>
+                <a class="ansibleOptionLink" href="#return-metrodr_env_details/dr_service_state" title="Permalink to this return value"></a>
+                <div style="font-size: small">
+                  <span style="color: purple">type=string</span>
+                                      </div>
+                                </td>
+            <td>success</td>
+            <td>
+                                        <div>The HA state of the DR session.</div>
+                                    <br/>
+                                </td>
+        </tr>
+                            <tr>
+                                <td class="elbow-placeholder">&nbsp;</td>
+                            <td colspan="1">
+                <div class="ansibleOptionAnchor" id="return-metrodr_env_details/dr_state"></div>
+                <b>dr_state</b>
+                <a class="ansibleOptionLink" href="#return-metrodr_env_details/dr_state" title="Permalink to this return value"></a>
+                <div style="font-size: small">
+                  <span style="color: purple">type=string</span>
+                                      </div>
+                                </td>
+            <td>success</td>
+            <td>
+                                        <div>The pair states of the DR session.</div>
+                                    <br/>
+                                </td>
+        </tr>
+                            <tr>
+                                <td class="elbow-placeholder">&nbsp;</td>
+                            <td colspan="1">
+                <div class="ansibleOptionAnchor" id="return-metrodr_env_details/environment_exempt"></div>
+                <b>environment_exempt</b>
+                <a class="ansibleOptionLink" href="#return-metrodr_env_details/environment_exempt" title="Permalink to this return value"></a>
+                <div style="font-size: small">
+                  <span style="color: purple">type=boolean</span>
+                                      </div>
+                                </td>
+            <td>success</td>
+            <td>
+                                        <div>Flag to indication that if there are exempt devices (volumes) in the environment or not.</div>
+                                    <br/>
+                                </td>
+        </tr>
+                            <tr>
+                                <td class="elbow-placeholder">&nbsp;</td>
+                            <td colspan="1">
+                <div class="ansibleOptionAnchor" id="return-metrodr_env_details/environment_state"></div>
+                <b>environment_state</b>
+                <a class="ansibleOptionLink" href="#return-metrodr_env_details/environment_state" title="Permalink to this return value"></a>
+                <div style="font-size: small">
+                  <span style="color: purple">type=string</span>
+                                      </div>
+                                </td>
+            <td>success</td>
+            <td>
+                                        <div>The state of the smart DR environment.</div>
+                                    <br/>
+                                </td>
+        </tr>
+                            <tr>
+                                <td class="elbow-placeholder">&nbsp;</td>
+                            <td colspan="1">
+                <div class="ansibleOptionAnchor" id="return-metrodr_env_details/metro_exempt"></div>
+                <b>metro_exempt</b>
+                <a class="ansibleOptionLink" href="#return-metrodr_env_details/metro_exempt" title="Permalink to this return value"></a>
+                <div style="font-size: small">
+                  <span style="color: purple">type=boolean</span>
+                                      </div>
+                                </td>
+            <td>success</td>
+            <td>
+                                        <div>Flag to indication that if there are exempt devices (volumes) in the DR site or not.</div>
+                                    <br/>
+                                </td>
+        </tr>
+                            <tr>
+                                <td class="elbow-placeholder">&nbsp;</td>
+                            <td colspan="1">
+                <div class="ansibleOptionAnchor" id="return-metrodr_env_details/metro_link_state"></div>
+                <b>metro_link_state</b>
+                <a class="ansibleOptionLink" href="#return-metrodr_env_details/metro_link_state" title="Permalink to this return value"></a>
+                <div style="font-size: small">
+                  <span style="color: purple">type=string</span>
+                                      </div>
+                                </td>
+            <td>success</td>
+            <td>
+                                        <div>Status of metro site.</div>
+                                    <br/>
+                                </td>
+        </tr>
+                            <tr>
+                                <td class="elbow-placeholder">&nbsp;</td>
+                            <td colspan="1">
+                <div class="ansibleOptionAnchor" id="return-metrodr_env_details/metro_r1_array_health"></div>
+                <b>metro_r1_array_health</b>
+                <a class="ansibleOptionLink" href="#return-metrodr_env_details/metro_r1_array_health" title="Permalink to this return value"></a>
+                <div style="font-size: small">
+                  <span style="color: purple">type=string</span>
+                                      </div>
+                                </td>
+            <td>success</td>
+            <td>
+                                        <div>Health status of metro R1 array.</div>
+                                    <br/>
+                                </td>
+        </tr>
+                            <tr>
+                                <td class="elbow-placeholder">&nbsp;</td>
+                            <td colspan="1">
+                <div class="ansibleOptionAnchor" id="return-metrodr_env_details/metro_r2_array_health"></div>
+                <b>metro_r2_array_health</b>
+                <a class="ansibleOptionLink" href="#return-metrodr_env_details/metro_r2_array_health" title="Permalink to this return value"></a>
+                <div style="font-size: small">
+                  <span style="color: purple">type=string</span>
+                                      </div>
+                                </td>
+            <td>success</td>
+            <td>
+                                        <div>Health status of metro R1 array.</div>
+                                    <br/>
+                                </td>
+        </tr>
+                            <tr>
+                                <td class="elbow-placeholder">&nbsp;</td>
+                            <td colspan="1">
+                <div class="ansibleOptionAnchor" id="return-metrodr_env_details/metro_service_state"></div>
+                <b>metro_service_state</b>
+                <a class="ansibleOptionLink" href="#return-metrodr_env_details/metro_service_state" title="Permalink to this return value"></a>
+                <div style="font-size: small">
+                  <span style="color: purple">type=string</span>
+                                      </div>
+                                </td>
+            <td>success</td>
+            <td>
+                                        <div>The HA state of the metro session.</div>
+                                    <br/>
+                                </td>
+        </tr>
+                            <tr>
+                                <td class="elbow-placeholder">&nbsp;</td>
+                            <td colspan="1">
+                <div class="ansibleOptionAnchor" id="return-metrodr_env_details/metro_state"></div>
+                <b>metro_state</b>
+                <a class="ansibleOptionLink" href="#return-metrodr_env_details/metro_state" title="Permalink to this return value"></a>
+                <div style="font-size: small">
+                  <span style="color: purple">type=string</span>
+                                      </div>
+                                </td>
+            <td>success</td>
+            <td>
+                                        <div>The pair states of the metro session.</div>
+                                    <br/>
+                                </td>
+        </tr>
+                            <tr>
+                                <td class="elbow-placeholder">&nbsp;</td>
+                            <td colspan="1">
+                <div class="ansibleOptionAnchor" id="return-metrodr_env_details/metro_witness_state"></div>
+                <b>metro_witness_state</b>
+                <a class="ansibleOptionLink" href="#return-metrodr_env_details/metro_witness_state" title="Permalink to this return value"></a>
+                <div style="font-size: small">
+                  <span style="color: purple">type=string</span>
+                                      </div>
+                                </td>
+            <td>success</td>
+            <td>
+                                        <div>The witness state of the metro session.</div>
+                                    <br/>
+                                </td>
+        </tr>
+                            <tr>
+                                <td class="elbow-placeholder">&nbsp;</td>
+                            <td colspan="1">
+                <div class="ansibleOptionAnchor" id="return-metrodr_env_details/name"></div>
+                <b>name</b>
+                <a class="ansibleOptionLink" href="#return-metrodr_env_details/name" title="Permalink to this return value"></a>
+                <div style="font-size: small">
+                  <span style="color: purple">type=string</span>
+                                      </div>
+                                </td>
+            <td>success</td>
+            <td>
+                                        <div>The smart DR environment name.</div>
+                                    <br/>
+                                </td>
+        </tr>
+                            <tr>
+                                <td class="elbow-placeholder">&nbsp;</td>
+                            <td colspan="1">
+                <div class="ansibleOptionAnchor" id="return-metrodr_env_details/valid"></div>
+                <b>valid</b>
+                <a class="ansibleOptionLink" href="#return-metrodr_env_details/valid" title="Permalink to this return value"></a>
+                <div style="font-size: small">
+                  <span style="color: purple">type=boolean</span>
+                                      </div>
+                                </td>
+            <td>success</td>
+            <td>
+                                        <div>Flag to indicate whether valid environment or not.</div>
+                                    <br/>
+                                </td>
+        </tr>
+                    </table>
+
+Authors
+-------
+
+-   Vivek Soni (@v-soni11) &lt;<ansible.team@dell.com>&gt;
+-   Rajshree Khare (@khareRajshree) &lt;<ansible.team@dell.com>&gt;
+
+Port Module
+==========
+
+Synopsis
+--------
+
+Managing ports on PowerMax storage system includes getting details of a port.
 
 Parameters
 ----------
@@ -3103,18 +4419,18 @@ Parameters
         <th>Choices/<font color="blue">Defaults</font></th>
                     <th width="100%">Comments</th>
     </tr>
-                            <tr>
+                                <tr>
                                                             <td colspan="1">
                 <div class="ansibleOptionAnchor" id="parameter-ports"></div>
                 <b>ports</b>
                 <a class="ansibleOptionLink" href="#parameter-ports" title="Permalink to this option"></a>
                 <div style="font-size: small">
-                    <span style="color: purple">type=list</span>,
+                    <span style="color: purple">type=list</span>
                     <br>
-                    <span style="color: purple">elements=dictionary</span>,
+                    <span style="color: purple">elements=dictionary</span>
                     <br>
-                    <span style="color: purple">required=true</span>                    </div>
-                                </td>
+                    <span style="color: red">required=true</span>                    </div>
+                                                    </td>
                             <td>
                                                                                                                                                         </td>
                                                             <td>
@@ -3144,7 +4460,7 @@ Examples
 Return Values
 -------------
 
-The following are the return value fields unique to this module:
+The following are the fields unique to this module:
 
 <table border=0 cellpadding=0 class="documentation-table">
     <tr>
@@ -3830,10 +5146,10 @@ Port Group Module
 Synopsis
 --------
 
-Managing port groups on a PowerMax storage system includes creating a
-port group with a set of ports, adding or removing single or
-multiple ports to or from the port group, renaming the port group and
-deleting the port group.
+Managing port groups on a PowerMax storage system includes creating
+a port group with a set of ports, adding or removing single or
+multiple ports to or from the port group, renaming the port group
+and deleting the port group.
 
 Parameters
 ----------
@@ -3859,7 +5175,7 @@ Parameters
                                         <div>New name of the port group while renaming. No Special Character support except for _. Case sensitive for REST Calls.</div>
                                                     </td>
         </tr>
-                            <tr>
+                                    <tr>
                                                             <td colspan="1">
                 <div class="ansibleOptionAnchor" id="parameter-port_state"></div>
                 <b>port_state</b>
@@ -3886,10 +5202,10 @@ Parameters
                 <b>portgroup_name</b>
                 <a class="ansibleOptionLink" href="#parameter-portgroup_name" title="Permalink to this option"></a>
                 <div style="font-size: small">
-                    <span style="color: purple">type=string</span>,
+                    <span style="color: purple">type=string</span>
                     <br>
-                    <span style="color: purple">required=true</span>                    </div>
-                                </td>
+                    <span style="color: red">required=true</span>                    </div>
+                                                    </td>
                             <td>
                                                                                                                                                         </td>
                                                             <td>
@@ -3918,10 +5234,10 @@ Parameters
                 <b>state</b>
                 <a class="ansibleOptionLink" href="#parameter-state" title="Permalink to this option"></a>
                 <div style="font-size: small">
-                    <span style="color: purple">type=string</span>,
+                    <span style="color: purple">type=string</span>
                     <br>
-                    <span style="color: purple">required=true</span>                    </div>
-                                </td>
+                    <span style="color: red">required=true</span>                    </div>
+                                                    </td>
                             <td>
                                                                                                                         <ul style="margin: 0; padding: 0"><b>Choices:</b>
                                                                                                                                                             <li>absent</li>
@@ -3934,7 +5250,7 @@ Parameters
                                         <div>absent - indicates that the port group should not be present on the system</div>
                                                     </td>
         </tr>
-                    </table>
+                     </table>
 
 Examples
 --------
@@ -4029,7 +5345,7 @@ Examples
 Return Values
 -------------
 
-The following are the return value fields unique to this module:
+The following are the fields unique to this module:
 
 <table border=0 cellpadding=0 class="documentation-table">
     <tr>
@@ -4198,7 +5514,7 @@ RDF Group Module
 Synopsis
 --------
 
--   Gets details of an RDF Group from a specified PowerMax/VMAX storage
+-   Gets the details of an RDF Group from a specified PowerMax/VMAX storage
     system.
 -   Lists the volumes of an RDF Group from a specified PowerMax/VMAX
     storage system
@@ -4212,16 +5528,16 @@ Parameters
         <th>Choices/<font color="blue">Defaults</font></th>
                     <th width="100%">Comments</th>
     </tr>
-                            <tr>
+                                <tr>
                                                             <td colspan="1">
                 <div class="ansibleOptionAnchor" id="parameter-rdfgroup_number"></div>
                 <b>rdfgroup_number</b>
                 <a class="ansibleOptionLink" href="#parameter-rdfgroup_number" title="Permalink to this option"></a>
                 <div style="font-size: small">
-                    <span style="color: purple">type=string</span>,
+                    <span style="color: purple">type=string</span>
                     <br>
-                    <span style="color: purple">required=true</span>                    </div>
-                                </td>
+                    <span style="color: red">required=true</span>                    </div>
+                                                    </td>
                             <td>
                                                                                                                                                         </td>
                                                             <td>
@@ -4248,7 +5564,7 @@ Examples
 Return Values
 -------------
 
-The following are the return value fields unique to this module:
+The following are the fields unique to this module:
 
 <table border=0 cellpadding=0 class="documentation-table">
     <tr>
@@ -5266,7 +6582,7 @@ Synopsis
 Managing snapshots on a PowerMax storage system includes creating a
 new storage group (SG) snapshot, getting details of the SG snapshot,
 renaming the SG snapshot, changing the snapshot link status, and
-deleting an existing storage group snapshot.
+deleting an existing SG snapshot.
 
 Parameters
 ----------
@@ -5289,10 +6605,10 @@ Parameters
                             <td>
                                                                                                                                                         </td>
                                                             <td>
-                                        <div>The generation number of the Snapshot.</div>
-                                        <div>Generation is mandatory for link, unlink, rename and delete operations.</div>
+                                        <div>The generation number of the snapshot.</div>
+                                        <div>Generation is required for link, unlink, rename and delete operations.</div>
                                         <div>Optional for Get snapshot details.</div>
-                                        <div>Create snapshot will always create a new snapshot with generation number 0.</div>
+                                        <div>Create snapshot will always create a new snapshot with a generation number 0.</div>
                                         <div>Rename is supported only for generation number 0.</div>
                                                     </td>
         </tr>
@@ -5336,10 +6652,10 @@ Parameters
                 <b>sg_name</b>
                 <a class="ansibleOptionLink" href="#parameter-sg_name" title="Permalink to this option"></a>
                 <div style="font-size: small">
-                    <span style="color: purple">type=string</span>,
+                    <span style="color: purple">type=string</span>
                     <br>
-                    <span style="color: purple">required=true</span>                    </div>
-                                </td>
+                    <span style="color: red">required=true</span>                    </div>
+                                                    </td>
                             <td>
                                                                                                                                                         </td>
                                                             <td>
@@ -5348,14 +6664,31 @@ Parameters
         </tr>
                             <tr>
                                                             <td colspan="1">
+                <div class="ansibleOptionAnchor" id="parameter-snapshot_id"></div>
+                <b>snapshot_id</b>
+                <a class="ansibleOptionLink" href="#parameter-snapshot_id" title="Permalink to this option"></a>
+                <div style="font-size: small">
+                    <span style="color: purple">type=integer</span>
+                                                                </div>
+                                                    </td>
+                            <td>
+                                                                                                                                                        </td>
+                                                            <td>
+                                        <div>Unique ID of the snapshot.</div>
+                                        <div>snapshot_id is required for link, unlink, rename and delete operations.</div>
+                                        <div>Optional for Get snapshot details.</div>
+                                                    </td>
+        </tr>
+                            <tr>
+                                                            <td colspan="1">
                 <div class="ansibleOptionAnchor" id="parameter-snapshot_name"></div>
                 <b>snapshot_name</b>
                 <a class="ansibleOptionLink" href="#parameter-snapshot_name" title="Permalink to this option"></a>
                 <div style="font-size: small">
-                    <span style="color: purple">type=string</span>,
+                    <span style="color: purple">type=string</span>
                     <br>
-                    <span style="color: purple">required=true</span>                    </div>
-                                </td>
+                    <span style="color: red">required=true</span>                    </div>
+                                                    </td>
                             <td>
                                                                                                                                                         </td>
                                                             <td>
@@ -5368,10 +6701,10 @@ Parameters
                 <b>state</b>
                 <a class="ansibleOptionLink" href="#parameter-state" title="Permalink to this option"></a>
                 <div style="font-size: small">
-                    <span style="color: purple">type=string</span>,
+                    <span style="color: purple">type=string</span>
                     <br>
-                    <span style="color: purple">required=true</span>                    </div>
-                                </td>
+                    <span style="color: red">required=true</span>                    </div>
+                                                    </td>
                             <td>
                                                                                                                         <ul style="margin: 0; padding: 0"><b>Choices:</b>
                                                                                                                                                             <li>absent</li>
@@ -5410,7 +6743,7 @@ Parameters
                                                                                                                                                         </td>
                                                             <td>
                                         <div>The Time To Live (TTL) value for the snapshot.</div>
-                                        <div>If the ttl is not specified, the storage group snap details would be returned.</div>
+                                        <div>If the TTL is not specified, the storage group snap details are returned.</div>
                                         <div>However, to create a SG snap - TTL must be given.</div>
                                         <div>If the SG snap should not have any TTL - specify TTL as &quot;None&quot;</div>
                                                     </td>
@@ -5436,6 +6769,15 @@ Parameters
                                                     </td>
         </tr>
                     </table>
+
+Notes
+-----
+
+- Paramters 'generation' and 'snapshot\_id' are mutually exclusive.
+- If 'generation' or 'snapshot\_id' is not provided then a list of
+generation versus snapshot\_id is returned.
+- Use of 'snapshot\_id' over 'generation' is preferably recommended for PowerMax microcode version
+5978.669.669 and onwards. 
 
 Examples
 --------
@@ -5467,7 +6809,7 @@ Examples
     snapshot_name: "ansible_sg_snap"
     state: "present"
 
-- name: Delete Storage Group Snapshot
+- name: Get Storage Group Snapshot details using generation
   dellemc_powermax_snapshot:
     unispherehost: "{{unispherehost}}"
     universion: "{{universion}}"
@@ -5478,9 +6820,22 @@ Examples
     sg_name: "ansible_sg"
     snapshot_name: "ansible_sg_snap"
     generation: 1
-    state: "absent"
+    state: "present"
 
-- name: Rename Storage Group Snapshot
+- name: Get Storage Group Snapshot details using snapshot_id
+  dellemc_powermax_snapshot:
+    unispherehost: "{{unispherehost}}"
+    universion: "{{universion}}"
+    verifycert: "{{verifycert}}"
+    user: "{{user}}"
+    password: "{{password}}"
+    serial_no: "{{serial_no}}"
+    sg_name: "ansible_sg"
+    snapshot_name: "ansible_sg_snap"
+    snapshot_id: 135023964929
+    state: "present"
+
+- name: Rename Storage Group Snapshot using generation
   dellemc_powermax_snapshot:
     unispherehost: "{{unispherehost}}"
     universion: "{{universion}}"
@@ -5494,7 +6849,21 @@ Examples
     generation: 0
     state: "present"
 
-- name: Change Snapshot Link Status to Linked
+- name: Rename Storage Group Snapshot using snapshot_id
+  dellemc_powermax_snapshot:
+    unispherehost: "{{unispherehost}}"
+    universion: "{{universion}}"
+    verifycert: "{{verifycert}}"
+    user: "{{user}}"
+    password: "{{password}}"
+    serial_no: "{{serial_no}}"
+    sg_name: "ansible_sg"
+    snapshot_name: "ansible_sg_snap"
+    new_snapshot_name: "ansible_snap_new"
+    snapshot_id: 135023964929
+    state: "present"
+
+- name: Change Snapshot Link Status to Linked using generation
   dellemc_powermax_snapshot:
     unispherehost: "{{unispherehost}}"
     universion: "{{universion}}"
@@ -5509,7 +6878,7 @@ Examples
     link_status: "linked"
     state: "present"
 
-- name: Change Snapshot Link Status to UnLinked
+- name: Change Snapshot Link Status to UnLinked using generation
   dellemc_powermax_snapshot:
     unispherehost: "{{unispherehost}}"
     universion: "{{universion}}"
@@ -5523,12 +6892,68 @@ Examples
     target_sg_name: "ansible_sg_target"
     link_status: "unlinked"
     state: "present"
+
+- name: Change Snapshot Link Status to Linked using snapshot_id
+  dellemc_powermax_snapshot:
+    unispherehost: "{{unispherehost}}"
+    universion: "{{universion}}"
+    verifycert: "{{verifycert}}"
+    user: "{{user}}"
+    password: "{{password}}"
+    serial_no: "{{serial_no}}"
+    sg_name: "ansible_sg"
+    snapshot_name: "ansible_snap_new"
+    snapshot_id: 135023964515
+    target_sg_name: "ansible_sg_target"
+    link_status: "linked"
+    state: "present"
+
+- name: Change Snapshot Link Status to UnLinked using snapshot_id
+  dellemc_powermax_snapshot:
+    unispherehost: "{{unispherehost}}"
+    universion: "{{universion}}"
+    verifycert: "{{verifycert}}"
+    user: "{{user}}"
+    password: "{{password}}"
+    serial_no: "{{serial_no}}"
+    sg_name: "ansible_sg"
+    snapshot_name: "ansible_snap_new"
+    snapshot_id: 135023964515
+    target_sg_name: "ansible_sg_target"
+    link_status: "unlinked"
+    state: "present"
+
+- name: Delete Storage Group Snapshot using generation
+  dellemc_powermax_snapshot:
+    unispherehost: "{{unispherehost}}"
+    universion: "{{universion}}"
+    verifycert: "{{verifycert}}"
+    user: "{{user}}"
+    password: "{{password}}"
+    serial_no: "{{serial_no}}"
+    sg_name: "ansible_sg"
+    snapshot_name: "ansible_sg_snap"
+    generation: 1
+    state: "absent"
+
+- name: Delete Storage Group Snapshot using snapshot_id
+  dellemc_powermax_snapshot:
+    unispherehost: "{{unispherehost}}"
+    universion: "{{universion}}"
+    verifycert: "{{verifycert}}"
+    user: "{{user}}"
+    password: "{{password}}"
+    serial_no: "{{serial_no}}"
+    sg_name: "ansible_sg"
+    snapshot_name: "ansible_sg_snap"
+    snapshot_id: 135023964929
+    state: "absent"
 ```
 
 Return Values
 -------------
 
-The following are the return value fields unique to this module:
+The following are the fields unique to this module:
 
 <table border=0 cellpadding=0 class="documentation-table">
     <tr>
@@ -5614,25 +7039,9 @@ The following are the return value fields unique to this module:
                                     <tr>
                                 <td class="elbow-placeholder">&nbsp;</td>
                             <td colspan="2">
-                <div class="ansibleOptionAnchor" id="return-sg_snap_details/generation"></div>
-                <b>generation</b>
-                <a class="ansibleOptionLink" href="#return-sg_snap_details/generation" title="Permalink to this return value"></a>
-                <div style="font-size: small">
-                  <span style="color: purple">type=integer</span>
-                                      </div>
-                                </td>
-            <td>success</td>
-            <td>
-                                        <div>The generation number of the snapshot.</div>
-                                    <br/>
-                                </td>
-        </tr>
-                            <tr>
-                                <td class="elbow-placeholder">&nbsp;</td>
-                            <td colspan="2">
-                <div class="ansibleOptionAnchor" id="return-sg_snap_details/isExpired"></div>
-                <b>isExpired</b>
-                <a class="ansibleOptionLink" href="#return-sg_snap_details/isExpired" title="Permalink to this return value"></a>
+                <div class="ansibleOptionAnchor" id="return-sg_snap_details/expired"></div>
+                <b>expired</b>
+                <a class="ansibleOptionLink" href="#return-sg_snap_details/expired" title="Permalink to this return value"></a>
                 <div style="font-size: small">
                   <span style="color: purple">type=boolean</span>
                                       </div>
@@ -5646,9 +7055,25 @@ The following are the return value fields unique to this module:
                             <tr>
                                 <td class="elbow-placeholder">&nbsp;</td>
                             <td colspan="2">
-                <div class="ansibleOptionAnchor" id="return-sg_snap_details/isLinked"></div>
-                <b>isLinked</b>
-                <a class="ansibleOptionLink" href="#return-sg_snap_details/isLinked" title="Permalink to this return value"></a>
+                <div class="ansibleOptionAnchor" id="return-sg_snap_details/generation/snapid"></div>
+                <b>generation/snapid</b>
+                <a class="ansibleOptionLink" href="#return-sg_snap_details/generation/snapid" title="Permalink to this return value"></a>
+                <div style="font-size: small">
+                  <span style="color: purple">type=integer</span>
+                                      </div>
+                                </td>
+            <td>success</td>
+            <td>
+                                        <div>The generation/snapshot ID of the snapshot.</div>
+                                    <br/>
+                                </td>
+        </tr>
+                            <tr>
+                                <td class="elbow-placeholder">&nbsp;</td>
+                            <td colspan="2">
+                <div class="ansibleOptionAnchor" id="return-sg_snap_details/linked"></div>
+                <b>linked</b>
+                <a class="ansibleOptionLink" href="#return-sg_snap_details/linked" title="Permalink to this return value"></a>
                 <div style="font-size: small">
                   <span style="color: purple">type=boolean</span>
                                       </div>
@@ -5656,22 +7081,6 @@ The following are the return value fields unique to this module:
             <td>success</td>
             <td>
                                         <div>Indicates whether the snapshot is linked or not.</div>
-                                    <br/>
-                                </td>
-        </tr>
-                            <tr>
-                                <td class="elbow-placeholder">&nbsp;</td>
-                            <td colspan="2">
-                <div class="ansibleOptionAnchor" id="return-sg_snap_details/isRestored"></div>
-                <b>isRestored</b>
-                <a class="ansibleOptionLink" href="#return-sg_snap_details/isRestored" title="Permalink to this return value"></a>
-                <div style="font-size: small">
-                  <span style="color: purple">type=boolean</span>
-                                      </div>
-                                </td>
-            <td>success</td>
-            <td>
-                                        <div>Indicates whether the snapshot is restored or not.</div>
                                     <br/>
                                 </td>
         </tr>
@@ -5694,9 +7103,9 @@ The following are the return value fields unique to this module:
                             <tr>
                                 <td class="elbow-placeholder">&nbsp;</td>
                             <td colspan="2">
-                <div class="ansibleOptionAnchor" id="return-sg_snap_details/nonSharedTracks"></div>
-                <b>nonSharedTracks</b>
-                <a class="ansibleOptionLink" href="#return-sg_snap_details/nonSharedTracks" title="Permalink to this return value"></a>
+                <div class="ansibleOptionAnchor" id="return-sg_snap_details/non_shared_tracks"></div>
+                <b>non_shared_tracks</b>
+                <a class="ansibleOptionLink" href="#return-sg_snap_details/non_shared_tracks" title="Permalink to this return value"></a>
                 <div style="font-size: small">
                   <span style="color: purple">type=integer</span>
                                       </div>
@@ -5710,25 +7119,9 @@ The following are the return value fields unique to this module:
                             <tr>
                                 <td class="elbow-placeholder">&nbsp;</td>
                             <td colspan="2">
-                <div class="ansibleOptionAnchor" id="return-sg_snap_details/numSharedTracks"></div>
-                <b>numSharedTracks</b>
-                <a class="ansibleOptionLink" href="#return-sg_snap_details/numSharedTracks" title="Permalink to this return value"></a>
-                <div style="font-size: small">
-                  <span style="color: purple">type=integer</span>
-                                      </div>
-                                </td>
-            <td>success</td>
-            <td>
-                                        <div>Number of shared tracks.</div>
-                                    <br/>
-                                </td>
-        </tr>
-                            <tr>
-                                <td class="elbow-placeholder">&nbsp;</td>
-                            <td colspan="2">
-                <div class="ansibleOptionAnchor" id="return-sg_snap_details/numSourceVolumes"></div>
-                <b>numSourceVolumes</b>
-                <a class="ansibleOptionLink" href="#return-sg_snap_details/numSourceVolumes" title="Permalink to this return value"></a>
+                <div class="ansibleOptionAnchor" id="return-sg_snap_details/num_source_volumes"></div>
+                <b>num_source_volumes</b>
+                <a class="ansibleOptionLink" href="#return-sg_snap_details/num_source_volumes" title="Permalink to this return value"></a>
                 <div style="font-size: small">
                   <span style="color: purple">type=integer</span>
                                       </div>
@@ -5742,9 +7135,9 @@ The following are the return value fields unique to this module:
                             <tr>
                                 <td class="elbow-placeholder">&nbsp;</td>
                             <td colspan="2">
-                <div class="ansibleOptionAnchor" id="return-sg_snap_details/numStorageGroupVolumes"></div>
-                <b>numStorageGroupVolumes</b>
-                <a class="ansibleOptionLink" href="#return-sg_snap_details/numStorageGroupVolumes" title="Permalink to this return value"></a>
+                <div class="ansibleOptionAnchor" id="return-sg_snap_details/num_storage_group_volumes"></div>
+                <b>num_storage_group_volumes</b>
+                <a class="ansibleOptionLink" href="#return-sg_snap_details/num_storage_group_volumes" title="Permalink to this return value"></a>
                 <div style="font-size: small">
                   <span style="color: purple">type=integer</span>
                                       </div>
@@ -5758,25 +7151,25 @@ The following are the return value fields unique to this module:
                             <tr>
                                 <td class="elbow-placeholder">&nbsp;</td>
                             <td colspan="2">
-                <div class="ansibleOptionAnchor" id="return-sg_snap_details/numUniqueTracks"></div>
-                <b>numUniqueTracks</b>
-                <a class="ansibleOptionLink" href="#return-sg_snap_details/numUniqueTracks" title="Permalink to this return value"></a>
+                <div class="ansibleOptionAnchor" id="return-sg_snap_details/restored"></div>
+                <b>restored</b>
+                <a class="ansibleOptionLink" href="#return-sg_snap_details/restored" title="Permalink to this return value"></a>
                 <div style="font-size: small">
-                  <span style="color: purple">type=integer</span>
+                  <span style="color: purple">type=boolean</span>
                                       </div>
                                 </td>
             <td>success</td>
             <td>
-                                        <div>Number of unique tracks.</div>
+                                        <div>Indicates whether the snapshot is restored or not.</div>
                                     <br/>
                                 </td>
         </tr>
                             <tr>
                                 <td class="elbow-placeholder">&nbsp;</td>
                             <td colspan="2">
-                <div class="ansibleOptionAnchor" id="return-sg_snap_details/sourceVolume"></div>
-                <b>sourceVolume</b>
-                <a class="ansibleOptionLink" href="#return-sg_snap_details/sourceVolume" title="Permalink to this return value"></a>
+                <div class="ansibleOptionAnchor" id="return-sg_snap_details/source_volume"></div>
+                <b>source_volume</b>
+                <a class="ansibleOptionLink" href="#return-sg_snap_details/source_volume" title="Permalink to this return value"></a>
                 <div style="font-size: small">
                   <span style="color: purple">type=list</span>
                   <br>
@@ -5792,9 +7185,9 @@ The following are the return value fields unique to this module:
                                 <td class="elbow-placeholder">&nbsp;</td>
                                 <td class="elbow-placeholder">&nbsp;</td>
                             <td colspan="1">
-                <div class="ansibleOptionAnchor" id="return-sg_snap_details/sourceVolume/capacity"></div>
+                <div class="ansibleOptionAnchor" id="return-sg_snap_details/source_volume/capacity"></div>
                 <b>capacity</b>
-                <a class="ansibleOptionLink" href="#return-sg_snap_details/sourceVolume/capacity" title="Permalink to this return value"></a>
+                <a class="ansibleOptionLink" href="#return-sg_snap_details/source_volume/capacity" title="Permalink to this return value"></a>
                 <div style="font-size: small">
                   <span style="color: purple">type=integer</span>
                                       </div>
@@ -5809,9 +7202,9 @@ The following are the return value fields unique to this module:
                                 <td class="elbow-placeholder">&nbsp;</td>
                                 <td class="elbow-placeholder">&nbsp;</td>
                             <td colspan="1">
-                <div class="ansibleOptionAnchor" id="return-sg_snap_details/sourceVolume/capacity_gb"></div>
+                <div class="ansibleOptionAnchor" id="return-sg_snap_details/source_volume/capacity_gb"></div>
                 <b>capacity_gb</b>
-                <a class="ansibleOptionLink" href="#return-sg_snap_details/sourceVolume/capacity_gb" title="Permalink to this return value"></a>
+                <a class="ansibleOptionLink" href="#return-sg_snap_details/source_volume/capacity_gb" title="Permalink to this return value"></a>
                 <div style="font-size: small">
                   <span style="color: purple">type=integer</span>
                                       </div>
@@ -5826,9 +7219,9 @@ The following are the return value fields unique to this module:
                                 <td class="elbow-placeholder">&nbsp;</td>
                                 <td class="elbow-placeholder">&nbsp;</td>
                             <td colspan="1">
-                <div class="ansibleOptionAnchor" id="return-sg_snap_details/sourceVolume/name"></div>
+                <div class="ansibleOptionAnchor" id="return-sg_snap_details/source_volume/name"></div>
                 <b>name</b>
-                <a class="ansibleOptionLink" href="#return-sg_snap_details/sourceVolume/name" title="Permalink to this return value"></a>
+                <a class="ansibleOptionLink" href="#return-sg_snap_details/source_volume/name" title="Permalink to this return value"></a>
                 <div style="font-size: small">
                   <span style="color: purple">type=string</span>
                                       </div>
@@ -5852,6 +7245,22 @@ The following are the return value fields unique to this module:
             <td>success</td>
             <td>
                                         <div>State of the snapshot.</div>
+                                    <br/>
+                                </td>
+        </tr>
+                            <tr>
+                                <td class="elbow-placeholder">&nbsp;</td>
+                            <td colspan="2">
+                <div class="ansibleOptionAnchor" id="return-sg_snap_details/time_to_live_expiry_date"></div>
+                <b>time_to_live_expiry_date</b>
+                <a class="ansibleOptionLink" href="#return-sg_snap_details/time_to_live_expiry_date" title="Permalink to this return value"></a>
+                <div style="font-size: small">
+                  <span style="color: purple">type=string</span>
+                                      </div>
+                                </td>
+            <td>success</td>
+            <td>
+                                        <div>Time to live expiry date.</div>
                                     <br/>
                                 </td>
         </tr>
@@ -5890,22 +7299,6 @@ The following are the return value fields unique to this module:
                             <tr>
                                 <td class="elbow-placeholder">&nbsp;</td>
                             <td colspan="2">
-                <div class="ansibleOptionAnchor" id="return-sg_snap_details/timeToLiveExpiryDate"></div>
-                <b>timeToLiveExpiryDate</b>
-                <a class="ansibleOptionLink" href="#return-sg_snap_details/timeToLiveExpiryDate" title="Permalink to this return value"></a>
-                <div style="font-size: small">
-                  <span style="color: purple">type=string</span>
-                                      </div>
-                                </td>
-            <td>success</td>
-            <td>
-                                        <div>Time to live expiry date.</div>
-                                    <br/>
-                                </td>
-        </tr>
-                            <tr>
-                                <td class="elbow-placeholder">&nbsp;</td>
-                            <td colspan="2">
                 <div class="ansibleOptionAnchor" id="return-sg_snap_details/tracks"></div>
                 <b>tracks</b>
                 <a class="ansibleOptionLink" href="#return-sg_snap_details/tracks" title="Permalink to this return value"></a>
@@ -5921,10 +7314,678 @@ The following are the return value fields unique to this module:
         </tr>
                     </table>
 
+
 Authors
 -------
 
 -   Prashant Rakheja (@prashant-dell) &lt;<ansible.team@dell.com>&gt;
+-   Rajshree Khare (@khareRajshree) &lt;<ansible.team@dell.com>&gt;
+
+Snapshot Policy Module
+=======================
+
+Synopsis
+--------
+
+Managing a snapshot policy on a PowerMax storage system includes
+getting details of any specific snapshot policy, creating a snapshot
+policy, modifying snapshot policy attributes, modifying snapshot
+policy state, associating or disassociating storage groups to or
+from snapshot policy and deleting a snapshot policy.
+
+Parameters
+----------
+
+<table  border=0 cellpadding=0 class="documentation-table">
+    <tr>
+        <th colspan="1">Parameter</th>
+        <th>Choices/<font color="blue">Defaults</font></th>
+                    <th width="100%">Comments</th>
+    </tr>
+                <tr>
+                                                            <td colspan="1">
+                <div class="ansibleOptionAnchor" id="parameter-compliance_count_critical"></div>
+                <b>compliance_count_critical</b>
+                <a class="ansibleOptionLink" href="#parameter-compliance_count_critical" title="Permalink to this option"></a>
+                <div style="font-size: small">
+                    <span style="color: purple">type=integer</span>
+                                                                </div>
+                                                    </td>
+                            <td>
+                                                                                                                                                        </td>
+                                                            <td>
+                                        <div>If the number of valid snapshots falls below this number, the compliance changes to critical (red).</div>
+                                                    </td>
+        </tr>
+                            <tr>
+                                                            <td colspan="1">
+                <div class="ansibleOptionAnchor" id="parameter-compliance_count_warning"></div>
+                <b>compliance_count_warning</b>
+                <a class="ansibleOptionLink" href="#parameter-compliance_count_warning" title="Permalink to this option"></a>
+                <div style="font-size: small">
+                    <span style="color: purple">type=integer</span>
+                                                                </div>
+                                                    </td>
+                            <td>
+                                                                                                                                                        </td>
+                                                            <td>
+                                        <div>If the number of valid snapshots falls below this number, the compliance changes to warning (yellow).</div>
+                                                    </td>
+        </tr>
+                            <tr>
+                                                            <td colspan="1">
+                <div class="ansibleOptionAnchor" id="parameter-interval"></div>
+                <b>interval</b>
+                <a class="ansibleOptionLink" href="#parameter-interval" title="Permalink to this option"></a>
+                <div style="font-size: small">
+                    <span style="color: purple">type=string</span>
+                                                                </div>
+                                                    </td>
+                            <td>
+                                                                                                                        <ul style="margin: 0; padding: 0"><b>Choices:</b>
+                                                                                                                                                            <li>10 Minutes</li>
+                                                                                                                                                                                            <li>12 Minutes</li>
+                                                                                                                                                                                            <li>15 Minutes</li>
+                                                                                                                                                                                            <li>20 Minutes</li>
+                                                                                                                                                                                            <li>30 Minutes</li>
+                                                                                                                                                                                            <li>1 Hour</li>
+                                                                                                                                                                                            <li>2 Hours</li>
+                                                                                                                                                                                            <li>3 Hours</li>
+                                                                                                                                                                                            <li>4 Hours</li>
+                                                                                                                                                                                            <li>6 Hours</li>
+                                                                                                                                                                                            <li>8 Hours</li>
+                                                                                                                                                                                            <li>12 Hours</li>
+                                                                                                                                                                                            <li>1 Day</li>
+                                                                                                                                                                                            <li>7 Days</li>
+                                                                                </ul>
+                                                                        </td>
+                                                            <td>
+                                        <div>The value of the interval counter for snapshot policy execution.</div>
+                                                    </td>
+        </tr>
+                            <tr>
+                                                            <td colspan="1">
+                <div class="ansibleOptionAnchor" id="parameter-new_snapshot_policy_name"></div>
+                <b>new_snapshot_policy_name</b>
+                <a class="ansibleOptionLink" href="#parameter-new_snapshot_policy_name" title="Permalink to this option"></a>
+                <div style="font-size: small">
+                    <span style="color: purple">type=string</span>
+                                                                </div>
+                                                    </td>
+                            <td>
+                                                                                                                                                        </td>
+                                                            <td>
+                                        <div>New name of the snapshot policy.</div>
+                                                    </td>
+        </tr>
+                            <tr>
+                                                            <td colspan="1">
+                <div class="ansibleOptionAnchor" id="parameter-offset_mins"></div>
+                <b>offset_mins</b>
+                <a class="ansibleOptionLink" href="#parameter-offset_mins" title="Permalink to this option"></a>
+                <div style="font-size: small">
+                    <span style="color: purple">type=integer</span>
+                                                                </div>
+                                                    </td>
+                            <td>
+                                                                                                                                                        </td>
+                                                            <td>
+                                        <div>Defines when, within the interval the snapshots will be taken for a specified snapshot policy.</div>
+                                        <div>The offset must be less than the interval of the snapshot policy.</div>
+                                        <div>The format must be in minutes.</div>
+                                        <div>If not specified, default value is 0.</div>
+                                                    </td>
+        </tr>
+                                    <tr>
+                                                            <td colspan="1">
+                <div class="ansibleOptionAnchor" id="parameter-secure"></div>
+                <b>secure</b>
+                <a class="ansibleOptionLink" href="#parameter-secure" title="Permalink to this option"></a>
+                <div style="font-size: small">
+                    <span style="color: purple">type=boolean</span>
+                                                                </div>
+                                                    </td>
+                            <td>
+                                                                                                                                                                    <ul style="margin: 0; padding: 0"><b>Choices:</b>
+                                                                                                                                                            <li>no</li>
+                                                                                                                                                                                            <li>yes</li>
+                                                                                </ul>
+                                                                        </td>
+                                                            <td>
+                                        <div>Secure snapshots may only be terminated after they expire or by Dell EMC support.</div>
+                                        <div>If not specified, default value is False.</div>
+                                                    </td>
+        </tr>
+                            <tr>
+                                                            <td colspan="1">
+                <div class="ansibleOptionAnchor" id="parameter-snapshot_count"></div>
+                <b>snapshot_count</b>
+                <a class="ansibleOptionLink" href="#parameter-snapshot_count" title="Permalink to this option"></a>
+                <div style="font-size: small">
+                    <span style="color: purple">type=integer</span>
+                                                                </div>
+                                                    </td>
+                            <td>
+                                                                                                                                                        </td>
+                                                            <td>
+                                        <div>The max snapshot count of the policy.</div>
+                                        <div>Max value is 1024.</div>
+                                                    </td>
+        </tr>
+                            <tr>
+                                                            <td colspan="1">
+                <div class="ansibleOptionAnchor" id="parameter-snapshot_policy_name"></div>
+                <b>snapshot_policy_name</b>
+                <a class="ansibleOptionLink" href="#parameter-snapshot_policy_name" title="Permalink to this option"></a>
+                <div style="font-size: small">
+                    <span style="color: purple">type=string</span>
+                    <br>
+                    <span style="color: red">required=true</span>                    </div>
+                                                    </td>
+                            <td>
+                                                                                                                                                        </td>
+                                                            <td>
+                                        <div>Name of the snapshot policy.</div>
+                                                    </td>
+        </tr>
+                            <tr>
+                                                            <td colspan="1">
+                <div class="ansibleOptionAnchor" id="parameter-state"></div>
+                <b>state</b>
+                <a class="ansibleOptionLink" href="#parameter-state" title="Permalink to this option"></a>
+                <div style="font-size: small">
+                    <span style="color: purple">type=string</span>
+                    <br>
+                    <span style="color: red">required=true</span>                    </div>
+                                                    </td>
+                            <td>
+                                                                                                                        <ul style="margin: 0; padding: 0"><b>Choices:</b>
+                                                                                                                                                            <li>present</li>
+                                                                                                                                                                                            <li>absent</li>
+                                                                                </ul>
+                                                                        </td>
+                                                            <td>
+                                        <div>Shows if the snapshot policy should be present or absent.</div>
+                                                    </td>
+        </tr>
+                            <tr>
+                                                            <td colspan="1">
+                <div class="ansibleOptionAnchor" id="parameter-storage_group_state"></div>
+                <b>storage_group_state</b>
+                <a class="ansibleOptionLink" href="#parameter-storage_group_state" title="Permalink to this option"></a>
+                <div style="font-size: small">
+                    <span style="color: purple">type=string</span>
+                                                                </div>
+                                                    </td>
+                            <td>
+                                                                                                                        <ul style="margin: 0; padding: 0"><b>Choices:</b>
+                                                                                                                                                            <li>present-in-policy</li>
+                                                                                                                                                                                            <li>absent-in-policy</li>
+                                                                                </ul>
+                                                                        </td>
+                                                            <td>
+                                        <div>The state of the storage group with regard to the snapshot policy.</div>
+                                        <div>present-in-policy indicates associate SG to SP.</div>
+                                        <div>absent-in-policy indicates disassociate SG from SP.</div>
+                                                    </td>
+        </tr>
+                            <tr>
+                                                            <td colspan="1">
+                <div class="ansibleOptionAnchor" id="parameter-storage_groups"></div>
+                <b>storage_groups</b>
+                <a class="ansibleOptionLink" href="#parameter-storage_groups" title="Permalink to this option"></a>
+                <div style="font-size: small">
+                    <span style="color: purple">type=list</span>
+                    <br>
+                    <span style="color: purple">elements=string</span>                                            </div>
+                                                    </td>
+                            <td>
+                                                                                                                                                        </td>
+                                                            <td>
+                                        <div>List of storage groups.</div>
+                                                    </td>
+        </tr>
+                            <tr>
+                                                            <td colspan="1">
+                <div class="ansibleOptionAnchor" id="parameter-suspend"></div>
+                <b>suspend</b>
+                <a class="ansibleOptionLink" href="#parameter-suspend" title="Permalink to this option"></a>
+                <div style="font-size: small">
+                    <span style="color: purple">type=boolean</span>
+                                                                </div>
+                                                    </td>
+                            <td>
+                                                                                                                                                                    <ul style="margin: 0; padding: 0"><b>Choices:</b>
+                                                                                                                                                            <li>no</li>
+                                                                                                                                                                                            <li>yes</li>
+                                                                                </ul>
+                                                                        </td>
+                                                            <td>
+                                        <div>Suspend the snapshot policy.</div>
+                                        <div>True indicates snapshot policy is in suspend state.</div>
+                                        <div>False indicates snapshot policy is in resume state.</div>
+                                                    </td>
+        </tr>
+                                    <tr>
+                                                            <td colspan="1">
+                <div class="ansibleOptionAnchor" id="parameter-universion"></div>
+                <b>universion</b>
+                <a class="ansibleOptionLink" href="#parameter-universion" title="Permalink to this option"></a>
+                <div style="font-size: small">
+                    <span style="color: purple">type=integer</span>
+                                                                </div>
+                                                    </td>
+                            <td>
+                                                                                                                        <ul style="margin: 0; padding: 0"><b>Choices:</b>
+                                                                                                                                                            <li>92</li>
+                                                                                </ul>
+                                                                        </td>
+                                                            <td>
+                                        <div>Unisphere version, currently &#x27;92&#x27; version is supported.</div>
+                                                    </td>
+        </tr>
+                    </table>
+
+Notes
+-----
+
+- The max number of snapshot policies on an array is limited to 20.
+- At most four snapshot policies can be associated with a storage group. 
+- The compliance\_count\_warning value should be less than total\_snapshot\_count value of the policy.
+- The compliance\_count\_critical value should be less than or equal to the compliance\_count\_warning value of the policy. 
+  
+Examples
+--------
+
+``` yaml+jinja
+- name: Create a snapshot policy
+  dellemc_powermax_snapshotpolicy:
+    unispherehost: "{{unispherehost}}"
+    universion: "{{universion}}"
+    verifycert: "{{verifycert}}"
+    user: "{{user}}"
+    password: "{{password}}"
+    serial_no: "{{serial_no}}"
+    snapshot_policy_name: "10min_policy_1"
+    interval: "10 Minutes"
+    secure: false
+    snapshot_count: 10
+    offset_mins: 2
+    compliance_count_warning: 6
+    compliance_count_critical: 4
+    state: "present"
+
+- name: Create a snapshot policy and associate storage groups to it
+  dellemc_powermax_snapshotpolicy:
+    unispherehost: "{{unispherehost}}"
+    universion: "{{universion}}"
+    verifycert: "{{verifycert}}"
+    user: "{{user}}"
+    password: "{{password}}"
+    serial_no: "{{serial_no}}"
+    snapshot_policy_name: "10min_policy_2"
+    interval: "10 Minutes"
+    secure: false
+    snapshot_count: 12
+    offset_mins: 5
+    compliance_count_warning: 8
+    compliance_count_critical: 4
+    storage_groups:
+      - "11_ansible_test_1"
+      - "11_ansible_test_2"
+    storage_group_state: "present-in-policy"
+    state: "present"
+
+- name: Get snapshot policy details
+  dellemc_powermax_snapshotpolicy:
+    unispherehost: "{{unispherehost}}"
+    universion: "{{universion}}"
+    verifycert: "{{verifycert}}"
+    user: "{{user}}"
+    password: "{{password}}"
+    serial_no: "{{serial_no}}"
+    snapshot_policy_name: "10min_policy_2"
+    state: "present"
+
+- name: Modify snapshot policy attributes
+  dellemc_powermax_snapshotpolicy:
+    unispherehost: "{{unispherehost}}"
+    universion: "{{universion}}"
+    verifycert: "{{verifycert}}"
+    user: "{{user}}"
+    password: "{{password}}"
+    serial_no: "{{serial_no}}"
+    snapshot_policy_name: "10min_policy_2"
+    new_snapshot_policy_name: "10min_policy_2_new"
+    interval: "10 Minutes"
+    snapshot_count: 16
+    offset_mins: 8
+    compliance_count_warning: 9
+    compliance_count_critical: 7
+    state: "present"
+
+- name: Modify snapshot policy, associate to storage groups
+  dellemc_powermax_snapshotpolicy:
+    unispherehost: "{{unispherehost}}"
+    universion: "{{universion}}"
+    verifycert: "{{verifycert}}"
+    user: "{{user}}"
+    password: "{{password}}"
+    serial_no: "{{serial_no}}"
+    snapshot_policy_name: "10min_policy_1"
+    storage_groups:
+      - "11_ansible_test_1"
+      - "11_ansible_test_2"
+    storage_group_state: "present-in-policy"
+    state: "present"
+
+- name: Modify snapshot policy, disassociate from storage groups
+  dellemc_powermax_snapshotpolicy:
+    unispherehost: "{{unispherehost}}"
+    universion: "{{universion}}"
+    verifycert: "{{verifycert}}"
+    user: "{{user}}"
+    password: "{{password}}"
+    serial_no: "{{serial_no}}"
+    snapshot_policy_name: "10min_policy_1"
+    storage_groups:
+      - "11_ansible_test_1"
+      - "11_ansible_test_2"
+    storage_group_state: "absent-in-policy"
+    state: "present"
+
+- name: Modify snapshot policy state to suspend
+  dellemc_powermax_snapshotpolicy:
+    unispherehost: "{{unispherehost}}"
+    universion: "{{universion}}"
+    verifycert: "{{verifycert}}"
+    user: "{{user}}"
+    password: "{{password}}"
+    serial_no: "{{serial_no}}"
+    snapshot_policy_name: "10min_policy_1"
+    suspend: true
+    state: "present"
+
+- name: Modify snapshot policy state to resume
+  dellemc_powermax_snapshotpolicy:
+    unispherehost: "{{unispherehost}}"
+    universion: "{{universion}}"
+    verifycert: "{{verifycert}}"
+    user: "{{user}}"
+    password: "{{password}}"
+    serial_no: "{{serial_no}}"
+    snapshot_policy_name: "10min_policy_1"
+    suspend: false
+    state: "present"
+
+- name: Delete a snapshot policy
+  dellemc_powermax_snapshotpolicy:
+    unispherehost: "{{unispherehost}}"
+    universion: "{{universion}}"
+    verifycert: "{{verifycert}}"
+    user: "{{user}}"
+    password: "{{password}}"
+    serial_no: "{{serial_no}}"
+    snapshot_policy_name: "10min_policy_1"
+    state: "absent"
+```
+Return Values
+-------------
+
+The following are the fields unique to this module:
+
+<table border=0 cellpadding=0 class="documentation-table">
+    <tr>
+        <th colspan="2">Key</th>
+        <th>Returned</th>
+        <th width="100%">Description</th>
+    </tr>
+                <tr>
+                            <td colspan="2">
+                <div class="ansibleOptionAnchor" id="return-changed"></div>
+                <b>changed</b>
+                <a class="ansibleOptionLink" href="#return-changed" title="Permalink to this return value"></a>
+                <div style="font-size: small">
+                  <span style="color: purple">type=boolean</span>
+                                      </div>
+                                </td>
+            <td>always</td>
+            <td>
+                                        <div>Whether or not the resource has changed.</div>
+                                    <br/>
+                                </td>
+        </tr>
+                            <tr>
+                            <td colspan="2">
+                <div class="ansibleOptionAnchor" id="return-snapshot_policy_details"></div>
+                <b>snapshot_policy_details</b>
+                <a class="ansibleOptionLink" href="#return-snapshot_policy_details" title="Permalink to this return value"></a>
+                <div style="font-size: small">
+                  <span style="color: purple">complex</span>
+                                      </div>
+                                </td>
+            <td>When snapshot policy exists.</td>
+            <td>
+                                        <div>Details of the snapshot policy.</div>
+                                    <br/>
+                                </td>
+        </tr>
+                                    <tr>
+                                <td class="elbow-placeholder">&nbsp;</td>
+                            <td colspan="1">
+                <div class="ansibleOptionAnchor" id="return-snapshot_policy_details/compliance_count_critical"></div>
+                <b>compliance_count_critical</b>
+                <a class="ansibleOptionLink" href="#return-snapshot_policy_details/compliance_count_critical" title="Permalink to this return value"></a>
+                <div style="font-size: small">
+                  <span style="color: purple">type=integer</span>
+                                      </div>
+                                </td>
+            <td>success</td>
+            <td>
+                                        <div>The number of valid snapshots that have critical compliance.</div>
+                                    <br/>
+                                </td>
+        </tr>
+                            <tr>
+                                <td class="elbow-placeholder">&nbsp;</td>
+                            <td colspan="1">
+                <div class="ansibleOptionAnchor" id="return-snapshot_policy_details/compliance_count_warning"></div>
+                <b>compliance_count_warning</b>
+                <a class="ansibleOptionLink" href="#return-snapshot_policy_details/compliance_count_warning" title="Permalink to this return value"></a>
+                <div style="font-size: small">
+                  <span style="color: purple">type=integer</span>
+                                      </div>
+                                </td>
+            <td>success</td>
+            <td>
+                                        <div>The number of valid snapshots that have warning compliance.</div>
+                                    <br/>
+                                </td>
+        </tr>
+                            <tr>
+                                <td class="elbow-placeholder">&nbsp;</td>
+                            <td colspan="1">
+                <div class="ansibleOptionAnchor" id="return-snapshot_policy_details/interval_minutes"></div>
+                <b>interval_minutes</b>
+                <a class="ansibleOptionLink" href="#return-snapshot_policy_details/interval_minutes" title="Permalink to this return value"></a>
+                <div style="font-size: small">
+                  <span style="color: purple">type=integer</span>
+                                      </div>
+                                </td>
+            <td>success</td>
+            <td>
+                                        <div>The interval minutes for snapshot policy execution.</div>
+                                    <br/>
+                                </td>
+        </tr>
+                            <tr>
+                                <td class="elbow-placeholder">&nbsp;</td>
+                            <td colspan="1">
+                <div class="ansibleOptionAnchor" id="return-snapshot_policy_details/last_time_used"></div>
+                <b>last_time_used</b>
+                <a class="ansibleOptionLink" href="#return-snapshot_policy_details/last_time_used" title="Permalink to this return value"></a>
+                <div style="font-size: small">
+                  <span style="color: purple">type=string</span>
+                                      </div>
+                                </td>
+            <td>success</td>
+            <td>
+                                        <div>The timestamp indicating the last time snapshot policy was used.</div>
+                                    <br/>
+                                </td>
+        </tr>
+                            <tr>
+                                <td class="elbow-placeholder">&nbsp;</td>
+                            <td colspan="1">
+                <div class="ansibleOptionAnchor" id="return-snapshot_policy_details/offset_minutes"></div>
+                <b>offset_minutes</b>
+                <a class="ansibleOptionLink" href="#return-snapshot_policy_details/offset_minutes" title="Permalink to this return value"></a>
+                <div style="font-size: small">
+                  <span style="color: purple">type=integer</span>
+                                      </div>
+                                </td>
+            <td>success</td>
+            <td>
+                                        <div>It is the time in minutes within the interval when the snapshots will be taken for a specified Snapshot Policy.</div>
+                                    <br/>
+                                </td>
+        </tr>
+                            <tr>
+                                <td class="elbow-placeholder">&nbsp;</td>
+                            <td colspan="1">
+                <div class="ansibleOptionAnchor" id="return-snapshot_policy_details/secure"></div>
+                <b>secure</b>
+                <a class="ansibleOptionLink" href="#return-snapshot_policy_details/secure" title="Permalink to this return value"></a>
+                <div style="font-size: small">
+                  <span style="color: purple">type=boolean</span>
+                                      </div>
+                                </td>
+            <td>success</td>
+            <td>
+                                        <div>True value indicates that the secure snapshots may only be terminated after they expire or by Dell EMC support.</div>
+                                    <br/>
+                                </td>
+        </tr>
+                            <tr>
+                                <td class="elbow-placeholder">&nbsp;</td>
+                            <td colspan="1">
+                <div class="ansibleOptionAnchor" id="return-snapshot_policy_details/snapshot_count"></div>
+                <b>snapshot_count</b>
+                <a class="ansibleOptionLink" href="#return-snapshot_policy_details/snapshot_count" title="Permalink to this return value"></a>
+                <div style="font-size: small">
+                  <span style="color: purple">type=integer</span>
+                                      </div>
+                                </td>
+            <td>success</td>
+            <td>
+                                        <div>It is the max snapshot count of the policy.</div>
+                                    <br/>
+                                </td>
+        </tr>
+                            <tr>
+                                <td class="elbow-placeholder">&nbsp;</td>
+                            <td colspan="1">
+                <div class="ansibleOptionAnchor" id="return-snapshot_policy_details/snapshot_policy_name"></div>
+                <b>snapshot_policy_name</b>
+                <a class="ansibleOptionLink" href="#return-snapshot_policy_details/snapshot_policy_name" title="Permalink to this return value"></a>
+                <div style="font-size: small">
+                  <span style="color: purple">type=string</span>
+                                      </div>
+                                </td>
+            <td>success</td>
+            <td>
+                                        <div>Name of the snapshot policy.</div>
+                                    <br/>
+                                </td>
+        </tr>
+                            <tr>
+                                <td class="elbow-placeholder">&nbsp;</td>
+                            <td colspan="1">
+                <div class="ansibleOptionAnchor" id="return-snapshot_policy_details/storage_group"></div>
+                <b>storage_group</b>
+                <a class="ansibleOptionLink" href="#return-snapshot_policy_details/storage_group" title="Permalink to this return value"></a>
+                <div style="font-size: small">
+                  <span style="color: purple">type=list</span>
+                  <br>
+                  <span style="color: purple">elements=string</span>                    </div>
+                                </td>
+            <td>success</td>
+            <td>
+                                        <div>The list of storage groups associated with the snapshot policy.</div>
+                                    <br/>
+                                </td>
+        </tr>
+                            <tr>
+                                <td class="elbow-placeholder">&nbsp;</td>
+                            <td colspan="1">
+                <div class="ansibleOptionAnchor" id="return-snapshot_policy_details/storage_group_count"></div>
+                <b>storage_group_count</b>
+                <a class="ansibleOptionLink" href="#return-snapshot_policy_details/storage_group_count" title="Permalink to this return value"></a>
+                <div style="font-size: small">
+                  <span style="color: purple">type=integer</span>
+                                      </div>
+                                </td>
+            <td>success</td>
+            <td>
+                                        <div>The number of storage groups associated with the snapshot policy.</div>
+                                    <br/>
+                                </td>
+        </tr>
+                            <tr>
+                                <td class="elbow-placeholder">&nbsp;</td>
+                            <td colspan="1">
+                <div class="ansibleOptionAnchor" id="return-snapshot_policy_details/storage_group_snapshotID"></div>
+                <b>storage_group_snapshotID</b>
+                <a class="ansibleOptionLink" href="#return-snapshot_policy_details/storage_group_snapshotID" title="Permalink to this return value"></a>
+                <div style="font-size: small">
+                  <span style="color: purple">type=list</span>
+                  <br>
+                  <span style="color: purple">elements=string</span>                    </div>
+                                </td>
+            <td>success</td>
+            <td>
+                                        <div>Pair of storage group and list of snapshot IDs associated with the snapshot policy.</div>
+                                    <br/>
+                                </td>
+        </tr>
+                            <tr>
+                                <td class="elbow-placeholder">&nbsp;</td>
+                            <td colspan="1">
+                <div class="ansibleOptionAnchor" id="return-snapshot_policy_details/suspended"></div>
+                <b>suspended</b>
+                <a class="ansibleOptionLink" href="#return-snapshot_policy_details/suspended" title="Permalink to this return value"></a>
+                <div style="font-size: small">
+                  <span style="color: purple">type=boolean</span>
+                                      </div>
+                                </td>
+            <td>success</td>
+            <td>
+                                        <div>The state of the snapshot policy, true indicates policy is in suspend state.</div>
+                                    <br/>
+                                </td>
+        </tr>
+                            <tr>
+                                <td class="elbow-placeholder">&nbsp;</td>
+                            <td colspan="1">
+                <div class="ansibleOptionAnchor" id="return-snapshot_policy_details/symmetrixID"></div>
+                <b>symmetrixID</b>
+                <a class="ansibleOptionLink" href="#return-snapshot_policy_details/symmetrixID" title="Permalink to this return value"></a>
+                <div style="font-size: small">
+                  <span style="color: purple">type=string</span>
+                                      </div>
+                                </td>
+            <td>success</td>
+            <td>
+                                        <div>The symmetrix on which snapshot policy exists.</div>
+                                    <br/>
+                                </td>
+        </tr>
+                    </table>
+
+Authors
+-------
+
+-   Rajshree Khare (@khareRajshree) &lt;<ansible.team@dell.com>&gt;
 
 SRDF Module
 ===========
@@ -5971,17 +8032,18 @@ Parameters
                                                                 </div>
                                                     </td>
                             <td>
-                                                                                                                                                                                                                <ul style="margin: 0; padding: 0"><b>Choices:</b>
-                                                                                                                                                            <li><div style="color: blue"><b>no</b>&nbsp;&larr;</div></li>
+                                                                                                                                                                    <ul style="margin: 0; padding: 0"><b>Choices:</b>
+                                                                                                                                                            <li>no</li>
                                                                                                                                                                                             <li>yes</li>
                                                                                 </ul>
                                                                         </td>
                                                             <td>
                                         <div>Overrides the SRDF group selection functionality and forces the creation of a new SRDF group.</div>
                                         <div>PowerMax has a limited number of RDF groups. If this flag is set to True, and the RDF groups are exhausted, then SRDF link creation will fail.</div>
+                                        <div>If not specified, default value is &#x27;false&#x27;.</div>
                                                     </td>
         </tr>
-                            <tr>
+                                    <tr>
                                                             <td colspan="1">
                 <div class="ansibleOptionAnchor" id="parameter-rdfg_no"></div>
                 <b>rdfg_no</b>
@@ -6009,7 +8071,7 @@ Parameters
                             <td>
                                                                                                                                                         </td>
                                                             <td>
-                                        <div>Integer 12-digit serial number of remote PowerMax or VMAX array.</div>
+                                        <div>integer 12-digit serial number of remote PowerMax or VMAX array.</div>
                                         <div>Required while creating an SRDF link.</div>
                                                     </td>
         </tr>
@@ -6019,7 +8081,7 @@ Parameters
                 <b>serial_no</b>
                 <a class="ansibleOptionLink" href="#parameter-serial_no" title="Permalink to this option"></a>
                 <div style="font-size: small">
-                    <span style="color: purple">type=string</span>,
+                    <span style="color: purple">type=string</span>
                     <br>
                     <span style="color: red">required=true</span>                    </div>
                                                     </td>
@@ -6100,7 +8162,7 @@ Parameters
                 <b>state</b>
                 <a class="ansibleOptionLink" href="#parameter-state" title="Permalink to this option"></a>
                 <div style="font-size: small">
-                    <span style="color: purple">type=string</span>,
+                    <span style="color: purple">type=string</span>
                     <br>
                     <span style="color: red">required=true</span>                    </div>
                                                     </td>
@@ -6158,8 +8220,7 @@ Parameters
         </tr>
                     </table>
 
-Examples
---------
+## Examples
 
 ``` yaml+jinja
 - name: Create and establish storagegroup SRDF/a pairing
@@ -6321,7 +8382,7 @@ Examples
 Return Values
 -------------
 
-The following are the return value fields unique to this module:
+The following are the fields unique to this module:
 
 <table border=0 cellpadding=0 class="documentation-table">
     <tr>
@@ -6813,8 +8874,7 @@ to an existing storage group, removing existing volumes from an
 existing storage group, creating new volumes in an existing storage
 group, modifying existing storage group attributes, adding child
 storage groups inside an existing storage group (parent), and
-removing a child storage group from an existing parent storage
-group.
+removing a child storage group from an existing parent storage group.
 
 Parameters
 ----------
@@ -6917,7 +8977,7 @@ Parameters
                 <b>sg_name</b>
                 <a class="ansibleOptionLink" href="#parameter-sg_name" title="Permalink to this option"></a>
                 <div style="font-size: small">
-                    <span style="color: purple">type=string</span>,
+                    <span style="color: purple">type=string</span>
                     <br>
                     <span style="color: red">required=true</span>                    </div>
                                                     </td>
@@ -6925,6 +8985,41 @@ Parameters
                                                                                                                                                         </td>
                                                             <td>
                                         <div>The name of the storage group.</div>
+                                                    </td>
+        </tr>
+                            <tr>
+                                                            <td colspan="1">
+                <div class="ansibleOptionAnchor" id="parameter-snapshot_policies"></div>
+                <b>snapshot_policies</b>
+                <a class="ansibleOptionLink" href="#parameter-snapshot_policies" title="Permalink to this option"></a>
+                <div style="font-size: small">
+                    <span style="color: purple">type=list</span>
+                    <br>
+                    <span style="color: purple">elements=string</span>                                            </div>
+                                                    </td>
+                            <td>
+                                                                                                                                                        </td>
+                                                            <td>
+                                        <div>List of snapshot policy(s).</div>
+                                                    </td>
+        </tr>
+                            <tr>
+                                                            <td colspan="1">
+                <div class="ansibleOptionAnchor" id="parameter-snapshot_policy_state"></div>
+                <b>snapshot_policy_state</b>
+                <a class="ansibleOptionLink" href="#parameter-snapshot_policy_state" title="Permalink to this option"></a>
+                <div style="font-size: small">
+                    <span style="color: purple">type=string</span>
+                                                                </div>
+                                                    </td>
+                            <td>
+                                                                                                                        <ul style="margin: 0; padding: 0"><b>Choices:</b>
+                                                                                                                                                            <li>present-in-group</li>
+                                                                                                                                                                                            <li>absent-in-group</li>
+                                                                                </ul>
+                                                                        </td>
+                                                            <td>
+                                        <div>Describes the state of snapshot policy for an SG</div>
                                                     </td>
         </tr>
                             <tr>
@@ -6950,7 +9045,7 @@ Parameters
                 <b>state</b>
                 <a class="ansibleOptionLink" href="#parameter-state" title="Permalink to this option"></a>
                 <div style="font-size: small">
-                    <span style="color: purple">type=string</span>,
+                    <span style="color: purple">type=string</span>
                     <br>
                     <span style="color: red">required=true</span>                    </div>
                                                     </td>
@@ -7143,21 +9238,67 @@ Examples
     sg_name: "ansible_sg"
     new_sg_name: "ansible_sg_renamed"
     state: "present"
+
+- name: Create a storage group with snapshot policies
+  dellemc_powermax_storagegroup:
+    unispherehost: "{{unispherehost}}"
+    universion: "{{universion}}"
+    verifycert: "{{verifycert}}"
+    user: "{{user}}"
+    password: "{{password}}"
+    serial_no: "{{serial_no}}"
+    sg_name: "ansible_test_sg"
+    service_level: "Diamond"
+    srp: "SRP_1"
+    compression: True
+    snapshot_policies:
+      - "10min_policy"
+      - "30min_policy"
+    snapshot_policy_state: "present-in-group"
+    state: "present"
+
+- name: Add snapshot policy to a storage group
+  dellemc_powermax_storagegroup:
+    unispherehost: "{{unispherehost}}"
+    universion: "{{universion}}"
+    verifycert: "{{verifycert}}"
+    user: "{{user}}"
+    password: "{{password}}"
+    serial_no: "{{serial_no}}"
+    sg_name: "ansible_test_sg"
+    snapshot_policies:
+      - "15min_policy"
+    snapshot_policy_state: "present-in-group"
+    state: "present"
+
+- name: Remove snapshot policy from a storage group
+  dellemc_powermax_storagegroup:
+    unispherehost: "{{unispherehost}}"
+    universion: "{{universion}}"
+    verifycert: "{{verifycert}}"
+    user: "{{user}}"
+    password: "{{password}}"
+    serial_no: "{{serial_no}}"
+    sg_name: "ansible_test_sg"
+    snapshot_policies:
+      - "15min_policy"
+    snapshot_policy_state: "absent-in-group"
+    state: "present"
 ```
 
 Return Values
 -------------
 
-The following are the return value fields unique to this module:
+The following are the fields unique to this module:
 
 <table border=0 cellpadding=0 class="documentation-table">
     <tr>
-        <th colspan="2">Key</th>
+        <th colspan="3">Key</th>
         <th>Returned</th>
         <th width="100%">Description</th>
     </tr>
                 <tr>
-                            <td colspan="2">
+                            <td colspan="3">
                 <div class="ansibleOptionAnchor" id="return-add_child_sg"></div>
                 <b>add_child_sg</b>
                 <a class="ansibleOptionLink" href="#return-add_child_sg" title="Permalink to this return value"></a>
@@ -7172,7 +9313,7 @@ The following are the return value fields unique to this module:
                                 </td>
         </tr>
                             <tr>
-                            <td colspan="2">
+                            <td colspan="3">
                 <div class="ansibleOptionAnchor" id="return-add_new_vols_to_sg"></div>
                 <b>add_new_vols_to_sg</b>
                 <a class="ansibleOptionLink" href="#return-add_new_vols_to_sg" title="Permalink to this return value"></a>
@@ -7187,7 +9328,22 @@ The following are the return value fields unique to this module:
                                 </td>
         </tr>
                             <tr>
-                            <td colspan="2">
+                            <td colspan="3">
+                <div class="ansibleOptionAnchor" id="return-add_snapshot_policy_to_sg"></div>
+                <b>add_snapshot_policy_to_sg</b>
+                <a class="ansibleOptionLink" href="#return-add_snapshot_policy_to_sg" title="Permalink to this return value"></a>
+                <div style="font-size: small">
+                  <span style="color: purple">type=boolean</span>
+                                      </div>
+                                </td>
+            <td>When value exists.</td>
+            <td>
+                                        <div>Sets to true when snapshot policy(s) is added to SG.</div>
+                                    <br/>
+                                </td>
+        </tr>
+                            <tr>
+                            <td colspan="3">
                 <div class="ansibleOptionAnchor" id="return-add_vols_to_sg"></div>
                 <b>add_vols_to_sg</b>
                 <a class="ansibleOptionLink" href="#return-add_vols_to_sg" title="Permalink to this return value"></a>
@@ -7202,7 +9358,7 @@ The following are the return value fields unique to this module:
                                 </td>
         </tr>
                             <tr>
-                            <td colspan="2">
+                            <td colspan="3">
                 <div class="ansibleOptionAnchor" id="return-added_vols_details"></div>
                 <b>added_vols_details</b>
                 <a class="ansibleOptionLink" href="#return-added_vols_details" title="Permalink to this return value"></a>
@@ -7218,7 +9374,7 @@ The following are the return value fields unique to this module:
                                 </td>
         </tr>
                             <tr>
-                            <td colspan="2">
+                            <td colspan="3">
                 <div class="ansibleOptionAnchor" id="return-changed"></div>
                 <b>changed</b>
                 <a class="ansibleOptionLink" href="#return-changed" title="Permalink to this return value"></a>
@@ -7233,7 +9389,7 @@ The following are the return value fields unique to this module:
                                 </td>
         </tr>
                             <tr>
-                            <td colspan="2">
+                            <td colspan="3">
                 <div class="ansibleOptionAnchor" id="return-create_sg"></div>
                 <b>create_sg</b>
                 <a class="ansibleOptionLink" href="#return-create_sg" title="Permalink to this return value"></a>
@@ -7248,7 +9404,7 @@ The following are the return value fields unique to this module:
                                 </td>
         </tr>
                             <tr>
-                            <td colspan="2">
+                            <td colspan="3">
                 <div class="ansibleOptionAnchor" id="return-delete_sg"></div>
                 <b>delete_sg</b>
                 <a class="ansibleOptionLink" href="#return-delete_sg" title="Permalink to this return value"></a>
@@ -7263,7 +9419,7 @@ The following are the return value fields unique to this module:
                                 </td>
         </tr>
                             <tr>
-                            <td colspan="2">
+                            <td colspan="3">
                 <div class="ansibleOptionAnchor" id="return-modify_sg"></div>
                 <b>modify_sg</b>
                 <a class="ansibleOptionLink" href="#return-modify_sg" title="Permalink to this return value"></a>
@@ -7278,7 +9434,7 @@ The following are the return value fields unique to this module:
                                 </td>
         </tr>
                             <tr>
-                            <td colspan="2">
+                            <td colspan="3">
                 <div class="ansibleOptionAnchor" id="return-remove_child_sg"></div>
                 <b>remove_child_sg</b>
                 <a class="ansibleOptionLink" href="#return-remove_child_sg" title="Permalink to this return value"></a>
@@ -7293,7 +9449,22 @@ The following are the return value fields unique to this module:
                                 </td>
         </tr>
                             <tr>
-                            <td colspan="2">
+                            <td colspan="3">
+                <div class="ansibleOptionAnchor" id="return-remove_snapshot_policy_to_sg"></div>
+                <b>remove_snapshot_policy_to_sg</b>
+                <a class="ansibleOptionLink" href="#return-remove_snapshot_policy_to_sg" title="Permalink to this return value"></a>
+                <div style="font-size: small">
+                  <span style="color: purple">type=boolean</span>
+                                      </div>
+                                </td>
+            <td>When value exists.</td>
+            <td>
+                                        <div>Sets to false when snapshot policy(s) is removed from SG.</div>
+                                    <br/>
+                                </td>
+        </tr>
+                            <tr>
+                            <td colspan="3">
                 <div class="ansibleOptionAnchor" id="return-remove_vols_from_sg"></div>
                 <b>remove_vols_from_sg</b>
                 <a class="ansibleOptionLink" href="#return-remove_vols_from_sg" title="Permalink to this return value"></a>
@@ -7308,7 +9479,7 @@ The following are the return value fields unique to this module:
                                 </td>
         </tr>
                             <tr>
-                            <td colspan="2">
+                            <td colspan="3">
                 <div class="ansibleOptionAnchor" id="return-removed_vols_details"></div>
                 <b>removed_vols_details</b>
                 <a class="ansibleOptionLink" href="#return-removed_vols_details" title="Permalink to this return value"></a>
@@ -7324,7 +9495,7 @@ The following are the return value fields unique to this module:
                                 </td>
         </tr>
                             <tr>
-                            <td colspan="2">
+                            <td colspan="3">
                 <div class="ansibleOptionAnchor" id="return-rename_sg"></div>
                 <b>rename_sg</b>
                 <a class="ansibleOptionLink" href="#return-rename_sg" title="Permalink to this return value"></a>
@@ -7339,7 +9510,120 @@ The following are the return value fields unique to this module:
                                 </td>
         </tr>
                             <tr>
+                            <td colspan="3">
+                <div class="ansibleOptionAnchor" id="return-snapshot_policy_compliance_details"></div>
+                <b>snapshot_policy_compliance_details</b>
+                <a class="ansibleOptionLink" href="#return-snapshot_policy_compliance_details" title="Permalink to this return value"></a>
+                <div style="font-size: small">
+                  <span style="color: purple">complex</span>
+                                      </div>
+                                </td>
+            <td>When snapshot policy associated..</td>
+            <td>
+                                        <div>The compliance status of this storage group.</div>
+                                    <br/>
+                                </td>
+        </tr>
+                                    <tr>
+                                <td class="elbow-placeholder">&nbsp;</td>
                             <td colspan="2">
+                <div class="ansibleOptionAnchor" id="return-snapshot_policy_compliance_details/compliance"></div>
+                <b>compliance</b>
+                <a class="ansibleOptionLink" href="#return-snapshot_policy_compliance_details/compliance" title="Permalink to this return value"></a>
+                <div style="font-size: small">
+                  <span style="color: purple">type=string</span>
+                                      </div>
+                                </td>
+            <td>success</td>
+            <td>
+                                        <div>Compliance status</div>
+                                    <br/>
+                                </td>
+        </tr>
+                            <tr>
+                                <td class="elbow-placeholder">&nbsp;</td>
+                            <td colspan="2">
+                <div class="ansibleOptionAnchor" id="return-snapshot_policy_compliance_details/sl_compliance"></div>
+                <b>sl_compliance</b>
+                <a class="ansibleOptionLink" href="#return-snapshot_policy_compliance_details/sl_compliance" title="Permalink to this return value"></a>
+                <div style="font-size: small">
+                  <span style="color: purple">complex</span>
+                                      </div>
+                                </td>
+            <td>success</td>
+            <td>
+                                        <div>Compliance details</div>
+                                    <br/>
+                                </td>
+        </tr>
+                                    <tr>
+                                <td class="elbow-placeholder">&nbsp;</td>
+                                <td class="elbow-placeholder">&nbsp;</td>
+                            <td colspan="1">
+                <div class="ansibleOptionAnchor" id="return-snapshot_policy_compliance_details/sl_compliance/compliance"></div>
+                <b>compliance</b>
+                <a class="ansibleOptionLink" href="#return-snapshot_policy_compliance_details/sl_compliance/compliance" title="Permalink to this return value"></a>
+                <div style="font-size: small">
+                  <span style="color: purple">type=string</span>
+                                      </div>
+                                </td>
+            <td>success</td>
+            <td>
+                                        <div>Compliance status</div>
+                                    <br/>
+                                </td>
+        </tr>
+                            <tr>
+                                <td class="elbow-placeholder">&nbsp;</td>
+                                <td class="elbow-placeholder">&nbsp;</td>
+                            <td colspan="1">
+                <div class="ansibleOptionAnchor" id="return-snapshot_policy_compliance_details/sl_compliance/sl_name"></div>
+                <b>sl_name</b>
+                <a class="ansibleOptionLink" href="#return-snapshot_policy_compliance_details/sl_compliance/sl_name" title="Permalink to this return value"></a>
+                <div style="font-size: small">
+                  <span style="color: purple">type=string</span>
+                                      </div>
+                                </td>
+            <td>success</td>
+            <td>
+                                        <div>Name of the snapshot policy</div>
+                                    <br/>
+                                </td>
+        </tr>
+                            <tr>
+                                <td class="elbow-placeholder">&nbsp;</td>
+                            <td colspan="2">
+                <div class="ansibleOptionAnchor" id="return-snapshot_policy_compliance_details/sl_count"></div>
+                <b>sl_count</b>
+                <a class="ansibleOptionLink" href="#return-snapshot_policy_compliance_details/sl_count" title="Permalink to this return value"></a>
+                <div style="font-size: small">
+                  <span style="color: purple">type=integer</span>
+                                      </div>
+                                </td>
+            <td>success</td>
+            <td>
+                                        <div>Number of snapshot policies associated with storage group</div>
+                                    <br/>
+                                </td>
+        </tr>
+                            <tr>
+                                <td class="elbow-placeholder">&nbsp;</td>
+                            <td colspan="2">
+                <div class="ansibleOptionAnchor" id="return-snapshot_policy_compliance_details/storage_group_name"></div>
+                <b>storage_group_name</b>
+                <a class="ansibleOptionLink" href="#return-snapshot_policy_compliance_details/storage_group_name" title="Permalink to this return value"></a>
+                <div style="font-size: small">
+                  <span style="color: purple">type=string</span>
+                                      </div>
+                                </td>
+            <td>success</td>
+            <td>
+                                        <div>Name of the storage group</div>
+                                    <br/>
+                                </td>
+        </tr>
+                            <tr>
+                            <td colspan="3">
                 <div class="ansibleOptionAnchor" id="return-storage_group_details"></div>
                 <b>storage_group_details</b>
                 <a class="ansibleOptionLink" href="#return-storage_group_details" title="Permalink to this return value"></a>
@@ -7355,7 +9639,7 @@ The following are the return value fields unique to this module:
         </tr>
                                     <tr>
                                 <td class="elbow-placeholder">&nbsp;</td>
-                            <td colspan="1">
+                            <td colspan="2">
                 <div class="ansibleOptionAnchor" id="return-storage_group_details/base_slo_name"></div>
                 <b>base_slo_name</b>
                 <a class="ansibleOptionLink" href="#return-storage_group_details/base_slo_name" title="Permalink to this return value"></a>
@@ -7371,7 +9655,7 @@ The following are the return value fields unique to this module:
         </tr>
                             <tr>
                                 <td class="elbow-placeholder">&nbsp;</td>
-                            <td colspan="1">
+                            <td colspan="2">
                 <div class="ansibleOptionAnchor" id="return-storage_group_details/cap_gb"></div>
                 <b>cap_gb</b>
                 <a class="ansibleOptionLink" href="#return-storage_group_details/cap_gb" title="Permalink to this return value"></a>
@@ -7387,7 +9671,7 @@ The following are the return value fields unique to this module:
         </tr>
                             <tr>
                                 <td class="elbow-placeholder">&nbsp;</td>
-                            <td colspan="1">
+                            <td colspan="2">
                 <div class="ansibleOptionAnchor" id="return-storage_group_details/compression"></div>
                 <b>compression</b>
                 <a class="ansibleOptionLink" href="#return-storage_group_details/compression" title="Permalink to this return value"></a>
@@ -7403,7 +9687,7 @@ The following are the return value fields unique to this module:
         </tr>
                             <tr>
                                 <td class="elbow-placeholder">&nbsp;</td>
-                            <td colspan="1">
+                            <td colspan="2">
                 <div class="ansibleOptionAnchor" id="return-storage_group_details/device_emulation"></div>
                 <b>device_emulation</b>
                 <a class="ansibleOptionLink" href="#return-storage_group_details/device_emulation" title="Permalink to this return value"></a>
@@ -7419,7 +9703,7 @@ The following are the return value fields unique to this module:
         </tr>
                             <tr>
                                 <td class="elbow-placeholder">&nbsp;</td>
-                            <td colspan="1">
+                            <td colspan="2">
                 <div class="ansibleOptionAnchor" id="return-storage_group_details/num_of_child_sgs"></div>
                 <b>num_of_child_sgs</b>
                 <a class="ansibleOptionLink" href="#return-storage_group_details/num_of_child_sgs" title="Permalink to this return value"></a>
@@ -7435,7 +9719,7 @@ The following are the return value fields unique to this module:
         </tr>
                             <tr>
                                 <td class="elbow-placeholder">&nbsp;</td>
-                            <td colspan="1">
+                            <td colspan="2">
                 <div class="ansibleOptionAnchor" id="return-storage_group_details/num_of_masking_views"></div>
                 <b>num_of_masking_views</b>
                 <a class="ansibleOptionLink" href="#return-storage_group_details/num_of_masking_views" title="Permalink to this return value"></a>
@@ -7451,7 +9735,7 @@ The following are the return value fields unique to this module:
         </tr>
                             <tr>
                                 <td class="elbow-placeholder">&nbsp;</td>
-                            <td colspan="1">
+                            <td colspan="2">
                 <div class="ansibleOptionAnchor" id="return-storage_group_details/num_of_parent_sgs"></div>
                 <b>num_of_parent_sgs</b>
                 <a class="ansibleOptionLink" href="#return-storage_group_details/num_of_parent_sgs" title="Permalink to this return value"></a>
@@ -7467,7 +9751,7 @@ The following are the return value fields unique to this module:
         </tr>
                             <tr>
                                 <td class="elbow-placeholder">&nbsp;</td>
-                            <td colspan="1">
+                            <td colspan="2">
                 <div class="ansibleOptionAnchor" id="return-storage_group_details/num_of_snapshots"></div>
                 <b>num_of_snapshots</b>
                 <a class="ansibleOptionLink" href="#return-storage_group_details/num_of_snapshots" title="Permalink to this return value"></a>
@@ -7483,7 +9767,7 @@ The following are the return value fields unique to this module:
         </tr>
                             <tr>
                                 <td class="elbow-placeholder">&nbsp;</td>
-                            <td colspan="1">
+                            <td colspan="2">
                 <div class="ansibleOptionAnchor" id="return-storage_group_details/num_of_vols"></div>
                 <b>num_of_vols</b>
                 <a class="ansibleOptionLink" href="#return-storage_group_details/num_of_vols" title="Permalink to this return value"></a>
@@ -7499,7 +9783,7 @@ The following are the return value fields unique to this module:
         </tr>
                             <tr>
                                 <td class="elbow-placeholder">&nbsp;</td>
-                            <td colspan="1">
+                            <td colspan="2">
                 <div class="ansibleOptionAnchor" id="return-storage_group_details/service_level"></div>
                 <b>service_level</b>
                 <a class="ansibleOptionLink" href="#return-storage_group_details/service_level" title="Permalink to this return value"></a>
@@ -7515,7 +9799,7 @@ The following are the return value fields unique to this module:
         </tr>
                             <tr>
                                 <td class="elbow-placeholder">&nbsp;</td>
-                            <td colspan="1">
+                            <td colspan="2">
                 <div class="ansibleOptionAnchor" id="return-storage_group_details/slo"></div>
                 <b>slo</b>
                 <a class="ansibleOptionLink" href="#return-storage_group_details/slo" title="Permalink to this return value"></a>
@@ -7531,7 +9815,7 @@ The following are the return value fields unique to this module:
         </tr>
                             <tr>
                                 <td class="elbow-placeholder">&nbsp;</td>
-                            <td colspan="1">
+                            <td colspan="2">
                 <div class="ansibleOptionAnchor" id="return-storage_group_details/slo_compliance"></div>
                 <b>slo_compliance</b>
                 <a class="ansibleOptionLink" href="#return-storage_group_details/slo_compliance" title="Permalink to this return value"></a>
@@ -7547,7 +9831,7 @@ The following are the return value fields unique to this module:
         </tr>
                             <tr>
                                 <td class="elbow-placeholder">&nbsp;</td>
-                            <td colspan="1">
+                            <td colspan="2">
                 <div class="ansibleOptionAnchor" id="return-storage_group_details/srp"></div>
                 <b>srp</b>
                 <a class="ansibleOptionLink" href="#return-storage_group_details/srp" title="Permalink to this return value"></a>
@@ -7563,7 +9847,7 @@ The following are the return value fields unique to this module:
         </tr>
                             <tr>
                                 <td class="elbow-placeholder">&nbsp;</td>
-                            <td colspan="1">
+                            <td colspan="2">
                 <div class="ansibleOptionAnchor" id="return-storage_group_details/storageGroupId"></div>
                 <b>storageGroupId</b>
                 <a class="ansibleOptionLink" href="#return-storage_group_details/storageGroupId" title="Permalink to this return value"></a>
@@ -7579,7 +9863,7 @@ The following are the return value fields unique to this module:
         </tr>
                             <tr>
                                 <td class="elbow-placeholder">&nbsp;</td>
-                            <td colspan="1">
+                            <td colspan="2">
                 <div class="ansibleOptionAnchor" id="return-storage_group_details/type"></div>
                 <b>type</b>
                 <a class="ansibleOptionLink" href="#return-storage_group_details/type" title="Permalink to this return value"></a>
@@ -7595,7 +9879,7 @@ The following are the return value fields unique to this module:
         </tr>
                             <tr>
                                 <td class="elbow-placeholder">&nbsp;</td>
-                            <td colspan="1">
+                            <td colspan="2">
                 <div class="ansibleOptionAnchor" id="return-storage_group_details/unprotected"></div>
                 <b>unprotected</b>
                 <a class="ansibleOptionLink" href="#return-storage_group_details/unprotected" title="Permalink to this return value"></a>
@@ -7611,7 +9895,7 @@ The following are the return value fields unique to this module:
         </tr>
                             <tr>
                                 <td class="elbow-placeholder">&nbsp;</td>
-                            <td colspan="1">
+                            <td colspan="2">
                 <div class="ansibleOptionAnchor" id="return-storage_group_details/vp_saved_percent"></div>
                 <b>vp_saved_percent</b>
                 <a class="ansibleOptionLink" href="#return-storage_group_details/vp_saved_percent" title="Permalink to this return value"></a>
@@ -7626,7 +9910,7 @@ The following are the return value fields unique to this module:
                                 </td>
         </tr>
                             <tr>
-                            <td colspan="2">
+                            <td colspan="3">
                 <div class="ansibleOptionAnchor" id="return-storage_group_volumes"></div>
                 <b>storage_group_volumes</b>
                 <a class="ansibleOptionLink" href="#return-storage_group_volumes" title="Permalink to this return value"></a>
@@ -7642,7 +9926,7 @@ The following are the return value fields unique to this module:
                                 </td>
         </tr>
                             <tr>
-                            <td colspan="2">
+                            <td colspan="3">
                 <div class="ansibleOptionAnchor" id="return-storage_group_volumes_details"></div>
                 <b>storage_group_volumes_details</b>
                 <a class="ansibleOptionLink" href="#return-storage_group_volumes_details" title="Permalink to this return value"></a>
@@ -7658,7 +9942,7 @@ The following are the return value fields unique to this module:
         </tr>
                                     <tr>
                                 <td class="elbow-placeholder">&nbsp;</td>
-                            <td colspan="1">
+                            <td colspan="2">
                 <div class="ansibleOptionAnchor" id="return-storage_group_volumes_details/effective_wwn"></div>
                 <b>effective_wwn</b>
                 <a class="ansibleOptionLink" href="#return-storage_group_volumes_details/effective_wwn" title="Permalink to this return value"></a>
@@ -7674,7 +9958,7 @@ The following are the return value fields unique to this module:
         </tr>
                             <tr>
                                 <td class="elbow-placeholder">&nbsp;</td>
-                            <td colspan="1">
+                            <td colspan="2">
                 <div class="ansibleOptionAnchor" id="return-storage_group_volumes_details/type"></div>
                 <b>type</b>
                 <a class="ansibleOptionLink" href="#return-storage_group_volumes_details/type" title="Permalink to this return value"></a>
@@ -7690,7 +9974,7 @@ The following are the return value fields unique to this module:
         </tr>
                             <tr>
                                 <td class="elbow-placeholder">&nbsp;</td>
-                            <td colspan="1">
+                            <td colspan="2">
                 <div class="ansibleOptionAnchor" id="return-storage_group_volumes_details/volume_identifier"></div>
                 <b>volume_identifier</b>
                 <a class="ansibleOptionLink" href="#return-storage_group_volumes_details/volume_identifier" title="Permalink to this return value"></a>
@@ -7706,7 +9990,7 @@ The following are the return value fields unique to this module:
         </tr>
                             <tr>
                                 <td class="elbow-placeholder">&nbsp;</td>
-                            <td colspan="1">
+                            <td colspan="2">
                 <div class="ansibleOptionAnchor" id="return-storage_group_volumes_details/volumeId"></div>
                 <b>volumeId</b>
                 <a class="ansibleOptionLink" href="#return-storage_group_volumes_details/volumeId" title="Permalink to this return value"></a>
@@ -7722,7 +10006,7 @@ The following are the return value fields unique to this module:
         </tr>
                             <tr>
                                 <td class="elbow-placeholder">&nbsp;</td>
-                            <td colspan="1">
+                            <td colspan="2">
                 <div class="ansibleOptionAnchor" id="return-storage_group_volumes_details/wwn"></div>
                 <b>wwn</b>
                 <a class="ansibleOptionLink" href="#return-storage_group_volumes_details/wwn" title="Permalink to this return value"></a>
@@ -7744,6 +10028,291 @@ Authors
 -   Vasudevu Lakhinana (@unknown) &lt;<ansible.team@dell.com>&gt;
 -   Prashant Rakheja (@prashant-dell) &lt;<ansible.team@dell.com>&gt;
 -   Ambuj Dubey (@AmbujDube) &lt;<ansible.team@dell.com>&gt;
+
+Storage Pool Module
+===================
+
+Synopsis
+--------
+
+Managing storage pools on PowerMax storage system includes getting 
+details of storage pools.
+
+Parameters
+----------
+
+<table  border=0 cellpadding=0 class="documentation-table">
+    <tr>
+        <th colspan="1">Parameter</th>
+        <th>Choices/<font color="blue">Defaults</font></th>
+                    <th width="100%">Comments</th>
+    </tr>
+                                <tr>
+                                                            <td colspan="1">
+                <div class="ansibleOptionAnchor" id="parameter-pool"></div>
+                <b>pool</b>
+                <a class="ansibleOptionLink" href="#parameter-pool" title="Permalink to this option"></a>
+                <div style="font-size: small">
+                    <span style="color: purple">type=string</span>
+                    <br>
+                    <span style="color: red">required=true</span>                    </div>
+                                                    </td>
+                            <td>
+                                                                                                                                                        </td>
+                                                            <td>
+                                        <div>The name of the storage pool.</div>
+                                                    </td>
+        </tr>
+                            <tr>
+                                                            <td colspan="1">
+                <div class="ansibleOptionAnchor" id="parameter-state"></div>
+                <b>state</b>
+                <a class="ansibleOptionLink" href="#parameter-state" title="Permalink to this option"></a>
+                <div style="font-size: small">
+                    <span style="color: purple">type=string</span>
+                    <br>
+                    <span style="color: red">required=true</span>                    </div>
+                                                    </td>
+                            <td>
+                                                                                                                        <ul style="margin: 0; padding: 0"><b>Choices:</b>
+                                                                                                                                                            <li>absent</li>
+                                                                                                                                                                                            <li>present</li>
+                                                                                </ul>
+                                                                        </td>
+                                                            <td>
+                                        <div>State variable to determine whether storage pool will exist or not.</div>
+                                                    </td>
+        </tr>
+                    </table>
+
+Examples
+--------
+
+``` yaml+jinja
+- name: Get specific storage pool details
+  dellemc_powermax_storagepool:
+    unispherehost: "{{unispherehost}}"
+    universion: "{{universion}}"
+    verifycert: "{{verifycert}}"
+    user: "{{user}}"
+    password: "{{password}}"
+    serial_no: "{{serial_no}}"
+    pool: "SRP_1"
+    state: "present"
+```
+
+Return Values
+-------------
+
+The following are the fields unique to this module:
+
+<table border=0 cellpadding=0 class="documentation-table">
+    <tr>
+        <th colspan="3">Key</th>
+        <th>Returned</th>
+        <th width="100%">Description</th>
+    </tr>
+                <tr>
+                            <td colspan="3">
+                <div class="ansibleOptionAnchor" id="return-changed"></div>
+                <b>changed</b>
+                <a class="ansibleOptionLink" href="#return-changed" title="Permalink to this return value"></a>
+                <div style="font-size: small">
+                  <span style="color: purple">type=boolean</span>
+                                      </div>
+                                </td>
+            <td>always</td>
+            <td>
+                                        <div>Whether or not the resource has changed.</div>
+                                    <br/>
+                                </td>
+        </tr>
+                            <tr>
+                            <td colspan="3">
+                <div class="ansibleOptionAnchor" id="return-pool_details"></div>
+                <b>pool_details</b>
+                <a class="ansibleOptionLink" href="#return-pool_details" title="Permalink to this return value"></a>
+                <div style="font-size: small">
+                  <span style="color: purple">complex</span>
+                                      </div>
+                                </td>
+            <td>When storage pool exist.</td>
+            <td>
+                                        <div>Details of the storage pool.</div>
+                                    <br/>
+                                </td>
+        </tr>
+                                    <tr>
+                                <td class="elbow-placeholder">&nbsp;</td>
+                            <td colspan="2">
+                <div class="ansibleOptionAnchor" id="return-pool_details/serial_no"></div>
+                <b>serial_no</b>
+                <a class="ansibleOptionLink" href="#return-pool_details/serial_no" title="Permalink to this return value"></a>
+                <div style="font-size: small">
+                  <span style="color: purple">type=string</span>
+                                      </div>
+                                </td>
+            <td>success</td>
+            <td>
+                                        <div>The PowerMax array on which storage pool resides</div>
+                                    <br/>
+                                </td>
+        </tr>
+                            <tr>
+                                <td class="elbow-placeholder">&nbsp;</td>
+                            <td colspan="2">
+                <div class="ansibleOptionAnchor" id="return-pool_details/service_levels"></div>
+                <b>service_levels</b>
+                <a class="ansibleOptionLink" href="#return-pool_details/service_levels" title="Permalink to this return value"></a>
+                <div style="font-size: small">
+                  <span style="color: purple">type=list</span>
+                  <br>
+                  <span style="color: purple">elements=string</span>                    </div>
+                                </td>
+            <td>success</td>
+            <td>
+                                        <div>The service levels supported by storage pool</div>
+                                    <br/>
+                                </td>
+        </tr>
+                            <tr>
+                                <td class="elbow-placeholder">&nbsp;</td>
+                            <td colspan="2">
+                <div class="ansibleOptionAnchor" id="return-pool_details/srp_capacity"></div>
+                <b>srp_capacity</b>
+                <a class="ansibleOptionLink" href="#return-pool_details/srp_capacity" title="Permalink to this return value"></a>
+                <div style="font-size: small">
+                  <span style="color: purple">complex</span>
+                                      </div>
+                                </td>
+            <td>success</td>
+            <td>
+                                        <div>SRP capacity details</div>
+                                    <br/>
+                                </td>
+        </tr>
+                                    <tr>
+                                <td class="elbow-placeholder">&nbsp;</td>
+                                <td class="elbow-placeholder">&nbsp;</td>
+                            <td colspan="1">
+                <div class="ansibleOptionAnchor" id="return-pool_details/srp_capacity/effective_used_capacity_percent"></div>
+                <b>effective_used_capacity_percent</b>
+                <a class="ansibleOptionLink" href="#return-pool_details/srp_capacity/effective_used_capacity_percent" title="Permalink to this return value"></a>
+                <div style="font-size: small">
+                  <span style="color: purple">type=integer</span>
+                                      </div>
+                                </td>
+            <td>success</td>
+            <td>
+                                        <div>The effective used capacity, expressed as a percentage</div>
+                                    <br/>
+                                </td>
+        </tr>
+                            <tr>
+                                <td class="elbow-placeholder">&nbsp;</td>
+                                <td class="elbow-placeholder">&nbsp;</td>
+                            <td colspan="1">
+                <div class="ansibleOptionAnchor" id="return-pool_details/srp_capacity/usable_total_tb"></div>
+                <b>usable_total_tb</b>
+                <a class="ansibleOptionLink" href="#return-pool_details/srp_capacity/usable_total_tb" title="Permalink to this return value"></a>
+                <div style="font-size: small">
+                  <span style="color: purple">type=float</span>
+                                      </div>
+                                </td>
+            <td>success</td>
+            <td>
+                                        <div>Usable capacity of the storage pool in TB</div>
+                                    <br/>
+                                </td>
+        </tr>
+                            <tr>
+                                <td class="elbow-placeholder">&nbsp;</td>
+                                <td class="elbow-placeholder">&nbsp;</td>
+                            <td colspan="1">
+                <div class="ansibleOptionAnchor" id="return-pool_details/srp_capacity/usable_used_tb"></div>
+                <b>usable_used_tb</b>
+                <a class="ansibleOptionLink" href="#return-pool_details/srp_capacity/usable_used_tb" title="Permalink to this return value"></a>
+                <div style="font-size: small">
+                  <span style="color: purple">type=float</span>
+                                      </div>
+                                </td>
+            <td>success</td>
+            <td>
+                                        <div>Used capacity of the storage pool in TB</div>
+                                    <br/>
+                                </td>
+        </tr>
+                            <tr>
+                                <td class="elbow-placeholder">&nbsp;</td>
+                            <td colspan="2">
+                <div class="ansibleOptionAnchor" id="return-pool_details/srp_efficiency"></div>
+                <b>srp_efficiency</b>
+                <a class="ansibleOptionLink" href="#return-pool_details/srp_efficiency" title="Permalink to this return value"></a>
+                <div style="font-size: small">
+                  <span style="color: purple">complex</span>
+                                      </div>
+                                </td>
+            <td>success</td>
+            <td>
+                                        <div>SRP efficiency details</div>
+                                    <br/>
+                                </td>
+        </tr>
+                                    <tr>
+                                <td class="elbow-placeholder">&nbsp;</td>
+                                <td class="elbow-placeholder">&nbsp;</td>
+                            <td colspan="1">
+                <div class="ansibleOptionAnchor" id="return-pool_details/srp_efficiency/compression_state"></div>
+                <b>compression_state</b>
+                <a class="ansibleOptionLink" href="#return-pool_details/srp_efficiency/compression_state" title="Permalink to this return value"></a>
+                <div style="font-size: small">
+                  <span style="color: purple">type=string</span>
+                                      </div>
+                                </td>
+            <td>success</td>
+            <td>
+                                        <div>Indicates whether compression is enabled or disabled for this storage resource pool.</div>
+                                    <br/>
+                                </td>
+        </tr>
+                            <tr>
+                                <td class="elbow-placeholder">&nbsp;</td>
+                            <td colspan="2">
+                <div class="ansibleOptionAnchor" id="return-pool_details/srpId"></div>
+                <b>srpId</b>
+                <a class="ansibleOptionLink" href="#return-pool_details/srpId" title="Permalink to this return value"></a>
+                <div style="font-size: small">
+                  <span style="color: purple">type=string</span>
+                                      </div>
+                                </td>
+            <td>success</td>
+            <td>
+                                        <div>The ID of the storage pool</div>
+                                    <br/>
+                                </td>
+        </tr>
+                            <tr>
+                                <td class="elbow-placeholder">&nbsp;</td>
+                            <td colspan="2">
+                <div class="ansibleOptionAnchor" id="return-pool_details/total_free_tb"></div>
+                <b>total_free_tb</b>
+                <a class="ansibleOptionLink" href="#return-pool_details/total_free_tb" title="Permalink to this return value"></a>
+                <div style="font-size: small">
+                  <span style="color: purple">type=string</span>
+                                      </div>
+                                </td>
+            <td>success</td>
+            <td>
+                                        <div>Free capacity of the storage pool in TB</div>
+                                    <br/>
+                                </td>
+        </tr>
+                    </table>
+
+Authors
+-------
+
+-   Akash Shendge (@shenda1) &lt;<ansible.team@dell.com>&gt;
 
 Volume Module
 =============
@@ -7776,12 +10345,13 @@ Parameters
                             <td>
                                                                                                                         <ul style="margin: 0; padding: 0"><b>Choices:</b>
                                                                                                                                                             <li>MB</li>
-                                                                                                                                                                                            <li><div style="color: blue"><b>GB</b>&nbsp;&larr;</div></li>
+                                                                                                                                                                                            <li>GB</li>
                                                                                                                                                                                             <li>TB</li>
                                                                                 </ul>
                                                                         </td>
                                                             <td>
                                         <div>volume capacity units</div>
+                                        <div>If not specified, default value is GB.</div>
                                                     </td>
         </tr>
                             <tr>
@@ -7814,7 +10384,7 @@ Parameters
                                         <div>The name of the target storage group.</div>
                                                     </td>
         </tr>
-                            <tr>
+                             <tr>
                                                             <td colspan="1">
                 <div class="ansibleOptionAnchor" id="parameter-sg_name"></div>
                 <b>sg_name</b>
@@ -7851,7 +10421,7 @@ Parameters
                 <b>state</b>
                 <a class="ansibleOptionLink" href="#parameter-state" title="Permalink to this option"></a>
                 <div style="font-size: small">
-                    <span style="color: purple">type=string</span>,
+                    <span style="color: purple">type=string</span>
                     <br>
                     <span style="color: red">required=true</span>                    </div>
                                                     </td>
@@ -7917,12 +10487,13 @@ Notes
 -----
 
 - To expand a volume, either provide vol\_id or vol\_name or vol\_wwn
-and sg\_name
-- size is required to create/expand a volume
-- vol\_id is required to rename/delete a volume
-- vol\_name, sg\_name and new\_sg\_name is required to move volumes between storage groups
+and sg\_name.
+- size is required to create/expand a volume.
+- vol\_id is required to rename/delete a volume.
+- vol\_name, sg\_name and new\_sg\_name is required to move volumes between
+  storage groups.
 - Deletion of volume will fail if the storage group is part of a masking
-view
+  view.
 
 Examples
 --------
@@ -8006,7 +10577,7 @@ Examples
 Return Values
 -------------
 
-The following are the return value fields unique to this module:
+The following are the fields unique to this module:
 
 <table border=0 cellpadding=0 class="documentation-table">
     <tr>
@@ -8438,954 +11009,14 @@ Authors
 -   Akash Shendge (@shenda1) &lt;<ansible.team@dell.com>&gt;
 -   Ambuj Dubey (@AmbujDube) &lt;<ansible.team@dell.com>&gt;
 
-Metro DR Module
-===============
+Process Storage Pool Dict Module
+================================
 
 Synopsis
 --------
 
-Managing a metro DR environment on a PowerMax storage system
-includes getting details of any specific metro DR environment,
-creating a metro DR environment, converting an existing SG into a
-metro DR environment, modifying metro DR environment attributes and
-deleting a metro DR environment.
-
-Parameters
-----------
-
-<table  border=0 cellpadding=0 class="documentation-table">
-    <tr>
-        <th colspan="2">Parameter</th>
-        <th>Choices/<font color="blue">Defaults</font></th>
-                    <th width="100%">Comments</th>
-    </tr>
-                <tr>
-                                                            <td colspan="2">
-                <div class="ansibleOptionAnchor" id="parameter-dr_serial_no"></div>
-                <b>dr_serial_no</b>
-                <a class="ansibleOptionLink" href="#parameter-dr_serial_no" title="Permalink to this option"></a>
-                <div style="font-size: small">
-                    <span style="color: purple">type=string</span>
-                                                                </div>
-                                                    </td>
-                            <td>
-                                                                                                                                                        </td>
-                                                            <td>
-                                        <div>Serial number of the DR array.</div>
-                                        <div>It is required in create and convert operations.</div>
-                                                    </td>
-        </tr>
-                            <tr>
-                                                            <td colspan="2">
-                <div class="ansibleOptionAnchor" id="parameter-env_name"></div>
-                <b>env_name</b>
-                <a class="ansibleOptionLink" href="#parameter-env_name" title="Permalink to this option"></a>
-                <div style="font-size: small">
-                    <span style="color: purple">type=string</span>,
-                    <br>
-                    <span style="color: red">required=true</span>                    </div>
-                                                    </td>
-                            <td>
-                                                                                                                                                        </td>
-                                                            <td>
-                                        <div>Name of the metro DR environment.</div>
-                                        <div>Metro DR environment name will be unique across PowerMax.</div>
-                                                    </td>
-        </tr>
-                            <tr>
-                                                            <td colspan="2">
-                <div class="ansibleOptionAnchor" id="parameter-metro_serial_no"></div>
-                <b>metro_serial_no</b>
-                <a class="ansibleOptionLink" href="#parameter-metro_serial_no" title="Permalink to this option"></a>
-                <div style="font-size: small">
-                    <span style="color: purple">type=string</span>
-                                                                </div>
-                                                    </td>
-                            <td>
-                                                                                                                                                        </td>
-                                                            <td>
-                                        <div>Serial number of the remote metro array.</div>
-                                        <div>It is required only in create and convert operations.</div>
-                                                    </td>
-        </tr>
-                            <tr>
-                                                            <td colspan="2">
-                <div class="ansibleOptionAnchor" id="parameter-new_rdf_group_r1"></div>
-                <b>new_rdf_group_r1</b>
-                <a class="ansibleOptionLink" href="#parameter-new_rdf_group_r1" title="Permalink to this option"></a>
-                <div style="font-size: small">
-                    <span style="color: purple">type=boolean</span>
-                                                                </div>
-                                                    </td>
-                            <td>
-                                                                                                                                                                                                                <ul style="margin: 0; padding: 0"><b>Choices:</b>
-                                                                                                                                                            <li>no</li>
-                                                                                                                                                                                            <li><div style="color: blue"><b>yes</b>&nbsp;&larr;</div></li>
-                                                                                </ul>
-                                                                        </td>
-                                                            <td>
-                                        <div>The flag indicates whether or not to create a new RDFG for a Metro R1 array to a DR array, or to autoselect from an existing one.</div>
-                                        <div>Used in only create operation.</div>
-                                                    </td>
-        </tr>
-                            <tr>
-                                                            <td colspan="2">
-                <div class="ansibleOptionAnchor" id="parameter-new_rdf_group_r2"></div>
-                <b>new_rdf_group_r2</b>
-                <a class="ansibleOptionLink" href="#parameter-new_rdf_group_r2" title="Permalink to this option"></a>
-                <div style="font-size: small">
-                    <span style="color: purple">type=boolean</span>
-                                                                </div>
-                                                    </td>
-                            <td>
-                                                                                                                                                                                                                <ul style="margin: 0; padding: 0"><b>Choices:</b>
-                                                                                                                                                            <li>no</li>
-                                                                                                                                                                                            <li><div style="color: blue"><b>yes</b>&nbsp;&larr;</div></li>
-                                                                                </ul>
-                                                                        </td>
-                                                            <td>
-                                        <div>The flag indicates whether or not to create a new RDFG for a Metro R2 array to a DR array, or to autoselect from an existing one.</div>
-                                        <div>It is used only in create operation.</div>
-                                                    </td>
-        </tr>
-                            <tr>
-                                                            <td colspan="2">
-                <div class="ansibleOptionAnchor" id="parameter-remove_r1_dr_rdfg"></div>
-                <b>remove_r1_dr_rdfg</b>
-                <a class="ansibleOptionLink" href="#parameter-remove_r1_dr_rdfg" title="Permalink to this option"></a>
-                <div style="font-size: small">
-                    <span style="color: purple">type=boolean</span>
-                                                                </div>
-                                                    </td>
-                            <td>
-                                                                                                                                                                                                                <ul style="margin: 0; padding: 0"><b>Choices:</b>
-                                                                                                                                                            <li><div style="color: blue"><b>no</b>&nbsp;&larr;</div></li>
-                                                                                                                                                                                            <li>yes</li>
-                                                                                </ul>
-                                                                        </td>
-                                                            <td>
-                                        <div>The flag indicates whether or not to override default behavior and delete R11-R2 RDFG from the metro R1 side.</div>
-                                        <div>It is used only in delete operations.</div>
-                                                    </td>
-        </tr>
-                            <tr>
-                                                            <td colspan="2">
-                <div class="ansibleOptionAnchor" id="parameter-replication_mode"></div>
-                <b>replication_mode</b>
-                <a class="ansibleOptionLink" href="#parameter-replication_mode" title="Permalink to this option"></a>
-                <div style="font-size: small">
-                    <span style="color: purple">type=string</span>
-                                                                </div>
-                                                    </td>
-                            <td>
-                                                                                                                        <ul style="margin: 0; padding: 0"><b>Choices:</b>
-                                                                                                                                                            <li>Asynchronous</li>
-                                                                                                                                                                                            <li>Adaptive Copy</li>
-                                                                                </ul>
-                                                                        </td>
-                                                            <td>
-                                        <div>Replication mode whose value will indicate how the data will be replicated.</div>
-                                        <div>It is required in create and modify operations.</div>
-                                        <div>It is a mandatory parameter in a create operation but optional in a modify operation.</div>
-                                                    </td>
-        </tr>
-                            <tr>
-                                                            <td colspan="2">
-                <div class="ansibleOptionAnchor" id="parameter-serial_no"></div>
-                <b>serial_no</b>
-                <a class="ansibleOptionLink" href="#parameter-serial_no" title="Permalink to this option"></a>
-                <div style="font-size: small">
-                    <span style="color: purple">type=string</span>,
-                    <br>
-                    <span style="color: red">required=true</span>                    </div>
-                                                    </td>
-                            <td>
-                                                                                                                                                        </td>
-                                                            <td>
-                                        <div>Serial number of the primary metro array.</div>
-                                                    </td>
-        </tr>
-                            <tr>
-                                                            <td colspan="2">
-                <div class="ansibleOptionAnchor" id="parameter-sg_name"></div>
-                <b>sg_name</b>
-                <a class="ansibleOptionLink" href="#parameter-sg_name" title="Permalink to this option"></a>
-                <div style="font-size: small">
-                    <span style="color: purple">type=string</span>
-                                                                </div>
-                                                    </td>
-                            <td>
-                                                                                                                                                        </td>
-                                                            <td>
-                                        <div>Name of the storage group.</div>
-                                        <div>Storage group will be present on the primary metro array and a storage group with the same name will be created on remote and DR arrays in a create operation.</div>
-                                        <div>Storage group name is required in &#x27;create metro DR environment&#x27; and &#x27;convert SG into metro DR environment&#x27; operations.</div>
-                                                    </td>
-        </tr>
-                            <tr>
-                                                            <td colspan="2">
-                <div class="ansibleOptionAnchor" id="parameter-srdf_param"></div>
-                <b>srdf_param</b>
-                <a class="ansibleOptionLink" href="#parameter-srdf_param" title="Permalink to this option"></a>
-                <div style="font-size: small">
-                    <span style="color: purple">type=dictionary</span>
-                                                                </div>
-                                                    </td>
-                            <td>
-                                                                                                                                                        </td>
-                                                            <td>
-                                        <div>It contains parameters related to SRDF links.</div>
-                                        <div>It is used only in modify operations.</div>
-                                                    </td>
-        </tr>
-                                    <tr>
-                                                <td class="elbow-placeholder"></td>
-                                            <td colspan="1">
-                <div class="ansibleOptionAnchor" id="parameter-srdf_param/dr"></div>
-                <b>dr</b>
-                <a class="ansibleOptionLink" href="#parameter-srdf_param/dr" title="Permalink to this option"></a>
-                <div style="font-size: small">
-                    <span style="color: purple">type=boolean</span>
-                                                                </div>
-                                                    </td>
-                            <td>
-                                                                                                                                                                                                                <ul style="margin: 0; padding: 0"><b>Choices:</b>
-                                                                                                                                                            <li><div style="color: blue"><b>no</b>&nbsp;&larr;</div></li>
-                                                                                                                                                                                            <li>yes</li>
-                                                                                </ul>
-                                                                        </td>
-                                                            <td>
-                                        <div>The flag indicates whether or not to direct srdf_state change towards device pairs on the disaster recovery leg of the metro DR environment.</div>
-                                                    </td>
-        </tr>
-                            <tr>
-                                                <td class="elbow-placeholder"></td>
-                                            <td colspan="1">
-                <div class="ansibleOptionAnchor" id="parameter-srdf_param/keep_r2"></div>
-                <b>keep_r2</b>
-                <a class="ansibleOptionLink" href="#parameter-srdf_param/keep_r2" title="Permalink to this option"></a>
-                <div style="font-size: small">
-                    <span style="color: purple">type=boolean</span>
-                                                                </div>
-                                                    </td>
-                            <td>
-                                                                                                                                                                                                                <ul style="margin: 0; padding: 0"><b>Choices:</b>
-                                                                                                                                                            <li><div style="color: blue"><b>no</b>&nbsp;&larr;</div></li>
-                                                                                                                                                                                            <li>yes</li>
-                                                                                </ul>
-                                                                        </td>
-                                                            <td>
-                                        <div>The flag indicates whether or not in the case of srdf state suspend to make R2 data on metro available to the host.</div>
-                                                    </td>
-        </tr>
-                            <tr>
-                                                <td class="elbow-placeholder"></td>
-                                            <td colspan="1">
-                <div class="ansibleOptionAnchor" id="parameter-srdf_param/metro"></div>
-                <b>metro</b>
-                <a class="ansibleOptionLink" href="#parameter-srdf_param/metro" title="Permalink to this option"></a>
-                <div style="font-size: small">
-                    <span style="color: purple">type=boolean</span>
-                                                                </div>
-                                                    </td>
-                            <td>
-                                                                                                                                                                                                                <ul style="margin: 0; padding: 0"><b>Choices:</b>
-                                                                                                                                                            <li><div style="color: blue"><b>no</b>&nbsp;&larr;</div></li>
-                                                                                                                                                                                            <li>yes</li>
-                                                                                </ul>
-                                                                        </td>
-                                                            <td>
-                                        <div>The flag indicates whether or not to direct srdf_state change towards the R1--R2 Metro Device leg of the metro DR environment.</div>
-                                                    </td>
-        </tr>
-                            <tr>
-                                                <td class="elbow-placeholder"></td>
-                                            <td colspan="1">
-                <div class="ansibleOptionAnchor" id="parameter-srdf_param/srdf_state"></div>
-                <b>srdf_state</b>
-                <a class="ansibleOptionLink" href="#parameter-srdf_param/srdf_state" title="Permalink to this option"></a>
-                <div style="font-size: small">
-                    <span style="color: purple">type=string</span>,
-                    <br>
-                    <span style="color: red">required=true</span>                    </div>
-                                                    </td>
-                            <td>
-                                                                                                                        <ul style="margin: 0; padding: 0"><b>Choices:</b>
-                                                                                                                                                            <li>Split</li>
-                                                                                                                                                                                            <li>Restore</li>
-                                                                                                                                                                                            <li>SetMode</li>
-                                                                                                                                                                                            <li>Failback</li>
-                                                                                                                                                                                            <li>Failover</li>
-                                                                                                                                                                                            <li>Establish</li>
-                                                                                                                                                                                            <li>Suspend</li>
-                                                                                                                                                                                            <li>UpdateR1</li>
-                                                                                                                                                                                            <li>Recover</li>
-                                                                                </ul>
-                                                                        </td>
-                                                            <td>
-                                        <div>State of the SRDF link.</div>
-                                        <div>It is a mandatory parameter for modify operations.</div>
-                                                    </td>
-        </tr>
-                            <tr>
-                                                            <td colspan="2">
-                <div class="ansibleOptionAnchor" id="parameter-state"></div>
-                <b>state</b>
-                <a class="ansibleOptionLink" href="#parameter-state" title="Permalink to this option"></a>
-                <div style="font-size: small">
-                    <span style="color: purple">type=string</span>,
-                    <br>
-                    <span style="color: red">required=true</span>                    </div>
-                                                    </td>
-                            <td>
-                                                                                                                        <ul style="margin: 0; padding: 0"><b>Choices:</b>
-                                                                                                                                                            <li>absent</li>
-                                                                                                                                                                                            <li>present</li>
-                                                                                </ul>
-                                                                        </td>
-                                                            <td>
-                                        <div>State variable to determine whether metro DR environment will exist or not.</div>
-                                                    </td>
-        </tr>
-                            <tr>
-                                                            <td colspan="2">
-                <div class="ansibleOptionAnchor" id="parameter-wait_for_completion"></div>
-                <b>wait_for_completion</b>
-                <a class="ansibleOptionLink" href="#parameter-wait_for_completion" title="Permalink to this option"></a>
-                <div style="font-size: small">
-                    <span style="color: purple">type=boolean</span>
-                                                                </div>
-                                                    </td>
-                            <td>
-                                                                                                                                                                                                                <ul style="margin: 0; padding: 0"><b>Choices:</b>
-                                                                                                                                                            <li><div style="color: blue"><b>no</b>&nbsp;&larr;</div></li>
-                                                                                                                                                                                            <li>yes</li>
-                                                                                </ul>
-                                                                        </td>
-                                                            <td>
-                                        <div>The flag indicates if the operation should be run synchronously or asynchronously.</div>
-                                        <div>True signifies synchronous execution.</div>
-                                        <div>By default, create and convert are asynchronous operations, whereas modify is a synchronous operation.</div>
-                                                    </td>
-        </tr>
-                    </table>
-
-Examples
---------
-
-``` yaml+jinja
-- name: Get metro environment details
-  dellemc_powermax_metrodr:
-    unispherehost: "{{unispherehost}}"
-    universion: "{{universion}}"
-    verifycert: "{{verifycert}}"
-    user: "{{user}}"
-    password: "{{password}}"
-    serial_no: "{{serial_no}}"
-    env_name: "ansible_metrodr_env"
-    state: "present"
-
-- name: Convert SG to metro DR environment
-  dellemc_powermax_metrodr:
-    unispherehost: "{{unispherehost}}"
-    universion: "{{universion}}"
-    verifycert: "{{verifycert}}"
-    user: "{{user}}"
-    password: "{{password}}"
-    sg_name: "ansible_sg"
-    env_name: "ansible_metrodr_env"
-    serial_no: "{{serial_no}}"
-    metro_serial_no: "{{metro_serial_no}}"
-    dr_serial_no: "{{dr_serial_no}}"
-    replication_mode: "Asynchronous"
-    wait_for_completion: False
-    state: "present"
-
-- name: Create metro DR environment
-  dellemc_powermax_metrodr:
-    unispherehost: "{{unispherehost}}"
-    universion: "{{universion}}"
-    verifycert: "{{verifycert}}"
-    user: "{{user}}"
-    password: "{{password}}"
-    sg_name: "ansible_sg"
-    env_name: "ansible_metrodr_env"
-    serial_no: "{{serial_no}}"
-    metro_serial_no: "{{metro_serial_no}}"
-    dr_serial_no: "{{dr_serial_no}}"
-    replication_mode: "Asynchronous"
-    new_rdf_group_r1: True
-    new_rdf_group_r2: True
-    wait_for_completion: False
-    state: "present"
-
-- name: Modify metro DR environment
-  dellemc_powermax_metrodr:
-    unispherehost: "{{unispherehost}}"
-    universion: "{{universion}}"
-    verifycert: "{{verifycert}}"
-    user: "{{user}}"
-    password: "{{password}}"
-    serial_no: "{{serial_no}}"
-    env_name: "ansible_metrodr_env"
-    srdf_param:
-      srdf_state: "Suspend"
-      metro: True
-      dr: True
-      keep_r2: True
-    wait_for_completion: True
-    state: "present"
-
-- name: Delete metro DR environment
-  dellemc_powermax_metrodr:
-    unispherehost: "{{unispherehost}}"
-    universion: "{{universion}}"
-    verifycert: "{{verifycert}}"
-    user: "{{user}}"
-    password: "{{password}}"
-    serial_no: "{{serial_no}}"
-    env_name: "ansible_metrodr_env"
-    remove_r1_dr_rdfg: True
-    state: 'absent'
-```
-
-Return Values
--------------
-
-The following are the return value fields unique to this module:
-
-<table border=0 cellpadding=0 class="documentation-table">
-    <tr>
-        <th colspan="2">Key</th>
-        <th>Returned</th>
-        <th width="100%">Description</th>
-    </tr>
-                <tr>
-                            <td colspan="2">
-                <div class="ansibleOptionAnchor" id="return-changed"></div>
-                <b>changed</b>
-                <a class="ansibleOptionLink" href="#return-changed" title="Permalink to this return value"></a>
-                <div style="font-size: small">
-                  <span style="color: purple">type=boolean</span>
-                                      </div>
-                                </td>
-            <td>always</td>
-            <td>
-                                        <div>Whether or not the resource has changed.</div>
-                                    <br/>
-                                </td>
-        </tr>
-                            <tr>
-                            <td colspan="2">
-                <div class="ansibleOptionAnchor" id="return-Job_details"></div>
-                <b>Job_details</b>
-                <a class="ansibleOptionLink" href="#return-Job_details" title="Permalink to this return value"></a>
-                <div style="font-size: small">
-                  <span style="color: purple">type=dictionary</span>
-                                      </div>
-                                </td>
-            <td>When job exist.</td>
-            <td>
-                                        <div>Details of the job.</div>
-                                    <br/>
-                                </td>
-        </tr>
-                                    <tr>
-                                <td class="elbow-placeholder">&nbsp;</td>
-                            <td colspan="1">
-                <div class="ansibleOptionAnchor" id="return-Job_details/completed_date_milliseconds"></div>
-                <b>completed_date_milliseconds</b>
-                <a class="ansibleOptionLink" href="#return-Job_details/completed_date_milliseconds" title="Permalink to this return value"></a>
-                <div style="font-size: small">
-                  <span style="color: purple">type=integer</span>
-                                      </div>
-                                </td>
-            <td>success</td>
-            <td>
-                                        <div>Date of job completion in milliseconds.</div>
-                                    <br/>
-                                </td>
-        </tr>
-                            <tr>
-                                <td class="elbow-placeholder">&nbsp;</td>
-                            <td colspan="1">
-                <div class="ansibleOptionAnchor" id="return-Job_details/jobId"></div>
-                <b>jobId</b>
-                <a class="ansibleOptionLink" href="#return-Job_details/jobId" title="Permalink to this return value"></a>
-                <div style="font-size: small">
-                  <span style="color: purple">type=string</span>
-                                      </div>
-                                </td>
-            <td>success</td>
-            <td>
-                                        <div>Unique identifier of the job.</div>
-                                    <br/>
-                                </td>
-        </tr>
-                            <tr>
-                                <td class="elbow-placeholder">&nbsp;</td>
-                            <td colspan="1">
-                <div class="ansibleOptionAnchor" id="return-Job_details/last_modified_date"></div>
-                <b>last_modified_date</b>
-                <a class="ansibleOptionLink" href="#return-Job_details/last_modified_date" title="Permalink to this return value"></a>
-                <div style="font-size: small">
-                  <span style="color: purple">type=string</span>
-                                      </div>
-                                </td>
-            <td>success</td>
-            <td>
-                                        <div>Last modified date of job.</div>
-                                    <br/>
-                                </td>
-        </tr>
-                            <tr>
-                                <td class="elbow-placeholder">&nbsp;</td>
-                            <td colspan="1">
-                <div class="ansibleOptionAnchor" id="return-Job_details/last_modified_date_milliseconds"></div>
-                <b>last_modified_date_milliseconds</b>
-                <a class="ansibleOptionLink" href="#return-Job_details/last_modified_date_milliseconds" title="Permalink to this return value"></a>
-                <div style="font-size: small">
-                  <span style="color: purple">type=integer</span>
-                                      </div>
-                                </td>
-            <td>success</td>
-            <td>
-                                        <div>Last modified date of job in milliseconds.</div>
-                                    <br/>
-                                </td>
-        </tr>
-                            <tr>
-                                <td class="elbow-placeholder">&nbsp;</td>
-                            <td colspan="1">
-                <div class="ansibleOptionAnchor" id="return-Job_details/name"></div>
-                <b>name</b>
-                <a class="ansibleOptionLink" href="#return-Job_details/name" title="Permalink to this return value"></a>
-                <div style="font-size: small">
-                  <span style="color: purple">type=string</span>
-                                      </div>
-                                </td>
-            <td>success</td>
-            <td>
-                                        <div>Name of the job.</div>
-                                    <br/>
-                                </td>
-        </tr>
-                            <tr>
-                                <td class="elbow-placeholder">&nbsp;</td>
-                            <td colspan="1">
-                <div class="ansibleOptionAnchor" id="return-Job_details/resourceLink"></div>
-                <b>resourceLink</b>
-                <a class="ansibleOptionLink" href="#return-Job_details/resourceLink" title="Permalink to this return value"></a>
-                <div style="font-size: small">
-                  <span style="color: purple">type=string</span>
-                                      </div>
-                                </td>
-            <td>success</td>
-            <td>
-                                        <div>Resource link w.r.t Unisphere.</div>
-                                    <br/>
-                                </td>
-        </tr>
-                            <tr>
-                                <td class="elbow-placeholder">&nbsp;</td>
-                            <td colspan="1">
-                <div class="ansibleOptionAnchor" id="return-Job_details/result"></div>
-                <b>result</b>
-                <a class="ansibleOptionLink" href="#return-Job_details/result" title="Permalink to this return value"></a>
-                <div style="font-size: small">
-                  <span style="color: purple">type=string</span>
-                                      </div>
-                                </td>
-            <td>success</td>
-            <td>
-                                        <div>Job description</div>
-                                    <br/>
-                                </td>
-        </tr>
-                            <tr>
-                                <td class="elbow-placeholder">&nbsp;</td>
-                            <td colspan="1">
-                <div class="ansibleOptionAnchor" id="return-Job_details/status"></div>
-                <b>status</b>
-                <a class="ansibleOptionLink" href="#return-Job_details/status" title="Permalink to this return value"></a>
-                <div style="font-size: small">
-                  <span style="color: purple">type=string</span>
-                                      </div>
-                                </td>
-            <td>success</td>
-            <td>
-                                        <div>Status of the job.</div>
-                                    <br/>
-                                </td>
-        </tr>
-                            <tr>
-                                <td class="elbow-placeholder">&nbsp;</td>
-                            <td colspan="1">
-                <div class="ansibleOptionAnchor" id="return-Job_details/task"></div>
-                <b>task</b>
-                <a class="ansibleOptionLink" href="#return-Job_details/task" title="Permalink to this return value"></a>
-                <div style="font-size: small">
-                  <span style="color: purple">type=list</span>
-                  <br>
-                  <span style="color: purple">elements=string</span>                    </div>
-                                </td>
-            <td>success</td>
-            <td>
-                                        <div>Details about the job.</div>
-                                    <br/>
-                                </td>
-        </tr>
-                            <tr>
-                                <td class="elbow-placeholder">&nbsp;</td>
-                            <td colspan="1">
-                <div class="ansibleOptionAnchor" id="return-Job_details/username"></div>
-                <b>username</b>
-                <a class="ansibleOptionLink" href="#return-Job_details/username" title="Permalink to this return value"></a>
-                <div style="font-size: small">
-                  <span style="color: purple">type=string</span>
-                                      </div>
-                                </td>
-            <td>success</td>
-            <td>
-                                        <div>Unisphere username.</div>
-                                    <br/>
-                                </td>
-        </tr>
-                            <tr>
-                            <td colspan="2">
-                <div class="ansibleOptionAnchor" id="return-metrodr_env_details"></div>
-                <b>metrodr_env_details</b>
-                <a class="ansibleOptionLink" href="#return-metrodr_env_details" title="Permalink to this return value"></a>
-                <div style="font-size: small">
-                  <span style="color: purple">type=dictionary</span>
-                                      </div>
-                                </td>
-            <td>When environment exists.</td>
-            <td>
-                                        <div>Details of the metro DR environment link.</div>
-                                    <br/>
-                                </td>
-        </tr>
-                                    <tr>
-                                <td class="elbow-placeholder">&nbsp;</td>
-                            <td colspan="1">
-                <div class="ansibleOptionAnchor" id="return-metrodr_env_details/capacity_gb"></div>
-                <b>capacity_gb</b>
-                <a class="ansibleOptionLink" href="#return-metrodr_env_details/capacity_gb" title="Permalink to this return value"></a>
-                <div style="font-size: small">
-                  <span style="color: purple">float</span>
-                                      </div>
-                                </td>
-            <td>success</td>
-            <td>
-                                        <div>Size of volume in GB.</div>
-                                    <br/>
-                                </td>
-        </tr>
-                            <tr>
-                                <td class="elbow-placeholder">&nbsp;</td>
-                            <td colspan="1">
-                <div class="ansibleOptionAnchor" id="return-metrodr_env_details/dr_exempt"></div>
-                <b>dr_exempt</b>
-                <a class="ansibleOptionLink" href="#return-metrodr_env_details/dr_exempt" title="Permalink to this return value"></a>
-                <div style="font-size: small">
-                  <span style="color: purple">type=boolean</span>
-                                      </div>
-                                </td>
-            <td>success</td>
-            <td>
-                                        <div>Flag to indication that if there are exempt devices (volumes) in the DR site or not.</div>
-                                    <br/>
-                                </td>
-        </tr>
-                            <tr>
-                                <td class="elbow-placeholder">&nbsp;</td>
-                            <td colspan="1">
-                <div class="ansibleOptionAnchor" id="return-metrodr_env_details/dr_link_state"></div>
-                <b>dr_link_state</b>
-                <a class="ansibleOptionLink" href="#return-metrodr_env_details/dr_link_state" title="Permalink to this return value"></a>
-                <div style="font-size: small">
-                  <span style="color: purple">type=string</span>
-                                      </div>
-                                </td>
-            <td>success</td>
-            <td>
-                                        <div>Status of DR site.</div>
-                                    <br/>
-                                </td>
-        </tr>
-                            <tr>
-                                <td class="elbow-placeholder">&nbsp;</td>
-                            <td colspan="1">
-                <div class="ansibleOptionAnchor" id="return-metrodr_env_details/dr_percent_complete"></div>
-                <b>dr_percent_complete</b>
-                <a class="ansibleOptionLink" href="#return-metrodr_env_details/dr_percent_complete" title="Permalink to this return value"></a>
-                <div style="font-size: small">
-                  <span style="color: purple">type=integer</span>
-                                      </div>
-                                </td>
-            <td>success</td>
-            <td>
-                                        <div>Percentage synchronized in DR session.</div>
-                                    <br/>
-                                </td>
-        </tr>
-                            <tr>
-                                <td class="elbow-placeholder">&nbsp;</td>
-                            <td colspan="1">
-                <div class="ansibleOptionAnchor" id="return-metrodr_env_details/dr_rdf_mode"></div>
-                <b>dr_rdf_mode</b>
-                <a class="ansibleOptionLink" href="#return-metrodr_env_details/dr_rdf_mode" title="Permalink to this return value"></a>
-                <div style="font-size: small">
-                  <span style="color: purple">type=string</span>
-                                      </div>
-                                </td>
-            <td>success</td>
-            <td>
-                                        <div>Replication mode with DR site.</div>
-                                    <br/>
-                                </td>
-        </tr>
-                            <tr>
-                                <td class="elbow-placeholder">&nbsp;</td>
-                            <td colspan="1">
-                <div class="ansibleOptionAnchor" id="return-metrodr_env_details/dr_remain_capacity_to_copy_mb"></div>
-                <b>dr_remain_capacity_to_copy_mb</b>
-                <a class="ansibleOptionLink" href="#return-metrodr_env_details/dr_remain_capacity_to_copy_mb" title="Permalink to this return value"></a>
-                <div style="font-size: small">
-                  <span style="color: purple">type=integer</span>
-                                      </div>
-                                </td>
-            <td>success</td>
-            <td>
-                                        <div>Remaining capacity to copy at DR site.</div>
-                                    <br/>
-                                </td>
-        </tr>
-                            <tr>
-                                <td class="elbow-placeholder">&nbsp;</td>
-                            <td colspan="1">
-                <div class="ansibleOptionAnchor" id="return-metrodr_env_details/dr_service_state"></div>
-                <b>dr_service_state</b>
-                <a class="ansibleOptionLink" href="#return-metrodr_env_details/dr_service_state" title="Permalink to this return value"></a>
-                <div style="font-size: small">
-                  <span style="color: purple">type=string</span>
-                                      </div>
-                                </td>
-            <td>success</td>
-            <td>
-                                        <div>The HA state of the DR session.</div>
-                                    <br/>
-                                </td>
-        </tr>
-                            <tr>
-                                <td class="elbow-placeholder">&nbsp;</td>
-                            <td colspan="1">
-                <div class="ansibleOptionAnchor" id="return-metrodr_env_details/dr_state"></div>
-                <b>dr_state</b>
-                <a class="ansibleOptionLink" href="#return-metrodr_env_details/dr_state" title="Permalink to this return value"></a>
-                <div style="font-size: small">
-                  <span style="color: purple">type=string</span>
-                                      </div>
-                                </td>
-            <td>success</td>
-            <td>
-                                        <div>The pair states of the DR session.</div>
-                                    <br/>
-                                </td>
-        </tr>
-                            <tr>
-                                <td class="elbow-placeholder">&nbsp;</td>
-                            <td colspan="1">
-                <div class="ansibleOptionAnchor" id="return-metrodr_env_details/environment_exempt"></div>
-                <b>environment_exempt</b>
-                <a class="ansibleOptionLink" href="#return-metrodr_env_details/environment_exempt" title="Permalink to this return value"></a>
-                <div style="font-size: small">
-                  <span style="color: purple">type=boolean</span>
-                                      </div>
-                                </td>
-            <td>success</td>
-            <td>
-                                        <div>Flag to indication that if there are exempt devices (volumes) in the environment or not.</div>
-                                    <br/>
-                                </td>
-        </tr>
-                            <tr>
-                                <td class="elbow-placeholder">&nbsp;</td>
-                            <td colspan="1">
-                <div class="ansibleOptionAnchor" id="return-metrodr_env_details/environment_state"></div>
-                <b>environment_state</b>
-                <a class="ansibleOptionLink" href="#return-metrodr_env_details/environment_state" title="Permalink to this return value"></a>
-                <div style="font-size: small">
-                  <span style="color: purple">type=string</span>
-                                      </div>
-                                </td>
-            <td>success</td>
-            <td>
-                                        <div>The state of the smart DR environment.</div>
-                                    <br/>
-                                </td>
-        </tr>
-                            <tr>
-                                <td class="elbow-placeholder">&nbsp;</td>
-                            <td colspan="1">
-                <div class="ansibleOptionAnchor" id="return-metrodr_env_details/metro_exempt"></div>
-                <b>metro_exempt</b>
-                <a class="ansibleOptionLink" href="#return-metrodr_env_details/metro_exempt" title="Permalink to this return value"></a>
-                <div style="font-size: small">
-                  <span style="color: purple">type=boolean</span>
-                                      </div>
-                                </td>
-            <td>success</td>
-            <td>
-                                        <div>Flag to indication that if there are exempt devices (volumes) in the DR site or not.</div>
-                                    <br/>
-                                </td>
-        </tr>
-                            <tr>
-                                <td class="elbow-placeholder">&nbsp;</td>
-                            <td colspan="1">
-                <div class="ansibleOptionAnchor" id="return-metrodr_env_details/metro_link_state"></div>
-                <b>metro_link_state</b>
-                <a class="ansibleOptionLink" href="#return-metrodr_env_details/metro_link_state" title="Permalink to this return value"></a>
-                <div style="font-size: small">
-                  <span style="color: purple">type=string</span>
-                                      </div>
-                                </td>
-            <td>success</td>
-            <td>
-                                        <div>Status of metro site.</div>
-                                    <br/>
-                                </td>
-        </tr>
-                            <tr>
-                                <td class="elbow-placeholder">&nbsp;</td>
-                            <td colspan="1">
-                <div class="ansibleOptionAnchor" id="return-metrodr_env_details/metro_r1_array_health"></div>
-                <b>metro_r1_array_health</b>
-                <a class="ansibleOptionLink" href="#return-metrodr_env_details/metro_r1_array_health" title="Permalink to this return value"></a>
-                <div style="font-size: small">
-                  <span style="color: purple">type=string</span>
-                                      </div>
-                                </td>
-            <td>success</td>
-            <td>
-                                        <div>Health status of metro R1 array.</div>
-                                    <br/>
-                                </td>
-        </tr>
-                            <tr>
-                                <td class="elbow-placeholder">&nbsp;</td>
-                            <td colspan="1">
-                <div class="ansibleOptionAnchor" id="return-metrodr_env_details/metro_r2_array_health"></div>
-                <b>metro_r2_array_health</b>
-                <a class="ansibleOptionLink" href="#return-metrodr_env_details/metro_r2_array_health" title="Permalink to this return value"></a>
-                <div style="font-size: small">
-                  <span style="color: purple">type=string</span>
-                                      </div>
-                                </td>
-            <td>success</td>
-            <td>
-                                        <div>Health status of metro R1 array.</div>
-                                    <br/>
-                                </td>
-        </tr>
-                            <tr>
-                                <td class="elbow-placeholder">&nbsp;</td>
-                            <td colspan="1">
-                <div class="ansibleOptionAnchor" id="return-metrodr_env_details/metro_service_state"></div>
-                <b>metro_service_state</b>
-                <a class="ansibleOptionLink" href="#return-metrodr_env_details/metro_service_state" title="Permalink to this return value"></a>
-                <div style="font-size: small">
-                  <span style="color: purple">type=string</span>
-                                      </div>
-                                </td>
-            <td>success</td>
-            <td>
-                                        <div>The HA state of the metro session.</div>
-                                    <br/>
-                                </td>
-        </tr>
-                            <tr>
-                                <td class="elbow-placeholder">&nbsp;</td>
-                            <td colspan="1">
-                <div class="ansibleOptionAnchor" id="return-metrodr_env_details/metro_state"></div>
-                <b>metro_state</b>
-                <a class="ansibleOptionLink" href="#return-metrodr_env_details/metro_state" title="Permalink to this return value"></a>
-                <div style="font-size: small">
-                  <span style="color: purple">type=string</span>
-                                      </div>
-                                </td>
-            <td>success</td>
-            <td>
-                                        <div>The pair states of the metro session.</div>
-                                    <br/>
-                                </td>
-        </tr>
-                            <tr>
-                                <td class="elbow-placeholder">&nbsp;</td>
-                            <td colspan="1">
-                <div class="ansibleOptionAnchor" id="return-metrodr_env_details/metro_witness_state"></div>
-                <b>metro_witness_state</b>
-                <a class="ansibleOptionLink" href="#return-metrodr_env_details/metro_witness_state" title="Permalink to this return value"></a>
-                <div style="font-size: small">
-                  <span style="color: purple">type=string</span>
-                                      </div>
-                                </td>
-            <td>success</td>
-            <td>
-                                        <div>The witness state of the metro session.</div>
-                                    <br/>
-                                </td>
-        </tr>
-                            <tr>
-                                <td class="elbow-placeholder">&nbsp;</td>
-                            <td colspan="1">
-                <div class="ansibleOptionAnchor" id="return-metrodr_env_details/name"></div>
-                <b>name</b>
-                <a class="ansibleOptionLink" href="#return-metrodr_env_details/name" title="Permalink to this return value"></a>
-                <div style="font-size: small">
-                  <span style="color: purple">type=string</span>
-                                      </div>
-                                </td>
-            <td>success</td>
-            <td>
-                                        <div>The smart DR environment name.</div>
-                                    <br/>
-                                </td>
-        </tr>
-                            <tr>
-                                <td class="elbow-placeholder">&nbsp;</td>
-                            <td colspan="1">
-                <div class="ansibleOptionAnchor" id="return-metrodr_env_details/valid"></div>
-                <b>valid</b>
-                <a class="ansibleOptionLink" href="#return-metrodr_env_details/valid" title="Permalink to this return value"></a>
-                <div style="font-size: small">
-                  <span style="color: purple">type=boolean</span>
-                                      </div>
-                                </td>
-            <td>success</td>
-            <td>
-                                        <div>Flag to indicate whether valid environment or not.</div>
-                                    <br/>
-                                </td>
-        </tr>
-                    </table>
-
-Authors
--------
-
--   Vivek Soni (@v-soni11) &lt;<ansible.team@dell.com>&gt;
--   Rajshree Khare (@khareRajshree) &lt;<ansible.team@dell.com>&gt;
-
-Job Module
-==========
-
-Synopsis
---------
-
--   Gets details of a Job from a specified PowerMax/VMAX storage system.
--   The details listed are of an asynchronous task.
+Process storage pools on PowerMax/VMAX storage system to find out
+the storage pool with maximum free storage
 
 Parameters
 ----------
@@ -9396,20 +11027,68 @@ Parameters
         <th>Choices/<font color="blue">Defaults</font></th>
                     <th width="100%">Comments</th>
     </tr>
-                <tr>
+                                <tr>
                                                             <td colspan="1">
-                <div class="ansibleOptionAnchor" id="parameter-job_id"></div>
-                <b>job_id</b>
-                <a class="ansibleOptionLink" href="#parameter-job_id" title="Permalink to this option"></a>
+                <div class="ansibleOptionAnchor" id="parameter-pool_data"></div>
+                <b>pool_data</b>
+                <a class="ansibleOptionLink" href="#parameter-pool_data" title="Permalink to this option"></a>
                 <div style="font-size: small">
-                    <span style="color: purple">type=string</span>,
+                    <span style="color: purple">type=list</span>
+                    <br> 
+                    <span style="color: purple">elements=dictionary</span>
                     <br>
                     <span style="color: red">required=true</span>                    </div>
                                                     </td>
                             <td>
                                                                                                                                                         </td>
                                                             <td>
-                                        <div>Job ID of an asynchronous task, used for getting details of a job.</div>
+                                        <div>Storage pool details including service levels, usable total space, usable free space, total free space.</div>
+                                                    </td>
+        </tr>
+                            <tr>
+                                                            <td colspan="1">
+                <div class="ansibleOptionAnchor" id="parameter-service_level"></div>
+                <b>service_level</b>
+                <a class="ansibleOptionLink" href="#parameter-service_level" title="Permalink to this option"></a>
+                <div style="font-size: small">
+                    <span style="color: purple">type=string</span>
+                                                                </div>
+                                                    </td>
+                            <td>
+                                                                                                                                                        </td>
+                                                            <td>
+                                        <div>Service level of the storage group</div>
+                                                    </td>
+        </tr>
+                            <tr>
+                                                            <td colspan="1">
+                <div class="ansibleOptionAnchor" id="parameter-sg_name"></div>
+                <b>sg_name</b>
+                <a class="ansibleOptionLink" href="#parameter-sg_name" title="Permalink to this option"></a>
+                <div style="font-size: small">
+                    <span style="color: purple">type=string</span>
+                                                                </div>
+                                                    </td>
+                            <td>
+                                                                                                                                                        </td>
+                                                            <td>
+                                        <div>Name of the storage group</div>
+                                                    </td>
+        </tr>
+                            <tr>
+                                                            <td colspan="1">
+                <div class="ansibleOptionAnchor" id="parameter-size"></div>
+                <b>size</b>
+                <a class="ansibleOptionLink" href="#parameter-size" title="Permalink to this option"></a>
+                <div style="font-size: small">
+                    <span style="color: purple">type=float</span>
+                    <br>
+                    <span style="color: red">required=true</span>                    </div>
+                                                    </td>
+                            <td>
+                                                                                                                                                        </td>
+                                                            <td>
+                                        <div>Size of the storage group in GB</div>
                                                     </td>
         </tr>
                     </table>
@@ -9418,20 +11097,23 @@ Examples
 --------
 
 ``` yaml+jinja
-- name: Get the details of a Job.
-  dellemc_powermax_job:
+- name: Get best suitable Pool using our python sorting module
+  register: assigned_pool
+  process_storage_pool_dict:
     unispherehost: "{{unispherehost}}"
-    universion: "{{universion}}"
     verifycert: "{{verifycert}}"
     user: "{{user}}"
     password: "{{password}}"
-    job_id: "1570622921504"
+    pool_data: "{{ pools_list }}"
+    size: 40
+    service_level: "Diamond"
+    sg_name: "intellgent_provisioning"
 ```
 
 Return Values
 -------------
 
-The following are the return value fields unique to this module:
+The following are the fields unique to this module:
 
 <table border=0 cellpadding=0 class="documentation-table">
     <tr>
@@ -9440,6 +11122,54 @@ The following are the return value fields unique to this module:
         <th width="100%">Description</th>
     </tr>
                 <tr>
+                            <td colspan="2">
+                <div class="ansibleOptionAnchor" id="return-all_pools"></div>
+                <b>all_pools</b>
+                <a class="ansibleOptionLink" href="#return-all_pools" title="Permalink to this return value"></a>
+                <div style="font-size: small">
+                  <span style="color: purple">type=list</span>
+                  <br>
+                  <span style="color: purple">elements=string</span>                    </div>
+                                </td>
+            <td>when pool exists</td>
+            <td>
+                                        <div>List of all pools on unisphere</div>
+                                    <br/>
+                                </td>
+        </tr>
+                                    <tr>
+                                <td class="elbow-placeholder">&nbsp;</td>
+                            <td colspan="1">
+                <div class="ansibleOptionAnchor" id="return-all_pools/serial_no"></div>
+                <b>serial_no</b>
+                <a class="ansibleOptionLink" href="#return-all_pools/serial_no" title="Permalink to this return value"></a>
+                <div style="font-size: small">
+                  <span style="color: purple">type=string</span>
+                                      </div>
+                                </td>
+            <td>when array satisfies the given criteria</td>
+            <td>
+                                        <div>The PowerMax array on which storage pool resides</div>
+                                    <br/>
+                                </td>
+        </tr>
+                            <tr>
+                                <td class="elbow-placeholder">&nbsp;</td>
+                            <td colspan="1">
+                <div class="ansibleOptionAnchor" id="return-all_pools/storage_pool"></div>
+                <b>storage_pool</b>
+                <a class="ansibleOptionLink" href="#return-all_pools/storage_pool" title="Permalink to this return value"></a>
+                <div style="font-size: small">
+                  <span style="color: purple">type=string</span>
+                                      </div>
+                                </td>
+            <td>when storage pool exists satisfying the given criteria</td>
+            <td>
+                                        <div>The ID of the storage pool</div>
+                                    <br/>
+                                </td>
+        </tr>
+                            <tr>
                             <td colspan="2">
                 <div class="ansibleOptionAnchor" id="return-changed"></div>
                 <b>changed</b>
@@ -9456,176 +11186,46 @@ The following are the return value fields unique to this module:
         </tr>
                             <tr>
                             <td colspan="2">
-                <div class="ansibleOptionAnchor" id="return-Job_details"></div>
-                <b>Job_details</b>
-                <a class="ansibleOptionLink" href="#return-Job_details" title="Permalink to this return value"></a>
-                <div style="font-size: small">
-                  <span style="color: purple">type=dictionary</span>
-                                      </div>
-                                </td>
-            <td>When job exist.</td>
-            <td>
-                                        <div>Details of the job.</div>
-                                    <br/>
-                                </td>
-        </tr>
-                                    <tr>
-                                <td class="elbow-placeholder">&nbsp;</td>
-                            <td colspan="1">
-                <div class="ansibleOptionAnchor" id="return-Job_details/completed_date_milliseconds"></div>
-                <b>completed_date_milliseconds</b>
-                <a class="ansibleOptionLink" href="#return-Job_details/completed_date_milliseconds" title="Permalink to this return value"></a>
-                <div style="font-size: small">
-                  <span style="color: purple">type=integer</span>
-                                      </div>
-                                </td>
-            <td>success</td>
-            <td>
-                                        <div>Date of job completion in milliseconds.</div>
-                                    <br/>
-                                </td>
-        </tr>
-                            <tr>
-                                <td class="elbow-placeholder">&nbsp;</td>
-                            <td colspan="1">
-                <div class="ansibleOptionAnchor" id="return-Job_details/jobId"></div>
-                <b>jobId</b>
-                <a class="ansibleOptionLink" href="#return-Job_details/jobId" title="Permalink to this return value"></a>
+                <div class="ansibleOptionAnchor" id="return-serial_no"></div>
+                <b>serial_no</b>
+                <a class="ansibleOptionLink" href="#return-serial_no" title="Permalink to this return value"></a>
                 <div style="font-size: small">
                   <span style="color: purple">type=string</span>
                                       </div>
                                 </td>
-            <td>success</td>
+            <td>when array satisfies the given criteria</td>
             <td>
-                                        <div>Unique identifier of the job.</div>
+                                        <div>The PowerMax array on which storage pool resides</div>
                                     <br/>
                                 </td>
         </tr>
                             <tr>
-                                <td class="elbow-placeholder">&nbsp;</td>
-                            <td colspan="1">
-                <div class="ansibleOptionAnchor" id="return-Job_details/last_modified_date"></div>
-                <b>last_modified_date</b>
-                <a class="ansibleOptionLink" href="#return-Job_details/last_modified_date" title="Permalink to this return value"></a>
+                            <td colspan="2">
+                <div class="ansibleOptionAnchor" id="return-storage_group"></div>
+                <b>storage_group</b>
+                <a class="ansibleOptionLink" href="#return-storage_group" title="Permalink to this return value"></a>
                 <div style="font-size: small">
                   <span style="color: purple">type=string</span>
                                       </div>
                                 </td>
-            <td>success</td>
+            <td>when storage group exists satisfying the given criteria</td>
             <td>
-                                        <div>Last modified date of job.</div>
+                                        <div>Name of the storage group</div>
                                     <br/>
                                 </td>
         </tr>
                             <tr>
-                                <td class="elbow-placeholder">&nbsp;</td>
-                            <td colspan="1">
-                <div class="ansibleOptionAnchor" id="return-Job_details/last_modified_date_milliseconds"></div>
-                <b>last_modified_date_milliseconds</b>
-                <a class="ansibleOptionLink" href="#return-Job_details/last_modified_date_milliseconds" title="Permalink to this return value"></a>
-                <div style="font-size: small">
-                  <span style="color: purple">type=integer</span>
-                                      </div>
-                                </td>
-            <td>success</td>
-            <td>
-                                        <div>Last modified date of job in milliseconds.</div>
-                                    <br/>
-                                </td>
-        </tr>
-                            <tr>
-                                <td class="elbow-placeholder">&nbsp;</td>
-                            <td colspan="1">
-                <div class="ansibleOptionAnchor" id="return-Job_details/name"></div>
-                <b>name</b>
-                <a class="ansibleOptionLink" href="#return-Job_details/name" title="Permalink to this return value"></a>
+                            <td colspan="2">
+                <div class="ansibleOptionAnchor" id="return-storage_pool"></div>
+                <b>storage_pool</b>
+                <a class="ansibleOptionLink" href="#return-storage_pool" title="Permalink to this return value"></a>
                 <div style="font-size: small">
                   <span style="color: purple">type=string</span>
                                       </div>
                                 </td>
-            <td>success</td>
+            <td>when storage pool exists satisfying the given criteria</td>
             <td>
-                                        <div>Name of the job.</div>
-                                    <br/>
-                                </td>
-        </tr>
-                            <tr>
-                                <td class="elbow-placeholder">&nbsp;</td>
-                            <td colspan="1">
-                <div class="ansibleOptionAnchor" id="return-Job_details/resourceLink"></div>
-                <b>resourceLink</b>
-                <a class="ansibleOptionLink" href="#return-Job_details/resourceLink" title="Permalink to this return value"></a>
-                <div style="font-size: small">
-                  <span style="color: purple">type=string</span>
-                                      </div>
-                                </td>
-            <td>success</td>
-            <td>
-                                        <div>Resource link w.r.t Unisphere.</div>
-                                    <br/>
-                                </td>
-        </tr>
-                            <tr>
-                                <td class="elbow-placeholder">&nbsp;</td>
-                            <td colspan="1">
-                <div class="ansibleOptionAnchor" id="return-Job_details/result"></div>
-                <b>result</b>
-                <a class="ansibleOptionLink" href="#return-Job_details/result" title="Permalink to this return value"></a>
-                <div style="font-size: small">
-                  <span style="color: purple">type=string</span>
-                                      </div>
-                                </td>
-            <td>success</td>
-            <td>
-                                        <div>Job description</div>
-                                    <br/>
-                                </td>
-        </tr>
-                            <tr>
-                                <td class="elbow-placeholder">&nbsp;</td>
-                            <td colspan="1">
-                <div class="ansibleOptionAnchor" id="return-Job_details/status"></div>
-                <b>status</b>
-                <a class="ansibleOptionLink" href="#return-Job_details/status" title="Permalink to this return value"></a>
-                <div style="font-size: small">
-                  <span style="color: purple">type=string</span>
-                                      </div>
-                                </td>
-            <td>success</td>
-            <td>
-                                        <div>Status of the job.</div>
-                                    <br/>
-                                </td>
-        </tr>
-                            <tr>
-                                <td class="elbow-placeholder">&nbsp;</td>
-                            <td colspan="1">
-                <div class="ansibleOptionAnchor" id="return-Job_details/task"></div>
-                <b>task</b>
-                <a class="ansibleOptionLink" href="#return-Job_details/task" title="Permalink to this return value"></a>
-                <div style="font-size: small">
-                  <span style="color: purple">type=list</span>
-                  <br><span style="color: purple">elements=string</span>                    </div>
-                                </td>
-            <td>success</td>
-            <td>
-                                        <div>Details about the job.</div>
-                                    <br/>
-                                </td>
-        </tr>
-                            <tr>
-                                <td class="elbow-placeholder">&nbsp;</td>
-                            <td colspan="1">
-                <div class="ansibleOptionAnchor" id="return-Job_details/username"></div>
-                <b>username</b>
-                <a class="ansibleOptionLink" href="#return-Job_details/username" title="Permalink to this return value"></a>
-                <div style="font-size: small">
-                  <span style="color: purple">type=string</span>
-                                      </div>
-                                </td>
-            <td>success</td>
-            <td>
-                                        <div>Unisphere username.</div>
+                                        <div>The ID of the storage pool</div>
                                     <br/>
                                 </td>
         </tr>
@@ -9634,4 +11234,4 @@ The following are the return value fields unique to this module:
 Authors
 -------
 
--   Rajshree Khare (@kharer5) &lt;<ansible.team@dell.com>&gt;
+-   Akash Shendge (@shenda1) &lt;<ansible.team@dell.com>&gt;

@@ -15,16 +15,16 @@ module: dellemc_powermax_gatherfacts
 version_added: '1.0.0'
 short_description: Gathers information about PowerMax/VMAX Storage entities
 description:
-- Gathers the list of specified PowerMax/VMAX Storage System entities, such as
+- Gathers the list of specified PowerMax/VMAX storage system entities, such as
   the list of registered arrays, storage groups, hosts, host groups, storage
   groups, storage resource pools, port groups, masking views, array health
-  status, alerts and metro DR environments, etc.
+  status, alerts and metro DR environments, so on.
 extends_documentation_fragment:
   - dellemc.powermax.dellemc_powermax.powermax
   - dellemc.powermax.dellemc_powermax.powermax_serial_no
 author:
 - Arindam Datta (@dattaarindam) <ansible.team@dell.com>
-- Rajshree Khare (@kharer5) <ansible.team@dell.com>
+- Rajshree Khare (@khareRajshree) <ansible.team@dell.com>
 options:
   serial_no:
     description:
@@ -61,18 +61,20 @@ options:
     - mv - masking views
     - rdf - rdf groups
     - metro_dr_env - metro DR environments
+    - snapshot_policies - snapshot policies
     required: False
     type: list
     elements: str
     choices: [alert, health, vol, srp, sg, pg , host, hg, port, mv, rdf,
-              metro_dr_env]
+              metro_dr_env, snapshot_policies]
   filters:
     description:
     - List of filters to support filtered output for storage entities.
     - Each filter is a tuple of {filter_key, filter_operator, filter_value}.
     - Supports passing of multiple filters.
-    - The storage entities, 'rdf' and 'metro_dr_env', does not support
-      filters. Filters will be ignored if passed.
+    - The storage entities, 'rdf', 'health', 'snapshot_policies' and
+      'metro_dr_env', does not support filters. Filters will be ignored
+      if passed.
     required: False
     type: list
     elements: dict
@@ -93,6 +95,47 @@ options:
         - Value of the filter key.
         type: str
         required: True
+notes:
+    - Filter functionality will be supported only for the following
+      'filter_key' against specific 'gather_subset'.
+    - vol - allocated_percent, associated, available_thin_volumes, bound_tdev,
+      cap_cyl, cap_gb, cap_mb, cap_tb, cu_image_num, cu_image_ssid,
+      data_volume, dld, drv, effective_wwn, emulation, encapsulated,
+      encapsulated_wwn, gatekeeper, has_effective_wwn, mapped,
+      mobility_id_enabled, num_of_front_end_paths, num_of_masking_views,
+      num_of_storage_groups, oracle_instance_name, physical_name, pinned,
+      private_volumes, rdf_group_number, reserved, split_name, status,
+      storageGroupId, symmlun, tdev, thin_bcv, type, vdev, virtual_volumes,
+      volume_identifier, wwn
+    - srp - compression_state, description, effective_used_capacity_percent,
+      emulation, num_of_disk_groups, num_of_srp_sg_demands,
+      num_of_srp_slo_demands, rdfa_dse, reserved_cap_percent,
+      total_allocated_cap_gb, total_srdf_dse_allocated_cap_gb,
+      total_subscribed_cap_gb, total_usable_cap_gb
+    - sg - base_slo_name, cap_gb, child, child_sg_name, ckd, compression,
+      compression_ratio_to_one, fba, num_of_child_sgs, num_of_masking_views,
+      num_of_parent_sgs, num_of_snapshots, num_of_vols, parent,
+      parent_sg_name, slo_compliance, slo_name, srp_name, storageGroupId,
+      tag, volumeId
+    - pg - dir_port, fibre, iscsi, num_of_masking_views, num_of_ports
+    - host - host_group_name, num_of_host_groups, num_of_initiators,
+      num_of_masking_views, num_of_powerpath_hosts, powerPathHostId
+    - hg - host_name, num_of_hosts, num_of_masking_views
+    - port - aclx, avoid_reset_broadcast, common_serial_number, director_status,
+      disable_q_reset_on_ua, enable_auto_negotive, environ_set, hp_3000_mode,
+      identifier, init_point_to_point, ip_list, ipv4_address, ipv6_address,
+      iscsi_target, max_speed, negotiated_speed, neqotiate_reset,
+      no_participating, node_wwn, num_of_cores, num_of_hypers,
+      num_of_mapped_vols, num_of_masking_views, num_of_port_groups,
+      port_interface, port_status, rdf_hardware_compression,
+      rdf_hardware_compression_supported, rdf_software_compression,
+      rdf_software_compression_supported, scsi_3, scsi_support1, siemens,
+      soft_reset, spc2_protocol_version, sunapee, type, unique_wwn, vcm_state,
+      vnx_attached, volume_set_addressing, wwn_node
+    - mv - host_or_host_group_name, port_group_name,
+      protocol_endpoint_masking_view, storage_group_name
+    - alert - acknowledged, array, created_date, created_date_milliseconds,
+      description, object, object_type, severity, state, type
 '''
 
 EXAMPLES = r'''
@@ -304,6 +347,17 @@ EXAMPLES = r'''
     serial_no: "{{serial_no}}"
     gather_subset:
        - rdf
+
+- name: Get list of snapshot policies
+  dellemc_powermax_gatherfacts:
+    unispherehost: "{{unispherehost}}"
+    universion: "{{universion}}"
+    verifycert: "{{verifycert}}"
+    user: "{{user}}"
+    password: "{{password}}"
+    serial_no: "{{serial_no}}"
+    gather_subset:
+     - snapshot_policies
 '''
 
 RETURN = r'''
@@ -511,6 +565,10 @@ MetroDREnvironments:
     description: List of metro DR environments on the array.
     returned: When environment exists.
     type: list
+SnapshotPolicies:
+    description: List of snapshot policies on the array.
+    returned: When snapshot policy exists.
+    type: list
 '''
 
 from ansible_collections.dellemc.powermax.plugins.module_utils.storage.dell \
@@ -523,7 +581,7 @@ HAS_PYU4V = utils.has_pyu4v_sdk()
 PYU4V_VERSION_CHECK = utils.pyu4v_version_check()
 
 # Application Type
-APPLICATION_TYPE = 'ansible_v1.4'
+APPLICATION_TYPE = 'ansible_v1.5.0'
 
 
 class PowerMaxGatherFacts(object):
@@ -919,6 +977,28 @@ class PowerMaxGatherFacts(object):
                   '%s ' % (self.module.params['serial_no'], str(e))
             self.show_error_exit(msg=msg)
 
+    def get_snapshot_policies_list(self):
+        """Get the list of snapshot policies of a given PowerMax/Vmax
+                storage system"""
+
+        try:
+            self.pre_check_for_PyU4V_version()
+            self.snapshot_policy = self.u4v_conn.snapshot_policy
+            LOG.info("Got PyU4V instance for snapshot policy on to PowerMax")
+
+            LOG.info('Getting snapshot policies list ')
+            array_serial_no = self.module.params['serial_no']
+            snapshot_policy_list \
+                = self.snapshot_policy.get_snapshot_policy_list()
+            LOG.info('Successfully listed %d snapshot policies from array'
+                     ' %s', len(snapshot_policy_list), array_serial_no)
+            return snapshot_policy_list
+
+        except Exception as e:
+            msg = 'Get snapshot policies for array %s failed with error ' \
+                  '%s ' % (self.module.params['serial_no'], str(e))
+            self.show_error_exit(msg=msg)
+
     def show_error_exit(self, msg):
         if self.u4v_conn is not None:
             try:
@@ -964,6 +1044,7 @@ class PowerMaxGatherFacts(object):
             rdf = []
             alert = []
             metro_dr_env = []
+            snapshot_policies = []
             if 'alert' in str(subset):
                 alert = self.get_system_alerts(filters_dict=filters_dict)
             if 'health' in str(subset):
@@ -990,6 +1071,9 @@ class PowerMaxGatherFacts(object):
             if 'metro_dr_env' in str(subset):
                 metro_dr_env = \
                     self.get_metro_dr_env_list()
+            if 'snapshot_policies' in str(subset):
+                snapshot_policies = \
+                    self.get_snapshot_policies_list()
 
             LOG.info("Closing unisphere connection %s", self.u4v_conn)
             utils.close_connection(self.u4v_conn)
@@ -1007,7 +1091,8 @@ class PowerMaxGatherFacts(object):
                 Ports=port,
                 MaskingViews=mv,
                 RDFGroups=rdf,
-                MetroDREnvironments=metro_dr_env)
+                MetroDREnvironments=metro_dr_env,
+                SnapshotPolicies=snapshot_policies)
 
 
 def get_powermax_gatherfacts_parameters():
@@ -1035,11 +1120,13 @@ def get_powermax_gatherfacts_parameters():
                                     'port',
                                     'mv',
                                     'rdf',
-                                    'metro_dr_env'
+                                    'metro_dr_env',
+                                    'snapshot_policies'
                                     ]),
         filters=dict(type='list', required=False, elements='dict',
                      options=dict(
-                         filter_key=dict(type='str', required=True),
+                         filter_key=dict(type='str', required=True,
+                                         no_log=False),
                          filter_operator=dict(type='str', required=True,
                                               choices=['equal', 'greater',
                                                        'lesser', 'like']),

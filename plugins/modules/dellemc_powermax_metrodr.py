@@ -343,7 +343,7 @@ HAS_PYU4V = utils.has_pyu4v_sdk()
 PYU4V_VERSION_CHECK = utils.pyu4v_version_check()
 
 # Application Type
-APPLICATION_TYPE = "ansible_v1.4"
+APPLICATION_TYPE = "ansible_v1.5.0"
 
 # DO NOT CHANGE BELOW REPLICATION_MODES SEQUENCE AS ITS USED IN SCRIPT
 # USING INDEX

@@ -89,6 +89,16 @@ options:
     description:
      - The new name of the storage group.
     type: str
+  snapshot_policies:
+    description:
+     - List of snapshot policy(s).
+    type: list
+    elements: str
+  snapshot_policy_state:
+    description:
+     - Describes the state of snapshot policy for an SG
+    type: str
+    choices: [present-in-group, absent-in-group]
   state:
     description:
     - Define whether the storage group should exist or not.
@@ -226,6 +236,52 @@ EXAMPLES = r'''
     sg_name: "ansible_sg"
     new_sg_name: "ansible_sg_renamed"
     state: "present"
+
+- name: Create a storage group with snapshot policies
+  dellemc_powermax_storagegroup:
+    unispherehost: "{{unispherehost}}"
+    universion: "{{universion}}"
+    verifycert: "{{verifycert}}"
+    user: "{{user}}"
+    password: "{{password}}"
+    serial_no: "{{serial_no}}"
+    sg_name: "ansible_test_sg"
+    service_level: "Diamond"
+    srp: "SRP_1"
+    compression: True
+    snapshot_policies:
+      - "10min_policy"
+      - "30min_policy"
+    snapshot_policy_state: "present-in-group"
+    state: "present"
+
+- name: Add snapshot policy to a storage group
+  dellemc_powermax_storagegroup:
+    unispherehost: "{{unispherehost}}"
+    universion: "{{universion}}"
+    verifycert: "{{verifycert}}"
+    user: "{{user}}"
+    password: "{{password}}"
+    serial_no: "{{serial_no}}"
+    sg_name: "ansible_test_sg"
+    snapshot_policies:
+      - "15min_policy"
+    snapshot_policy_state: "present-in-group"
+    state: "present"
+
+- name: Remove snapshot policy from a storage group
+  dellemc_powermax_storagegroup:
+    unispherehost: "{{unispherehost}}"
+    universion: "{{universion}}"
+    verifycert: "{{verifycert}}"
+    user: "{{user}}"
+    password: "{{password}}"
+    serial_no: "{{serial_no}}"
+    sg_name: "ansible_test_sg"
+    snapshot_policies:
+      - "15min_policy"
+    snapshot_policy_state: "absent-in-group"
+    state: "present"
 '''
 
 
@@ -276,6 +332,14 @@ removed_vols_details:
     type: list
 rename_sg:
     description: Sets to true when an SG is renamed.
+    returned: When value exists.
+    type: bool
+add_snapshot_policy_to_sg:
+    description: Sets to true when snapshot policy(s) is added to SG.
+    returned: When value exists.
+    type: bool
+remove_snapshot_policy_to_sg:
+    description: Sets to false when snapshot policy(s) is removed from SG.
     returned: When value exists.
     type: bool
 storage_group_details:
@@ -360,6 +424,30 @@ storage_group_volumes_details:
         wwn:
             description: WWN of the volume.
             type: str
+snapshot_policy_compliance_details:
+    description: The compliance status of this storage group.
+    returned: When snapshot policy associated..
+    type: complex
+    contains:
+        compliance:
+            description: Compliance status
+            type: str
+        sl_compliance:
+            description: Compliance details
+            type: complex
+            contains:
+                sl_name:
+                    description: Name of the snapshot policy
+                    type: str
+                compliance:
+                    description: Compliance status
+                    type: str
+        sl_count:
+            description: Number of snapshot policies associated with storage group
+            type: int
+        storage_group_name:
+            description: Name of the storage group
+            type: str
 '''
 
 import logging
@@ -374,7 +462,7 @@ HAS_PYU4V = utils.has_pyu4v_sdk()
 PYU4V_VERSION_CHECK = utils.pyu4v_version_check()
 
 # Application Type
-APPLICATION_TYPE = 'ansible_v1.4'
+APPLICATION_TYPE = 'ansible_v1.5.0'
 
 
 class PowerMaxStorageGroup(object):
@@ -394,9 +482,12 @@ class PowerMaxStorageGroup(object):
         self.module_params.update(get_powermax_storage_group_parameters())
 
         # initialize the Ansible module
+        required_together = [['snapshot_policies', 'snapshot_policy_state']]
+
         self.module = AnsibleModule(
             argument_spec=self.module_params,
-            supports_check_mode=False
+            supports_check_mode=False,
+            required_together=required_together
         )
         if HAS_PYU4V is False:
             self.show_error_exit(msg="Ansible modules for PowerMax require "
@@ -423,6 +514,13 @@ class PowerMaxStorageGroup(object):
         self.replication = self.u4v_conn.replication
         self.common = self.u4v_conn.common
         self.foxtail_version = '5978.444.444'
+
+        curr_version = utils.PyU4V.__version__
+        supp_version = "9.2.1.3"
+        is_supported_version = utils.pkg_resources.parse_version(
+            curr_version) >= utils.pkg_resources.parse_version(supp_version)
+        if is_supported_version:
+            self.snapshot_policy = self.u4v_conn.snapshot_policy
         LOG.info('Got PyU4V instance for provisioning on PowerMax ')
 
     def get_volume(self):
@@ -508,6 +606,20 @@ class PowerMaxStorageGroup(object):
                      'group %s', str(e), sg_name)
             return None
 
+    def if_srdf_protected(self, sg_details):
+        """Check if this storage group is protected with srdf"""
+        try:
+            if not sg_details['unprotected']:
+                srdf_sgs = self.replication.get_replication_enabled_storage_groups(has_srdf=True)
+                if sg_details['storageGroupId'] in srdf_sgs:
+                    return True
+            return False
+        except Exception as e:
+            msg = "Failed to determine if storage group %s is srdf protected, " \
+                  "with error %s" % (sg_details['storageGroupId'], str(e))
+            LOG.error(msg)
+            self.show_error_exit(msg=msg)
+
     def create_storage_group(self, sg_name):
         """Create a storage group"""
 
@@ -522,10 +634,22 @@ class PowerMaxStorageGroup(object):
 
         disable_compression = not compression
         try:
+            if self.module.params['snapshot_policies'] \
+                    and self.module.params['snapshot_policy_state'] \
+                    == 'present-in-group':
+                self.pre_check_for_PyU4V_version()
+                snapshot_policies = self.module.params['snapshot_policies']
+                LOG.info('Creating storage group %s and associating snapshot '
+                         'policies to it %s', sg_name, snapshot_policies)
+                resp = self.provisioning.create_storage_group(
+                    srp_id=srp, sg_id=sg_name, slo=slo, workload=None,
+                    do_disable_compression=disable_compression,
+                    snapshot_policy_ids=snapshot_policies)
+                return True, resp
             LOG.info('Creating empty storage group %s ', sg_name)
             resp = self.provisioning.create_empty_storage_group(
-                srp, sg_name, slo, workload=None,
-                disable_compression=disable_compression)
+                srp_id=srp, storage_group_id=sg_name, service_level=slo,
+                workload=None, disable_compression=disable_compression)
             return True, resp
         except Exception as e:
             self.show_error_exit(msg='Create storage group {0} failed.{1}'
@@ -574,7 +698,7 @@ class PowerMaxStorageGroup(object):
                         remote_array_sg = None
 
                         # Check SRDF protected SG
-                        if not storage_group['unprotected']:
+                        if self.if_srdf_protected(storage_group):
                             array_id = self.module.params['serial_no']
                             array_details = self.common.get_array(
                                 array_id=array_id)
@@ -779,7 +903,7 @@ class PowerMaxStorageGroup(object):
             return False, existing_volumes_details_in_sg
         try:
 
-            if not storage_group['unprotected']:
+            if self.if_srdf_protected(storage_group):
                 self.show_error_exit(msg=self.protected_sg_msg)
 
             self.provisioning.\
@@ -843,7 +967,7 @@ class PowerMaxStorageGroup(object):
             remote_array_2_sg = None
 
             # check SRDF Protected SG.
-            if not storage_group['unprotected']:
+            if self.if_srdf_protected(storage_group):
                 rdfg_list = self.replication.\
                     get_storage_group_srdf_group_list(storage_group_id=sg_name)
 
@@ -996,7 +1120,7 @@ class PowerMaxStorageGroup(object):
                     storage_group = self.provisioning.get_storage_group(
                         parent_sg)
                     # SRDF protected SG are not allowed to be modified.
-                    if not storage_group['unprotected']:
+                    if self.if_srdf_protected(storage_group):
                         self.show_error_exit(msg=self.protected_sg_msg)
                     self.provisioning.\
                         add_child_storage_group_to_parent_group(child_sg,
@@ -1019,7 +1143,7 @@ class PowerMaxStorageGroup(object):
                                                                    parent_sg):
                 try:
                     # SRDF protected SG are not allowed to be modified.
-                    if not storage_group['unprotected']:
+                    if self.if_srdf_protected(storage_group):
                         self.show_error_exit(msg=self.protected_sg_msg)
                     self.provisioning.\
                         remove_child_storage_group_from_parent_group(child_sg,
@@ -1136,6 +1260,114 @@ class PowerMaxStorageGroup(object):
         if volumes and vol_state is None:
             self.show_error_exit(msg="Please provide a valid vol_state.")
 
+    def snapshot_policy_compliance_details(self, sg_name):
+        LOG.info('Getting snapshot policy compliance details for storage '
+                 'group %s', sg_name)
+        storage_group_details = self.provisioning.get_storage_group(sg_name)
+        try:
+            if 'snapshot_policies' in storage_group_details:
+                resp = self.snapshot_policy.get_snapshot_policy_compliance(
+                    storage_group_name=sg_name)
+                return resp
+            else:
+                return None
+        except Exception as e:
+            errmsg = 'Failed to get the snapshot policy compliance details ' \
+                     'for the storage group %s with error %s' \
+                     % (sg_name, str(e))
+            self.show_error_exit(msg=errmsg)
+            return None
+
+    def add_snapshot_policy_storage_group(self, sg_name,
+                                          snapshot_policies):
+        try:
+            storage_group_details \
+                = self.provisioning.get_storage_group(sg_name)
+            LOG.info("storage_group_details %s", storage_group_details)
+
+            # Check if the given SG has maximum SP count or not
+            snapshot_policy_to_add = []
+            if storage_group_details:
+                if 'snapshot_policies' in storage_group_details:
+                    existing_snapshot_policy \
+                        = storage_group_details['snapshot_policies']
+                    snapshot_policy_to_add = list(
+                        set(snapshot_policies) -
+                        set(existing_snapshot_policy))
+                else:
+                    snapshot_policy_to_add = snapshot_policies
+
+                LOG.info("snapshot_policy_to_add %s", snapshot_policy_to_add)
+                if len(snapshot_policy_to_add) > 0:
+                    sg_list = [sg_name]
+                    for sp in snapshot_policy_to_add:
+                        self.snapshot_policy.\
+                            associate_to_storage_groups(
+                                sp, storage_group_names=sg_list)
+                        LOG.info("Successfully added snapshot policy %s to "
+                                 "SG %s", sp, sg_name)
+                    resp = self.provisioning.get_storage_group(sg_name)
+                    return True, resp
+                else:
+                    LOG.info("Storage group is already associated with"
+                             " snapshot policy(s)")
+                    return False, storage_group_details
+        except Exception as e:
+            errmsg = 'Failed to add the snapshot policy(s) from the ' \
+                     'storage group %s with error %s' \
+                     % (sg_name, str(e))
+            self.show_error_exit(msg=errmsg)
+            return None
+
+    def remove_snapshot_policy_storage_group(self, sg_name,
+                                             snapshot_policies):
+        try:
+            storage_group_details \
+                = self.provisioning.get_storage_group(sg_name)
+            if 'snapshot_policies' in storage_group_details:
+                existing_snapshot_policy \
+                    = storage_group_details['snapshot_policies']
+
+                snapshot_policy_to_remove \
+                    = set(snapshot_policies) & set(existing_snapshot_policy)
+                if len(snapshot_policy_to_remove) > 0:
+                    sg_list = [sg_name]
+                    for sp in snapshot_policy_to_remove:
+                        self.snapshot_policy.\
+                            disassociate_from_storage_groups(
+                                sp, storage_group_names=sg_list)
+                        LOG.info("Successfully removed snapshot policy %s"
+                                 " from SG %s", sp, sg_name)
+                    resp = self.provisioning.get_storage_group(sg_name)
+                    return True, resp
+                else:
+                    LOG.info('The given snapshot policy(s) %s are not present'
+                             ' on the storage group %s',
+                             snapshot_policies, sg_name)
+                    return False, storage_group_details
+            else:
+                LOG.info('No snapshot policy is associated with the'
+                         ' storage group %s', sg_name)
+                return False, storage_group_details
+        except Exception as e:
+            errmsg = 'Failed to remove the snapshot policy(s) from the ' \
+                     'storage group %s with error %s' \
+                     % (sg_name, str(e))
+            self.show_error_exit(msg=errmsg)
+            return None
+
+    def pre_check_for_PyU4V_version(self):
+        """ Performs pre-check for PyU4V version"""
+        curr_version = utils.PyU4V.__version__
+        supp_version = "9.2.1.3"
+        is_supported_version = utils.pkg_resources.parse_version(
+            curr_version) >= utils.pkg_resources.parse_version(supp_version)
+
+        if not is_supported_version:
+            msg = "This functionality is not supported by PyU4V version " \
+                  "{0}".format(curr_version)
+            self.show_error_exit(msg)
+
     def show_error_exit(self, msg):
         if self.u4v_conn is not None:
             try:
@@ -1161,6 +1393,8 @@ class PowerMaxStorageGroup(object):
         child_sgs = self.module.params['child_storage_groups']
         child_sg_state = self.module.params['child_sg_state']
         new_sg_name = self.module.params['new_sg_name']
+        snapshot_policies = self.module.params['snapshot_policies']
+        snapshot_policy_state = self.module.params['snapshot_policy_state']
 
         self.check_task_validity(volumes, vol_state)
         storage_group = self.get_storage_group(sg_name)
@@ -1184,11 +1418,14 @@ class PowerMaxStorageGroup(object):
             removed_vols_details='',
             add_child_sg='',
             remove_child_sg='',
+            add_snapshot_policy_to_sg='',
+            remove_snapshot_policy_to_sg='',
             rename_sg='',
             delete_sg='',
             storage_group_volumes='',
             storage_group_volumes_details='',
             storage_group_details='',
+            snapshot_policy_compliance_details='',
         )
         if state == 'present' and storage_group and not new_sg_name \
                 and not volumes:
@@ -1201,6 +1438,7 @@ class PowerMaxStorageGroup(object):
             LOG.info('Creating storage group %s', sg_name)
             result['create_sg'], result['storage_group_details'] = self.\
                 create_storage_group(sg_name)
+            storage_group = self.get_storage_group(sg_name)
             LOG.info('Get volumes details of storage group %s', sg_name)
             result['storage_group_volumes_details'] = self.\
                 get_volumes_details_storagegroup(sg_name)
@@ -1273,10 +1511,41 @@ class PowerMaxStorageGroup(object):
                 result['storage_group_volumes'] \
                     = self.get_volumes_storagegroup(sg_name)
 
+        if state == 'present' and storage_group and snapshot_policies \
+                and snapshot_policy_state == 'present-in-group':
+            LOG.info('sg_name %s', sg_name)
+            LOG.info('snapshot_policies %s', snapshot_policies)
+            self.pre_check_for_PyU4V_version()
+            result['changed'], updated_sg \
+                = self.add_snapshot_policy_storage_group(sg_name,
+                                                         snapshot_policies)
+            result['add_snapshot_policy_to_sg'] = result['changed']
+            result['storage_group_details'] = updated_sg
+            result['storage_group_volumes_details'] = self. \
+                get_volumes_details_storagegroup(sg_name)
+            result['storage_group_volumes'] \
+                = self.get_volumes_storagegroup(sg_name)
+
+        if state == 'present' and storage_group and snapshot_policies \
+                and snapshot_policy_state == 'absent-in-group':
+            self.pre_check_for_PyU4V_version()
+            result['changed'], updated_sg \
+                = self.remove_snapshot_policy_storage_group(sg_name,
+                                                            snapshot_policies)
+            result['remove_snapshot_policy_to_sg'] = result['changed']
+            result['storage_group_details'] = updated_sg
+            result['storage_group_volumes_details'] = self. \
+                get_volumes_details_storagegroup(sg_name)
+            result['storage_group_volumes'] \
+                = self.get_volumes_storagegroup(sg_name)
+
         if state == 'present' and storage_group:
             LOG.info('Found storage group %s', storage_group)
             updated_sg = self.get_storage_group(sg_name)
             result['storage_group_details'] = updated_sg
+            if 'snapshot_policies' in updated_sg:
+                result['snapshot_policy_compliance_details'] \
+                    = self.snapshot_policy_compliance_details(sg_name)
 
         if result['create_sg'] or result['modify_sg'] or \
                 result['add_vols_to_sg'] or result['remove_vols_from_sg']\
@@ -1335,6 +1604,15 @@ def get_powermax_storage_group_parameters():
         new_sg_name=dict(
             required=False,
             type='str'),
+        snapshot_policies=dict(
+            required=False,
+            type='list', elements='str'),
+        snapshot_policy_state=dict(
+            required=False,
+            type='str',
+            choices=[
+                'present-in-group',
+                'absent-in-group']),
         state=dict(
             required=True,
             choices=[

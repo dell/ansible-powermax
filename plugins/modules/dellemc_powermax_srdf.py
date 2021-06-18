@@ -122,160 +122,160 @@ options:
   '''
 
 EXAMPLES = r'''
-  - name: Create and establish storagegroup SRDF/a pairing
-    register: Job_details_body
-    dellemc_powermax_srdf:
-      unispherehost: "{{unispherehost}}"
-      universion: "{{universion}}"
-      verifycert: "{{verifycert}}"
-      user: "{{user}}"
-      password: "{{password}}"
-      serial_no: "{{serial_no}}"
-      sg_name: "{{sg_name}}"
-      remote_serial_no: "{{remote_serial_no}}"
-      srdf_mode: 'Asynchronous'
-      srdf_state: 'Establish'
-      state: 'present'
+- name: Create and establish storagegroup SRDF/a pairing
+  register: Job_details_body
+  dellemc_powermax_srdf:
+    unispherehost: "{{unispherehost}}"
+    universion: "{{universion}}"
+    verifycert: "{{verifycert}}"
+    user: "{{user}}"
+    password: "{{password}}"
+    serial_no: "{{serial_no}}"
+    sg_name: "{{sg_name}}"
+    remote_serial_no: "{{remote_serial_no}}"
+    srdf_mode: 'Asynchronous'
+    srdf_state: 'Establish'
+    state: 'present'
 
-  - name: Create storagegroup SRDF/s pair in default suspended mode as an
-          Synchronous task
-    dellemc_powermax_srdf:
-      unispherehost: "{{unispherehost}}"
-      universion: "{{universion}}"
-      verifycert: "{{verifycert}}"
-      user: "{{user}}"
-      password: "{{password}}"
-      serial_no: "{{serial_no}}"
-      sg_name: "{{sg_name2}}"
-      remote_serial_no: "{{remote_serial_no}}"
-      state: 'present'
-      srdf_mode: 'Synchronous'
-      wait_for_completion: True
+- name: Create storagegroup SRDF/s pair in default suspended mode as an
+        Synchronous task
+  dellemc_powermax_srdf:
+    unispherehost: "{{unispherehost}}"
+    universion: "{{universion}}"
+    verifycert: "{{verifycert}}"
+    user: "{{user}}"
+    password: "{{password}}"
+    serial_no: "{{serial_no}}"
+    sg_name: "{{sg_name2}}"
+    remote_serial_no: "{{remote_serial_no}}"
+    state: 'present'
+    srdf_mode: 'Synchronous'
+    wait_for_completion: True
 
-  - name: Create storagegroup Metro SRDF pair with Witness for resiliency
-    dellemc_powermax_srdf:
-      unispherehost: "{{unispherehost}}"
-      universion: "{{universion}}"
-      verifycert: "{{verifycert}}"
-      user: "{{user}}"
-      password: "{{password}}"
-      serial_no: "{{serial_no}}"
-      sg_name: "{{sg_name}}"
-      remote_serial_no: "{{remote_serial_no}}"
-      state: 'present'
-      srdf_mode: 'Active'
-      wait_for_completion: True
-      srdf_state: 'Establish'
+- name: Create storagegroup Metro SRDF pair with Witness for resiliency
+  dellemc_powermax_srdf:
+    unispherehost: "{{unispherehost}}"
+    universion: "{{universion}}"
+    verifycert: "{{verifycert}}"
+    user: "{{user}}"
+    password: "{{password}}"
+    serial_no: "{{serial_no}}"
+    sg_name: "{{sg_name}}"
+    remote_serial_no: "{{remote_serial_no}}"
+    state: 'present'
+    srdf_mode: 'Active'
+    wait_for_completion: True
+    srdf_state: 'Establish'
 
-  - name: Suspend storagegroup Metro SRDF pair
-    dellemc_powermax_srdf:
-      unispherehost: "{{unispherehost}}"
-      universion: "{{universion}}"
-      verifycert: "{{verifycert}}"
-      user: "{{user}}"
-      password: "{{password}}"
-      serial_no: "{{serial_no}}"
-      sg_name: "{{sg_name}}"
-      remote_serial_no: "{{remote_serial_no}}"
-      state: 'present'
-      srdf_state: 'Suspend'
+- name: Suspend storagegroup Metro SRDF pair
+  dellemc_powermax_srdf:
+    unispherehost: "{{unispherehost}}"
+    universion: "{{universion}}"
+    verifycert: "{{verifycert}}"
+    user: "{{user}}"
+    password: "{{password}}"
+    serial_no: "{{serial_no}}"
+    sg_name: "{{sg_name}}"
+    remote_serial_no: "{{remote_serial_no}}"
+    state: 'present'
+    srdf_state: 'Suspend'
 
-  - name: Establish link for storagegroup Metro SRDF pair and use Bias for
-          resiliency
-    dellemc_powermax_srdf:
-      unispherehost: "{{unispherehost}}"
-      universion: "{{universion}}"
-      verifycert: "{{verifycert}}"
-      user: "{{user}}"
-      password: "{{password}}"
-      serial_no: "{{serial_no}}"
-      sg_name: "{{sg_name}}"
-      remote_serial_no: "{{remote_serial_no}}"
-      state: 'present'
-      wait_for_completion: False
-      srdf_state: 'Establish'
-      witness: False
+- name: Establish link for storagegroup Metro SRDF pair and use Bias for
+        resiliency
+  dellemc_powermax_srdf:
+    unispherehost: "{{unispherehost}}"
+    universion: "{{universion}}"
+    verifycert: "{{verifycert}}"
+    user: "{{user}}"
+    password: "{{password}}"
+    serial_no: "{{serial_no}}"
+    sg_name: "{{sg_name}}"
+    remote_serial_no: "{{remote_serial_no}}"
+    state: 'present'
+    wait_for_completion: False
+    srdf_state: 'Establish'
+    witness: False
 
-  - name: Get SRDF details
-    dellemc_powermax_srdf:
-      unispherehost: "{{unispherehost}}"
-      universion: "{{universion}}"
-      verifycert: "{{verifycert}}"
-      user: "{{user}}"
-      password: "{{password}}"
-      serial_no: "{{serial_no}}"
-      sg_name: "{{sg_name}}"
-      state: 'present'
+- name: Get SRDF details
+  dellemc_powermax_srdf:
+    unispherehost: "{{unispherehost}}"
+    universion: "{{universion}}"
+    verifycert: "{{verifycert}}"
+    user: "{{user}}"
+    password: "{{password}}"
+    serial_no: "{{serial_no}}"
+    sg_name: "{{sg_name}}"
+    state: 'present'
 
-  - name: Modify SRDF mode
-    dellemc_powermax_srdf:
-      unispherehost: "{{unispherehost}}"
-      universion: "{{universion}}"
-      verifycert: "{{verifycert}}"
-      user: "{{user}}"
-      password: "{{password}}"
-      serial_no: "{{serial_no}}"
-      sg_name: "{{sg_name}}"
-      srdf_mode: 'Synchronous'
-      state: 'present'
+- name: Modify SRDF mode
+  dellemc_powermax_srdf:
+    unispherehost: "{{unispherehost}}"
+    universion: "{{universion}}"
+    verifycert: "{{verifycert}}"
+    user: "{{user}}"
+    password: "{{password}}"
+    serial_no: "{{serial_no}}"
+    sg_name: "{{sg_name}}"
+    srdf_mode: 'Synchronous'
+    state: 'present'
 
-  - name: Failover SRDF link
-    dellemc_powermax_srdf:
-      unispherehost: "{{unispherehost}}"
-      universion: "{{universion}}"
-      verifycert: "{{verifycert}}"
-      user: "{{user}}"
-      password: "{{password}}"
-      serial_no: "{{serial_no}}"
-      sg_name: "{{sg_name}}"
-      srdf_state: 'Failover'
-      state: 'present'
+- name: Failover SRDF link
+  dellemc_powermax_srdf:
+    unispherehost: "{{unispherehost}}"
+    universion: "{{universion}}"
+    verifycert: "{{verifycert}}"
+    user: "{{user}}"
+    password: "{{password}}"
+    serial_no: "{{serial_no}}"
+    sg_name: "{{sg_name}}"
+    srdf_state: 'Failover'
+    state: 'present'
 
-  - name: Get SRDF Job status
-    dellemc_powermax_srdf:
-      unispherehost: "{{unispherehost}}"
-      universion: "{{universion}}"
-      verifycert: "{{verifycert}}"
-      user: "{{user}}"
-      password: "{{password}}"
-      serial_no: "{{serial_no}}"
-      job_id: "{{Job_details_body.Job_details.jobId}}"
-      state: 'present'
+- name: Get SRDF Job status
+  dellemc_powermax_srdf:
+    unispherehost: "{{unispherehost}}"
+    universion: "{{universion}}"
+    verifycert: "{{verifycert}}"
+    user: "{{user}}"
+    password: "{{password}}"
+    serial_no: "{{serial_no}}"
+    job_id: "{{Job_details_body.Job_details.jobId}}"
+    state: 'present'
 
-  - name: Establish SRDF link
-    dellemc_powermax_srdf:
-      unispherehost: "{{unispherehost}}"
-      universion: "{{universion}}"
-      verifycert: "{{verifycert}}"
-      user: "{{user}}"
-      password: "{{password}}"
-      serial_no: "{{serial_no}}"
-      sg_name: "{{sg_name2}}"
-      srdf_state: 'Establish'
-      state: 'present'
+- name: Establish SRDF link
+  dellemc_powermax_srdf:
+    unispherehost: "{{unispherehost}}"
+    universion: "{{universion}}"
+    verifycert: "{{verifycert}}"
+    user: "{{user}}"
+    password: "{{password}}"
+    serial_no: "{{serial_no}}"
+    sg_name: "{{sg_name2}}"
+    srdf_state: 'Establish'
+    state: 'present'
 
-  - name: Suspend SRDF link
-    dellemc_powermax_srdf:
-      unispherehost: "{{unispherehost}}"
-      universion: "{{universion}}"
-      verifycert: "{{verifycert}}"
-      user: "{{user}}"
-      password: "{{password}}"
-      serial_no: "{{serial_no}}"
-      sg_name: "{{sg_name2}}"
-      srdf_state: 'Suspend'
-      state: 'present'
+- name: Suspend SRDF link
+  dellemc_powermax_srdf:
+    unispherehost: "{{unispherehost}}"
+    universion: "{{universion}}"
+    verifycert: "{{verifycert}}"
+    user: "{{user}}"
+    password: "{{password}}"
+    serial_no: "{{serial_no}}"
+    sg_name: "{{sg_name2}}"
+    srdf_state: 'Suspend'
+    state: 'present'
 
-  - name: Delete SRDF link
-    dellemc_powermax_srdf:
-      unispherehost: "{{unispherehost}}"
-      universion: "{{universion}}"
-      verifycert: "{{verifycert}}"
-      user: "{{user}}"
-      password: "{{password}}"
-      serial_no: "{{serial_no}}"
-      sg_name: "{{sg_name}}"
-      state: 'absent'
+- name: Delete SRDF link
+  dellemc_powermax_srdf:
+    unispherehost: "{{unispherehost}}"
+    universion: "{{universion}}"
+    verifycert: "{{verifycert}}"
+    user: "{{user}}"
+    password: "{{password}}"
+    serial_no: "{{serial_no}}"
+    sg_name: "{{sg_name}}"
+    state: 'absent'
 '''
 
 RETURN = r'''
@@ -387,7 +387,7 @@ HAS_PYU4V = utils.has_pyu4v_sdk()
 PYU4V_VERSION_CHECK = utils.pyu4v_version_check()
 
 # Application Type
-APPLICATION_TYPE = 'ansible_v1.4'
+APPLICATION_TYPE = 'ansible_v1.5.0'
 
 
 class PowerMax_SRDF(object):

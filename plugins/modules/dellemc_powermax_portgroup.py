@@ -67,90 +67,90 @@ options:
   '''
 
 EXAMPLES = r'''
-  - name: Create port group without ports
-    dellemc_powermax_portgroup:
-      unispherehost: "{{unispherehost}}"
-      universion: "{{universion}}"
-      verifycert: "{{verifycert}}"
-      user: "{{user}}"
-      password: "{{password}}"
-      serial_no: "{{array_id}}"
-      portgroup_name: "{{portgroup_name}}"
-      state: "present"
+- name: Create port group without ports
+  dellemc_powermax_portgroup:
+    unispherehost: "{{unispherehost}}"
+    universion: "{{universion}}"
+    verifycert: "{{verifycert}}"
+    user: "{{user}}"
+    password: "{{password}}"
+    serial_no: "{{array_id}}"
+    portgroup_name: "{{portgroup_name}}"
+    state: "present"
 
-  - name: Create port group with ports
-    dellemc_powermax_portgroup:
-      unispherehost: "{{unispherehost}}"
-      universion: "{{universion}}"
-      verifycert: "{{verifycert}}"
-      user: "{{user}}"
-      password: "{{password}}"
-      serial_no: "{{array_id}}"
-      portgroup_name: "{{portgroup_name}}"
-      state: "present"
-      ports:
-      - director_id: "FA-1D"
-        port_id: "5"
-      - director_id: "FA-2D"
-        port_id: "5"
-      port_state: "present-in-group"
+- name: Create port group with ports
+  dellemc_powermax_portgroup:
+    unispherehost: "{{unispherehost}}"
+    universion: "{{universion}}"
+    verifycert: "{{verifycert}}"
+    user: "{{user}}"
+    password: "{{password}}"
+    serial_no: "{{array_id}}"
+    portgroup_name: "{{portgroup_name}}"
+    state: "present"
+    ports:
+    - director_id: "FA-1D"
+      port_id: "5"
+    - director_id: "FA-2D"
+      port_id: "5"
+    port_state: "present-in-group"
 
-  - name: Add ports to port group
-    dellemc_powermax_portgroup:
-      unispherehost: "{{unispherehost}}"
-      universion: "{{universion}}"
-      verifycert: "{{verifycert}}"
-      user: "{{user}}"
-      password: "{{password}}"
-      serial_no: "{{array_id}}"
-      portgroup_name: "{{portgroup_name}}"
-      state: "present"
-      ports:
-      - director_id: "FA-2D"
-        port_id: "8"
-      - director_id: "FA-2D"
-        port_id: "9"
-      port_state: "present-in-group"
+- name: Add ports to port group
+  dellemc_powermax_portgroup:
+    unispherehost: "{{unispherehost}}"
+    universion: "{{universion}}"
+    verifycert: "{{verifycert}}"
+    user: "{{user}}"
+    password: "{{password}}"
+    serial_no: "{{array_id}}"
+    portgroup_name: "{{portgroup_name}}"
+    state: "present"
+    ports:
+    - director_id: "FA-2D"
+      port_id: "8"
+    - director_id: "FA-2D"
+      port_id: "9"
+    port_state: "present-in-group"
 
-  - name: Remove ports from port group
-    dellemc_powermax_portgroup:
-      unispherehost: "{{unispherehost}}"
-      universion: "{{universion}}"
-      verifycert: "{{verifycert}}"
-      user: "{{user}}"
-      password: "{{password}}"
-      serial_no: "{{array_id}}"
-      portgroup_name: "{{portgroup_name}}"
-      state: "present"
-      ports:
-      - director_id: "FA-2D"
-        port_id: "8"
-      - director_id: "FA-2D"
-        port_id: "9"
-      port_state: "absent-in-group"
+- name: Remove ports from port group
+  dellemc_powermax_portgroup:
+    unispherehost: "{{unispherehost}}"
+    universion: "{{universion}}"
+    verifycert: "{{verifycert}}"
+    user: "{{user}}"
+    password: "{{password}}"
+    serial_no: "{{array_id}}"
+    portgroup_name: "{{portgroup_name}}"
+    state: "present"
+    ports:
+    - director_id: "FA-2D"
+      port_id: "8"
+    - director_id: "FA-2D"
+      port_id: "9"
+    port_state: "absent-in-group"
 
-  - name: Modify port group
-    dellemc_powermax_portgroup:
-      unispherehost: "{{unispherehost}}"
-      universion: "{{universion}}"
-      verifycert: "{{verifycert}}"
-      user: "{{user}}"
-      password: "{{password}}"
-      serial_no: "{{array_id}}"
-      portgroup_name: "{{portgroup_name}}"
-      state: "present"
-      new_name: "{{new_name}}"
+- name: Modify port group
+  dellemc_powermax_portgroup:
+    unispherehost: "{{unispherehost}}"
+    universion: "{{universion}}"
+    verifycert: "{{verifycert}}"
+    user: "{{user}}"
+    password: "{{password}}"
+    serial_no: "{{array_id}}"
+    portgroup_name: "{{portgroup_name}}"
+    state: "present"
+    new_name: "{{new_name}}"
 
-  - name: Delete port group
-    dellemc_powermax_portgroup:
-      unispherehost: "{{unispherehost}}"
-      universion: "{{universion}}"
-      verifycert: "{{verifycert}}"
-      user: "{{user}}"
-      password: "{{password}}"
-      serial_no: "{{array_id}}"
-      portgroup_name: "{{portgroup_name}}"
-      state: "absent"
+- name: Delete port group
+  dellemc_powermax_portgroup:
+    unispherehost: "{{unispherehost}}"
+    universion: "{{universion}}"
+    verifycert: "{{verifycert}}"
+    user: "{{user}}"
+    password: "{{password}}"
+    serial_no: "{{array_id}}"
+    portgroup_name: "{{portgroup_name}}"
+    state: "absent"
 '''
 
 RETURN = r'''
@@ -200,7 +200,7 @@ HAS_PYU4V = utils.has_pyu4v_sdk()
 PYU4V_VERSION_CHECK = utils.pyu4v_version_check()
 
 # Application Type
-APPLICATION_TYPE = 'ansible_v1.4'
+APPLICATION_TYPE = 'ansible_v1.5.0'
 
 
 class PowerMaxPortGroup(object):
