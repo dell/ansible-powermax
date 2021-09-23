@@ -1,6 +1,8 @@
 #!/usr/bin/python
 # Copyright: (c) 2019-2021, DellEMC
 
+# Apache License version 2.0 (see MODULE-LICENSE or http://www.apache.org/licenses/LICENSE-2.0.txt)
+
 from __future__ import (absolute_import, division, print_function)
 
 __metaclass__ = type
@@ -462,7 +464,7 @@ HAS_PYU4V = utils.has_pyu4v_sdk()
 PYU4V_VERSION_CHECK = utils.pyu4v_version_check()
 
 # Application Type
-APPLICATION_TYPE = 'ansible_v1.5.0'
+APPLICATION_TYPE = 'ansible_v1.6.0'
 
 
 class PowerMaxStorageGroup(object):
@@ -482,11 +484,12 @@ class PowerMaxStorageGroup(object):
         self.module_params.update(get_powermax_storage_group_parameters())
 
         # initialize the Ansible module
-        required_together = [['snapshot_policies', 'snapshot_policy_state']]
+        required_together = [['snapshot_policies', 'snapshot_policy_state'],
+                             ['volumes', 'vol_state']]
 
         self.module = AnsibleModule(
             argument_spec=self.module_params,
-            supports_check_mode=False,
+            supports_check_mode=True,
             required_together=required_together
         )
         if HAS_PYU4V is False:
@@ -521,6 +524,7 @@ class PowerMaxStorageGroup(object):
             curr_version) >= utils.pkg_resources.parse_version(supp_version)
         if is_supported_version:
             self.snapshot_policy = self.u4v_conn.snapshot_policy
+        LOG.info('Check Mode flag is %s', self.module.check_mode)
         LOG.info('Got PyU4V instance for provisioning on PowerMax ')
 
     def get_volume(self):
@@ -533,8 +537,9 @@ class PowerMaxStorageGroup(object):
             LOG.info('Getting volume %s details', vol_id)
             return self.provisioning.get_volume(vol_id)
         except Exception as e:
-            LOG.error('Got error %s while getting details of volume %s',
-                      str(e), vol_id)
+            errorMsg = ("Getting details of volume %s failed with error "
+                        "%s" % (vol_id, str(e)))
+            LOG.error(errorMsg)
             return None
 
     def get_volumes_storagegroup(self, sg_name):
@@ -554,8 +559,8 @@ class PowerMaxStorageGroup(object):
                      '%s', len(sg_vol_list), sg_name)
             return sg_vol_list
         except Exception as e:
-            errmsg = 'Failed to list the volume from storage group ' \
-                     '{0} with error {1}'.format(sg_name, str(e))
+            errmsg = ("Getting list of volumes for storage group "
+                      "%s failed with error %s" % (sg_name, str(e)))
             LOG.error(errmsg)
             self.show_error_exit(msg=errmsg)
             return None
@@ -591,19 +596,20 @@ class PowerMaxStorageGroup(object):
                 sg_vol_details.append(details)
             return sg_vol_details
         except Exception as e:
-            errmsg = 'Failed to get the volumes details of storage group %s'\
-                     ' with error %s' % (sg_name, str(e))
+            errmsg = ("Getting volume details of storage group "
+                      "%s failed with error %s" % (sg_name, str(e)))
             self.show_error_exit(msg=errmsg)
             return None
 
     def get_storage_group(self, sg_name):
         """Get storage group details"""
         try:
-            LOG.info('Getting storage group %s details', sg_name)
+            LOG.info('Getting details of storage group %s', sg_name)
             return self.provisioning.get_storage_group(sg_name)
         except Exception as e:
-            LOG.info('Got error %s while getting details of storage '
-                     'group %s', str(e), sg_name)
+            errorMsg = ("Getting details of storage group %s failed with error "
+                        "%s" % (sg_name, str(e)))
+            LOG.error(errorMsg)
             return None
 
     def if_srdf_protected(self, sg_details):
@@ -615,10 +621,10 @@ class PowerMaxStorageGroup(object):
                     return True
             return False
         except Exception as e:
-            msg = "Failed to determine if storage group %s is srdf protected, " \
-                  "with error %s" % (sg_details['storageGroupId'], str(e))
-            LOG.error(msg)
-            self.show_error_exit(msg=msg)
+            errorMsg = ("Determining srdf protection for storage group %s "
+                        "failed with error %s" % (sg_details['storageGroupId'], str(e)))
+            LOG.error(errorMsg)
+            self.show_error_exit(msg=errorMsg)
 
     def create_storage_group(self, sg_name):
         """Create a storage group"""
@@ -633,6 +639,7 @@ class PowerMaxStorageGroup(object):
             srp = 'SRP_1'
 
         disable_compression = not compression
+        resp = {}
         try:
             if self.module.params['snapshot_policies'] \
                     and self.module.params['snapshot_policy_state'] \
@@ -641,19 +648,22 @@ class PowerMaxStorageGroup(object):
                 snapshot_policies = self.module.params['snapshot_policies']
                 LOG.info('Creating storage group %s and associating snapshot '
                          'policies to it %s', sg_name, snapshot_policies)
-                resp = self.provisioning.create_storage_group(
-                    srp_id=srp, sg_id=sg_name, slo=slo, workload=None,
-                    do_disable_compression=disable_compression,
-                    snapshot_policy_ids=snapshot_policies)
+                if not self.module.check_mode:
+                    resp = self.provisioning.create_storage_group(
+                        srp_id=srp, sg_id=sg_name, slo=slo, workload=None,
+                        do_disable_compression=disable_compression,
+                        snapshot_policy_ids=snapshot_policies)
                 return True, resp
             LOG.info('Creating empty storage group %s ', sg_name)
-            resp = self.provisioning.create_empty_storage_group(
-                srp_id=srp, storage_group_id=sg_name, service_level=slo,
-                workload=None, disable_compression=disable_compression)
+            if not self.module.check_mode:
+                resp = self.provisioning.create_empty_storage_group(
+                    srp_id=srp, storage_group_id=sg_name, service_level=slo,
+                    workload=None, disable_compression=disable_compression)
             return True, resp
         except Exception as e:
-            self.show_error_exit(msg='Create storage group {0} failed.{1}'
-                                 .format(sg_name, str(e)))
+            errorMsg = ("Create storage group %s failed with error %s"
+                        % (sg_name, str(e)))
+            self.show_error_exit(msg=errorMsg)
 
     def add_volume_storage_group(self, sg_name):
         """Add new volume(s) to existing storage group"""
@@ -663,13 +673,9 @@ class PowerMaxStorageGroup(object):
         storage_group = self.provisioning.get_storage_group(sg_name)
         for vol in volumes:
             LOG.info('Processing vol %s', vol)
-            if ('vol_id' in vol) and ('vol_name' in vol):
-                LOG.warn(
-                    'Both name and id are found for volume %s. No action '
-                    'would be taken. Please specify either name or id',
-                    sg_name)
-            elif ('cap_unit' in vol) or ('vol_name' in vol) or \
-                    ('size' in vol):
+            if (self.validate_volume(vol)) and (('cap_unit' in vol) or
+                                                ('vol_name' in vol) or
+                                                ('size' in vol)):
                 if 'cap_unit' in vol:
                     unit = vol['cap_unit']
                 else:
@@ -707,7 +713,7 @@ class PowerMaxStorageGroup(object):
                                     self.foxtail_version):
                                 msg = ("Add new volumes on SRDF protected"
                                        " storage group is supported from"
-                                       " v5978.444.444 onward. Please"
+                                       " v5978.444.444 onwards. Please"
                                        " upgrade the array for this support.")
                                 self.show_error_exit(msg=msg)
                             rdfg_list = self.replication. \
@@ -732,14 +738,15 @@ class PowerMaxStorageGroup(object):
                                        ", remote_array_1_sgs= ",
                                        remote_array_sg)
                                 LOG.info(msg)
-                                self.provisioning.add_new_volume_to_storage_group(
-                                    storage_group_id=sg_name, num_vols=1,
-                                    vol_size=size, cap_unit=unit,
-                                    vol_name=name,
-                                    create_new_volumes=True,
-                                    remote_array_1_id=remote_array,
-                                    remote_array_1_sgs=remote_array_sg)
-                                LOG.info('Volume created!')
+                                if not self.module.check_mode:
+                                    self.provisioning.add_new_volume_to_storage_group(
+                                        storage_group_id=sg_name, num_vols=1,
+                                        vol_size=size, cap_unit=unit,
+                                        vol_name=name,
+                                        create_new_volumes=True,
+                                        remote_array_1_id=remote_array,
+                                        remote_array_1_sgs=remote_array_sg)
+                                    LOG.info('Volume created!')
                                 changed = True
 
                             # Multisite configuration
@@ -775,16 +782,17 @@ class PowerMaxStorageGroup(object):
                                        remote_array_2_sg
                                        )
                                 LOG.info(msg)
-                                self.provisioning.add_new_volume_to_storage_group(
-                                    storage_group_id=sg_name, num_vols=1,
-                                    vol_size=size, cap_unit=unit,
-                                    vol_name=name,
-                                    create_new_volumes=True,
-                                    remote_array_1_id=remote_array_1,
-                                    remote_array_1_sgs=remote_array_1_sg,
-                                    remote_array_2_id=remote_array_2,
-                                    remote_array_2_sgs=remote_array_2_sg)
-                                LOG.info('Volume created!')
+                                if not self.module.check_mode:
+                                    self.provisioning.add_new_volume_to_storage_group(
+                                        storage_group_id=sg_name, num_vols=1,
+                                        vol_size=size, cap_unit=unit,
+                                        vol_name=name,
+                                        create_new_volumes=True,
+                                        remote_array_1_id=remote_array_1,
+                                        remote_array_1_sgs=remote_array_1_sg,
+                                        remote_array_2_id=remote_array_2,
+                                        remote_array_2_sgs=remote_array_2_sg)
+                                    LOG.info('Volume created!')
                                 changed = True
                             if len(rdfg_list) > 2:
                                 err_msg = (
@@ -797,13 +805,14 @@ class PowerMaxStorageGroup(object):
                         else:
                             LOG.info('Creating volume with name %s, '
                                      'size %s %s', name, size, unit)
-                            self.provisioning.add_new_volume_to_storage_group(
-                                storage_group_id=sg_name, num_vols=1,
-                                vol_size=size, cap_unit=unit, vol_name=name,
-                                create_new_volumes=True,
-                                remote_array_1_id=remote_array,
-                                remote_array_1_sgs=remote_array_sg)
-                            LOG.info('Volume created!')
+                            if not self.module.check_mode:
+                                self.provisioning.add_new_volume_to_storage_group(
+                                    storage_group_id=sg_name, num_vols=1,
+                                    vol_size=size, cap_unit=unit, vol_name=name,
+                                    create_new_volumes=True,
+                                    remote_array_1_id=remote_array,
+                                    remote_array_1_sgs=remote_array_sg)
+                                LOG.info('Volume created!')
                             changed = True
                     elif len(volume_list) >= 1:
                         for volume in volume_list:
@@ -830,8 +839,8 @@ class PowerMaxStorageGroup(object):
                                     'PowerMax from Ansible'. format(
                                         name, vol_details['cap_gb']))
                 except Exception as e:
-                    err_msg = "Add new volume(s) on storage group %s failed" \
-                              " with error %s" % (sg_name, str(e))
+                    err_msg = ("Adding new volume(s) on storage group %s failed "
+                               " with error %s" % (sg_name, str(e)))
                     self.show_error_exit(msg=err_msg)
         existing_volumes_details_in_sg = self.\
             get_volumes_details_storagegroup(sg_name)
@@ -841,11 +850,12 @@ class PowerMaxStorageGroup(object):
         """Delete storage group from PowerMax"""
         try:
             self.check_for_linked_snapshots(sg_name)
-            self.provisioning.delete_storage_group(sg_name)
+            if not self.module.check_mode:
+                self.provisioning.delete_storage_group(sg_name)
             return True
         except Exception as e:
-            err_msg = "Delete storage group %s failed with error %s " \
-                      % (sg_name, str(e))
+            err_msg = ("Delete storage group %s failed with error %s "
+                       % (sg_name, str(e)))
             self.show_error_exit(msg=err_msg)
 
     def add_existing_volumes_to_sg(self, vol_list, sg_name):
@@ -856,11 +866,7 @@ class PowerMaxStorageGroup(object):
             sg_name)
         vol_ids = []
         for vol in vol_list:
-            if ('vol_id' in vol) and ('vol_name' in vol):
-                LOG.warn(
-                    'Both name and id are found for volume %s. No action'
-                    'would be taken. Please specify either name or id', vol)
-            elif 'vol_id' in vol:
+            if self.validate_volume(vol) and 'vol_id' in vol:
                 vol_ids.append(vol['vol_id'])
 
         volumes_to_add = [
@@ -881,18 +887,17 @@ class PowerMaxStorageGroup(object):
                     vol_details['volume_identifier'])
 
         if len(vol_names_to_be_added) > len(set(vol_names_to_be_added)):
-            self.show_error_exit(
-                msg="One or more volumes to be added to SG {0} "
-                    "has the same identifer.".format(sg_name))
+            errorMsg = ("One or more volumes to be added to SG %s "
+                        "has the same identifier" % sg_name)
+            self.show_error_exit(msg=errorMsg)
 
         duplicate_names = any(elem in vol_names_to_be_added for elem in
                               existing_volume_names_in_sg)
 
         if duplicate_names:
-            self.show_error_exit(
-                msg="One or more volumes to be added are already present in"
-                    " SG {0} with the same name.".
-                    format(sg_name))
+            errorMsg = ("One or more volumes to be added are already present in"
+                        " SG %s with the same name" % sg_name)
+            self.show_error_exit(msg=errorMsg)
 
         if not volumes_to_add:
             LOG.info(
@@ -906,13 +911,13 @@ class PowerMaxStorageGroup(object):
             if self.if_srdf_protected(storage_group):
                 self.show_error_exit(msg=self.protected_sg_msg)
 
-            self.provisioning.\
-                add_existing_volume_to_storage_group(sg_name, volumes_to_add)
-            existing_volumes_details_in_sg = self.\
-                get_volumes_details_storagegroup(sg_name)
+            if not self.module.check_mode:
+                self.provisioning.\
+                    add_existing_volume_to_storage_group(sg_name, volumes_to_add)
+            existing_volumes_details_in_sg = self.get_volumes_details_storagegroup(sg_name)
             return True, existing_volumes_details_in_sg
         except Exception as e:
-            errorMsg = ("Add existing volume(s) to storage group %s failed "
+            errorMsg = ("Adding existing volume(s) to storage group %s failed "
                         "with error %s" % (sg_name, str(e)))
             self.show_error_exit(msg=errorMsg)
 
@@ -922,11 +927,7 @@ class PowerMaxStorageGroup(object):
             sg_name)
         vol_ids = []
         for vol in vol_list:
-            if ('vol_id' in vol) and ('vol_name' in vol):
-                LOG.warn('Both name and id are found for volume %s. '
-                         'No action would be taken. Please specify '
-                         'either name or id', vol)
-            elif 'vol_id' in vol:
+            if (self.validate_volume(vol)) and ('vol_id' in vol):
                 vol_ids.append(vol['vol_id'].upper())
             elif 'vol_name' in vol:
                 params = {"storageGroupId": sg_name,
@@ -937,14 +938,12 @@ class PowerMaxStorageGroup(object):
                         'No volume found with volume identifier %s in storage'
                         ' group %s', vol['vol_name'], sg_name)
                 elif len(volume_list) > 1:
-                    self.show_error_exit(msg='Duplicate volumes found: '
-                                         'There are {0} volume(s) with '
-                                         'the same name {1} in '
-                                         'the storage group {2}'.
-                                         format(len(volume_list),
-                                                vol['vol_name'],
-                                                sg_name)
-                                         )
+                    errMsg = ("Duplicate volumes found: "
+                              "There are %s volume(s) with "
+                              "the same name %s in "
+                              "the storage group %s"
+                              % (len(volume_list), vol['vol_name'], sg_name))
+                    self.show_error_exit(msg=errMsg)
                 else:
                     vol_ids.append(volume_list[0])
 
@@ -985,12 +984,13 @@ class PowerMaxStorageGroup(object):
                     remote_array_2 = rdfg_details['remoteSymmetrix']
                     remote_array_2_sg = sg_name
                     for vol in volumes_to_remove:
-                        self.provisioning.remove_volume_from_storage_group(
-                            storage_group_id=sg_name, vol_id=vol,
-                            remote_array_1_id=remote_array_1,
-                            remote_array_1_sgs=remote_array_1_sg,
-                            remote_array_2_id=remote_array_2,
-                            remote_array_2_sgs=remote_array_2_sg)
+                        if not self.module.check_mode:
+                            self.provisioning.remove_volume_from_storage_group(
+                                storage_group_id=sg_name, vol_id=vol,
+                                remote_array_1_id=remote_array_1,
+                                remote_array_1_sgs=remote_array_1_sg,
+                                remote_array_2_id=remote_array_2,
+                                remote_array_2_sgs=remote_array_2_sg)
                     vol_details = self.get_volumes_details_storagegroup(
                         sg_name)
                     return True, vol_details
@@ -998,7 +998,7 @@ class PowerMaxStorageGroup(object):
                 if len(rdfg_list) > 2:
                     err_msg = ("More than 2 rdf groups exists for the given "
                                "storage group %s. Create volume is not "
-                               "supported.", sg_name)
+                               "supported" % sg_name)
                     self.show_error_exit(msg=err_msg)
 
                 rdfg_details = self.replication.\
@@ -1007,16 +1007,17 @@ class PowerMaxStorageGroup(object):
                 remote_array_sg = sg_name
 
             for vol in volumes_to_remove:
-                self.provisioning.remove_volume_from_storage_group(
-                    storage_group_id=sg_name, vol_id=vol,
-                    remote_array_1_id=remote_array,
-                    remote_array_1_sgs=remote_array_sg)
+                if not self.module.check_mode:
+                    self.provisioning.remove_volume_from_storage_group(
+                        storage_group_id=sg_name, vol_id=vol,
+                        remote_array_1_id=remote_array,
+                        remote_array_1_sgs=remote_array_sg)
             vol_details = self.get_volumes_details_storagegroup(sg_name)
             return True, vol_details
 
         except Exception as e:
-            errorMsg = "Remove existing volume from storage group %s " \
-                       "failed with error %s" % (sg_name, str(e))
+            errorMsg = ("Remove existing volume(s) from storage group %s "
+                        "failed with error %s" % (sg_name, str(e)))
             self.show_error_exit(msg=errorMsg)
 
     def modify_sg_srp(self, storage_group, new_srp):
@@ -1031,10 +1032,11 @@ class PowerMaxStorageGroup(object):
         }
         LOG.info('Modifying the SG SRP to %s ', new_srp)
         try:
-            self.provisioning.modify_storage_group(storage_group, payload)
+            if not self.module.check_mode:
+                self.provisioning.modify_storage_group(storage_group, payload)
         except Exception as e:
             errorMsg = ("Modify attribute SRP of storage group %s failed "
-                        "with error %s", storage_group, str(e))
+                        "with error %s" % (storage_group, str(e)))
             self.show_error_exit(msg=errorMsg)
 
     def modify_sg_slo(self, sg_name, new_slo):
@@ -1058,10 +1060,11 @@ class PowerMaxStorageGroup(object):
                 LOG.info('The existing SG SLO is %s and the desired SG SLO '
                          'is %s ', storage_group['slo'],
                          self.module.params['service_level'])
-                self.provisioning.modify_storage_group(sg_name, payload)
+                if not self.module.check_mode:
+                    self.provisioning.modify_storage_group(sg_name, payload)
             except Exception as e:
                 errorMsg = ("Modify attribute SLO of storage group %s "
-                            "failed with error %s", sg_name, str(e))
+                            "failed with error %s" % (sg_name, str(e)))
                 self.show_error_exit(msg=errorMsg)
 
     def modify_sg_compression(self, sg_name, new_compression):
@@ -1084,10 +1087,11 @@ class PowerMaxStorageGroup(object):
                          ' SG compression is %s ',
                          storage_group['compression'],
                          self.module.params['compression'])
-                self.provisioning.modify_storage_group(sg_name, payload)
+                if not self.module.check_mode:
+                    self.provisioning.modify_storage_group(sg_name, payload)
             except Exception as e:
                 errorMsg = ("Modify attribute compression of storage group "
-                            "%s failed with error %s", sg_name, str(e))
+                            "%s failed with error %s" % (sg_name, str(e)))
                 self.show_error_exit(msg=errorMsg)
 
     def modify_storage_group_attributes(self, storage_group, modified_param):
@@ -1122,14 +1126,15 @@ class PowerMaxStorageGroup(object):
                     # SRDF protected SG are not allowed to be modified.
                     if self.if_srdf_protected(storage_group):
                         self.show_error_exit(msg=self.protected_sg_msg)
-                    self.provisioning.\
-                        add_child_storage_group_to_parent_group(child_sg,
-                                                                parent_sg)
+                    if not self.module.check_mode:
+                        self.provisioning.\
+                            add_child_storage_group_to_parent_group(child_sg,
+                                                                    parent_sg)
                     changed = True
                 except Exception as e:
-                    error_message = ('Adding child SG %s to parent storage '
-                                     'group %s failed with error %s',
-                                     child_sg, parent_sg, str(e))
+                    error_message = ("Adding child SG %s to parent storage "
+                                     "group %s failed with error %s"
+                                     % (child_sg, parent_sg, str(e)))
                     self.show_error_exit(msg=error_message)
         return changed
 
@@ -1145,14 +1150,15 @@ class PowerMaxStorageGroup(object):
                     # SRDF protected SG are not allowed to be modified.
                     if self.if_srdf_protected(storage_group):
                         self.show_error_exit(msg=self.protected_sg_msg)
-                    self.provisioning.\
-                        remove_child_storage_group_from_parent_group(child_sg,
-                                                                     parent_sg)
+                    if not self.module.check_mode:
+                        self.provisioning.\
+                            remove_child_storage_group_from_parent_group(child_sg,
+                                                                         parent_sg)
                     changed = True
                 except Exception as e:
-                    error_message = ('Removing child SG %s from parent '
-                                     'storage group %s failed with error %s ',
-                                     child_sg, parent_sg, str(e))
+                    error_message = ("Removing child SG %s from parent "
+                                     "storage group %s failed with error %s "
+                                     % (child_sg, parent_sg, str(e)))
                     self.show_error_exit(msg=error_message)
         return changed
 
@@ -1196,9 +1202,9 @@ class PowerMaxStorageGroup(object):
     def rename_storage_group(self, storage_group, new_sg_name):
         """Rename the Storage Group"""
         if not storage_group:
-            error_message = ('Rename storage group %s to new name %s '
-                             'failed because SG %s does not exist ',
-                             self.module.params['sg_name'], new_sg_name)
+            error_message = ("Rename storage group %s to new name %s "
+                             "failed because SG does not exist "
+                             % (self.module.params['sg_name'], new_sg_name))
             self.show_error_exit(msg=error_message)
         changed = False
         if storage_group['storageGroupId'] == new_sg_name:
@@ -1211,14 +1217,14 @@ class PowerMaxStorageGroup(object):
             }
         }
         try:
-            self.provisioning.\
-                modify_storage_group(storage_group['storageGroupId'], payload)
+            if not self.module.check_mode:
+                self.provisioning.\
+                    modify_storage_group(storage_group['storageGroupId'], payload)
             changed = True
         except Exception as e:
-            error_message = ('Rename storage group %s to new name %s '
-                             'failed with error %s ',
-                             self.module.params['sg_name'], new_sg_name,
-                             str(e))
+            error_message = ("Rename storage group %s to new name %s "
+                             "failed with error %s "
+                             % (self.module.params['sg_name'], new_sg_name, str(e)))
             self.show_error_exit(msg=error_message)
         return changed
 
@@ -1245,20 +1251,16 @@ class PowerMaxStorageGroup(object):
                             snap_name=snap,
                             gen_num=gen)
                     if gen_details['isLinked']:
-                        self.show_error_exit(msg="Cannot delete SG {0} "
-                                             "because it "
-                                             "has snapshot(s) in linked "
-                                             "state. "
-                                             "Please unlink the snapshot(s) "
-                                             "and retry.".format(sg_name))
+                        errMsg = ("Cannot delete SG %s "
+                                  "because it has snapshot(s) "
+                                  "in linked state. Please "
+                                  "unlink the snapshot(s) and "
+                                  "and retry." % sg_name)
+                        self.show_error_exit(msg=errMsg)
         except Exception as e:
-            error_msg = "Delete storage group %s failed with error %s " \
-                        % (sg_name, str(e))
+            error_msg = ("Delete storage group %s failed with error %s "
+                         % (sg_name, str(e)))
             self.show_error_exit(msg=error_msg)
-
-    def check_task_validity(self, volumes, vol_state):
-        if volumes and vol_state is None:
-            self.show_error_exit(msg="Please provide a valid vol_state.")
 
     def snapshot_policy_compliance_details(self, sg_name):
         LOG.info('Getting snapshot policy compliance details for storage '
@@ -1272,9 +1274,9 @@ class PowerMaxStorageGroup(object):
             else:
                 return None
         except Exception as e:
-            errmsg = 'Failed to get the snapshot policy compliance details ' \
-                     'for the storage group %s with error %s' \
-                     % (sg_name, str(e))
+            errmsg = ("Getting snapshot policy compliance details "
+                      "for the storage group %s failed with error %s"
+                      % (sg_name, str(e)))
             self.show_error_exit(msg=errmsg)
             return None
 
@@ -1283,7 +1285,7 @@ class PowerMaxStorageGroup(object):
         try:
             storage_group_details \
                 = self.provisioning.get_storage_group(sg_name)
-            LOG.info("storage_group_details %s", storage_group_details)
+            LOG.debug("storage_group_details %s", storage_group_details)
 
             # Check if the given SG has maximum SP count or not
             snapshot_policy_to_add = []
@@ -1301,11 +1303,12 @@ class PowerMaxStorageGroup(object):
                 if len(snapshot_policy_to_add) > 0:
                     sg_list = [sg_name]
                     for sp in snapshot_policy_to_add:
-                        self.snapshot_policy.\
-                            associate_to_storage_groups(
-                                sp, storage_group_names=sg_list)
-                        LOG.info("Successfully added snapshot policy %s to "
-                                 "SG %s", sp, sg_name)
+                        if not self.module.check_mode:
+                            self.snapshot_policy.\
+                                associate_to_storage_groups(
+                                    sp, storage_group_names=sg_list)
+                            LOG.info("Successfully added snapshot policy %s to "
+                                     "SG %s", sp, sg_name)
                     resp = self.provisioning.get_storage_group(sg_name)
                     return True, resp
                 else:
@@ -1313,9 +1316,9 @@ class PowerMaxStorageGroup(object):
                              " snapshot policy(s)")
                     return False, storage_group_details
         except Exception as e:
-            errmsg = 'Failed to add the snapshot policy(s) from the ' \
-                     'storage group %s with error %s' \
-                     % (sg_name, str(e))
+            errmsg = ("Adding snapshot policy(s) to the "
+                      "storage group %s failed with error %s"
+                      % (sg_name, str(e)))
             self.show_error_exit(msg=errmsg)
             return None
 
@@ -1333,11 +1336,12 @@ class PowerMaxStorageGroup(object):
                 if len(snapshot_policy_to_remove) > 0:
                     sg_list = [sg_name]
                     for sp in snapshot_policy_to_remove:
-                        self.snapshot_policy.\
-                            disassociate_from_storage_groups(
-                                sp, storage_group_names=sg_list)
-                        LOG.info("Successfully removed snapshot policy %s"
-                                 " from SG %s", sp, sg_name)
+                        if not self.module.check_mode:
+                            self.snapshot_policy.\
+                                disassociate_from_storage_groups(
+                                    sp, storage_group_names=sg_list)
+                            LOG.info("Successfully removed snapshot policy %s"
+                                     " from SG %s", sp, sg_name)
                     resp = self.provisioning.get_storage_group(sg_name)
                     return True, resp
                 else:
@@ -1350,11 +1354,20 @@ class PowerMaxStorageGroup(object):
                          ' storage group %s', sg_name)
                 return False, storage_group_details
         except Exception as e:
-            errmsg = 'Failed to remove the snapshot policy(s) from the ' \
-                     'storage group %s with error %s' \
-                     % (sg_name, str(e))
+            errmsg = ("Removing the snapshot policy(s) from the "
+                      "storage group %s failed with error %s"
+                      % (sg_name, str(e)))
             self.show_error_exit(msg=errmsg)
             return None
+
+    def validate_volume(self, vol):
+        """ validates if both vol_id and vol_name are present in volume object"""
+        is_vol_input_invalid = ('vol_id' in vol) and ('vol_name' in vol)
+        if is_vol_input_invalid:
+            LOG.warn('Both name and id are found for volume %s. '
+                     'No action would be taken. Please specify '
+                     'either name or id', vol)
+        return not is_vol_input_invalid
 
     def pre_check_for_PyU4V_version(self):
         """ Performs pre-check for PyU4V version"""
@@ -1364,8 +1377,8 @@ class PowerMaxStorageGroup(object):
             curr_version) >= utils.pkg_resources.parse_version(supp_version)
 
         if not is_supported_version:
-            msg = "This functionality is not supported by PyU4V version " \
-                  "{0}".format(curr_version)
+            msg = ("This functionality is not supported by PyU4V version "
+                   "%s" % curr_version)
             self.show_error_exit(msg)
 
     def show_error_exit(self, msg):
@@ -1375,8 +1388,8 @@ class PowerMaxStorageGroup(object):
                 utils.close_connection(self.u4v_conn)
                 LOG.info("Connection closed successfully")
             except Exception as e:
-                err_msg = "Failed to close unisphere connection with error:" \
-                          " {0}".format(str(e))
+                err_msg = ("Closing unisphere connection failed with error:"
+                           " %s" % str(e))
                 LOG.error(err_msg)
         LOG.error(msg)
         self.module.fail_json(msg=msg)
@@ -1396,7 +1409,6 @@ class PowerMaxStorageGroup(object):
         snapshot_policies = self.module.params['snapshot_policies']
         snapshot_policy_state = self.module.params['snapshot_policy_state']
 
-        self.check_task_validity(volumes, vol_state)
         storage_group = self.get_storage_group(sg_name)
 
         vols_before_op = self.provisioning.get_volumes_from_storage_group(
@@ -1447,6 +1459,7 @@ class PowerMaxStorageGroup(object):
         elif state == 'absent' and storage_group:
             LOG.info('Delete storage group %s ', sg_name)
             result['delete_sg'] = self.delete_storage_group(sg_name)
+            result['storage_group_details'] = {}
 
         if state == 'present' and vol_state == 'present-in-group'\
                 and storage_group and volumes:
@@ -1504,7 +1517,8 @@ class PowerMaxStorageGroup(object):
             result['rename_sg'] = self.rename_storage_group(
                 storage_group, new_sg_name)
             if result['rename_sg']:
-                sg_name = new_sg_name
+                if not self.module.check_mode:
+                    sg_name = new_sg_name
                 LOG.info('Get volumes details of storage group %s', sg_name)
                 result['storage_group_volumes_details'] = self.\
                     get_volumes_details_storagegroup(sg_name)

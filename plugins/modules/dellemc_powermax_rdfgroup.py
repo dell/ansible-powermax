@@ -1,6 +1,8 @@
 #!/usr/bin/python
 # Copyright: (c) 2019, DellEMC
 
+# Apache License version 2.0 (see MODULE-LICENSE or http://www.apache.org/licenses/LICENSE-2.0.txt)
+
 from __future__ import (absolute_import, division, print_function)
 
 __metaclass__ = type
@@ -254,7 +256,7 @@ HAS_PYU4V = utils.has_pyu4v_sdk()
 PYU4V_VERSION_CHECK = utils.pyu4v_version_check()
 
 # Application Type
-APPLICATION_TYPE = 'ansible_v1.5.0'
+APPLICATION_TYPE = 'ansible_v1.6.0'
 
 
 class PowerMaxRDFGroup(object):
@@ -333,8 +335,8 @@ class PowerMaxRDFGroup(object):
 
             rdf_group_details = self.replication.get_rdf_group(
                 rdf_number=rdf_number)
-            LOG.info('Successfully listed RDF Group %s Details : %s',
-                     rdf_number, rdf_group_details)
+            LOG.info('Successfully listed RDF Group %s details',
+                     rdf_number)
 
             return rdf_group_details
 

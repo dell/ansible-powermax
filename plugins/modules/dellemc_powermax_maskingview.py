@@ -1,6 +1,8 @@
 #!/usr/bin/python
 # Copyright: (c) 2019, DellEMC
 
+# Apache License version 2.0 (see MODULE-LICENSE or http://www.apache.org/licenses/LICENSE-2.0.txt)
+
 from __future__ import (absolute_import, division, print_function)
 
 __metaclass__ = type
@@ -172,7 +174,7 @@ HAS_PYU4V = utils.has_pyu4v_sdk()
 PYU4V_VERSION_CHECK = utils.pyu4v_version_check()
 
 # Application Type
-APPLICATION_TYPE = 'ansible_v1.5.0'
+APPLICATION_TYPE = 'ansible_v1.6.0'
 
 
 class PowerMaxMaskingView(object):
@@ -193,7 +195,7 @@ class PowerMaxMaskingView(object):
         # initialize the ansible module
         self.module = AnsibleModule(
             argument_spec=self.module_params,
-            supports_check_mode=False,
+            supports_check_mode=True,
             mutually_exclusive=mutually_exclusive
         )
         if HAS_PYU4V is False:
@@ -219,6 +221,7 @@ class PowerMaxMaskingView(object):
         except Exception as e:
             self.show_error_exit(msg=str(e))
         self.provisioning = self.u4v_conn.provisioning
+        LOG.info('Check Mode flag is %s', self.module.check_mode)
         LOG.info('Got PyU4V instance for provisioning on PowerMax')
 
     def get_masking_view(self, mv_name):
@@ -262,10 +265,10 @@ class PowerMaxMaskingView(object):
                 is not None:
             is_mv_changed = True
         if is_mv_changed:
-            error_message = 'One or more of parameters (PG, SG, ' \
-                            'Host/Host Group) provided for the MV ' \
-                            '{0} differ from the state of the MV on the ' \
-                            'array.'.format(mv['maskingViewId'])
+            error_message = ('One or more of parameters (PG, SG, '
+                             'Host/Host Group) provided for the MV '
+                             '%s differ from the state of the MV on the '
+                             'array.' % (mv['maskingViewId']))
             self.show_error_exit(msg=error_message)
 
     def create_masking_view(self, mv_name):
@@ -277,9 +280,9 @@ class PowerMaxMaskingView(object):
         hostgroup_name = self.module.params['hostgroup_name']
 
         if host_name and hostgroup_name:
-            error_message = 'Failed to create masking view {0},' \
-                            'Please provide either host or ' \
-                            'hostgroup'.format(mv_name)
+            error_message = ('Failed to create masking view %s,'
+                             'Please provide either host or '
+                             'hostgroup' % mv_name)
             self.show_error_exit(msg=error_message)
             return False
         elif (pg_name is None) or (sg_name is None) or \
@@ -290,11 +293,13 @@ class PowerMaxMaskingView(object):
             self.show_error_exit(msg=error_message)
             return False
         try:
+            resp = {}
             LOG.info('Creating masking view %s... ', mv_name)
-            resp = self.provisioning.create_masking_view_existing_components(
-                port_group_name=pg_name, masking_view_name=mv_name,
-                storage_group_name=sg_name, host_name=host_name,
-                host_group_name=hostgroup_name)
+            if not self.module.check_mode:
+                resp = self.provisioning.create_masking_view_existing_components(
+                    port_group_name=pg_name, masking_view_name=mv_name,
+                    storage_group_name=sg_name, host_name=host_name,
+                    host_group_name=hostgroup_name)
             return True, resp
         except Exception as e:
             self.show_error_exit(msg='Create masking view %s failed; error '
@@ -303,7 +308,8 @@ class PowerMaxMaskingView(object):
     def delete_masking_view(self, mv_name):
         """Delete masking view from system"""
         try:
-            self.provisioning.delete_masking_view(mv_name)
+            if not self.module.check_mode:
+                self.provisioning.delete_masking_view(mv_name)
             return True
         except Exception as e:
             self.show_error_exit(msg='Delete masking view %s failed with '
@@ -315,12 +321,12 @@ class PowerMaxMaskingView(object):
         if mv_name == new_mv_name:
             return changed
         try:
-            self.provisioning.rename_masking_view(mv_name, new_mv_name)
+            if not self.module.check_mode:
+                self.provisioning.rename_masking_view(mv_name, new_mv_name)
             changed = True
         except Exception as e:
-            self.show_error_exit(msg='Rename masking view {0} failed '
-                                 'with error {1}.'.format(mv_name,
-                                                          str(e)))
+            self.show_error_exit(msg='Rename masking view %s failed '
+                                 'with error %s.' % (mv_name, str(e)))
         return changed
 
     def show_error_exit(self, msg):
@@ -330,8 +336,8 @@ class PowerMaxMaskingView(object):
                 utils.close_connection(self.u4v_conn)
                 LOG.info("Connection closed successfully")
             except Exception as e:
-                err_msg = "Failed to close unisphere connection with error:" \
-                          " {0}".format(str(e))
+                err_msg = ("Failed to close unisphere connection with error:"
+                           " %s" % (str(e)))
                 LOG.error(err_msg)
         LOG.error(msg)
         self.module.fail_json(msg=msg)
@@ -366,7 +372,8 @@ class PowerMaxMaskingView(object):
             LOG.info('Renaming masking view %s', mv_name)
             result['modify_mv'] = self.rename_masking_view(mv_name,
                                                            new_mv_name)
-            mv_name = new_mv_name
+            if not self.module.check_mode:
+                mv_name = new_mv_name
 
         if state == 'absent' and masking_view:
             LOG.info('Delete masking view %s', mv_name)

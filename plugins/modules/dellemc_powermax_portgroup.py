@@ -1,6 +1,8 @@
 #!/usr/bin/python
 # Copyright: (c) 2019, DellEMC
 
+# Apache License version 2.0 (see MODULE-LICENSE or http://www.apache.org/licenses/LICENSE-2.0.txt)
+
 from __future__ import (absolute_import, division, print_function)
 
 __metaclass__ = type
@@ -188,19 +190,18 @@ portgroup_details:
             type: str
 '''
 
-import logging
 from ansible_collections.dellemc.powermax.plugins.module_utils.storage.dell \
     import dellemc_ansible_powermax_utils as utils
 from ansible.module_utils.basic import AnsibleModule
 
-LOG = utils.get_logger('dellemc_powermax_portgroup', log_devel=logging.INFO)
+LOG = utils.get_logger('dellemc_powermax_portgroup')
 
 HAS_PYU4V = utils.has_pyu4v_sdk()
 
 PYU4V_VERSION_CHECK = utils.pyu4v_version_check()
 
 # Application Type
-APPLICATION_TYPE = 'ansible_v1.5.0'
+APPLICATION_TYPE = 'ansible_v1.6.0'
 
 
 class PowerMaxPortGroup(object):
@@ -215,7 +216,7 @@ class PowerMaxPortGroup(object):
         # initialize the ansible module
         self.module = AnsibleModule(
             argument_spec=self.module_params,
-            supports_check_mode=False
+            supports_check_mode=True
         )
         # result is a dictionary that contains changed status and portgroup
         # details
@@ -245,6 +246,7 @@ class PowerMaxPortGroup(object):
         except Exception as e:
             self.show_error_exit(msg=str(e))
         self.provisioning = self.u4v_conn.provisioning
+        LOG.info('Check Mode flag is %s', self.module.check_mode)
         LOG.info('Got PyU4V instance for provisioning on PowerMax')
 
     def get_portgroup(self, portgroup_name):
@@ -272,28 +274,13 @@ class PowerMaxPortGroup(object):
                     port['portId'] = port.pop('port_id')
             LOG.info('Creating port group %s with ports %s',
                      portgroup_name, ports)
-            self.provisioning.\
-                create_multiport_port_group(portgroup_name, ports)
+            if not self.module.check_mode:
+                self.provisioning.\
+                    create_multiport_port_group(portgroup_name, ports)
             return True
         except Exception as e:
             self.show_error_exit(msg="Create port group %s failed; error %s"
                                      % (portgroup_name, str(e)))
-
-    def _get_add_ports(self, existing, ports):
-        add_ports = []
-        if ports is not None:
-            add_ports = {key: ports[key] for key in ports
-                         if key in existing and ports[key] != existing[key]}
-            LOG.debug('%s Ports to be added to port group', add_ports)
-        return add_ports
-
-    def _get_rem_ports(self, existing, ports):
-        rem_ports = []
-        if ports is not None:
-            rem_ports = {key: ports[key] for key in ports
-                         if key in existing and ports[key] == existing[key]}
-            LOG.debug('%s Ports to be removed from port group', rem_ports)
-        return rem_ports
 
     def add_ports_to_portgroup(self, portgroup_name):
         """Add ports to existing port group"""
@@ -315,18 +302,13 @@ class PowerMaxPortGroup(object):
             # changed is true if state is changed and false otherwise
             changed = False
             for port in add_ports:
-                add_port = (port["director_id"], port["port_id"])
-                add_port_present = False
-                for existing_port in existing_ports:
-                    if str(str(port["director_id"]) + ':' +
-                           str(port["port_id"])) == \
-                            str(str(existing_port["directorId"]) + ':' +
-                                str(existing_port["portId"])):
-                        add_port_present = True
+                add_port_present = check_port_exists(existing_ports, port)
                 if not add_port_present:
                     # if port is not already present, then port is added
-                    self.provisioning.modify_port_group(portgroup_name,
-                                                        add_port=add_port)
+                    add_port = (port["director_id"], port["port_id"])
+                    if not self.module.check_mode:
+                        self.provisioning.modify_port_group(portgroup_name,
+                                                            add_port=add_port)
                     changed = True
             return changed
         except Exception as e:
@@ -355,19 +337,14 @@ class PowerMaxPortGroup(object):
             # changed is true if state is changed and false otherwise
             changed = False
             for port in rem_ports:
-                rem_port = (port["director_id"], port["port_id"])
                 # Need to check whether the port to be removed is present in
                 # port-group
-                rem_port_present = False
-                for existing_port in existing_ports:
-                    if str(str(port["director_id"]) + ':' +
-                           str(port["port_id"])) == \
-                            str(str(existing_port["directorId"]) + ':' +
-                                str(existing_port["portId"])):
-                        rem_port_present = True
+                rem_port_present = check_port_exists(existing_ports, port)
                 if rem_port_present:
-                    self.provisioning.modify_port_group(portgroup_name,
-                                                        remove_port=rem_port)
+                    rem_port = (port["director_id"], port["port_id"])
+                    if not self.module.check_mode:
+                        self.provisioning.modify_port_group(portgroup_name,
+                                                            remove_port=rem_port)
                     changed = True
             return changed
         except Exception as e:
@@ -381,7 +358,8 @@ class PowerMaxPortGroup(object):
         A port group cannot be deleted if it is associated with a masking view.
         """
         try:
-            self.provisioning.delete_port_group(portgroup_name)
+            if not self.module.check_mode:
+                self.provisioning.delete_port_group(portgroup_name)
             return True
         except Exception as e:
             self.show_error_exit(msg='Delete port group %s failed.' %
@@ -409,8 +387,9 @@ class PowerMaxPortGroup(object):
         try:
             LOG.info('Renaming port group %s with new name %s',
                      portgroup_name, new_name)
-            self.provisioning.modify_port_group(portgroup_name,
-                                                rename_port_group=new_name)
+            if not self.module.check_mode:
+                self.provisioning.modify_port_group(portgroup_name,
+                                                    rename_port_group=new_name)
             return True
         except Exception as e:
             self.show_error_exit(
@@ -450,7 +429,8 @@ class PowerMaxPortGroup(object):
             LOG.info('Modifying port group %s', portgroup_name)
             changed_name = self.modify_portgroup(portgroup_name)
             if changed_name:
-                portgroup_name = new_name
+                if not self.module.check_mode:
+                    portgroup_name = new_name
             changed = changed or changed_name
         if state == 'present' and port_state == 'present-in-group' and \
                 portgroup:
@@ -480,6 +460,17 @@ class PowerMaxPortGroup(object):
         utils.close_connection(self.u4v_conn)
         LOG.info("Connection closed successfully")
         self.module.exit_json(**self.result)
+
+
+def check_port_exists(existing_ports, port):
+    for existing_port in existing_ports:
+        if str(str(port["director_id"]) + ':' +
+                str(port["port_id"])) == \
+                str(str(existing_port["directorId"]) + ':' +
+                    str(existing_port["portId"])):
+            return True
+
+    return False
 
 
 def get_powermax_portgroup_parameters():

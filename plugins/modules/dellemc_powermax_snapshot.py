@@ -1,6 +1,8 @@
 #!/usr/bin/python
 # Copyright: (c) 2019, DellEMC
 
+# Apache License version 2.0 (see MODULE-LICENSE or http://www.apache.org/licenses/LICENSE-2.0.txt)
+
 from __future__ import (absolute_import, division, print_function)
 
 __metaclass__ = type
@@ -337,20 +339,18 @@ sg_snap_details:
             type: int
 '''
 
-import logging
 from ansible.module_utils.basic import AnsibleModule
 from ansible_collections.dellemc.powermax.plugins.module_utils.storage.dell \
     import dellemc_ansible_powermax_utils as utils
 
-LOG = utils.get_logger('dellemc_powermax_snapshot',
-                       log_devel=logging.INFO)
+LOG = utils.get_logger('dellemc_powermax_snapshot')
 
 HAS_PYU4V = utils.has_pyu4v_sdk()
 
 PYU4V_VERSION_CHECK = utils.pyu4v_version_check()
 
 # Application Type
-APPLICATION_TYPE = 'ansible_v1.5.0'
+APPLICATION_TYPE = 'ansible_v1.6.0'
 
 
 class PowerMaxSnapshot(object):
@@ -369,7 +369,7 @@ class PowerMaxSnapshot(object):
         self.module = AnsibleModule(
             argument_spec=self.module_params,
             mutually_exclusive=mutually_exclusive,
-            supports_check_mode=False
+            supports_check_mode=True
         )
 
         if HAS_PYU4V is False:
@@ -397,6 +397,7 @@ class PowerMaxSnapshot(object):
             self.show_error_exit(msg=str(e))
         self.replication = self.u4v_conn.replication
         self.common = self.u4v_conn.common
+        LOG.info('Check Mode flag is %s', self.module.check_mode)
         LOG.info('Got PyU4V instance for provisioning on PowerMax ')
 
     def is_snap_id_supported(self):
@@ -470,16 +471,19 @@ class PowerMaxSnapshot(object):
     def create_sg_snapshot(self, sg_id, snap_name, ttl, ttl_unit):
         """Create Storage Group Snapshot"""
         try:
+            resp = {}
             if ttl_unit == 'days':
                 ttl_unit = False
             else:
                 ttl_unit = True
             if ttl == 'None':
                 ttl = None
-            resp = self.replication.create_storage_group_snapshot(sg_id,
-                                                                  snap_name,
-                                                                  ttl,
-                                                                  ttl_unit)
+            if not self.module.check_mode:
+                resp = \
+                    self.replication.create_storage_group_snapshot(sg_id,
+                                                                   snap_name,
+                                                                   ttl,
+                                                                   ttl_unit)
             return True, resp
         except Exception as e:
             error_message = 'Create Snapshot {0} for SG {1} failed ' \
@@ -508,14 +512,16 @@ class PowerMaxSnapshot(object):
             return False
         try:
             if snapshot and (generation is not None):
-                self.replication.delete_storage_group_snapshot(sg_id,
-                                                               snap_name,
-                                                               generation)
+                if not self.module.check_mode:
+                    self.replication.delete_storage_group_snapshot(sg_id,
+                                                                   snap_name,
+                                                                   generation)
             if snapshot and (snap_id is not None):
-                self.replication.delete_storage_group_snapshot_by_snap_id(
-                    sg_id,
-                    snap_name,
-                    snap_id)
+                if not self.module.check_mode:
+                    self.replication.delete_storage_group_snapshot_by_snap_id(
+                        sg_id,
+                        snap_name,
+                        snap_id)
             return True
         except Exception as e:
             error_message = 'Delete SG {0} Snapshot {1} failed with ' \
@@ -532,22 +538,25 @@ class PowerMaxSnapshot(object):
             if snap_name == new_snap_name:
                 return False, snapshot
 
+            resp = snapshot
             if snapshot and (generation is not None):
-                resp = self.replication.\
-                    modify_storage_group_snapshot(sg_id,
-                                                  None,
-                                                  snap_name,
-                                                  generation,
-                                                  new_name=new_snap_name
-                                                  )
+                if not self.module.check_mode:
+                    resp = self.replication.\
+                        modify_storage_group_snapshot(sg_id,
+                                                      None,
+                                                      snap_name,
+                                                      generation,
+                                                      new_name=new_snap_name
+                                                      )
             if snapshot and (snap_id is not None):
-                resp = self.replication.\
-                    modify_storage_group_snapshot_by_snap_id(
-                        src_storage_grp_id=sg_id,
-                        tgt_storage_grp_id=None,
-                        snap_name=snap_name,
-                        snap_id=snap_id,
-                        new_name=new_snap_name)
+                if not self.module.check_mode:
+                    resp = self.replication.\
+                        modify_storage_group_snapshot_by_snap_id(
+                            src_storage_grp_id=sg_id,
+                            tgt_storage_grp_id=None,
+                            snap_name=snap_name,
+                            snap_id=snap_id,
+                            new_name=new_snap_name)
             return True, resp
         except Exception as e:
             error_message = 'Renaming Snapshot {0} for Storage Group {1} ' \
@@ -598,24 +607,27 @@ class PowerMaxSnapshot(object):
                 link = False
                 unlink = True
 
+            resp = snapshot
             if snapshot and (generation is not None):
-                resp = self.replication. \
-                    modify_storage_group_snapshot(sg_id,
-                                                  target_sg,
-                                                  snap_name,
-                                                  link=link,
-                                                  unlink=unlink,
-                                                  gen_num=generation)
+                if not self.module.check_mode:
+                    resp = self.replication. \
+                        modify_storage_group_snapshot(sg_id,
+                                                      target_sg,
+                                                      snap_name,
+                                                      link=link,
+                                                      unlink=unlink,
+                                                      gen_num=generation)
                 return True, resp
             if snapshot and (snap_id is not None):
-                resp = self.replication.\
-                    modify_storage_group_snapshot_by_snap_id(
-                        src_storage_grp_id=sg_id,
-                        tgt_storage_grp_id=target_sg,
-                        snap_name=snap_name,
-                        link=link,
-                        unlink=unlink,
-                        snap_id=snap_id)
+                if not self.module.check_mode:
+                    resp = self.replication.\
+                        modify_storage_group_snapshot_by_snap_id(
+                            src_storage_grp_id=sg_id,
+                            tgt_storage_grp_id=target_sg,
+                            snap_name=snap_name,
+                            link=link,
+                            unlink=unlink,
+                            snap_id=snap_id)
                 return True, resp
         except Exception as e:
             error_message = 'Change SG {0} Snapshot {1} link status failed ' \
