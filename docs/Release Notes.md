@@ -1,7 +1,7 @@
 
 **Ansible Modules for Dell EMC PowerMax** 
 =========================================
-### Release Notes 1.5.0
+### Release Notes 1.6.0
 
 >   © 2021 Dell Inc. or its subsidiaries. All rights reserved. Dell
 >   EMC, and other trademarks are trademarks of Dell Inc. or its
@@ -26,7 +26,7 @@ Revision History
 
 | **Date** | **Document revision** | **Description of changes** |
 |----------|-----------------------|----------------------------|
-| May 2021 | 01 | Ansible Modules for Dell EMC PowerMax release 1.5.0 |
+| Sept 2021 | 01 | Ansible Modules for Dell EMC PowerMax release 1.6.0 |
 
 Product Description
 -------------------
@@ -54,42 +54,23 @@ features:
 New Features & Enhancements
 ---------------------------
 
-The Ansible Modules for Dell EMC PowerMax release 1.5.0 supports the
+The Ansible Modules for Dell EMC PowerMax release 1.6.0 supports the
 following features:
-
-- The Snapshot policy module supports the following functionalities:
-    - Create a snapshot policy.
-    - Get details of any specific snapshot policy.
-    - Modify the snapshot policy attributes.
-    - Delete a snapshot policy.
-      > **NOTE:** Supports PyU4V 9.2.1.3 and above.
-- The storage pool module supports the following functionality:
-    - Get storage pool details for a given storage pool.
-- The following enhancements have been made to the gatherfacts module:
-   - Get list of snapshot policies present on the PowerMax array.
-     > **NOTE:** Supports PyU4V 9.2.1.3 and above for getting snapshot policy details
-       and PyU4V 9.2.0.8 and above for getting snapshot details.
 - The following enhancements have been made to the storage group module:
-    - Snapshot policy can be associated/disassociated to/from a storage group.
-      > **NOTE:** Supports PyU4V 9.2.1.3 and above.
+    - Check mode feature of Ansible is enabled for the storage group module.    
+- The following enhancements have been made to the port group module:
+    - Check mode feature of Ansible is enabled for the port group module.   
 - The following enhancements have been made to the snapshot module:
-    - New parameter 'snapshot_id' has been added which indicates unique ID of snapshot.
-    - snapshot_id is required for link, unlink, rename and delete operations.It is
-      optional for getting details of snapshot.
-      > **NOTE:** Supports PyU4V 9.2.0.8 and above.
-- Following functionalities are available for ansible role for automatic volume placement:
-    - Finding if there is enough capacity of the given service level in any array.
-    - If multiple arrays available, return which is least used as 'assigned_pool'.
-    - assigned_pool includes:
-       - serial_no
-       - srp_id
-       - sg_name (if passed)
-- The following enhancements have been made to the host module:
-    - Check mode feature of ansible is enabled for host module.
-- The following enhancements have been made to the host group module:
-    - Check mode feature of ansible is enabled for host group module.    
-- The following enhancements have been made to the volume module:
-    - Check mode feature of ansible is enabled for volume module.
+    - Check mode feature of Ansible is enabled for the snapshot module.
+- The following enhancements have been made to the snapshot policy module:
+    - Check mode feature of Ansible is enabled for the snapshot policy module. 
+- The following enhancements have been made to the masking view module:
+    - Check mode feature of Ansible is enabled for the masking view module.
+- The following enhancements have been made to the SRDF module:
+    - Check mode feature of Ansible is enabled for the SRDF module.
+- The following enhancements have been made to the metroDR module:
+    - Check mode feature of Ansible is enabled for the metroDR module.
+- Added dual licensing.    
 -   Support for Unisphere 9.1 and above
 -   Support for Python version 2.8 and above
 -   Support for PyU4V python library version 9.1.2.0 and above
@@ -106,6 +87,8 @@ Known issues
 - Task to link a snapshot to a target storage group which is already linked is not implemented.
   The REST API does not support this hence Python SDK (PyU4V) has no support for this operation.
 
+- Using automation, when the user tries to create a host with invalid initiators, an empty host is created even though it generates an error. However, when a modify scenario is run on this host without a pause, it generates an error saying "The requested host resource already exists.". Workaround is to add a pause(~20) between the two tasks.
+
 Limitations
 -----------
 There are no known limitations.
@@ -117,7 +100,7 @@ for PowerMax GitHub](https://github.com/dell/ansible-powermax) page.
 
 Documentation
 -------------
-The documentation is available on [Ansible Modules for PowerMax GitHub](https://github.com/dell/ansible-powermax)
+The documentation is available on the [Ansible Modules for PowerMax GitHub](https://github.com/dell/ansible-powermax)
 page. It includes the following:
 
    - README

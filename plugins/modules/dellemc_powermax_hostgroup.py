@@ -1,6 +1,8 @@
 #!/usr/bin/python
 # Copyright: (c) 2019-2021, DellEMC
 
+# Apache License version 2.0 (see MODULE-LICENSE or http://www.apache.org/licenses/LICENSE-2.0.txt)
+
 from __future__ import (absolute_import, division, print_function)
 
 __metaclass__ = type
@@ -303,7 +305,7 @@ HAS_PYU4V = utils.has_pyu4v_sdk()
 PYU4V_VERSION_CHECK = utils.pyu4v_version_check()
 
 # Application Type
-APPLICATION_TYPE = 'ansible_v1.5.0'
+APPLICATION_TYPE = 'ansible_v1.6.0'
 
 BASE_FLAGS = {'volume_set_addressing': {'enabled': False, 'override': False},
               'disable_q_reset_on_ua': {'enabled': False, 'override': False},
@@ -363,10 +365,10 @@ class PowerMaxHostGroup(object):
         )
         # result is a dictionary that contains changed status and host details
         self.result = {"changed": False, "hostgroup_details": {}}
-        self.host_flags_list = {'volume_set_addressing', 'environ_set',
+        self.host_flags_list = ['volume_set_addressing', 'environ_set',
                                 'disable_q_reset_on_ua', 'openvms',
                                 'avoid_reset_broadcast', 'scsi_3',
-                                'spc2_protocol_version', 'scsi_support1'}
+                                'spc2_protocol_version', 'scsi_support1']
         if HAS_PYU4V is False:
             self.show_error_exit(msg="Ansible modules for PowerMax require "
                                  "the PyU4V python library to be "

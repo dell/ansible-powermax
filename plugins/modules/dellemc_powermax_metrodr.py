@@ -1,6 +1,8 @@
 #!/usr/bin/python
 # Copyright: (c) 2021, DellEMC
 
+# Apache License version 2.0 (see MODULE-LICENSE or http://www.apache.org/licenses/LICENSE-2.0.txt)
+
 from __future__ import (absolute_import, division, print_function)
 
 __metaclass__ = type
@@ -343,7 +345,7 @@ HAS_PYU4V = utils.has_pyu4v_sdk()
 PYU4V_VERSION_CHECK = utils.pyu4v_version_check()
 
 # Application Type
-APPLICATION_TYPE = "ansible_v1.5.0"
+APPLICATION_TYPE = "ansible_v1.6.0"
 
 # DO NOT CHANGE BELOW REPLICATION_MODES SEQUENCE AS ITS USED IN SCRIPT
 # USING INDEX
@@ -383,7 +385,7 @@ class PowerMaxMetroDR(object):
 
         self.module = AnsibleModule(
             argument_spec=self.module_params,
-            supports_check_mode=False)
+            supports_check_mode=True)
 
         if HAS_PYU4V is False:
             msg = "Ansible modules for PowerMax require the PyU4V python " \
@@ -413,6 +415,7 @@ class PowerMaxMetroDR(object):
             self.replication = self.conn.replication
         except Exception as e:
             self.show_error_exit(str(e))
+        LOG.info('Check Mode flag is %s', self.module.check_mode)
         LOG.info("Got PyU4V instance for metro DR on PowerMax")
 
     def pre_check_for_PyU4V_version(self):
@@ -509,11 +512,13 @@ class PowerMaxMetroDR(object):
                     "new_rdf_group_r2"],
                 "_async": not self.module.params['wait_for_completion']
             }
+            resp = {}
             if param["dr_replication_mode"] == REPLICATION_MODES[1]:
                 param["dr_replication_mode"] = ADAPTIVE_COPY_DISK
             LOG.info("Creating metro DR environment: %s param: %s",
                      self.module.params['env_name'], param)
-            resp = self.metro.create_metrodr_environment(**param)
+            if not self.module.check_mode:
+                resp = self.metro.create_metrodr_environment(**param)
             LOG.info("Successfully created metro DR environment")
             if param["_async"]:
                 return resp, None
@@ -615,7 +620,7 @@ class PowerMaxMetroDR(object):
 
         is_srdf_adp_or_asyn = False
         is_srdf_active = False
-        req_metro_states = {"Active", "SyncInProg", "Suspended"}
+        req_metro_states = ["Active", "SyncInProg", "Suspended"]
         for srdf_gr in srdf_gr_list:
             if is_srdf_adp_or_asyn and is_srdf_active:
                 LOG.info("SRDF links satisfy condition of convert")
@@ -637,7 +642,7 @@ class PowerMaxMetroDR(object):
                     is_srdf_adp_or_asyn = True
             # precheck: 3
             elif "Active" in srdf_detail['modes'] and \
-                    not (req_metro_states & set(srdf_detail['states'])):
+                    not (set(req_metro_states) & set(srdf_detail['states'])):
                 LOG.info("SRDF metro mode is active")
                 if self.module.params["metro_serial_no"]:
                     LOG.info("Validating given metro_serial_no")
@@ -672,6 +677,7 @@ class PowerMaxMetroDR(object):
         """
         try:
             self.pre_checks_for_convert()
+            resp = {}
             param = {
                 "storage_group_name": self.module.params['sg_name'],
                 "environment_name": self.module.params['env_name'],
@@ -681,7 +687,8 @@ class PowerMaxMetroDR(object):
                      "param: %s",
                      self.module.params['sg_name'],
                      self.module.params['env_name'], param)
-            resp = self.metro.convert_to_metrodr_environment(**param)
+            if not self.module.check_mode:
+                resp = self.metro.convert_to_metrodr_environment(**param)
             LOG.info("Successfully converted to metro DR environment")
             if param["_async"]:
                 return resp, None
@@ -874,9 +881,11 @@ class PowerMaxMetroDR(object):
 
             LOG.info("Modifying metro DR environment with param: %s",
                      modify_dict)
-            resp = self.metro.modify_metrodr_environment(
-                self.module.params['env_name'],
-                **modify_dict)
+            resp = metrodr_env_details
+            if not self.module.check_mode:
+                resp = self.metro.modify_metrodr_environment(
+                    self.module.params['env_name'],
+                    **modify_dict)
             LOG.info("Successfully modified metro DR environment")
 
             if self.module.params["wait_for_completion"]:
@@ -897,9 +906,10 @@ class PowerMaxMetroDR(object):
         try:
             LOG.info("Deleting metro DR environment: %s",
                      self.module.params['env_name'])
-            self.metro.delete_metrodr_environment(
-                self.module.params['env_name'],
-                self.module.params['remove_r1_dr_rdfg'])
+            if not self.module.check_mode:
+                self.metro.delete_metrodr_environment(
+                    self.module.params['env_name'],
+                    self.module.params['remove_r1_dr_rdfg'])
             LOG.info("Successfully deleted metro DR environment")
         except Exception as e:
             self.show_error_exit(

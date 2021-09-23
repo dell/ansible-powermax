@@ -1,6 +1,8 @@
 #!/usr/bin/python
 # Copyright: (c) 2019-2021, DellEMC
 
+# Apache License version 2.0 (see MODULE-LICENSE or http://www.apache.org/licenses/LICENSE-2.0.txt)
+
 from __future__ import (absolute_import, division, print_function)
 
 __metaclass__ = type
@@ -387,7 +389,7 @@ HAS_PYU4V = utils.has_pyu4v_sdk()
 PYU4V_VERSION_CHECK = utils.pyu4v_version_check()
 
 # Application Type
-APPLICATION_TYPE = 'ansible_v1.5.0'
+APPLICATION_TYPE = 'ansible_v1.6.0'
 
 
 class PowerMax_SRDF(object):
@@ -403,7 +405,7 @@ class PowerMax_SRDF(object):
         # initialize the ansible module
         self.module = AnsibleModule(
             argument_spec=self.module_params,
-            supports_check_mode=False
+            supports_check_mode=True
         )
         # result is a dictionary that contains changed status, srdf_link
         # and job details
@@ -434,6 +436,7 @@ class PowerMax_SRDF(object):
         except Exception as e:
             self.show_error_exit(msg=str(e))
         self.replication = self.u4v_conn.replication
+        LOG.info('Check Mode flag is %s', self.module.check_mode)
         LOG.info('Got PyU4V instance for replication on PowerMax ')
         self.idempotency_dict = {
             'Synchronized': ['Establish', 'Resume'],
@@ -489,13 +492,12 @@ class PowerMax_SRDF(object):
             if rdfg_number:
                 LOG.info("Getting srdf details for storage group %s "
                          "with rdfg number: %s", sg_name, rdfg_number)
-                rdfg_details = self.replication.get_rdf_group(rdfg_number)
-                remoteSymmetrix = rdfg_details['remoteSymmetrix']
                 srdf_linkFromGet = self.replication.\
                     get_storage_group_srdf_details(storage_group_id=sg_name,
                                                    rdfg_num=rdfg_number)
                 if srdf_linkFromGet:
-                    srdf_linkFromGet['remoteSymmetrix'] = remoteSymmetrix
+                    srdf_linkFromGet['remoteSymmetrix'] = \
+                        self.get_remote_symmetrix_from_rdfg(rdfg_number)
                     srdf_link_details.append(srdf_linkFromGet)
             else:
                 rdfg_list = self.replication\
@@ -514,19 +516,19 @@ class PowerMax_SRDF(object):
                 for num in rdfg_list:
                     LOG.info("Getting srdf details for storage group %s with"
                              " rdfg number: %s", sg_name, num)
-                    rdfg_details = self.replication.get_rdf_group(num)
-                    remoteSymmetrix = rdfg_details['remoteSymmetrix']
                     srdf_linkFromGet = self.replication.\
                         get_storage_group_srdf_details(
                             storage_group_id=sg_name, rdfg_num=num)
                     if srdf_linkFromGet:
-                        srdf_linkFromGet['remoteSymmetrix'] = remoteSymmetrix
+                        srdf_linkFromGet['remoteSymmetrix'] = \
+                            self.get_remote_symmetrix_from_rdfg(num)
                         srdf_link_details.append(srdf_linkFromGet)
             return srdf_link_details
         except Exception as e:
-            LOG.error("Got error %s while getting SRDF details for "
-                      "storage group %s with rdfg number %s",
-                      str(e), sg_name, rdfg_number)
+            errMsg = ("Getting SRDF details for storage group "
+                      "%s with rdfg number %s failed with error %s"
+                      % (sg_name, rdfg_number, str(e)))
+            LOG.error(errMsg)
             srdf_link_details = None
             return srdf_link_details
 
@@ -540,10 +542,9 @@ class PowerMax_SRDF(object):
         if srdf_mode == 'Adaptive Copy':
             srdf_mode = 'AdaptiveCopyDisk'
         if (remote_serial_no is None or srdf_mode is None):
-            error_msg = (
-                "Mandatory parameters not found. Required parameters "
-                "for creating an SRDF link are remote array serial number "
-                "and SRDF mode")
+            error_msg = ("Mandatory parameters not found. Required parameters "
+                         "for creating an SRDF link are remote array serial number "
+                         "and SRDF mode")
             self.show_error_exit(msg=error_msg)
         try:
             establish_flag = self._compute_required_establish_flag(
@@ -568,15 +569,17 @@ class PowerMax_SRDF(object):
                    ', async_flag= ', async_flag
                    )
             LOG.info(msg)
-            resp = self.replication.create_storage_group_srdf_pairings(
-                storage_group_id=sg_name,
-                remote_sid=remote_serial_no,
-                srdf_mode=srdf_mode,
-                establish=establish_flag,
-                force_new_rdf_group=forceNewRdfGroup,
-                rdfg_number=rdfg_number,
-                _async=async_flag)
-            LOG.info('Response from create SRDF link call %s', resp)
+            resp = {}
+            if not self.module.check_mode:
+                resp = self.replication.create_storage_group_srdf_pairings(
+                    storage_group_id=sg_name,
+                    remote_sid=remote_serial_no,
+                    srdf_mode=srdf_mode,
+                    establish=establish_flag,
+                    force_new_rdf_group=forceNewRdfGroup,
+                    rdfg_number=rdfg_number,
+                    _async=async_flag)
+            LOG.debug('Response from create SRDF link call %s', resp)
             if async_flag:
                 self.result['Job_details'] = resp
                 self.result['SRDF_link_details'] = None
@@ -588,8 +591,8 @@ class PowerMax_SRDF(object):
             return True
 
         except Exception as e:
-            errorMsg = ('Create srdf_link for sg %s failed with error %s' %
-                        (sg_name, str(e)))
+            errorMsg = ("Create srdf_link for sg %s failed with error %s"
+                        % (sg_name, str(e)))
             self.show_error_exit(msg=errorMsg)
 
     def _compute_required_establish_flag(self, srdf_state):
@@ -598,10 +601,9 @@ class PowerMax_SRDF(object):
         elif srdf_state == 'Establish':
             return True
         else:
-            errorMsg = (
-                "Creation of SRDF link failed. Allowed states while "
-                "creating SRDF link are only Establish or Suspend. Got %s."
-                % srdf_state)
+            errorMsg = ("Creation of SRDF link failed. Allowed states while "
+                        "creating SRDF link are only Establish or Suspend. Got %s."
+                        % srdf_state)
             self.show_error_exit(msg=errorMsg)
 
     def modify_srdf_mode(self, srdf_mode):
@@ -609,21 +611,20 @@ class PowerMax_SRDF(object):
         for link in self.result['SRDF_link_details']:
             if link['rdfGroupNumber'] == self.current_rdfg_no:
                 srdf_link = link
-        rdfg_details = self.replication.get_rdf_group(self.current_rdfg_no)
-        remoteSymmetrix = rdfg_details['remoteSymmetrix']
-
+        resp = {}
         if srdf_mode == 'Adaptive Copy':
             srdf_mode = 'AdaptiveCopyDisk'
         try:
-            resp = self.replication.modify_storage_group_srdf(
-                storage_group_id=srdf_link['storageGroupName'],
-                srdf_group_number=self.current_rdfg_no,
-                action='SetMode',
-                options={
-                    'setMode': {
-                        'mode': srdf_mode}},
-                _async=async_flag)
-            LOG.info("resp %s", resp)
+            if not self.module.check_mode:
+                resp = self.replication.modify_storage_group_srdf(
+                    storage_group_id=srdf_link['storageGroupName'],
+                    srdf_group_number=self.current_rdfg_no,
+                    action='SetMode',
+                    options={
+                        'setMode': {
+                            'mode': srdf_mode}},
+                    _async=async_flag)
+            LOG.debug("resp %s", resp)
             if async_flag:
                 self.result['Job_details'] = resp
                 self.result['SRDF_link_details'] = None
@@ -631,14 +632,14 @@ class PowerMax_SRDF(object):
                 self.result['SRDF_link_details'] = resp
                 self.result['Job_details'] = None
                 self.result['SRDF_link_details'][
-                    'remoteSymmetrix'] = remoteSymmetrix
+                    'remoteSymmetrix'] = \
+                    self.get_remote_symmetrix_from_rdfg(self.current_rdfg_no)
             return True
         except Exception as e:
-            errorMsg = (
-                "Modifying SRDF mode of srdf_link from %s to %s for "
-                "SG %s failed with error %s" %
-                (srdf_link['modes'][0], srdf_mode,
-                 srdf_link['storageGroupName'], str(e)))
+            errorMsg = ("Modifying SRDF mode of srdf_link from %s to %s for "
+                        "SG %s failed with error %s"
+                        % (srdf_link['modes'][0], srdf_mode,
+                           srdf_link['storageGroupName'], str(e)))
             self.show_error_exit(msg=errorMsg)
 
     def modify_srdf_state(self, action):
@@ -648,13 +649,12 @@ class PowerMax_SRDF(object):
         for link in self.result['SRDF_link_details']:
             if link['rdfGroupNumber'] == self.current_rdfg_no:
                 srdf_link = link
-        rdfg_details = self.replication.get_rdf_group(self.current_rdfg_no)
-        remoteSymmetrix = rdfg_details['remoteSymmetrix']
 
         modify_body['storage_group_id'] = srdf_link['storageGroupName']
         modify_body['srdf_group_number'] = self.current_rdfg_no
         modify_body['action'] = action
         modify_body['_async'] = async_flag
+        resp = {}
 
         if self.module.params['witness'] is not None:
             if srdf_link['modes'][0] != 'Active':
@@ -672,7 +672,8 @@ class PowerMax_SRDF(object):
 
         try:
             LOG.info('The modify_body is %s:', modify_body)
-            resp = self.replication.modify_storage_group_srdf(**modify_body)
+            if not self.module.check_mode:
+                resp = self.replication.modify_storage_group_srdf(**modify_body)
 
             if async_flag:
                 self.result['Job_details'] = resp
@@ -681,15 +682,15 @@ class PowerMax_SRDF(object):
                 self.result['SRDF_link_details'] = resp
                 self.result['Job_details'] = None
                 self.result['SRDF_link_details']['remoteSymmetrix']\
-                    = remoteSymmetrix
+                    = self.get_remote_symmetrix_from_rdfg(self.current_rdfg_no)
             return True
         except Exception as e:
             if isinstance(e, utils.PyU4V.utils.exception.PyU4VException) and \
                     "is already in the requested RDF state" in str(e):
                 return False
             errorMsg = ("Modifying SRDF state of srdf_link for storage group "
-                        "%s failed with error %s" %
-                        (srdf_link['storageGroupName'], str(e)))
+                        "%s failed with error %s"
+                        % (srdf_link['storageGroupName'], str(e)))
             self.show_error_exit(msg=errorMsg)
 
     def _check_for_SRDF_state_modification(self, new_operation):
@@ -718,6 +719,15 @@ class PowerMax_SRDF(object):
             changed = self.modify_srdf_state(new_operation)
         return changed
 
+    def get_remote_symmetrix_from_rdfg(self, rdfg_num):
+        try:
+            rdfg_details = self.replication.get_rdf_group(rdfg_num)
+            return rdfg_details['remoteSymmetrix']
+        except Exception as e:
+            errorMsg = ("Getting rdf group details for %s failed"
+                        "with error %s" % (rdfg_num, str(e)))
+            self.show_error_exit(msg=errorMsg)
+
     def delete_srdf_link(self):
         '''
         Delete srdf_link from system
@@ -726,13 +736,14 @@ class PowerMax_SRDF(object):
             if link['rdfGroupNumber'] == self.current_rdfg_no:
                 srdf_link = link
         try:
-            self.replication.delete_storage_group_srdf(
-                srdf_link['storageGroupName'], int(self.current_rdfg_no))
+            if not self.module.check_mode:
+                self.replication.delete_storage_group_srdf(
+                    srdf_link['storageGroupName'], int(self.current_rdfg_no))
             self.result['SRDF_link_details'] = {}
             return True
         except Exception as e:
-            errorMsg = ('Delete srdf_link %s failed with error %s' %
-                        (srdf_link['storageGroupName'], str(e)))
+            errorMsg = ("Delete srdf_link %s failed with error %s"
+                        % (srdf_link['storageGroupName'], str(e)))
             self.show_error_exit(msg=errorMsg)
 
     def get_job_details(self, job_id):
@@ -740,9 +751,8 @@ class PowerMax_SRDF(object):
             self.result['Job_details'] = self.u4v_conn.common.get_job_by_id(
                 job_id)
         except Exception as e:
-            errorMsg = (
-                'Get Job details for job_id %s failed with error %s' %
-                (job_id, str(e)))
+            errorMsg = ("Get Job details for job_id %s failed with error %s"
+                        % (job_id, str(e)))
             self.show_error_exit(msg=errorMsg)
 
     def check_for_multiple_rdf_groups(self, srdf_link=None, get_only=True):
@@ -767,8 +777,8 @@ class PowerMax_SRDF(object):
                 if found:
                     return return_rdfg
                 else:
-                    errorMsg = 'Please specify the correct RDF group ' \
-                               'number.'
+                    errorMsg = ("Please specify the correct RDF group "
+                                "number.")
                     self.show_error_exit(msg=errorMsg)
         # When rdfg_no is not given and there exists SRDF link for the SG.
         else:
@@ -787,7 +797,7 @@ class PowerMax_SRDF(object):
                 utils.close_connection(self.u4v_conn)
                 LOG.info("Connection closed successfully")
             except Exception as e:
-                err_msg = ("Failed to close unisphere connection with error:"
+                err_msg = ("Closing unisphere connection failed with error:"
                            " %s", str(e))
                 LOG.error(err_msg)
         LOG.error(msg)
@@ -821,8 +831,8 @@ class PowerMax_SRDF(object):
         else:
             srdf_link = self.get_srdf_link(sg_name)
             self.result['SRDF_link_details'] = srdf_link
-            LOG.info('srdf_link details: %s',
-                     self.result['SRDF_link_details'])
+            LOG.debug('srdf_link details: %s',
+                      self.result['SRDF_link_details'])
 
             self.current_rdfg_no\
                 = self.check_for_multiple_rdf_groups(srdf_link)

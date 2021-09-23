@@ -1,6 +1,8 @@
 #!/usr/bin/python
 # Copyright: (c) 2021, DellEMC
 
+# Apache License version 2.0 (see MODULE-LICENSE or http://www.apache.org/licenses/LICENSE-2.0.txt)
+
 from __future__ import (absolute_import, division, print_function)
 
 __metaclass__ = type
@@ -318,13 +320,13 @@ from ansible_collections.dellemc.powermax.plugins.module_utils.storage.dell \
     import dellemc_ansible_powermax_utils as utils
 from ansible.module_utils.basic import AnsibleModule
 
-LOG = utils.get_logger(module_name="dellemc_powermax_snapshotpolicy")
+LOG = utils.get_logger("dellemc_powermax_snapshotpolicy")
 
 HAS_PYU4V = utils.has_pyu4v_sdk()
 PYU4V_VERSION_CHECK = utils.pyu4v_version_check()
 
 # Application Type
-APPLICATION_TYPE = "ansible_v1.5.0"
+APPLICATION_TYPE = "ansible_v1.6.0"
 
 INTERVAL = ['10 Minutes', '12 Minutes', '15 Minutes', '20 Minutes',
             '30 Minutes', '1 Hour', '2 Hours', '3 Hours', '4 Hours',
@@ -345,7 +347,7 @@ class PowerMaxSnapshotPolicy(object):
         self.module = AnsibleModule(
             argument_spec=self.module_params,
             required_together=required_together,
-            supports_check_mode=False)
+            supports_check_mode=True)
 
         if HAS_PYU4V is False:
             msg = "Ansible modules for PowerMax require the PyU4V python " \
@@ -376,6 +378,7 @@ class PowerMaxSnapshotPolicy(object):
         except Exception as e:
             self.show_error_exit(str(e))
         LOG.info("Got PyU4V instance for snapshot policy on PowerMax")
+        LOG.info('Check Mode flag is %s', self.module.check_mode)
 
     def pre_check_for_PyU4V_version(self):
         """ Performs pre-check for PyU4V version"""
@@ -439,8 +442,8 @@ class PowerMaxSnapshotPolicy(object):
                 LOG.info("Getting snapshot policy details for: %s", sp_name)
                 snapshot_policy_details = self.snapshot_policy.\
                     get_snapshot_policy(sp_name)
-            LOG.info("Successfully got snapshot policy details: %s",
-                     snapshot_policy_details)
+            LOG.info("Successfully got details of snapshot policy: %s",
+                     sp_name)
             return snapshot_policy_details
         except utils.ResourceNotFoundException as e:
             error_message = "Failed to get details of snapshot policy " \
@@ -459,7 +462,7 @@ class PowerMaxSnapshotPolicy(object):
         :rtype: dict
         """
         try:
-
+            resp = {}
             sp_name = self.module.params['snapshot_policy_name']
             interval = self.module.params['interval']
             offset_mins = self.module.params['offset_mins']
@@ -490,11 +493,11 @@ class PowerMaxSnapshotPolicy(object):
             }
             LOG.info("Creating snapshot policy: %s param: %s",
                      sp_name, param)
-            self.snapshot_policy.create_snapshot_policy(**param)
-            LOG.info("Successfully created snapshot policy")
-
-            resp = self.snapshot_policy.\
-                get_snapshot_policy(sp_name)
+            if not self.module.check_mode:
+                self.snapshot_policy.create_snapshot_policy(**param)
+                LOG.info("Successfully created snapshot policy")
+                resp = self.snapshot_policy.\
+                    get_snapshot_policy(sp_name)
             return True, resp
         except Exception as e:
             self.show_error_exit(
@@ -506,7 +509,7 @@ class PowerMaxSnapshotPolicy(object):
         LOG.info("Checking snapshot policy attributes")
         snapshot_policy_details = self.snapshot_policy.\
             get_snapshot_policy(self.module.params['snapshot_policy_name'])
-        LOG.info("Snapshot Policy Details: %s", snapshot_policy_details)
+        LOG.debug("Snapshot Policy Details: %s", snapshot_policy_details)
         to_update = {}
 
         interval = self.module.params['interval']
@@ -530,9 +533,9 @@ class PowerMaxSnapshotPolicy(object):
                 if snapshot_policy_details['offset_minutes'] \
                         >= interval_mins:
                     err_msg = ("Interval value cannot be less than or "
-                               "equal to offset %s, found %s" %
-                               (str(snapshot_policy_details['offset_minutes'])
-                                ), interval_mins)
+                               "equal to offset %s, found %s"
+                               % (str(snapshot_policy_details['offset_minutes']),
+                                  interval_mins))
                     self.show_error_exit(err_msg)
                 else:
                     to_update.update({'interval': interval})
@@ -606,24 +609,35 @@ class PowerMaxSnapshotPolicy(object):
         try:
             sp_name = self.module.params['snapshot_policy_name']
             LOG.info("Modifying snapshot policy: %s", sp_name)
-
             # Suspend/Resume actions
             if 'suspend' in to_modify_dict:
                 if to_modify_dict['suspend'] is True:
-                    resp = self.snapshot_policy.suspend_snapshot_policy(
-                        sp_name)
+                    if not self.module.check_mode:
+                        self.snapshot_policy.suspend_snapshot_policy(sp_name)
+                    resp = self.display_result(sp_name)
                 else:
-                    resp = self.snapshot_policy.resume_snapshot_policy(
-                        sp_name)
+                    if not self.module.check_mode:
+                        self.snapshot_policy.resume_snapshot_policy(sp_name)
+                    resp = self.display_result(sp_name)
                 to_modify_dict.pop('suspend')
 
             if len(to_modify_dict) > 0:
                 to_modify_dict.update({'snapshot_policy_name': sp_name})
                 to_modify_dict.update({'action': 'Modify'})
                 LOG.info("Parameters to be updated: %s", to_modify_dict)
-                resp = self.snapshot_policy.\
-                    modify_snapshot_policy(**to_modify_dict)
-            LOG.info("Successfully modified snapshot policy")
+                if 'new_snapshot_policy_name' in to_modify_dict and \
+                        to_modify_dict['new_snapshot_policy_name']:
+                    if not self.module.check_mode:
+                        self.snapshot_policy.\
+                            modify_snapshot_policy(**to_modify_dict)
+                        sp_name = to_modify_dict['new_snapshot_policy_name']
+                    resp = self.display_result(sp_name)
+                else:
+                    if not self.module.check_mode:
+                        self.snapshot_policy.\
+                            modify_snapshot_policy(**to_modify_dict)
+                    resp = self.display_result(sp_name)
+                LOG.info("Successfully modified snapshot policy")
             return True, resp
         except Exception as e:
             self.show_error_exit(
@@ -645,10 +659,11 @@ class PowerMaxSnapshotPolicy(object):
                 sgs_to_add = set(sg_list) - set(existing_sgs)
 
                 if len(sgs_to_add) > 0:
-                    self.snapshot_policy.associate_to_storage_groups(
-                        sp_name, storage_group_names=list(sgs_to_add))
-                    LOG.info("Successfully added sgs %s to snapshot "
-                             "policy %s", sgs_to_add, sp_name)
+                    if not self.module.check_mode:
+                        self.snapshot_policy.associate_to_storage_groups(
+                            sp_name, storage_group_names=list(sgs_to_add))
+                        LOG.info("Successfully added sgs %s to snapshot "
+                                 "policy %s", sgs_to_add, sp_name)
                     changed = True
                 # Check if the given SGs are already associated with SP or not
                 else:
@@ -678,10 +693,11 @@ class PowerMaxSnapshotPolicy(object):
                         snapshot_policy_name=sp_name)
                 sgs_to_remove = set(sg_list) & set(existing_sgs)
                 if len(sgs_to_remove) > 0:
-                    self.snapshot_policy.disassociate_from_storage_groups(
-                        sp_name, list(sgs_to_remove))
-                    LOG.info("Successfully removed %s SGs from snapshot "
-                             "policy %s", sgs_to_remove, sp_name)
+                    if not self.module.check_mode:
+                        self.snapshot_policy.disassociate_from_storage_groups(
+                            sp_name, list(sgs_to_remove))
+                        LOG.info("Successfully removed %s SGs from snapshot "
+                                 "policy %s", sgs_to_remove, sp_name)
                     changed = True
                 # Check if the given SGs are already disassociated with SP or
                 # not
@@ -701,8 +717,10 @@ class PowerMaxSnapshotPolicy(object):
         try:
             sp_name = self.module.params['snapshot_policy_name']
             LOG.info("Deleting snapshot policy: %s", sp_name)
-            self.snapshot_policy.delete_snapshot_policy(sp_name)
-            LOG.info("Successfully deleted snapshot policy")
+            if not self.module.check_mode:
+                self.snapshot_policy.delete_snapshot_policy(sp_name)
+                LOG.info("Successfully deleted snapshot policy")
+            return True
         except Exception as e:
             self.show_error_exit(
                 "Failed to delete snapshot policy error: %s" % str(e))
@@ -739,9 +757,8 @@ class PowerMaxSnapshotPolicy(object):
             result['snapshot_policy_details']['storage_group_snapshotID'] = \
                 self.get_SP_SG_snapshotID(snap_pol_name)
             LOG.info("Successfully Got Display attributes of snapshot "
-                     "policy %s is %s", snap_pol_name, result)
+                     "policy %s", snap_pol_name)
             return result['snapshot_policy_details']
-
         except Exception as e:
             self.show_error_exit(
                 "Failed to display snapshot policy details with "
@@ -791,16 +808,15 @@ class PowerMaxSnapshotPolicy(object):
         else:
             if result['snapshot_policy_details']:
                 # Delete snapshot policy
-                self.delete_snapshotpolicy()
                 result['changed'], result['snapshot_policy_details'] \
-                    = True, None
+                    = self.delete_snapshotpolicy(), None
         if state == "present":
-            if new_sp_name:
+            if not self.module.check_mode and new_sp_name:
                 snap_pol_name = new_sp_name
             else:
                 snap_pol_name = sp_name
-            result['snapshot_policy_details'] = self.display_result(
-                snap_pol_name)
+            if result['snapshot_policy_details']:
+                result['snapshot_policy_details'] = self.display_result(snap_pol_name)
 
         self.close_connection()
         self.module.exit_json(**result)

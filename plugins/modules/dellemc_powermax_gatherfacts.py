@@ -1,6 +1,8 @@
 #!/usr/bin/python
 # Copyright: (c) 2019-2021, DellEMC
 
+# Apache License version 2.0 (see MODULE-LICENSE or http://www.apache.org/licenses/LICENSE-2.0.txt)
+
 from __future__ import (absolute_import, division, print_function)
 
 __metaclass__ = type
@@ -581,7 +583,7 @@ HAS_PYU4V = utils.has_pyu4v_sdk()
 PYU4V_VERSION_CHECK = utils.pyu4v_version_check()
 
 # Application Type
-APPLICATION_TYPE = 'ansible_v1.5.0'
+APPLICATION_TYPE = 'ansible_v1.6.0'
 
 
 class PowerMaxGatherFacts(object):
@@ -1100,7 +1102,7 @@ def get_powermax_gatherfacts_parameters():
     modules on PowerMax"""
 
     return dict(
-        unispherehost=dict(type='str', required=True),
+        unispherehost=dict(type='str', required=True, no_log=True),
         universion=dict(type='int', required=False, choices=[91, 92]),
         verifycert=dict(type='bool', required=True, choices=[True, False]),
         user=dict(type='str', required=True),

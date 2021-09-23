@@ -1,6 +1,8 @@
 #!/usr/bin/python
 # Copyright: (c) 2021, Dell EMC
 
+# Apache License version 2.0 (see MODULE-LICENSE or http://www.apache.org/licenses/LICENSE-2.0.txt)
+
 from __future__ import (absolute_import, division, print_function)
 
 __metaclass__ = type
@@ -110,7 +112,7 @@ from ansible.module_utils.basic import AnsibleModule
 LOG = utils.get_logger('process_storage_pool_dict')
 
 # Application Type
-APPLICATION_TYPE = 'ansible_v1.5.0'
+APPLICATION_TYPE = 'ansible_v1.6.0'
 
 
 class ProcessPoolDict(object):

@@ -1,6 +1,8 @@
 #!/usr/bin/python
 # Copyright: (c) 2021, Dell EMC
 
+# Apache License version 2.0 (see MODULE-LICENSE or http://www.apache.org/licenses/LICENSE-2.0.txt)
+
 from __future__ import (absolute_import, division, print_function)
 
 __metaclass__ = type
@@ -112,7 +114,7 @@ HAS_PYU4V = utils.has_pyu4v_sdk()
 PYU4V_VERSION_CHECK = utils.pyu4v_version_check()
 
 # Application Type
-APPLICATION_TYPE = 'ansible_v1.5.0'
+APPLICATION_TYPE = 'ansible_v1.6.0'
 
 
 class PowerMaxPool(object):
@@ -171,7 +173,7 @@ class PowerMaxPool(object):
                     pool_details['srp_capacity']['usable_total_tb'] - \
                     pool_details['srp_capacity']['usable_used_tb']
 
-            LOG.info("Pool details: %s", pool_details)
+            LOG.debug("Pool details: %s", pool_details)
             return pool_details
         except utils.ResourceNotFoundException as e:
             error_message = error_message.format(pool_id, str(e))
