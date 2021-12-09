@@ -1,11 +1,3 @@
-plugins/modules/dellemc_powermax_host.py compile-2.6
-plugins/modules/dellemc_powermax_host.py import-2.6
-plugins/modules/dellemc_powermax_hostgroup.py compile-2.6
-plugins/modules/dellemc_powermax_hostgroup.py import-2.6
-plugins/modules/dellemc_powermax_metrodr.py compile-2.6
-plugins/modules/dellemc_powermax_metrodr.py import-2.6
-plugins/modules/dellemc_powermax_portgroup.py compile-2.6
-plugins/modules/dellemc_powermax_portgroup.py import-2.6
 plugins/modules/dellemc_powermax_gatherfacts.py validate-modules:missing-gplv3-license
 plugins/modules/dellemc_powermax_host.py validate-modules:missing-gplv3-license
 plugins/modules/dellemc_powermax_hostgroup.py validate-modules:missing-gplv3-license

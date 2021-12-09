@@ -1,4 +1,7 @@
 # ansible-powermax Change Log
+## Version 1.6.1 - released on 16/12/21
+- Bug fixes in snapshot policy and masking view modules.
+
 ## Version 1.6.0 - released on 23/09/21
 - The check mode feature is enabled for the storage group, port group, snapshot, snapshot policy, masking view, SRDF and metroDR modules.
 - Added dual licensing.
