@@ -79,7 +79,7 @@ There are no known limitations.
 Distribution
 ------------
 The software package is available for download from the [Ansible Modules
-for PowerMax GitHub](../) page.
+for PowerMax GitHub](/../) page.
 
 Documentation
 -------------
