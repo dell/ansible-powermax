@@ -1,7 +1,7 @@
 
 **Ansible Modules for Dell EMC PowerMax** 
 =========================================
-### Release Notes 1.6.0
+### Release Notes 1.6.1
 
 >   © 2021 Dell Inc. or its subsidiaries. All rights reserved. Dell
 >   EMC, and other trademarks are trademarks of Dell Inc. or its
@@ -13,20 +13,20 @@ Contents
 These release notes contain supplemental information about Ansible
 Modules for Dell EMC PowerMax.
 
--   Revision History
--   Product Description
--   New Features & Enhancements
--   Known issues
--   Limitations
--   Distribution
--   Documentation
+-   [Revision History](#revision-history)
+-   [Product Description](#product-description)
+-   [New Features & Enhancements](#new-features--enhancements)
+-   [Known Issues](#known-issues)
+-   [Limitations](#limitations)
+-   [Distribution](#distribution)
+-   [Documentation](#documentation)
 
 Revision History
 ----------------
 
 | **Date** | **Document revision** | **Description of changes** |
 |----------|-----------------------|----------------------------|
-| Sept 2021 | 01 | Ansible Modules for Dell EMC PowerMax release 1.6.0 |
+| Dec 2021 | 01 | Ansible Modules for Dell EMC PowerMax release 1.6.1 |
 
 Product Description
 -------------------
@@ -54,26 +54,9 @@ features:
 New Features & Enhancements
 ---------------------------
 
-The Ansible Modules for Dell EMC PowerMax release 1.6.0 supports the
-following features:
-- The following enhancements have been made to the storage group module:
-    - Check mode feature of Ansible is enabled for the storage group module.    
-- The following enhancements have been made to the port group module:
-    - Check mode feature of Ansible is enabled for the port group module.   
-- The following enhancements have been made to the snapshot module:
-    - Check mode feature of Ansible is enabled for the snapshot module.
-- The following enhancements have been made to the snapshot policy module:
-    - Check mode feature of Ansible is enabled for the snapshot policy module. 
-- The following enhancements have been made to the masking view module:
-    - Check mode feature of Ansible is enabled for the masking view module.
-- The following enhancements have been made to the SRDF module:
-    - Check mode feature of Ansible is enabled for the SRDF module.
-- The following enhancements have been made to the metroDR module:
-    - Check mode feature of Ansible is enabled for the metroDR module.
-- Added dual licensing.    
--   Support for Unisphere 9.1 and above
--   Support for Python version 2.8 and above
--   Support for PyU4V python library version 9.1.2.0 and above
+The Ansible Modules for Dell EMC PowerMax release has the following
+changes:
+- Bug fixes in snapshot policy and masking view modules.
 
 > **NOTE:** Unisphere Version 9.1 is compatible with PowerMax Python
 > library version 9.1.x.x and similarly Unisphere versions later than 9.1 will
@@ -96,11 +79,11 @@ There are no known limitations.
 Distribution
 ------------
 The software package is available for download from the [Ansible Modules
-for PowerMax GitHub](https://github.com/dell/ansible-powermax) page.
+for PowerMax GitHub](https://github.com/dell/ansible-powermax/tree/1.6.1) page.
 
 Documentation
 -------------
-The documentation is available on the [Ansible Modules for PowerMax GitHub](https://github.com/dell/ansible-powermax)
+The documentation is available on the [Ansible Modules for PowerMax GitHub](../docs)
 page. It includes the following:
 
    - README

@@ -18,7 +18,7 @@ This table provides information about the software prerequisites for the Ansible
 
 | **Ansible Modules** | **Unisphere Version** | **PowerMaxOS** | **Red Hat Enterprise Linux** | **Python version** | **Python library version** | **Ansible** |
 |---------------------|-----------------------|----------------|------------------------------|--------------------|----------------------------|-------------|
-| v1.6.0 | 9.1 <br> 9.2 | 5978.221.221 <br> 5978.444.444 <br> 5978.669.669 <br> 5978.711.711 |	7.5 <br> 7.6, 7.7, 7.8, and 8.2 | 2.7.12 <br> 3.5.2 <br> 3.6.x <br> 3.7.x | 9.1.x.x <br> 9.2.x.x | 2.9 and 2.10 | 
+| v1.6.1 | 9.1 <br> 9.2 | 5978.221.221 <br> 5978.444.444 <br> 5978.669.669 <br> 5978.711.711 |	7.5 <br> 7.6, 7.7, 7.8, and 8.2 | 2.7.12 <br> 3.5.2 <br> 3.6.x <br> 3.7.x | 9.1.x.x <br> 9.2.x.x | 2.9 and 2.10 | 
 
   * Please follow PyU4V installation instructions on [PyU4V Documentation](https://pyu4v.readthedocs.io/)
 
@@ -26,22 +26,22 @@ This table provides information about the software prerequisites for the Ansible
 The modules are written in such a way that all requests are idempotent and hence fault-tolerant. This means that the result of a successfully performed request is independent of the number of times it is executed.
 
 ## List of Ansible Modules for Dell EMC PowerMax
-  * Volume module
-  * Host module
-  * Host Group module
-  * Snapshot module
-  * Masking View module
-  * Port module
-  * Port Group module
-  * Storage Group module  
-  * Gatherfacts module
-  * SRDF module
-  * RDF Group module
-  * Metro DR module
-  * Job module
-  * Snapshot Policy module
-  * Storage Pool module
-  * Process Storage Pool module
+  * [Volume module](docs/Product%20Guide.md#volume-module)
+  * [Host module](docs/Product%20Guide.md#host-module)
+  * [Host Group module](docs/Product%20Guide.md#host-group-module)
+  * [Snapshot module](docs/Product%20Guide.md#snapshot-module)
+  * [Masking View module](docs/Product%20Guide.md#masking-view-module)
+  * [Port module](docs/Product%20Guide.md#port-module)
+  * [Port Group module](docs/Product%20Guide.md#port-group-module)
+  * [Storage Group module](docs/Product%20Guide.md#storage-group-module)  
+  * [Gatherfacts module](docs/Product%20Guide.md#gatherfacts-module)
+  * [SRDF module](docs/Product%20Guide.md#srdf-module)
+  * [RDF Group module](docs/Product%20Guide.md#rdf-group-module)
+  * [Metro DR module](docs/Product%20Guide.md#metro-dr-module)
+  * [Job module](docs/Product%20Guide.md#job-module)
+  * [Snapshot Policy module](docs/Product%20Guide.md#snapshot-policy-module)
+  * [Storage Pool module](docs/Product%20Guide.md#storage-pool-module)
+  * [Process Storage Pool module](docs/Product%20Guide.md#process-storage-pool-dict-module)
 
 ## Installation of SDK
 Install the python [sdk](https://pypi.org/project/PyU4V/) named 'PyU4V'. It can be installed using pip, based on the appropriate python version.
@@ -62,7 +62,7 @@ Install the python [sdk](https://pypi.org/project/PyU4V/) named 'PyU4V'. It can 
 #### Offline Installation of Collections
   1. Download the latest tar build from any of the available distribution channel [Ansible Galaxy](https://galaxy.ansible.com/dellemc/powermax) /[Automation Hub](https://console.redhat.com/ansible/automation-hub/repo/published/dellemc/powermax) and use the following command to install the collection anywhere in your system:
 
-	ansible-galaxy collection install dellemc-powermax-1.6.0.tar.gz -p <install_path>
+	ansible-galaxy collection install dellemc-powermax-1.6.1.tar.gz -p <install_path>
 
   2. Set the environment variable:
 
@@ -87,7 +87,7 @@ Install the python [sdk](https://pypi.org/project/PyU4V/) named 'PyU4V'. It can 
 
 ## Running Ansible Modules
 
-The Ansible server must be configured with Python library for Unisphere to run the Ansible playbooks. The [Documents]( https://github.com/dell/ansible-powermax/tree/1.6.0/docs ) provide information on different Ansible modules along with their functions and syntax. The parameters table in the Product Guide provides information on various parameters which need to be configured before running the modules.
+The Ansible server must be configured with Python library for Unisphere to run the Ansible playbooks. The [Documents](docs) provide information on different Ansible modules along with their functions and syntax. The parameters table in the Product Guide provides information on various parameters which need to be configured before running the modules.
 
 ## SSL Certificate Validation
 

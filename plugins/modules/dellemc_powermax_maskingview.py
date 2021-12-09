@@ -174,7 +174,7 @@ HAS_PYU4V = utils.has_pyu4v_sdk()
 PYU4V_VERSION_CHECK = utils.pyu4v_version_check()
 
 # Application Type
-APPLICATION_TYPE = 'ansible_v1.6.0'
+APPLICATION_TYPE = 'ansible_v1.6.1'
 
 
 class PowerMaxMaskingView(object):
@@ -292,6 +292,7 @@ class PowerMaxMaskingView(object):
                              'create masking view', mv_name)
             self.show_error_exit(msg=error_message)
             return False
+
         try:
             resp = {}
             LOG.info('Creating masking view %s... ', mv_name)
@@ -329,6 +330,23 @@ class PowerMaxMaskingView(object):
                                  'with error %s.' % (mv_name, str(e)))
         return changed
 
+    def validate_host(self, host_name):
+        try:
+            hosts = self.provisioning.get_host_list()
+            return True if hosts and host_name in hosts else False
+        except Exception as e:
+            self.show_error_exit(msg='Getting list of hosts failed '
+                                 'with error %s' % str(e))
+
+    def validate_hostgroup(self, hostgroup_name):
+        try:
+            hostGroups = self.provisioning.get_host_group_list()
+            return True if hostGroups and hostgroup_name in hostGroups \
+                else False
+        except Exception as e:
+            self.show_error_exit(msg='Getting list of host groups '
+                                 'failed with error %s' % str(e))
+
     def show_error_exit(self, msg):
         if self.u4v_conn is not None:
             try:
@@ -342,6 +360,15 @@ class PowerMaxMaskingView(object):
         LOG.error(msg)
         self.module.fail_json(msg=msg)
 
+    def validate_host_params(self):
+        host_name = self.module.params['host_name']
+        hostgroup_name = self.module.params['hostgroup_name']
+        if host_name and not self.validate_host(host_name):
+            self.show_error_exit('Host %s does not exist' % host_name)
+        if hostgroup_name and not self.validate_hostgroup(hostgroup_name):
+            self.show_error_exit('Host Group %s does not exist'
+                                 % hostgroup_name)
+
     def perform_module_operation(self):
         """
         Perform different actions on masking view based on user parameter
@@ -351,6 +378,7 @@ class PowerMaxMaskingView(object):
         mv_name = self.module.params['mv_name']
         new_mv_name = self.module.params['new_mv_name']
 
+        self.validate_host_params()
         masking_view = self.get_masking_view(mv_name)
         if masking_view is not None:
             self.is_mv_changed(masking_view)

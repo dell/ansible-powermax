@@ -114,7 +114,7 @@ HAS_PYU4V = utils.has_pyu4v_sdk()
 PYU4V_VERSION_CHECK = utils.pyu4v_version_check()
 
 # Application Type
-APPLICATION_TYPE = 'ansible_v1.6.0'
+APPLICATION_TYPE = 'ansible_v1.6.1'
 
 
 class PowerMaxPool(object):

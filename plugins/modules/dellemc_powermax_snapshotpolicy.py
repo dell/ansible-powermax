@@ -326,7 +326,7 @@ HAS_PYU4V = utils.has_pyu4v_sdk()
 PYU4V_VERSION_CHECK = utils.pyu4v_version_check()
 
 # Application Type
-APPLICATION_TYPE = "ansible_v1.6.0"
+APPLICATION_TYPE = 'ansible_v1.6.1'
 
 INTERVAL = ['10 Minutes', '12 Minutes', '15 Minutes', '20 Minutes',
             '30 Minutes', '1 Hour', '2 Hours', '3 Hours', '4 Hours',
@@ -442,8 +442,8 @@ class PowerMaxSnapshotPolicy(object):
                 LOG.info("Getting snapshot policy details for: %s", sp_name)
                 snapshot_policy_details = self.snapshot_policy.\
                     get_snapshot_policy(sp_name)
-            LOG.info("Successfully got details of snapshot policy: %s",
-                     sp_name)
+                LOG.info("Successfully got details of snapshot policy: %s",
+                         sp_name)
             return snapshot_policy_details
         except utils.ResourceNotFoundException as e:
             error_message = "Failed to get details of snapshot policy " \
