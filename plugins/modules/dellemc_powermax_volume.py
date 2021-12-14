@@ -875,10 +875,13 @@ class PowerMaxVolume(object):
                 self.show_error_exit(msg="Please provide valid volume "
                                          "name.")
 
-            vol_name = vol['volume_identifier']
-            if new_name != vol_name:
-                LOG.info('Changing the name of volume %s to %s',
-                         vol_name, new_name)
+            if 'volume_identifier' in vol:
+                vol_name = vol['volume_identifier']
+                if new_name != vol_name:
+                    LOG.info('Changing the name of volume %s to %s',
+                             vol_name, new_name)
+                    changed = self.rename_volume(vol_id, new_name) or changed
+            else:
                 changed = self.rename_volume(vol_id, new_name) or changed
 
         if state == 'absent' and vol:
