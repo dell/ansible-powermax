@@ -19,7 +19,7 @@
   tasks:
 # This task collects the details of the storage group.
   - name: Get details of the Storage Group
-    dellemc_powermax_storagegroup:
+    storagegroup:
       unispherehost: "{{unispherehost}}"
       universion: "{{universion}}"
       verifycert: "{{verifycert}}"
@@ -36,7 +36,7 @@
 
 #  This task removes all the volumes from the storage group. vol_state attribute defines the state of the volume in a storage group.
   - name: Remove all volumes from the Storage Group
-    dellemc_powermax_storagegroup:
+    storagegroup:
       unispherehost: "{{unispherehost}}"
       universion: "{{universion}}"
       verifycert: "{{verifycert}}"
@@ -52,7 +52,7 @@
  
 #  This task deletes the volumes which were removed from the storage group in the previous task.
   - name: Delete all the volumes
-    dellemc_powermax_volume:
+    volume:
       unispherehost: "{{unispherehost}}"
       universion: "{{universion}}"
       verifycert: "{{verifycert}}"

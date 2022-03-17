@@ -20,7 +20,7 @@
   tasks:
   - name: Create volume
     register: result
-    dellemc_powermax_volume:
+    volume:
         unispherehost: "{{unispherehost}}"
         universion: "{{universion}}"
         verifycert: "{{verifycert}}"

@@ -7,6 +7,9 @@
 from __future__ import (absolute_import, division, print_function)
 from decimal import Decimal
 import logging
+from ansible_collections.dellemc.powermax.plugins.module_utils.storage.dell.dellemc_powermax_logging_handler \
+    import CustomRotatingFileHandler
+
 __metaclass__ = type
 
 try:
@@ -232,12 +235,20 @@ returns logger object
 '''
 
 
-def get_logger(module_name, log_file_name='dellemc_ansible_provisioning.log',
+def get_logger(module_name, log_file_name='ansible_powermax.log',
                log_devel=logging.INFO):
     FORMAT = '%(asctime)-15s %(filename)s %(levelname)s : %(message)s'
+    max_bytes = 5 * 1024 * 1024
     logging.basicConfig(filename=log_file_name, format=FORMAT)
     LOG = logging.getLogger(module_name)
     LOG.setLevel(log_devel)
+    handler = CustomRotatingFileHandler(log_file_name,
+                                        maxBytes=max_bytes,
+                                        backupCount=5)
+    formatter = logging.Formatter(FORMAT)
+    handler.setFormatter(formatter)
+    LOG.addHandler(handler)
+    LOG.propagate = False
     return LOG
 
 
@@ -285,3 +296,22 @@ Close unisphere connection
 
 def close_connection(module_obj):
     module_obj.close_session()
+
+
+'''
+Validates if specified initiator is a valid FC/ ISCSI initiator
+'''
+
+
+def is_valid_initiator(initiator_id):
+    is_fc_initiator = initiator_id.isalnum() and len(initiator_id) == 16
+    is_iscsi_initiator = initiator_id.startswith("iqn.") or \
+        initiator_id.startswith("eui.")
+
+    return is_fc_initiator or is_iscsi_initiator
+
+
+def is_empty(val):
+    if val is not None:
+        return len(val.strip()) == 0
+    return False

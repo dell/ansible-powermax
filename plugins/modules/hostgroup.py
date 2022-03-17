@@ -6,14 +6,10 @@
 from __future__ import (absolute_import, division, print_function)
 
 __metaclass__ = type
-ANSIBLE_METADATA = {'metadata_version': '1.1',
-                    'status': ['preview'],
-                    'supported_by': 'community'
-                    }
 
 DOCUMENTATION = r'''
 ---
-module: dellemc_powermax_hostgroup
+module: hostgroup
 version_added: '1.0.0'
 short_description:  Manage a host group (cascaded initiator group) on a
                     PowerMax/VMAX storage system
@@ -45,8 +41,8 @@ options:
   state:
     description:
     - Define whether the host group should be present or absent on the system.
-    - present - indicates that the host group should be present on the system
-    - absent - indicates that the host group should be absent on the system
+    - present - indicates that the host group should be present on the system.
+    - absent - indicates that the host group should be absent on the system.
     required: true
     choices: [absent, present]
     type: str
@@ -54,48 +50,48 @@ options:
     description:
     - Define whether the host should be present or absent in the host group.
     - present-in-group - indicates that the hosts should exist in the host
-                         group
+                         group.
     - absent-in-group - indicates that the hosts should not exist in the host
-                        group
+                        group.
     choices: [present-in-group, absent-in-group]
     type: str
   host_flags:
     description:
-    - input as an yaml dictionary
+    - input as an yaml dictionary.
     - List of all host_flags -
-    - 1. volume_set_addressing
-    - 2. disable_q_reset_on_ua
-    - 3. environ_set
-    - 4. avoid_reset_broadcast
-    - 5. openvms
-    - 6. scsi_3
-    - 7. spc2_protocol_version
-    - 8. scsi_support1
-    - 9. consistent_lun
-    - Possible values are true, false, unset(default state)
+    - 1. volume_set_addressing.
+    - 2. disable_q_reset_on_ua.
+    - 3. environ_set.
+    - 4. avoid_reset_broadcast.
+    - 5. openvms.
+    - 6. scsi_3.
+    - 7. spc2_protocol_version.
+    - 8. scsi_support1.
+    - 9. consistent_lun.
+    - Possible values are true, false, unset(default state).
     required: false
     type: dict
   host_type:
     description:
-      - Describing the OS type (default or hpux)
+      - Describing the OS type (default or hpux).
     required: false
     choices: [default, hpux]
     type: str
   new_name:
     description:
     - The new name for the host group for the renaming function. No Special
-      Character support except for _. Case sensitive for REST Calls
+      Character support except for _. Case sensitive for REST Calls.
     type: str
 notes:
   - In the gather facts module, empty host groups will be listed as hosts.
   - host_flags and host_type are mutually exclusive parameters.
   - Hostgroups with 'default' host_type will have 'default' hosts.
   - Hostgroups with 'hpux' host_type will have 'hpux' hosts.
-  '''
+'''
 
 EXAMPLES = r'''
 - name: Create host group with 'default' host_type
-  dellemc_powermax_hostgroup:
+  dellemc.powermax.hostgroup:
     unispherehost: "{{unispherehost}}"
     universion: "{{universion}}"
     verifycert: "{{verifycert}}"
@@ -110,7 +106,7 @@ EXAMPLES = r'''
     state: 'present'
 
 - name: Create host group with 'hpux' host_type
-  dellemc_powermax_hostgroup:
+  dellemc.powermax.hostgroup:
     unispherehost: "{{unispherehost}}"
     universion: "{{universion}}"
     verifycert: "{{verifycert}}"
@@ -125,7 +121,7 @@ EXAMPLES = r'''
     state: 'present'
 
 - name: Create host group with host_flags
-  dellemc_powermax_hostgroup:
+  dellemc.powermax.hostgroup:
     unispherehost: "{{unispherehost}}"
     universion: "{{universion}}"
     verifycert: "{{verifycert}}"
@@ -145,7 +141,7 @@ EXAMPLES = r'''
       openvms: 'unset'
 
 - name: Get host group details
-  dellemc_powermax_hostgroup:
+  dellemc.powermax.hostgroup:
     unispherehost: "{{unispherehost}}"
     universion: "{{universion}}"
     verifycert: "{{verifycert}}"
@@ -156,7 +152,7 @@ EXAMPLES = r'''
     state: 'present'
 
 - name: Adding host to host group
-  dellemc_powermax_hostgroup:
+  dellemc.powermax.hostgroup:
     unispherehost: "{{unispherehost}}"
     universion: "{{universion}}"
     verifycert: "{{verifycert}}"
@@ -170,7 +166,7 @@ EXAMPLES = r'''
     host_state: 'present-in-group'
 
 - name: Removing host from host group
-  dellemc_powermax_hostgroup:
+  dellemc.powermax.hostgroup:
     unispherehost: "{{unispherehost}}"
     universion: "{{universion}}"
     verifycert: "{{verifycert}}"
@@ -184,7 +180,7 @@ EXAMPLES = r'''
     host_state: 'absent-in-group'
 
 - name: Modify host group using host_type
-  dellemc_powermax_hostgroup:
+  dellemc.powermax.hostgroup:
     unispherehost: "{{unispherehost}}"
     universion: "{{universion}}"
     verifycert: "{{verifycert}}"
@@ -196,7 +192,7 @@ EXAMPLES = r'''
     state: 'present'
 
 - name: Modify host group using host_flags
-  dellemc_powermax_hostgroup:
+  dellemc.powermax.hostgroup:
     unispherehost: "{{unispherehost}}"
     universion: "{{universion}}"
     verifycert: "{{verifycert}}"
@@ -212,7 +208,7 @@ EXAMPLES = r'''
     state: 'present'
 
 - name: Rename host group
-  dellemc_powermax_hostgroup:
+  dellemc.powermax.hostgroup:
     unispherehost: "{{unispherehost}}"
     universion: "{{universion}}"
     verifycert: "{{verifycert}}"
@@ -224,7 +220,7 @@ EXAMPLES = r'''
     state: 'present'
 
 - name: Delete host group
-  dellemc_powermax_hostgroup:
+  dellemc.powermax.hostgroup:
     unispherehost: "{{unispherehost}}"
     universion: "{{universion}}"
     verifycert: "{{verifycert}}"
@@ -298,14 +294,14 @@ from ansible.module_utils.basic import AnsibleModule
 from ansible_collections.dellemc.powermax.plugins.module_utils.storage.dell \
     import dellemc_ansible_powermax_utils as utils
 
-LOG = utils.get_logger('dellemc_powermax_hostgroup', log_devel=logging.INFO)
+LOG = utils.get_logger('hostgroup')
 
 HAS_PYU4V = utils.has_pyu4v_sdk()
 
 PYU4V_VERSION_CHECK = utils.pyu4v_version_check()
 
 # Application Type
-APPLICATION_TYPE = 'ansible_v1.6.1'
+APPLICATION_TYPE = 'ansible_v1.7.0'
 
 BASE_FLAGS = {'volume_set_addressing': {'enabled': False, 'override': False},
               'disable_q_reset_on_ua': {'enabled': False, 'override': False},
@@ -343,7 +339,7 @@ HOST_FLAGS = {'default': flags_default(),
               'hpux': flags_hpux()}
 
 
-class PowerMaxHostGroup(object):
+class HostGroup(object):
     '''Class with host group (cascaded initiator group) operations'''
 
     u4v_conn = None
@@ -351,7 +347,7 @@ class PowerMaxHostGroup(object):
     def __init__(self):
         ''' Define all parameters required by this module'''
         self.module_params = utils.get_powermax_management_host_parameters()
-        self.module_params.update(get_powermax_hostgroup_parameters())
+        self.module_params.update(get_hostgroup_parameters())
 
         mutually_exclusive = [['host_flags', 'host_type']]
         required_together = [['hosts', 'host_state']]
@@ -809,7 +805,7 @@ class PowerMaxHostGroup(object):
         self.module.exit_json(**self.result)
 
 
-def get_powermax_hostgroup_parameters():
+def get_hostgroup_parameters():
     return dict(
         hostgroup_name=dict(required=True, type='str'),
         hosts=dict(required=False, type='list', elements='str'),
@@ -826,7 +822,7 @@ def get_powermax_hostgroup_parameters():
 def main():
     ''' Create PowerMax host group object and perform action on it
         based on user input from playbook'''
-    obj = PowerMaxHostGroup()
+    obj = HostGroup()
     obj.perform_module_operation()
 
 

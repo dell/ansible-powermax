@@ -21,7 +21,7 @@
 # This task creates multiple volumes using the loop. 
   - name: Create volumes
     register: result
-    dellemc_powermax_volume:
+    volume:
         unispherehost: "{{unispherehost}}"
         universion: "{{universion}}"
         verifycert: "{{verifycert}}"

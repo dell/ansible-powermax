@@ -6,21 +6,17 @@
 from __future__ import (absolute_import, division, print_function)
 
 __metaclass__ = type
-ANSIBLE_METADATA = {'metadata_version': '1.1',
-                    'status': ['preview'],
-                    'supported_by': 'community'
-                    }
 
 DOCUMENTATION = r'''
 ---
-module: dellemc_powermax_gatherfacts
+module: info
 version_added: '1.0.0'
 short_description: Gathers information about PowerMax/VMAX Storage entities
 description:
 - Gathers the list of specified PowerMax/VMAX storage system entities, such as
   the list of registered arrays, storage groups, hosts, host groups, storage
-  groups, storage resource pools, port groups, masking views, array health
-  status, alerts and metro DR environments, so on.
+  groups, storage resource pools, port groups, masking views, initiators,
+  array health status, alerts and metro DR environments, so on.
 extends_documentation_fragment:
   - dellemc.powermax.dellemc_powermax.powermax
   - dellemc.powermax.dellemc_powermax.powermax_serial_no
@@ -49,26 +45,27 @@ options:
     description:
     - List of string variables to specify the PowerMax/VMAX entities for which
       information is required.
-    - Required only if the serial_no is present
-    - List of all PowerMax/VMAX entities supported by the module
-    - alert - gets alert summary information
-    - health - health status of a specific PowerMax array
-    - vol - volumes
-    - srp - storage resource pools
-    - sg - storage groups
-    - pg - port groups
-    - host - hosts
-    - hg -  host groups
-    - port - ports
-    - mv - masking views
-    - rdf - rdf groups
-    - metro_dr_env - metro DR environments
-    - snapshot_policies - snapshot policies
+    - Required only if the serial_no is present.
+    - List of all PowerMax/VMAX entities supported by the module.
+    - alert - gets alert summary information.
+    - health - health status of a specific PowerMax array.
+    - vol - volumes.
+    - srp - storage resource pools.
+    - sg - storage groups.
+    - pg - port groups.
+    - host - hosts.
+    - hg -  host groups.
+    - port - ports.
+    - mv - masking views.
+    - rdf - rdf groups.
+    - metro_dr_env - metro DR environments.
+    - snapshot_policies - snapshot policies.
+    - initiators - initiators.
     required: False
     type: list
     elements: str
     choices: [alert, health, vol, srp, sg, pg , host, hg, port, mv, rdf,
-              metro_dr_env, snapshot_policies]
+              metro_dr_env, snapshot_policies, initiators]
   filters:
     description:
     - List of filters to support filtered output for storage entities.
@@ -108,21 +105,21 @@ notes:
       num_of_storage_groups, oracle_instance_name, physical_name, pinned,
       private_volumes, rdf_group_number, reserved, split_name, status,
       storageGroupId, symmlun, tdev, thin_bcv, type, vdev, virtual_volumes,
-      volume_identifier, wwn
+      volume_identifier, wwn.
     - srp - compression_state, description, effective_used_capacity_percent,
       emulation, num_of_disk_groups, num_of_srp_sg_demands,
       num_of_srp_slo_demands, rdfa_dse, reserved_cap_percent,
       total_allocated_cap_gb, total_srdf_dse_allocated_cap_gb,
-      total_subscribed_cap_gb, total_usable_cap_gb
+      total_subscribed_cap_gb, total_usable_cap_gb.
     - sg - base_slo_name, cap_gb, child, child_sg_name, ckd, compression,
       compression_ratio_to_one, fba, num_of_child_sgs, num_of_masking_views,
       num_of_parent_sgs, num_of_snapshots, num_of_vols, parent,
       parent_sg_name, slo_compliance, slo_name, srp_name, storageGroupId,
-      tag, volumeId
-    - pg - dir_port, fibre, iscsi, num_of_masking_views, num_of_ports
+      tag, volumeId.
+    - pg - dir_port, fibre, iscsi, num_of_masking_views, num_of_ports.
     - host - host_group_name, num_of_host_groups, num_of_initiators,
-      num_of_masking_views, num_of_powerpath_hosts, powerPathHostId
-    - hg - host_name, num_of_hosts, num_of_masking_views
+      num_of_masking_views, num_of_powerpath_hosts, powerPathHostId.
+    - hg - host_name, num_of_hosts, num_of_masking_views.
     - port - aclx, avoid_reset_broadcast, common_serial_number, director_status,
       disable_q_reset_on_ua, enable_auto_negotive, environ_set, hp_3000_mode,
       identifier, init_point_to_point, ip_list, ipv4_address, ipv6_address,
@@ -133,18 +130,22 @@ notes:
       rdf_hardware_compression_supported, rdf_software_compression,
       rdf_software_compression_supported, scsi_3, scsi_support1, siemens,
       soft_reset, spc2_protocol_version, sunapee, type, unique_wwn, vcm_state,
-      vnx_attached, volume_set_addressing, wwn_node
+      vnx_attached, volume_set_addressing, wwn_node.
     - mv - host_or_host_group_name, port_group_name,
-      protocol_endpoint_masking_view, storage_group_name
+      protocol_endpoint_masking_view, storage_group_name.
     - alert - acknowledged, array, created_date, created_date_milliseconds,
-      description, object, object_type, severity, state, type
+      description, object, object_type, severity, state, type.
+    - initiators - alias, directorId, initiator_hba, in_a_host, iscsi,
+      logged_in, num_of_host_groups, num_of_masking_views,
+      num_of_powerpath_hosts, num_of_vols, on_fabric, port_flag_overrides,
+      portId, powerPathHostId.
 '''
 
 EXAMPLES = r'''
 
 - name: Get list of volumes with filter -- all TDEV volumes of size equal
         to 5GB
-  dellemc_powermax_gatherfacts:
+  dellemc.powermax.info:
     unispherehost: "{{unispherehost}}"
     universion: "{{universion}}"
     verifycert: "{{verifycert}}"
@@ -162,7 +163,7 @@ EXAMPLES = r'''
         filter_value: "5"
 
 - name: Get list of volumes and storage groups with filter
-  dellemc_powermax_gatherfacts:
+  dellemc.powermax.info:
     unispherehost: "{{unispherehost}}"
     universion: "{{universion}}"
     verifycert: "{{verifycert}}"
@@ -181,7 +182,7 @@ EXAMPLES = r'''
         filter_value: "5"
 
 - name: Get list of storage groups with capacity between 2GB to 10GB
-  dellemc_powermax_gatherfacts:
+  dellemc.powermax.info:
     unispherehost: "{{unispherehost}}"
     universion: "{{universion}}"
     verifycert: "{{verifycert}}"
@@ -199,7 +200,7 @@ EXAMPLES = r'''
         filter_value: "10"
 
 - name: Get the list of arrays for a given Unisphere host
-  dellemc_powermax_gatherfacts:
+  dellemc.powermax.info:
     unispherehost: "{{unispherehost}}"
     universion: "{{universion}}"
     verifycert: "{{verifycert}}"
@@ -210,7 +211,7 @@ EXAMPLES = r'''
     var: array_list
 
 - name: Get list of tdev-volumes
-  dellemc_powermax_gatherfacts:
+  dellemc.powermax.info:
     unispherehost: "{{unispherehost}}"
     universion: "{{universion}}"
     verifycert: "{{verifycert}}"
@@ -222,7 +223,7 @@ EXAMPLES = r'''
       - vol
 
 - name: Get the list of arrays for a given Unisphere host
-  dellemc_powermax_gatherfacts:
+  dellemc.powermax.info:
     unispherehost: "{{unispherehost}}"
     universion: "{{universion}}"
     verifycert: "{{verifycert}}"
@@ -230,7 +231,7 @@ EXAMPLES = r'''
     password: "{{password}}"
 
 - name: Get array health status
-  dellemc_powermax_gatherfacts:
+  dellemc.powermax.info:
     unispherehost: "{{unispherehost}}"
     universion: "{{universion}}"
     verifycert: "{{verifycert}}"
@@ -241,7 +242,7 @@ EXAMPLES = r'''
        - health
 
 - name: Get array alerts summary
-  dellemc_powermax_gatherfacts:
+  dellemc.powermax.info:
     unispherehost: "{{unispherehost}}"
     universion: "{{universion}}"
     verifycert: "{{verifycert}}"
@@ -252,7 +253,7 @@ EXAMPLES = r'''
        - alert
 
 - name: Get the list of metro DR environments for a given Unisphere host
-  dellemc_powermax_gatherfacts:
+  dellemc.powermax.info:
     unispherehost: "{{unispherehost}}"
     universion: "{{universion}}"
     verifycert: "{{verifycert}}"
@@ -263,7 +264,7 @@ EXAMPLES = r'''
        - metro_dr_env
 
 - name: Get list of Storage groups
-  dellemc_powermax_gatherfacts:
+  dellemc.powermax.info:
     unispherehost: "{{unispherehost}}"
     universion: "{{universion}}"
     verifycert: "{{verifycert}}"
@@ -274,7 +275,7 @@ EXAMPLES = r'''
        - sg
 
 - name: Get list of Storage Resource Pools
-  dellemc_powermax_gatherfacts:
+  dellemc.powermax.info:
     unispherehost: "{{unispherehost}}"
     universion: "{{universion}}"
     verifycert: "{{verifycert}}"
@@ -285,7 +286,7 @@ EXAMPLES = r'''
        - srp
 
 - name: Get list of Ports
-  dellemc_powermax_gatherfacts:
+  dellemc.powermax.info:
     unispherehost: "{{unispherehost}}"
     universion: "{{universion}}"
     verifycert: "{{verifycert}}"
@@ -296,7 +297,7 @@ EXAMPLES = r'''
        - port
 
 - name: Get list of Port Groups
-  dellemc_powermax_gatherfacts:
+  dellemc.powermax.info:
     unispherehost: "{{unispherehost}}"
     universion: "{{universion}}"
     verifycert: "{{verifycert}}"
@@ -307,7 +308,7 @@ EXAMPLES = r'''
        - pg
 
 - name: Get list of Hosts
-  dellemc_powermax_gatherfacts:
+  dellemc.powermax.info:
     unispherehost: "{{unispherehost}}"
     universion: "{{universion}}"
     verifycert: "{{verifycert}}"
@@ -318,7 +319,7 @@ EXAMPLES = r'''
        - host
 
 - name: Get list of Host Groups
-  dellemc_powermax_gatherfacts:
+  dellemc.powermax.info:
     unispherehost: "{{unispherehost}}"
     universion: "{{universion}}"
     verifycert: "{{verifycert}}"
@@ -329,7 +330,7 @@ EXAMPLES = r'''
        - hg
 
 - name: Get list of Masking Views
-  dellemc_powermax_gatherfacts:
+  dellemc.powermax.info:
     unispherehost: "{{unispherehost}}"
     universion: "{{universion}}"
     verifycert: "{{verifycert}}"
@@ -340,7 +341,7 @@ EXAMPLES = r'''
        - mv
 
 - name: Get list of RDF Groups
-  dellemc_powermax_gatherfacts:
+  dellemc.powermax.info:
     unispherehost: "{{unispherehost}}"
     universion: "{{universion}}"
     verifycert: "{{verifycert}}"
@@ -351,7 +352,7 @@ EXAMPLES = r'''
        - rdf
 
 - name: Get list of snapshot policies
-  dellemc_powermax_gatherfacts:
+  dellemc.powermax.info:
     unispherehost: "{{unispherehost}}"
     universion: "{{universion}}"
     verifycert: "{{verifycert}}"
@@ -360,6 +361,17 @@ EXAMPLES = r'''
     serial_no: "{{serial_no}}"
     gather_subset:
      - snapshot_policies
+
+- name: Get list of initiators
+  dellemc.powermax.info:
+    unispherehost: "{{unispherehost}}"
+    universion: "{{universion}}"
+    verifycert: "{{verifycert}}"
+    user: "{{user}}"
+    password: "{{password}}"
+    serial_no: "{{serial_no}}"
+    gather_subset:
+     - initiators
 '''
 
 RETURN = r'''
@@ -417,7 +429,7 @@ Alerts:
             description: Unique ID of alert.
             type: str
         array:
-            description: Array serial no.
+            description: Array serial number.
             type: str
         created_date:
             description: Creation Date.
@@ -426,22 +438,22 @@ Alerts:
             description: Creation Date in milliseconds.
             type: str
         description:
-            description: Description about the alert
+            description: Description about the alert.
             type: str
         object:
-            description: Object description
+            description: Object description.
             type: str
         object_type:
-            description: Resource class
+            description: Resource class.
             type: str
         severity:
-            description: Severity of the alert
+            description: Severity of the alert.
             type: str
         state:
-            description: State of the alert
+            description: State of the alert.
             type: str
         type:
-            description: Type of the alert
+            description: Type of the alert.
             type: str
 HostGroups:
     description: List of host groups present on the array.
@@ -548,7 +560,7 @@ StorageResourcePools:
                     description: Data reduction ratio of SRP.
                     type: int
                 overall_efficiency_ratio_to_one:
-                    description: Overall effectively ratio of SRP.
+                    description: Overall efficiency ratio of SRP.
                     type: int
                 snapshot_savings_ratio_to_one:
                     description: Snapshot savings ratio of SRP.
@@ -557,7 +569,7 @@ StorageResourcePools:
                     description: Virtual provisioning savings ratio of SRP.
                     type: int
         total_srdf_dse_allocated_cap_gb:
-            description: Total srdf dse allocated capacity in GB.
+            description: Total SRDF dse allocated capacity in GB.
             type: int
 Volumes:
     description: List of volumes on the array.
@@ -571,22 +583,26 @@ SnapshotPolicies:
     description: List of snapshot policies on the array.
     returned: When snapshot policy exists.
     type: list
+Initiators:
+    description: List of initiators on the array.
+    returned: When initiator exists.
+    type: list
 '''
 
 from ansible_collections.dellemc.powermax.plugins.module_utils.storage.dell \
     import dellemc_ansible_powermax_utils as utils
 from ansible.module_utils.basic import AnsibleModule
 
-LOG = utils.get_logger('dellemc_powermax_gatherfacts')
+LOG = utils.get_logger('info')
 
 HAS_PYU4V = utils.has_pyu4v_sdk()
 PYU4V_VERSION_CHECK = utils.pyu4v_version_check()
 
 # Application Type
-APPLICATION_TYPE = 'ansible_v1.6.1'
+APPLICATION_TYPE = 'ansible_v1.7.0'
 
 
-class PowerMaxGatherFacts(object):
+class Info(object):
     """Class with Gather Fact operations"""
 
     u4v_conn = None
@@ -594,7 +610,7 @@ class PowerMaxGatherFacts(object):
     def __init__(self):
         """Define all the parameters required by this module"""
 
-        self.module_params = get_powermax_gatherfacts_parameters()
+        self.module_params = get_info_parameters()
         self.module = AnsibleModule(
             argument_spec=self.module_params,
             supports_check_mode=False)
@@ -1001,6 +1017,22 @@ class PowerMaxGatherFacts(object):
                   '%s ' % (self.module.params['serial_no'], str(e))
             self.show_error_exit(msg=msg)
 
+    def get_initiators_list(self, filters_dict=None):
+        """Get the list of initiators of a given PowerMax/Vmax
+            storage system"""
+        try:
+            LOG.info('Getting Initiators List ')
+            if filters_dict:
+                initiators_list = self.provisioning.get_initiator_list(
+                    params=filters_dict)
+            else:
+                initiators_list = self.provisioning.get_initiator_list()
+            LOG.info('Got %d Initiators from array', len(initiators_list))
+            return initiators_list
+        except Exception as e:
+            msg = 'Get initiator details failed with error: %s' % str(e)
+            self.show_error_exit(msg=msg)
+
     def show_error_exit(self, msg):
         if self.u4v_conn is not None:
             try:
@@ -1047,6 +1079,7 @@ class PowerMaxGatherFacts(object):
             alert = []
             metro_dr_env = []
             snapshot_policies = []
+            initiators = []
             if 'alert' in str(subset):
                 alert = self.get_system_alerts(filters_dict=filters_dict)
             if 'health' in str(subset):
@@ -1076,6 +1109,9 @@ class PowerMaxGatherFacts(object):
             if 'snapshot_policies' in str(subset):
                 snapshot_policies = \
                     self.get_snapshot_policies_list()
+            if 'initiators' in str(subset):
+                initiators = \
+                    self.get_initiators_list(filters_dict=filters_dict)
 
             LOG.info("Closing unisphere connection %s", self.u4v_conn)
             utils.close_connection(self.u4v_conn)
@@ -1094,10 +1130,11 @@ class PowerMaxGatherFacts(object):
                 MaskingViews=mv,
                 RDFGroups=rdf,
                 MetroDREnvironments=metro_dr_env,
-                SnapshotPolicies=snapshot_policies)
+                SnapshotPolicies=snapshot_policies,
+                Initiators=initiators)
 
 
-def get_powermax_gatherfacts_parameters():
+def get_info_parameters():
     """This method provide the parameters required for the ansible
     modules on PowerMax"""
 
@@ -1123,7 +1160,8 @@ def get_powermax_gatherfacts_parameters():
                                     'mv',
                                     'rdf',
                                     'metro_dr_env',
-                                    'snapshot_policies'
+                                    'snapshot_policies',
+                                    'initiators'
                                     ]),
         filters=dict(type='list', required=False, elements='dict',
                      options=dict(
@@ -1141,7 +1179,7 @@ def main():
     """ Create PowerMaxGatherFacts object and perform action on it
         based on user input from playbook """
 
-    obj = PowerMaxGatherFacts()
+    obj = Info()
     obj.perform_module_operation()
 
 

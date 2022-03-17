@@ -56,10 +56,10 @@ options:
 
 requirements:
   - A DellEMC PowerMax storage system.
-  - Ansible 2.9 or later.
+  - Ansible 2.10, 2.11, 2.12.
 notes:
-  - The modules prefixed with dellemc_powermax are built to support the
-    DellEMC PowerMax storage platform.
+  - The modules present in this collection named as 'dellemc.powermax'
+    are built to support the Dell EMC PowerMax storage platform.
 '''
 
     # Documentation fragment for PowerMax with serial_no (powermax_serial_no)

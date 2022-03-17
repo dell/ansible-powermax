@@ -6,14 +6,10 @@
 from __future__ import (absolute_import, division, print_function)
 
 __metaclass__ = type
-ANSIBLE_METADATA = {"metadata_version": "1.1",
-                    "status": ["preview"],
-                    "supported_by": "community"
-                    }
 
 DOCUMENTATION = r"""
 ---
-module: dellemc_powermax_port
+module: port
 version_added: '1.0.0'
 short_description:  Manage ports on PowerMax/VMAX Storage System
 description:
@@ -35,7 +31,7 @@ options:
 
 EXAMPLES = r"""
 - name: Get details of single/multiple ports
-  dellemc_powermax_port:
+  dellemc.powermax.port:
     unispherehost: "{{unispherehost}}"
     verifycert: "{{verifycert}}"
     user: "{{user}}"
@@ -202,17 +198,17 @@ from ansible_collections.dellemc.powermax.plugins.module_utils.storage.dell \
     import dellemc_ansible_powermax_utils as utils
 from ansible.module_utils.basic import AnsibleModule
 
-LOG = utils.get_logger("dellemc_powermax_port", log_devel=logging.INFO)
+LOG = utils.get_logger("port")
 
 HAS_PYU4V = utils.has_pyu4v_sdk()
 
 PYU4V_VERSION_CHECK = utils.pyu4v_version_check()
 
 # Application Type
-APPLICATION_TYPE = 'ansible_v1.6.1'
+APPLICATION_TYPE = 'ansible_v1.7.0'
 
 
-class PowerMaxPort(object):
+class Port(object):
     """ Class with port operations"""
 
     u4v_conn = None
@@ -220,7 +216,7 @@ class PowerMaxPort(object):
     def __init__(self):
         """ Define all the parameters required by this module"""
         self.module_params = utils.get_powermax_management_host_parameters()
-        self.module_params.update(get_powermax_port_parameters())
+        self.module_params.update(get_port_parameters())
         # initialize the ansible module
         self.module = AnsibleModule(
             argument_spec=self.module_params,
@@ -312,7 +308,7 @@ class PowerMaxPort(object):
         self.module.exit_json(**self.result)
 
 
-def get_powermax_port_parameters():
+def get_port_parameters():
     """This method provide parameter required for the ansible port modules on PowerMax"""
     return dict(
         ports=dict(required=True, type='list', elements='dict')
@@ -324,7 +320,7 @@ def main():
     Create PowerMax port object and perform action on it
     based on user input from playbook
     """
-    obj = PowerMaxPort()
+    obj = Port()
     obj.perform_module_operation()
 
 

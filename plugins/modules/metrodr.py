@@ -6,12 +6,10 @@
 from __future__ import (absolute_import, division, print_function)
 
 __metaclass__ = type
-ANSIBLE_METADATA = {"metadata_version": "1.1", "status": ["preview"],
-                    "supported_by": "community"}
 
 DOCUMENTATION = r"""
 ---
-module: dellemc_powermax_metrodr
+module: metrodr
 version_added: '1.4.0'
 short_description: Manage metro DR environment on PowerMax/VMAX Storage
                    System
@@ -154,7 +152,7 @@ options:
 
 EXAMPLES = r"""
 - name: Get metro environment details
-  dellemc_powermax_metrodr:
+  dellemc.powermax.metrodr:
     unispherehost: "{{unispherehost}}"
     universion: "{{universion}}"
     verifycert: "{{verifycert}}"
@@ -165,7 +163,7 @@ EXAMPLES = r"""
     state: "present"
 
 - name: Convert SG to metro DR environment
-  dellemc_powermax_metrodr:
+  dellemc.powermax.metrodr:
     unispherehost: "{{unispherehost}}"
     universion: "{{universion}}"
     verifycert: "{{verifycert}}"
@@ -181,7 +179,7 @@ EXAMPLES = r"""
     state: "present"
 
 - name: Create metro DR environment
-  dellemc_powermax_metrodr:
+  dellemc.powermax.metrodr:
     unispherehost: "{{unispherehost}}"
     universion: "{{universion}}"
     verifycert: "{{verifycert}}"
@@ -199,7 +197,7 @@ EXAMPLES = r"""
     state: "present"
 
 - name: Modify metro DR environment
-  dellemc_powermax_metrodr:
+  dellemc.powermax.metrodr:
     unispherehost: "{{unispherehost}}"
     universion: "{{universion}}"
     verifycert: "{{verifycert}}"
@@ -216,7 +214,7 @@ EXAMPLES = r"""
     state: "present"
 
 - name: Delete metro DR environment
-  dellemc_powermax_metrodr:
+  dellemc.powermax.metrodr:
     unispherehost: "{{unispherehost}}"
     universion: "{{universion}}"
     verifycert: "{{verifycert}}"
@@ -339,13 +337,13 @@ from ansible_collections.dellemc.powermax.plugins.module_utils.storage.dell \
     import dellemc_ansible_powermax_utils as utils
 from ansible.module_utils.basic import AnsibleModule
 
-LOG = utils.get_logger(module_name="dellemc_powermax_metro")
+LOG = utils.get_logger(module_name="metro")
 
 HAS_PYU4V = utils.has_pyu4v_sdk()
 PYU4V_VERSION_CHECK = utils.pyu4v_version_check()
 
 # Application Type
-APPLICATION_TYPE = 'ansible_v1.6.1'
+APPLICATION_TYPE = 'ansible_v1.7.0'
 
 # DO NOT CHANGE BELOW REPLICATION_MODES SEQUENCE AS ITS USED IN SCRIPT
 # USING INDEX
@@ -374,14 +372,14 @@ IDEMPOTENCY_STATES = {
 }
 
 
-class PowerMaxMetroDR(object):
+class MetroDR(object):
 
     def __init__(self):
         """ Initialises attributes required for metro DR environment
         operations """
 
         self.module_params = utils.get_powermax_management_host_parameters()
-        self.module_params.update(get_powermax_metrodr_parameters())
+        self.module_params.update(get_metrodr_parameters())
 
         self.module = AnsibleModule(
             argument_spec=self.module_params,
@@ -972,7 +970,7 @@ class PowerMaxMetroDR(object):
         self.module.exit_json(**result)
 
 
-def get_powermax_metrodr_parameters():
+def get_metrodr_parameters():
     return dict(
         env_name=dict(required=True, type='str'),
         sg_name=dict(required=False, type='str'),
@@ -996,7 +994,7 @@ def get_powermax_metrodr_parameters():
 def main():
     """ Create PowerMaxMetroDR object and perform action on it
         based on user input from playbook """
-    obj = PowerMaxMetroDR()
+    obj = MetroDR()
     obj.perform_module_operation()
 
 

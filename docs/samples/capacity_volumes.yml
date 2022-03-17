@@ -23,7 +23,7 @@
 
 #  This task gets the details of the storage group which contains the attribute storage_group_volumes(a list of all the volumes Id)
   - name: Get details of the Storage Group
-    dellemc_powermax_storagegroup:
+    storagegroup:
       unispherehost: "{{unispherehost}}"
       universion: "{{universion}}"
       verifycert: "{{verifycert}}"
@@ -41,7 +41,7 @@
 #  This task uses the volume id's assigned to variable all_volume_Id to get the volume details. 
   - name: Get the details of all volume in the storage group
     register: temp_result
-    dellemc_powermax_volume:
+    volume:
       unispherehost: "{{unispherehost}}"
       universion: "{{universion}}"
       verifycert: "{{verifycert}}"

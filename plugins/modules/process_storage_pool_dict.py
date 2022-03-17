@@ -21,7 +21,7 @@ short_description: Process storage pools on PowerMax/VMAX Storage System
 
 description:
 - Process storage pools on PowerMax/VMAX storage system to find out the
-  storage pool with maximum free storage
+  storage pool with maximum free storage.
 
 extends_documentation_fragment:
   - dellemc.powermax.dellemc_powermax.powermax
@@ -40,25 +40,25 @@ options:
 
   size:
     description:
-    - Size of the storage group in GB
+    - Size of the storage group in GB.
     required: True
     type: float
 
   sg_name:
     description:
-    - Name of the storage group
+    - Name of the storage group.
     type: str
 
   service_level:
     description:
-    - Service level of the storage group
+    - Service level of the storage group.
     type: str
 '''
 
 EXAMPLES = r'''
 - name: Get best suitable Pool using our python sorting module
   register: assigned_pool
-  process_storage_pool_dict:
+  dellemc.powermax.process_storage_pool_dict:
     unispherehost: "{{unispherehost}}"
     verifycert: "{{verifycert}}"
     user: "{{user}}"
@@ -112,7 +112,7 @@ from ansible.module_utils.basic import AnsibleModule
 LOG = utils.get_logger('process_storage_pool_dict')
 
 # Application Type
-APPLICATION_TYPE = 'ansible_v1.6.1'
+APPLICATION_TYPE = 'ansible_v1.7.0'
 
 
 class ProcessPoolDict(object):

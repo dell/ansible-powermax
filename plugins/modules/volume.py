@@ -6,14 +6,10 @@
 from __future__ import (absolute_import, division, print_function)
 
 __metaclass__ = type
-ANSIBLE_METADATA = {'metadata_version': '1.1',
-                    'status': ['preview'],
-                    'supported_by': 'community'
-                    }
 
 DOCUMENTATION = r'''
 ---
-module: dellemc_powermax_volume
+module: volume
 version_added: '1.0.0'
 short_description:  Manage volumes on PowerMax Storage System
 description:
@@ -51,7 +47,7 @@ options:
     type: float
   cap_unit:
     description:
-    - volume capacity units
+    - volume capacity units.
     - If not specified, default value is GB.
     choices: [ MB, GB, TB ]
     type: str
@@ -70,19 +66,18 @@ options:
     choices: [absent, present]
     type: str
 notes:
-- To expand a volume, either provide vol_id or vol_name or vol_wwn and sg_name
-- size is required to create/expand a volume
-- vol_id is required to rename/delete a volume
+- To expand a volume, either provide vol_id or vol_name or vol_wwn and sg_name.
+- size is required to create/expand a volume.
+- vol_id is required to rename/delete a volume.
 - vol_name, sg_name and new_sg_name is required to move volumes between
-  storage groups
+  storage groups.
 - Deletion of volume will fail if the storage group is part of a masking
-  view
-
-  '''
+  view.
+'''
 
 EXAMPLES = r'''
 - name: Create volume
-  dellemc_powermax_volume:
+  dellemc.powermax.volume:
     unispherehost: "{{unispherehost}}"
     universion: "{{universion}}"
     verifycert: "{{verifycert}}"
@@ -96,7 +91,7 @@ EXAMPLES = r'''
     state: 'present'
 
 - name: Expanding volume size
-  dellemc_powermax_volume:
+  dellemc.powermax.volume:
     unispherehost: "{{unispherehost}}"
     universion: "{{universion}}"
     verifycert: "{{verifycert}}"
@@ -109,7 +104,7 @@ EXAMPLES = r'''
     state: 'present'
 
 - name: Renaming volume
-  dellemc_powermax_volume:
+  dellemc.powermax.volume:
     unispherehost: "{{unispherehost}}"
     universion: "{{universion}}"
     verifycert: "{{verifycert}}"
@@ -121,7 +116,7 @@ EXAMPLES = r'''
     state: 'present'
 
 - name: Delete volume using volume ID
-  dellemc_powermax_volume:
+  dellemc.powermax.volume:
     unispherehost: "{{unispherehost}}"
     universion: "{{universion}}"
     verifycert: "{{verifycert}}"
@@ -132,7 +127,7 @@ EXAMPLES = r'''
     state: 'absent'
 
 - name: Delete volume using volume WWN
-  dellemc_powermax_volume:
+  dellemc.powermax.volume:
     unispherehost: "{{unispherehost}}"
     universion: "{{universion}}"
     verifycert: "{{verifycert}}"
@@ -143,7 +138,7 @@ EXAMPLES = r'''
     state: 'absent'
 
 - name: Move volume between storage group
-  dellemc_powermax_volume:
+  dellemc.powermax.volume:
     unispherehost: "{{unispherehost}}"
     universion: "{{universion}}"
     verifycert: "{{verifycert}}"
@@ -245,16 +240,16 @@ from ansible_collections.dellemc.powermax.plugins.module_utils.storage.dell \
 from ansible.module_utils.basic import AnsibleModule
 import logging
 
-LOG = utils.get_logger('dellemc_powermax_volume', log_devel=logging.INFO)
+LOG = utils.get_logger('volume')
 HAS_PYU4V = utils.has_pyu4v_sdk()
 
 PYU4V_VERSION_CHECK = utils.pyu4v_version_check()
 
 # Application Type
-APPLICATION_TYPE = 'ansible_v1.6.1'
+APPLICATION_TYPE = 'ansible_v1.7.0'
 
 
-class PowerMaxVolume(object):
+class Volume(object):
     """Class with volume operations"""
 
     volume_id = None
@@ -263,7 +258,7 @@ class PowerMaxVolume(object):
     def __init__(self):
         """ Define all parameters required by this module"""
         self.module_params = utils.get_powermax_management_host_parameters()
-        self.module_params.update(get_powermax_volume_parameters())
+        self.module_params.update(get_volume_parameters())
 
         mutually_exclusive = [
             ['vol_id', 'vol_name'], ['vol_id', 'vol_wwn'],
@@ -907,7 +902,7 @@ class PowerMaxVolume(object):
         self.module.exit_json(**self.result)
 
 
-def get_powermax_volume_parameters():
+def get_volume_parameters():
     """This method provide parameter required for the ansible volume
     modules on PowerMax"""
     return dict(
@@ -926,7 +921,7 @@ def get_powermax_volume_parameters():
 def main():
     """ Create PowerMax volume object and perform action on it
         based on user input from playbook"""
-    obj = PowerMaxVolume()
+    obj = Volume()
     obj.perform_module_operation()
 
 

@@ -6,14 +6,10 @@
 from __future__ import (absolute_import, division, print_function)
 
 __metaclass__ = type
-ANSIBLE_METADATA = {'metadata_version': '1.1',
-                    'status': ['preview'],
-                    'supported_by': 'community'
-                    }
 
 DOCUMENTATION = r'''
 ---
-module: dellemc_powermax_storagegroup
+module: storagegroup
 version_added: '1.0.0'
 short_description:  Manage storage groups on PowerMax/VMAX Storage System
 description:
@@ -58,18 +54,18 @@ options:
     description:
     - This is a list of volumes.
     - Each volume has four attributes-
-    - vol_name
-    - size
-    - cap_unit
+    - vol_name.
+    - size.
+    - cap_unit.
     - vol_id.
     - Either the volume ID must be provided for existing volumes,
       or the name and size must be provided to add new volumes to SG.
       The unit is optional.
-    - vol_name - Represents the name of the volume
-    - size - Represents the volume size
+    - vol_name - Represents the name of the volume.
+    - size - Represents the volume size.
     - cap_unit - The unit in which size is represented. Default unit is GB.
                  Choices are MB, GB, TB.
-    - vol_id - This is the volume ID
+    - vol_id - This is the volume ID.
     type: list
     elements: dict
   vol_state:
@@ -79,12 +75,12 @@ options:
     type: str
   child_storage_groups:
     description:
-    - This is a list of child storage groups
+    - This is a list of child storage groups.
     type: list
     elements: str
   child_sg_state:
     description:
-    - Describes the state of CSG inside parent SG
+    - Describes the state of CSG inside parent SG.
     choices: [present-in-group, absent-in-group]
     type: str
   new_sg_name:
@@ -98,7 +94,7 @@ options:
     elements: str
   snapshot_policy_state:
     description:
-     - Describes the state of snapshot policy for an SG
+     - Describes the state of snapshot policy for an SG.
     type: str
     choices: [present-in-group, absent-in-group]
   state:
@@ -107,11 +103,11 @@ options:
     choices: [absent, present]
     type: str
     required: true
-  '''
+'''
 
 EXAMPLES = r'''
 - name: Get storage group details including volumes
-  dellemc_powermax_storagegroup:
+  dellemc.powermax.storagegroup:
     unispherehost: "{{unispherehost}}"
     universion: "{{universion}}"
     verifycert: "{{verifycert}}"
@@ -122,7 +118,7 @@ EXAMPLES = r'''
     state: "present"
 
 - name: Create empty storage group
-  dellemc_powermax_storagegroup:
+  dellemc.powermax.storagegroup:
     unispherehost: "{{unispherehost}}"
     universion: "{{universion}}"
     verifycert: "{{verifycert}}"
@@ -136,7 +132,7 @@ EXAMPLES = r'''
     state: "present"
 
 - name: Delete the storage Group
-  dellemc_powermax_storagegroup:
+  dellemc.powermax.storagegroup:
     unispherehost: "{{unispherehost}}"
     universion: "{{universion}}"
     verifycert: "{{verifycert}}"
@@ -147,7 +143,7 @@ EXAMPLES = r'''
     state: "absent"
 
 - name: Adding existing volume(s) to existing SG
-  dellemc_powermax_storagegroup:
+  dellemc.powermax.storagegroup:
     unispherehost: "{{unispherehost}}"
     universion: "{{universion}}"
     verifycert: "{{verifycert}}"
@@ -163,7 +159,7 @@ EXAMPLES = r'''
     vol_state: "present-in-group"
 
 - name: Create new volumes for existing SG
-  dellemc_powermax_storagegroup:
+  dellemc.powermax.storagegroup:
     unispherehost: "{{unispherehost}}"
     universion: "{{universion}}"
     verifycert: "{{verifycert}}"
@@ -182,7 +178,7 @@ EXAMPLES = r'''
     vol_state: "present-in-group"
 
 - name: Remove volume(s) from existing SG
-  dellemc_powermax_storagegroup:
+  dellemc.powermax.storagegroup:
     unispherehost: "{{unispherehost}}"
     universion: "{{universion}}"
     verifycert: "{{verifycert}}"
@@ -198,7 +194,7 @@ EXAMPLES = r'''
     vol_state: "absent-in-group"
 
 - name: Adding child SG to parent SG
-  dellemc_powermax_storagegroup:
+  dellemc.powermax.storagegroup:
     unispherehost: "{{unispherehost}}"
     universion: "{{universion}}"
     verifycert: "{{verifycert}}"
@@ -213,7 +209,7 @@ EXAMPLES = r'''
     child_sg_state: "present-in-group"
 
 - name: Removing child SG from parent SG
-  dellemc_powermax_storagegroup:
+  dellemc.powermax.storagegroup:
     unispherehost: "{{unispherehost}}"
     universion: "{{universion}}"
     verifycert: "{{verifycert}}"
@@ -228,7 +224,7 @@ EXAMPLES = r'''
     child_sg_state: "absent-in-group"
 
 - name: Rename Storage Group
-  dellemc_powermax_storagegroup:
+  dellemc.powermax.storagegroup:
     unispherehost: "{{unispherehost}}"
     universion: "{{universion}}"
     verifycert: "{{verifycert}}"
@@ -240,7 +236,7 @@ EXAMPLES = r'''
     state: "present"
 
 - name: Create a storage group with snapshot policies
-  dellemc_powermax_storagegroup:
+  dellemc.powermax.storagegroup:
     unispherehost: "{{unispherehost}}"
     universion: "{{universion}}"
     verifycert: "{{verifycert}}"
@@ -258,7 +254,7 @@ EXAMPLES = r'''
     state: "present"
 
 - name: Add snapshot policy to a storage group
-  dellemc_powermax_storagegroup:
+  dellemc.powermax.storagegroup:
     unispherehost: "{{unispherehost}}"
     universion: "{{universion}}"
     verifycert: "{{verifycert}}"
@@ -272,7 +268,7 @@ EXAMPLES = r'''
     state: "present"
 
 - name: Remove snapshot policy from a storage group
-  dellemc_powermax_storagegroup:
+  dellemc.powermax.storagegroup:
     unispherehost: "{{unispherehost}}"
     universion: "{{universion}}"
     verifycert: "{{verifycert}}"
@@ -457,17 +453,16 @@ from ansible_collections.dellemc.powermax.plugins.module_utils.storage.dell \
     import dellemc_ansible_powermax_utils as utils
 from ansible.module_utils.basic import AnsibleModule
 
-LOG = utils.get_logger('dellemc_powermax_storagegroup', log_devel=logging.
-                       INFO)
+LOG = utils.get_logger('storagegroup')
 HAS_PYU4V = utils.has_pyu4v_sdk()
 
 PYU4V_VERSION_CHECK = utils.pyu4v_version_check()
 
 # Application Type
-APPLICATION_TYPE = 'ansible_v1.6.1'
+APPLICATION_TYPE = 'ansible_v1.7.0'
 
 
-class PowerMaxStorageGroup(object):
+class StorageGroup(object):
     """Class with Storage Group operations"""
 
     protected_sg_msg = "Modifying a volume(s)/child storagegroup(s)" \
@@ -481,7 +476,7 @@ class PowerMaxStorageGroup(object):
     def __init__(self):
         """Define all the parameters required by this module"""
         self.module_params = utils.get_powermax_management_host_parameters()
-        self.module_params.update(get_powermax_storage_group_parameters())
+        self.module_params.update(get_storage_group_parameters())
 
         # initialize the Ansible module
         required_together = [['snapshot_policies', 'snapshot_policy_state'],
@@ -1583,7 +1578,7 @@ class PowerMaxStorageGroup(object):
         self.module.exit_json(**result)
 
 
-def get_powermax_storage_group_parameters():
+def get_storage_group_parameters():
     return dict(
         sg_name=dict(
             required=True,
@@ -1639,7 +1634,7 @@ def get_powermax_storage_group_parameters():
 def main():
     """Create PowerMax storage group object and perform action on it
         based on user input from playbook"""
-    obj = PowerMaxStorageGroup()
+    obj = StorageGroup()
     obj.perform_module_operation()
 
 

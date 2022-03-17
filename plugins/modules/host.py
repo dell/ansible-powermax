@@ -6,14 +6,10 @@
 from __future__ import (absolute_import, division, print_function)
 
 __metaclass__ = type
-ANSIBLE_METADATA = {'metadata_version': '1.1',
-                    'status': ['preview'],
-                    'supported_by': 'community'
-                    }
 
 DOCUMENTATION = r'''
 ---
-module: dellemc_powermax_host
+module: host
 version_added: '1.0.0'
 short_description:  Manage host (initiator group) on PowerMax/VMAX Storage
                     System
@@ -33,67 +29,67 @@ options:
     description:
     - The name of the host. No Special Character support except for _.
       Case sensitive for REST Calls.
-    - Creation of an empty host is allowed
+    - Creation of an empty host is allowed.
     required: true
     type: str
   initiators:
     description:
-    - List of Initiator WWN or IQN to be added to the host or removed from the
-      host.
+    - List of Initiator WWN or IQN or alias to be added to or removed
+      from the host.
     type: list
     elements: str
   state:
     description:
     - Define whether the host should exist or not.
-    - present - indicates that the host should exist in the system
-    - absent - indicates that the host should not exist in the system
+    - absent - indicates that the host should not exist in the system.
+    - present - indicates that the host should exist in the system.
     required: true
     choices: [absent, present]
     type: str
   initiator_state:
     description:
     - Define whether the initiators should be present or absent on the host.
-    - present-in-host - indicates that the initiators should exist on the host
     - absent-in-host - indicates that the initiators should not exist on the
-      host
+      host.
+    - present-in-host - indicates that the initiators should exist on the host.
     - Required when creating a host with initiators or adding and removing
-      initiators to or from an existing host
-    choices: [present-in-host, absent-in-host]
+      initiators to or from an existing host.
+    choices: [absent-in-host, present-in-host]
     type: str
   host_flags:
     description:
-    - Input as a yaml dictionary
+    - Input as a yaml dictionary.
     - List of all host_flags-
-    - 1. volume_set_addressing
-    - 2. disable_q_reset_on_ua
-    - 3. environ_set
-    - 4. avoid_reset_broadcast
-    - 5. openvms
-    - 6. scsi_3
-    - 7. spc2_protocol_version
-    - 8. scsi_support1
-    - 9. consistent_lun
-    - Possible values are true, false, unset (default state)
+    - 1. volume_set_addressing.
+    - 2. disable_q_reset_on_ua.
+    - 3. environ_set.
+    - 4. avoid_reset_broadcast.
+    - 5. openvms.
+    - 6. scsi_3.
+    - 7. spc2_protocol_version.
+    - 8. scsi_support1.
+    - 9. consistent_lun.
+    - Possible values are true, false, unset (default state).
     required: false
     type: dict
   host_type:
     description:
-      - Describing the OS type (default or hpux)
+      - Describing the OS type.
     required: false
     choices: [default, hpux]
     type: str
   new_name:
     description:
     - The new name of the host for the renaming function. No Special Character
-      support except for _. Case sensitive for REST Calls
+      support except for _. Case sensitive for REST Calls.
     type: str
 notes:
   - host_flags and host_type are mutually exclusive parameters.
-  '''
+'''
 
 EXAMPLES = r'''
 - name: Create host with host_type 'default'
-  dellemc_powermax_host:
+  dellemc.powermax.host:
     unispherehost: "{{unispherehost}}"
     universion: "{{universion}}"
     verifycert: "{{verifycert}}"
@@ -105,7 +101,7 @@ EXAMPLES = r'''
     state: 'present'
 
 - name: Create host with host_type 'hpux'
-  dellemc_powermax_host:
+  dellemc.powermax.host:
     unispherehost: "{{unispherehost}}"
     universion: "{{universion}}"
     verifycert: "{{verifycert}}"
@@ -117,7 +113,7 @@ EXAMPLES = r'''
     state: 'present'
 
 - name: Create host with host_flags
-  dellemc_powermax_host:
+  dellemc.powermax.host:
     unispherehost: "{{unispherehost}}"
     universion: "{{universion}}"
     verifycert: "{{verifycert}}"
@@ -126,7 +122,8 @@ EXAMPLES = r'''
     serial_no: "{{serial_no}}"
     host_name: "ansible_test_3"
     initiators:
-      - 10000090fa7b4e85
+      - 1000000000000001
+      - 'host/HBA01'
     host_flags:
       spc2_protocol_version: true
       consistent_lun: true
@@ -137,7 +134,7 @@ EXAMPLES = r'''
     initiator_state: 'present-in-host'
 
 - name: Get host details
-  dellemc_powermax_host:
+  dellemc.powermax.host:
     unispherehost: "{{unispherehost}}"
     universion: "{{universion}}"
     verifycert: "{{verifycert}}"
@@ -148,7 +145,7 @@ EXAMPLES = r'''
     state: 'present'
 
 - name: Adding initiator to host
-  dellemc_powermax_host:
+  dellemc.powermax.host:
     unispherehost: "{{unispherehost}}"
     universion: "{{universion}}"
     verifycert: "{{verifycert}}"
@@ -157,12 +154,13 @@ EXAMPLES = r'''
     serial_no: "{{serial_no}}"
     host_name: "ansible_test_1"
     initiators:
-      - 10000090fa3d303e
+      - 1000000000000001
+      - 'host/HBA01'
     initiator_state: 'present-in-host'
     state: 'present'
 
 - name: Removing initiator from host
-  dellemc_powermax_host:
+  dellemc.powermax.host:
     unispherehost: "{{unispherehost}}"
     universion: "{{universion}}"
     verifycert: "{{verifycert}}"
@@ -171,12 +169,13 @@ EXAMPLES = r'''
     serial_no: "{{serial_no}}"
     host_name: "ansible_test_1"
     initiators:
-      - 10000090fa3d303e
+      - 1000000000000001
+      - 'host/HBA01'
     initiator_state: 'absent-in-host'
     state: 'present'
 
 - name: Modify host using host_type
-  dellemc_powermax_host:
+  dellemc.powermax.host:
     unispherehost: "{{unispherehost}}"
     universion: "{{universion}}"
     verifycert: "{{verifycert}}"
@@ -188,7 +187,7 @@ EXAMPLES = r'''
     state: 'present'
 
 - name: Modify host using host_flags
-  dellemc_powermax_host:
+  dellemc.powermax.host:
     unispherehost: "{{unispherehost}}"
     universion: "{{universion}}"
     verifycert: "{{verifycert}}"
@@ -206,7 +205,7 @@ EXAMPLES = r'''
     state: 'present'
 
 - name: Rename host
-  dellemc_powermax_host:
+  dellemc.powermax.host:
     unispherehost: "{{unispherehost}}"
     universion: "{{universion}}"
     verifycert: "{{verifycert}}"
@@ -218,7 +217,7 @@ EXAMPLES = r'''
     state: 'present'
 
 - name: Delete host
-  dellemc_powermax_host:
+  dellemc.powermax.host:
     unispherehost: "{{unispherehost}}"
     universion: "{{universion}}"
     verifycert: "{{verifycert}}"
@@ -294,14 +293,14 @@ from ansible_collections.dellemc.powermax.plugins.module_utils.storage.dell \
     import dellemc_ansible_powermax_utils as utils
 from ansible.module_utils.basic import AnsibleModule
 
-LOG = utils.get_logger('dellemc_powermax_host', log_devel=logging.INFO)
+LOG = utils.get_logger('host')
 
 HAS_PYU4V = utils.has_pyu4v_sdk()
 
 PYU4V_VERSION_CHECK = utils.pyu4v_version_check()
 
 # Application Type
-APPLICATION_TYPE = 'ansible_v1.6.1'
+APPLICATION_TYPE = 'ansible_v1.7.0'
 
 BASE_FLAGS = {'volume_set_addressing': {'enabled': False, 'override': False},
               'disable_q_reset_on_ua': {'enabled': False, 'override': False},
@@ -339,7 +338,7 @@ HOST_FLAGS = {'default': flags_default(),
               'hpux': flags_hpux()}
 
 
-class PowerMaxHost(object):
+class Host(object):
 
     '''Class with host(initiator group) operations'''
 
@@ -348,7 +347,7 @@ class PowerMaxHost(object):
     def __init__(self):
         ''' Define all parameters required by this module'''
         self.module_params = utils.get_powermax_management_host_parameters()
-        self.module_params.update(get_powermax_host_parameters())
+        self.module_params.update(get_host_parameters())
 
         mutually_exclusive = [['host_flags', 'host_type']]
         required_together = [['initiators', 'initiator_state']]
@@ -456,11 +455,10 @@ class PowerMaxHost(object):
         else:
             self._enable_consistent_lun(new_host_flags_dict)
 
-    def create_host(self, host_name):
+    def create_host(self, host_name, initiators):
         '''
         Create host with given initiators and host_flags
         '''
-        initiators = self.module.params['initiators']
         received_host_flags = self.module.params['host_flags']
         host_type = self.module.params['host_type']
 
@@ -679,6 +677,39 @@ class PowerMaxHost(object):
                 self.result['host_details'] = self.get_host(
                     self.module.params['host_name'])
 
+    def get_initiator_id(self, alias):
+        '''
+        Get initiator id for the specified alias.
+        '''
+        try:
+            LOG.info("Getting details of initiator with alias %s", alias)
+            params = {"alias": alias}
+            initiator_ids = self.provisioning.get_initiator_list(params)
+            if not initiator_ids:
+                error_msg = ('Initiator alias %s is invalid' % alias)
+                self.show_error_exit(msg=error_msg)
+            return initiator_ids[0].split(':')[2]
+        except Exception as e:
+            errorMsg = ('Retrieving initiator details based on alias %s '
+                        'failed with error %s' % (alias, str(e)))
+            self.show_error_exit(msg=errorMsg)
+
+    def get_initator_ids(self, initiators):
+        '''
+        Get list of initiator ids to be added to or removed from host.
+        '''
+        initiator_ids = []
+        for initiator in initiators:
+            if "/" in initiator:
+                initiator_ids.append(self.get_initiator_id(initiator))
+            else:
+                if not utils.is_valid_initiator(initiator):
+                    error_msg = ('Initiator %s is invalid' % initiator)
+                    self.show_error_exit(msg=error_msg)
+                initiator_ids.append(initiator)
+        initiator_ids = list(dict.fromkeys(initiator_ids))
+        return initiator_ids
+
     def show_error_exit(self, msg):
         if self.u4v_conn is not None:
             try:
@@ -716,6 +747,9 @@ class PowerMaxHost(object):
         host = self.get_host(host_name)
         changed = False
 
+        if initiators:
+            initiators = self.get_initator_ids(initiators)
+
         if state == 'present' and not host:
             if new_name:
                 error_msg = "Invalid argument 'new_name' while " \
@@ -729,7 +763,7 @@ class PowerMaxHost(object):
                 LOG.error(error_msg)
                 self.show_error_exit(msg=error_msg)
             LOG.info('Creating host %s', host_name)
-            changed = self.create_host(host_name)
+            changed = self.create_host(host_name, initiators)
 
         if (state == 'present' and host and initiator_state ==
                 'present-in-host' and initiators and len(initiators) > 0):
@@ -772,7 +806,7 @@ class PowerMaxHost(object):
         self.module.exit_json(**self.result)
 
 
-def get_powermax_host_parameters():
+def get_host_parameters():
     return dict(
         host_name=dict(required=True, type='str'),
         initiators=dict(required=False, type='list', elements='str'),
@@ -790,7 +824,7 @@ def get_powermax_host_parameters():
 def main():
     ''' Create PowerMax host object and perform action on it
         based on user input from playbook'''
-    obj = PowerMaxHost()
+    obj = Host()
     obj.perform_module_operation()
 
 

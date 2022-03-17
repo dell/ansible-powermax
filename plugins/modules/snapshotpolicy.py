@@ -6,12 +6,10 @@
 from __future__ import (absolute_import, division, print_function)
 
 __metaclass__ = type
-ANSIBLE_METADATA = {"metadata_version": "1.1", "status": ["preview"],
-                    "supported_by": "community"}
 
 DOCUMENTATION = r"""
 ---
-module: dellemc_powermax_snapshotpolicy
+module: snapshotpolicy
 version_added: '1.5.0'
 short_description: Manage snapshot policy on PowerMax/VMAX Storage
                    System
@@ -123,7 +121,7 @@ notes:
 
 EXAMPLES = r"""
 - name: Create a snapshot policy
-  dellemc_powermax_snapshotpolicy:
+  dellemc.powermax.snapshotpolicy:
     unispherehost: "{{unispherehost}}"
     universion: "{{universion}}"
     verifycert: "{{verifycert}}"
@@ -140,7 +138,7 @@ EXAMPLES = r"""
     state: "present"
 
 - name: Create a snapshot policy and associate storage groups to it
-  dellemc_powermax_snapshotpolicy:
+  dellemc.powermax.snapshotpolicy:
     unispherehost: "{{unispherehost}}"
     universion: "{{universion}}"
     verifycert: "{{verifycert}}"
@@ -161,7 +159,7 @@ EXAMPLES = r"""
     state: "present"
 
 - name: Get snapshot policy details
-  dellemc_powermax_snapshotpolicy:
+  dellemc.powermax.snapshotpolicy:
     unispherehost: "{{unispherehost}}"
     universion: "{{universion}}"
     verifycert: "{{verifycert}}"
@@ -172,7 +170,7 @@ EXAMPLES = r"""
     state: "present"
 
 - name: Modify snapshot policy attributes
-  dellemc_powermax_snapshotpolicy:
+  dellemc.powermax.snapshotpolicy:
     unispherehost: "{{unispherehost}}"
     universion: "{{universion}}"
     verifycert: "{{verifycert}}"
@@ -189,7 +187,7 @@ EXAMPLES = r"""
     state: "present"
 
 - name: Modify snapshot policy, associate to storage groups
-  dellemc_powermax_snapshotpolicy:
+  dellemc.powermax.snapshotpolicy:
     unispherehost: "{{unispherehost}}"
     universion: "{{universion}}"
     verifycert: "{{verifycert}}"
@@ -204,7 +202,7 @@ EXAMPLES = r"""
     state: "present"
 
 - name: Modify snapshot policy, disassociate from storage groups
-  dellemc_powermax_snapshotpolicy:
+  dellemc.powermax.snapshotpolicy:
     unispherehost: "{{unispherehost}}"
     universion: "{{universion}}"
     verifycert: "{{verifycert}}"
@@ -219,7 +217,7 @@ EXAMPLES = r"""
     state: "present"
 
 - name: Modify snapshot policy state to suspend
-  dellemc_powermax_snapshotpolicy:
+  dellemc.powermax.snapshotpolicy:
     unispherehost: "{{unispherehost}}"
     universion: "{{universion}}"
     verifycert: "{{verifycert}}"
@@ -231,7 +229,7 @@ EXAMPLES = r"""
     state: "present"
 
 - name: Modify snapshot policy state to resume
-  dellemc_powermax_snapshotpolicy:
+  dellemc.powermax.snapshotpolicy:
     unispherehost: "{{unispherehost}}"
     universion: "{{universion}}"
     verifycert: "{{verifycert}}"
@@ -243,7 +241,7 @@ EXAMPLES = r"""
     state: "present"
 
 - name: Delete a snapshot policy
-  dellemc_powermax_snapshotpolicy:
+  dellemc.powermax.snapshotpolicy:
     unispherehost: "{{unispherehost}}"
     universion: "{{universion}}"
     verifycert: "{{verifycert}}"
@@ -320,27 +318,27 @@ from ansible_collections.dellemc.powermax.plugins.module_utils.storage.dell \
     import dellemc_ansible_powermax_utils as utils
 from ansible.module_utils.basic import AnsibleModule
 
-LOG = utils.get_logger("dellemc_powermax_snapshotpolicy")
+LOG = utils.get_logger("snapshotpolicy")
 
 HAS_PYU4V = utils.has_pyu4v_sdk()
 PYU4V_VERSION_CHECK = utils.pyu4v_version_check()
 
 # Application Type
-APPLICATION_TYPE = 'ansible_v1.6.1'
+APPLICATION_TYPE = 'ansible_v1.7.0'
 
 INTERVAL = ['10 Minutes', '12 Minutes', '15 Minutes', '20 Minutes',
             '30 Minutes', '1 Hour', '2 Hours', '3 Hours', '4 Hours',
             '6 Hours', '8 Hours', '12 Hours', '1 Day', '7 Days']
 
 
-class PowerMaxSnapshotPolicy(object):
+class SnapshotPolicy(object):
 
     def __init__(self):
         """ Initialises attributes required for snapshot policy operations
         """
 
         self.module_params = utils.get_powermax_management_host_parameters()
-        self.module_params.update(get_powermax_snapshotpolicy_parameters())
+        self.module_params.update(get_snapshotpolicy_parameters())
 
         required_together = [['storage_groups', 'storage_group_state']]
 
@@ -839,7 +837,7 @@ def convert_interval_minute(interval):
     return interval_minute
 
 
-def get_powermax_snapshotpolicy_parameters():
+def get_snapshotpolicy_parameters():
     return dict(
         universion=dict(type='int', required=False, choices=[92]),
         snapshot_policy_name=dict(required=True, type='str'),
@@ -861,7 +859,7 @@ def get_powermax_snapshotpolicy_parameters():
 def main():
     """ Create PowerMaxSnapshotPolicy object and perform action on it
         based on user input from playbook """
-    obj = PowerMaxSnapshotPolicy()
+    obj = SnapshotPolicy()
     obj.perform_module_operation()
 
 

@@ -19,7 +19,7 @@
 
   tasks:
     - name: List of all the Storage Groups names those name contains the search_string
-      dellemc_powermax_gatherfacts:
+      info:
         unispherehost: "{{unispherehost}}"
         serial_no:  "{{serial_no}}"
         universion: "{{universion}}"
