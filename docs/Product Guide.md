@@ -1436,8 +1436,8 @@ Manage host (initiator group) on PowerMax/VMAX Storage System
     serial_no: "{{serial_no}}"
     host_name: "ansible_test_3"
     initiators:
-      - id: 1000000000000001
-      - alias: 'host/HBA01'
+      - 1000000000000001
+      - 'host/HBA01'
     host_flags:
       spc2_protocol_version: true
       consistent_lun: true
@@ -1468,8 +1468,8 @@ Manage host (initiator group) on PowerMax/VMAX Storage System
     serial_no: "{{serial_no}}"
     host_name: "ansible_test_1"
     initiators:
-      - id: 1000000000000001
-      - alias: 'host/HBA01'
+      - 1000000000000001
+      - 'host/HBA01'
     initiator_state: 'present-in-host'
     state: 'present'
 
@@ -1483,8 +1483,8 @@ Manage host (initiator group) on PowerMax/VMAX Storage System
     serial_no: "{{serial_no}}"
     host_name: "ansible_test_1"
     initiators:
-      - id: 1000000000000001
-      - alias: 'host/HBA01'
+      - 1000000000000001
+      - 'host/HBA01'
     initiator_state: 'absent-in-host'
     state: 'present'
 
