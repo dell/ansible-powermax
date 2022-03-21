@@ -6,21 +6,17 @@
 from __future__ import (absolute_import, division, print_function)
 
 __metaclass__ = type
-ANSIBLE_METADATA = {'metadata_version': '1.1',
-                    'status': ['preview'],
-                    'supported_by': 'community'
-                    }
 
 DOCUMENTATION = r'''
 ---
-module: dellemc_powermax_rdfgroup
+module: rdfgroup
 version_added: '1.3.0'
 short_description: Gets the detail information about RDF Groups of
   a PowerMax/VMAX storage system
 description:
 - Gets details of an RDF Group from a specified PowerMax/VMAX storage system.
 - Lists the volumes of an RDF Group from a specified PowerMax/VMAX storage
-  system
+  system.
 extends_documentation_fragment:
   - dellemc.powermax.dellemc_powermax.powermax
   - dellemc.powermax.dellemc_powermax.powermax_serial_no
@@ -29,14 +25,14 @@ author:
 options:
   rdfgroup_number:
     description:
-    - Identifier of an RDF Group of type string
+    - Identifier of an RDF Group of type string.
     required: True
     type: str
 '''
 
 EXAMPLES = r'''
 - name: Get the details of rdf group and volumes
-  dellemc_powermax_rdfgroup:
+  dellemc.powermax.rdfgroup:
     unispherehost: "{{unispherehost}}"
     universion: "{{universion}}"
     verifycert: "{{verifycert}}"
@@ -249,17 +245,17 @@ from ansible_collections.dellemc.powermax.plugins.module_utils.storage.dell \
     import dellemc_ansible_powermax_utils as utils
 from ansible.module_utils.basic import AnsibleModule
 
-LOG = utils.get_logger('dellemc_powermax_rdfgroup', log_devel=logging.INFO)
+LOG = utils.get_logger('rdfgroup')
 
 HAS_PYU4V = utils.has_pyu4v_sdk()
 
 PYU4V_VERSION_CHECK = utils.pyu4v_version_check()
 
 # Application Type
-APPLICATION_TYPE = 'ansible_v1.6.1'
+APPLICATION_TYPE = 'ansible_v1.7.0'
 
 
-class PowerMaxRDFGroup(object):
+class RDFGroup(object):
     """Class with RDF Group operations"""
 
     u4v_conn = None
@@ -268,7 +264,7 @@ class PowerMaxRDFGroup(object):
         """Define all the parameters required by this module"""
 
         self.module_params = utils.get_powermax_management_host_parameters()
-        self.module_params.update(get_powermax_rdf_group_parameters())
+        self.module_params.update(get_rdf_group_parameters())
         self.module = AnsibleModule(
             argument_spec=self.module_params,
             supports_check_mode=False)
@@ -375,7 +371,7 @@ class PowerMaxRDFGroup(object):
         )
 
 
-def get_powermax_rdf_group_parameters():
+def get_rdf_group_parameters():
     """This method provide the parameters required for the ansible
     modules on PowerMax"""
     return dict(
@@ -386,7 +382,7 @@ def get_powermax_rdf_group_parameters():
 def main():
     """ Create PowerMax RDF Group object and perform action on it
         based on user input from playbook """
-    obj = PowerMaxRDFGroup()
+    obj = RDFGroup()
     obj.perform_module_operation()
 
 

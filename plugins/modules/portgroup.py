@@ -6,14 +6,10 @@
 from __future__ import (absolute_import, division, print_function)
 
 __metaclass__ = type
-ANSIBLE_METADATA = {'metadata_version': '1.1',
-                    'status': ['preview'],
-                    'supported_by': 'community'
-                    }
 
 DOCUMENTATION = r'''
 ---
-module: dellemc_powermax_portgroup
+module: portgroup
 version_added: '1.0.0'
 short_description:  Manage port groups on PowerMax/VMAX Storage System
 description:
@@ -37,7 +33,7 @@ options:
   ports:
     description:
     - List of directors and ports to be added or removed to or from the port
-      group
+      group.
     required: false
     type: list
     elements: dict
@@ -50,9 +46,9 @@ options:
   state:
     description:
     - Define whether the port group should exist or not.
-    - present - indicates that the port group should be present on the system
+    - present - indicates that the port group should be present on the system.
     - absent - indicates that the port group should not be present on the
-               system
+               system.
     required: true
     choices: [ absent, present]
     type: str
@@ -60,17 +56,17 @@ options:
     description:
     - Define whether the port should be present or absent in the port group.
     - present-in-group - indicates that the ports should be present on a port
-      group object
+      group object.
     - absent-in-group - indicates that the ports should not be present on a
-      port group object
+      port group object.
     required: false
     choices: [present-in-group, absent-in-group]
     type: str
-  '''
+'''
 
 EXAMPLES = r'''
 - name: Create port group without ports
-  dellemc_powermax_portgroup:
+  dellemc.powermax.portgroup:
     unispherehost: "{{unispherehost}}"
     universion: "{{universion}}"
     verifycert: "{{verifycert}}"
@@ -81,7 +77,7 @@ EXAMPLES = r'''
     state: "present"
 
 - name: Create port group with ports
-  dellemc_powermax_portgroup:
+  dellemc.powermax.portgroup:
     unispherehost: "{{unispherehost}}"
     universion: "{{universion}}"
     verifycert: "{{verifycert}}"
@@ -98,7 +94,7 @@ EXAMPLES = r'''
     port_state: "present-in-group"
 
 - name: Add ports to port group
-  dellemc_powermax_portgroup:
+  dellemc.powermax.portgroup:
     unispherehost: "{{unispherehost}}"
     universion: "{{universion}}"
     verifycert: "{{verifycert}}"
@@ -115,7 +111,7 @@ EXAMPLES = r'''
     port_state: "present-in-group"
 
 - name: Remove ports from port group
-  dellemc_powermax_portgroup:
+  dellemc.powermax.portgroup:
     unispherehost: "{{unispherehost}}"
     universion: "{{universion}}"
     verifycert: "{{verifycert}}"
@@ -132,7 +128,7 @@ EXAMPLES = r'''
     port_state: "absent-in-group"
 
 - name: Modify port group
-  dellemc_powermax_portgroup:
+  dellemc.powermax.portgroup:
     unispherehost: "{{unispherehost}}"
     universion: "{{universion}}"
     verifycert: "{{verifycert}}"
@@ -144,7 +140,7 @@ EXAMPLES = r'''
     new_name: "{{new_name}}"
 
 - name: Delete port group
-  dellemc_powermax_portgroup:
+  dellemc.powermax.portgroup:
     unispherehost: "{{unispherehost}}"
     universion: "{{universion}}"
     verifycert: "{{verifycert}}"
@@ -194,17 +190,17 @@ from ansible_collections.dellemc.powermax.plugins.module_utils.storage.dell \
     import dellemc_ansible_powermax_utils as utils
 from ansible.module_utils.basic import AnsibleModule
 
-LOG = utils.get_logger('dellemc_powermax_portgroup')
+LOG = utils.get_logger('portgroup')
 
 HAS_PYU4V = utils.has_pyu4v_sdk()
 
 PYU4V_VERSION_CHECK = utils.pyu4v_version_check()
 
 # Application Type
-APPLICATION_TYPE = 'ansible_v1.6.1'
+APPLICATION_TYPE = 'ansible_v1.7.0'
 
 
-class PowerMaxPortGroup(object):
+class PortGroup(object):
     """Class with port group operations"""
 
     u4v_conn = None
@@ -212,7 +208,7 @@ class PowerMaxPortGroup(object):
     def __init__(self):
         """Define all parameters required by this module"""
         self.module_params = utils.get_powermax_management_host_parameters()
-        self.module_params.update(get_powermax_portgroup_parameters())
+        self.module_params.update(get_portgroup_parameters())
         # initialize the ansible module
         self.module = AnsibleModule(
             argument_spec=self.module_params,
@@ -473,7 +469,7 @@ def check_port_exists(existing_ports, port):
     return False
 
 
-def get_powermax_portgroup_parameters():
+def get_portgroup_parameters():
     """This method provide parameter required for the ansible port group modules on PowerMax"""
     return dict(
         portgroup_name=dict(required=True, type='str'),
@@ -488,7 +484,7 @@ def get_powermax_portgroup_parameters():
 def main():
     """Create PowerMax port group object and perform action on it
         based on user input from playbook"""
-    obj = PowerMaxPortGroup()
+    obj = PortGroup()
     obj.perform_module_operation()
 
 

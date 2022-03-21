@@ -6,16 +6,12 @@
 from __future__ import (absolute_import, division, print_function)
 
 __metaclass__ = type
-ANSIBLE_METADATA = {'metadata_version': '1.1',
-                    'status': ['preview'],
-                    'supported_by': 'community'
-                    }
 
 DOCUMENTATION = r'''
 ---
-module: dellemc_powermax_maskingview
+module: maskingview
 version_added: '1.0.0'
-short_description:  Managing masking views on PowerMax/VMAX Storage System
+short_description:  Managing masking views on PowerMax/VMAX Storage System.
 description:
 - Managing masking views on PowerMax storage system includes, creating masking
   view with port group, storage group and host or host group, renaming
@@ -49,12 +45,12 @@ options:
   host_name:
     description:
     - The name of the existing host.
-      This parameter is to create an exclusive or host export
+      This parameter is to create an exclusive or host export.
     type:  str
   hostgroup_name:
     description:
     - The name of the existing host group. This parameter is used to create
-      cluster export
+      cluster export.
     type: str
   sg_name:
     description:
@@ -71,11 +67,11 @@ options:
     choices: [ absent, present ]
     required: true
     type: str
-  '''
+'''
 
 EXAMPLES = r'''
 - name: Create MV with hostgroup
-  dellemc_powermax_maskingview:
+  dellemc.powermax.maskingview:
     unispherehost: "{{unispherehost}}"
     universion: "{{universion}}"
     verifycert: "{{verifycert}}"
@@ -89,7 +85,7 @@ EXAMPLES = r'''
     state: "present"
 
 - name: Create MV with host
-  dellemc_powermax_maskingview:
+  dellemc.powermax.maskingview:
     unispherehost: "{{unispherehost}}"
     universion: "{{universion}}"
     verifycert: "{{verifycert}}"
@@ -103,7 +99,7 @@ EXAMPLES = r'''
     state: "present"
 
 - name: Rename host masking view
-  dellemc_powermax_maskingview:
+  dellemc.powermax.maskingview:
     unispherehost: "{{unispherehost}}"
     universion: "{{universion}}"
     verifycert: "{{verifycert}}"
@@ -115,7 +111,7 @@ EXAMPLES = r'''
     state: "present"
 
 - name: Delete host masking view
-  dellemc_powermax_maskingview:
+  dellemc.powermax.maskingview:
     unispherehost: "{{unispherehost}}"
     universion: "{{universion}}"
     verifycert: "{{verifycert}}"
@@ -167,17 +163,16 @@ from ansible_collections.dellemc.powermax.plugins.module_utils.storage.dell \
     import dellemc_ansible_powermax_utils as utils
 from ansible.module_utils.basic import AnsibleModule
 
-LOG = utils.get_logger('dellemc_powermax_maskingview',
-                       log_devel=logging.INFO)
+LOG = utils.get_logger('maskingview')
 HAS_PYU4V = utils.has_pyu4v_sdk()
 
 PYU4V_VERSION_CHECK = utils.pyu4v_version_check()
 
 # Application Type
-APPLICATION_TYPE = 'ansible_v1.6.1'
+APPLICATION_TYPE = 'ansible_v1.7.0'
 
 
-class PowerMaxMaskingView(object):
+class MaskingView(object):
     """Class with masking view operations"""
 
     u4v_conn = None
@@ -185,8 +180,7 @@ class PowerMaxMaskingView(object):
     def __init__(self):
         """Define all the parameters required by this module"""
         self.module_params = utils.get_powermax_management_host_parameters()
-        self.module_params.update(
-            get_powermax_masking_view_parameters())
+        self.module_params.update(get_masking_view_parameters())
 
         mutually_exclusive = [
             ['host_name', 'hostgroup_name']
@@ -423,7 +417,7 @@ class PowerMaxMaskingView(object):
         self.module.exit_json(**result)
 
 
-def get_powermax_masking_view_parameters():
+def get_masking_view_parameters():
     """This method provides the parameters required for ansible
     masking view module"""
     return dict(
@@ -440,7 +434,7 @@ def get_powermax_masking_view_parameters():
 def main():
     """Create PowerMax masking view object and perform action on it
         based on user input from playbook"""
-    obj = PowerMaxMaskingView()
+    obj = MaskingView()
     obj.perform_module_operation()
 
 

@@ -6,14 +6,10 @@
 from __future__ import (absolute_import, division, print_function)
 
 __metaclass__ = type
-ANSIBLE_METADATA = {'metadata_version': '1.1',
-                    'status': ['preview'],
-                    'supported_by': 'community'
-                    }
 
 DOCUMENTATION = r'''
 ---
-module: dellemc_powermax_storagepool
+module: storagepool
 
 version_added: '1.5.0'
 
@@ -47,7 +43,7 @@ options:
 
 EXAMPLES = r'''
 - name: Get specific storage pool details
-  dellemc_powermax_storagepool:
+  dellemc.powermax.storagepool:
     unispherehost: "{{unispherehost}}"
     universion: "{{universion}}"
     verifycert: "{{verifycert}}"
@@ -108,22 +104,22 @@ from ansible_collections.dellemc.powermax.plugins.module_utils.storage.dell \
 from ansible.module_utils.basic import AnsibleModule
 import logging
 
-LOG = utils.get_logger('dellemc_powermax_storagepool', log_devel=logging.INFO)
+LOG = utils.get_logger('storagepool')
 HAS_PYU4V = utils.has_pyu4v_sdk()
 
 PYU4V_VERSION_CHECK = utils.pyu4v_version_check()
 
 # Application Type
-APPLICATION_TYPE = 'ansible_v1.6.1'
+APPLICATION_TYPE = 'ansible_v1.7.0'
 
 
-class PowerMaxPool(object):
+class Pool(object):
     """Class with storage pool operations"""
 
     def __init__(self):
         """ Define all parameters required by this module"""
         self.module_params = utils.get_powermax_management_host_parameters()
-        self.module_params.update(get_powermax_pool_parameters())
+        self.module_params.update(get_pool_parameters())
 
         # initialize the ansible module
         self.module = AnsibleModule(
@@ -235,7 +231,7 @@ class PowerMaxPool(object):
         self.module.exit_json(**result)
 
 
-def get_powermax_pool_parameters():
+def get_pool_parameters():
     """This method provide parameter required for the ansible pool
     modules on PowerMax"""
     return dict(
@@ -247,7 +243,7 @@ def get_powermax_pool_parameters():
 def main():
     """ Create PowerMax storage pool object and perform action on it
         based on user input from playbook"""
-    obj = PowerMaxPool()
+    obj = Pool()
     obj.perform_module_operation()
 
 

@@ -6,14 +6,10 @@
 from __future__ import (absolute_import, division, print_function)
 
 __metaclass__ = type
-ANSIBLE_METADATA = {'metadata_version': '1.1',
-                    'status': ['preview'],
-                    'supported_by': 'community'
-                    }
 
 DOCUMENTATION = r'''
 ---
-module: dellemc_powermax_snapshot
+module: snapshot
 version_added: '1.0.0'
 short_description: Manage Snapshots on PowerMax/VMAX Storage System
 description:
@@ -44,7 +40,7 @@ options:
     - If the TTL is not specified, the storage group snap details are
       returned.
     - However, to create a SG snap - TTL must be given.
-    - If the SG snap should not have any TTL - specify TTL as "None"
+    - If the SG snap should not have any TTL - specify TTL as "None".
     type: str
   ttl_unit:
     description:
@@ -97,7 +93,7 @@ notes:
 
 EXAMPLES = r'''
 - name: Create a Snapshot for a Storage Group
-  dellemc_powermax_snapshot:
+  dellemc.powermax.snapshot:
     unispherehost: "{{unispherehost}}"
     universion: "{{universion}}"
     verifycert: "{{verifycert}}"
@@ -111,7 +107,7 @@ EXAMPLES = r'''
     state: "present"
 
 - name: Get Storage Group Snapshot details
-  dellemc_powermax_snapshot:
+  dellemc.powermax.snapshot:
     unispherehost: "{{unispherehost}}"
     universion: "{{universion}}"
     verifycert: "{{verifycert}}"
@@ -123,7 +119,7 @@ EXAMPLES = r'''
     state: "present"
 
 - name: Get Storage Group Snapshot details using generation
-  dellemc_powermax_snapshot:
+  dellemc.powermax.snapshot:
     unispherehost: "{{unispherehost}}"
     universion: "{{universion}}"
     verifycert: "{{verifycert}}"
@@ -136,7 +132,7 @@ EXAMPLES = r'''
     state: "present"
 
 - name: Get Storage Group Snapshot details using snapshot_id
-  dellemc_powermax_snapshot:
+  dellemc.powermax.snapshot:
     unispherehost: "{{unispherehost}}"
     universion: "{{universion}}"
     verifycert: "{{verifycert}}"
@@ -149,7 +145,7 @@ EXAMPLES = r'''
     state: "present"
 
 - name: Rename Storage Group Snapshot using generation
-  dellemc_powermax_snapshot:
+  dellemc.powermax.snapshot:
     unispherehost: "{{unispherehost}}"
     universion: "{{universion}}"
     verifycert: "{{verifycert}}"
@@ -163,7 +159,7 @@ EXAMPLES = r'''
     state: "present"
 
 - name: Rename Storage Group Snapshot using snapshot_id
-  dellemc_powermax_snapshot:
+  dellemc.powermax.snapshot:
     unispherehost: "{{unispherehost}}"
     universion: "{{universion}}"
     verifycert: "{{verifycert}}"
@@ -177,7 +173,7 @@ EXAMPLES = r'''
     state: "present"
 
 - name: Change Snapshot Link Status to Linked using generation
-  dellemc_powermax_snapshot:
+  dellemc.powermax.snapshot:
     unispherehost: "{{unispherehost}}"
     universion: "{{universion}}"
     verifycert: "{{verifycert}}"
@@ -192,7 +188,7 @@ EXAMPLES = r'''
     state: "present"
 
 - name: Change Snapshot Link Status to UnLinked using generation
-  dellemc_powermax_snapshot:
+  dellemc.powermax.snapshot:
     unispherehost: "{{unispherehost}}"
     universion: "{{universion}}"
     verifycert: "{{verifycert}}"
@@ -207,7 +203,7 @@ EXAMPLES = r'''
     state: "present"
 
 - name: Change Snapshot Link Status to Linked using snapshot_id
-  dellemc_powermax_snapshot:
+  dellemc.powermax.snapshot:
     unispherehost: "{{unispherehost}}"
     universion: "{{universion}}"
     verifycert: "{{verifycert}}"
@@ -222,7 +218,7 @@ EXAMPLES = r'''
     state: "present"
 
 - name: Change Snapshot Link Status to UnLinked using snapshot_id
-  dellemc_powermax_snapshot:
+  dellemc.powermax.snapshot:
     unispherehost: "{{unispherehost}}"
     universion: "{{universion}}"
     verifycert: "{{verifycert}}"
@@ -237,7 +233,7 @@ EXAMPLES = r'''
     state: "present"
 
 - name: Delete Storage Group Snapshot using generation
-  dellemc_powermax_snapshot:
+  dellemc.powermax.snapshot:
     unispherehost: "{{unispherehost}}"
     universion: "{{universion}}"
     verifycert: "{{verifycert}}"
@@ -250,7 +246,7 @@ EXAMPLES = r'''
     state: "absent"
 
 - name: Delete Storage Group Snapshot using snapshot_id
-  dellemc_powermax_snapshot:
+  dellemc.powermax.snapshot:
     unispherehost: "{{unispherehost}}"
     universion: "{{universion}}"
     verifycert: "{{verifycert}}"
@@ -343,17 +339,17 @@ from ansible.module_utils.basic import AnsibleModule
 from ansible_collections.dellemc.powermax.plugins.module_utils.storage.dell \
     import dellemc_ansible_powermax_utils as utils
 
-LOG = utils.get_logger('dellemc_powermax_snapshot')
+LOG = utils.get_logger('snapshot')
 
 HAS_PYU4V = utils.has_pyu4v_sdk()
 
 PYU4V_VERSION_CHECK = utils.pyu4v_version_check()
 
 # Application Type
-APPLICATION_TYPE = 'ansible_v1.6.1'
+APPLICATION_TYPE = 'ansible_v1.7.0'
 
 
-class PowerMaxSnapshot(object):
+class Snapshot(object):
     """Class with Snapshot operations"""
 
     u4v_conn = None
@@ -361,8 +357,7 @@ class PowerMaxSnapshot(object):
     def __init__(self):
         """Define all the parameters required by this module"""
         self.module_params = utils.get_powermax_management_host_parameters()
-        self.module_params.update(
-            get_powermax_snapshot_parameters())
+        self.module_params.update(get_snapshot_parameters())
 
         # initialize the Ansible module
         mutually_exclusive = [['generation', 'snapshot_id']]
@@ -753,7 +748,7 @@ class PowerMaxSnapshot(object):
         self.module.exit_json(**result)
 
 
-def get_powermax_snapshot_parameters():
+def get_snapshot_parameters():
     return dict(
         sg_name=dict(required=True, type='str'),
         snapshot_name=dict(required=True, type='str'),
@@ -774,7 +769,7 @@ def get_powermax_snapshot_parameters():
 def main():
     """Create PowerMax Snapshot object and perform action on it
         based on user input from playbook"""
-    obj = PowerMaxSnapshot()
+    obj = Snapshot()
     obj.perform_module_operation()
 
 

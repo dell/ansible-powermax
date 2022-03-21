@@ -6,14 +6,10 @@
 from __future__ import (absolute_import, division, print_function)
 
 __metaclass__ = type
-ANSIBLE_METADATA = {'metadata_version': '1.1',
-                    'status': ['preview'],
-                    'supported_by': 'community'
-                    }
 
 DOCUMENTATION = r'''
 ---
-module: dellemc_powermax_srdf
+module: srdf
 version_added: '1.3.0'
 short_description:  Manage SRDF pair on PowerMax/VMAX Storage
                     System
@@ -121,12 +117,12 @@ options:
       True.
     required: false
     type: bool
-  '''
+'''
 
 EXAMPLES = r'''
 - name: Create and establish storagegroup SRDF/a pairing
   register: Job_details_body
-  dellemc_powermax_srdf:
+  dellemc.powermax.srdf:
     unispherehost: "{{unispherehost}}"
     universion: "{{universion}}"
     verifycert: "{{verifycert}}"
@@ -141,7 +137,7 @@ EXAMPLES = r'''
 
 - name: Create storagegroup SRDF/s pair in default suspended mode as an
         Synchronous task
-  dellemc_powermax_srdf:
+  dellemc.powermax.srdf:
     unispherehost: "{{unispherehost}}"
     universion: "{{universion}}"
     verifycert: "{{verifycert}}"
@@ -155,7 +151,7 @@ EXAMPLES = r'''
     wait_for_completion: True
 
 - name: Create storagegroup Metro SRDF pair with Witness for resiliency
-  dellemc_powermax_srdf:
+  dellemc.powermax.srdf:
     unispherehost: "{{unispherehost}}"
     universion: "{{universion}}"
     verifycert: "{{verifycert}}"
@@ -170,7 +166,7 @@ EXAMPLES = r'''
     srdf_state: 'Establish'
 
 - name: Suspend storagegroup Metro SRDF pair
-  dellemc_powermax_srdf:
+  dellemc.powermax.srdf:
     unispherehost: "{{unispherehost}}"
     universion: "{{universion}}"
     verifycert: "{{verifycert}}"
@@ -184,7 +180,7 @@ EXAMPLES = r'''
 
 - name: Establish link for storagegroup Metro SRDF pair and use Bias for
         resiliency
-  dellemc_powermax_srdf:
+  dellemc.powermax.srdf:
     unispherehost: "{{unispherehost}}"
     universion: "{{universion}}"
     verifycert: "{{verifycert}}"
@@ -199,7 +195,7 @@ EXAMPLES = r'''
     witness: False
 
 - name: Get SRDF details
-  dellemc_powermax_srdf:
+  dellemc.powermax.srdf:
     unispherehost: "{{unispherehost}}"
     universion: "{{universion}}"
     verifycert: "{{verifycert}}"
@@ -210,7 +206,7 @@ EXAMPLES = r'''
     state: 'present'
 
 - name: Modify SRDF mode
-  dellemc_powermax_srdf:
+  dellemc.powermax.srdf:
     unispherehost: "{{unispherehost}}"
     universion: "{{universion}}"
     verifycert: "{{verifycert}}"
@@ -222,7 +218,7 @@ EXAMPLES = r'''
     state: 'present'
 
 - name: Failover SRDF link
-  dellemc_powermax_srdf:
+  dellemc.powermax.srdf:
     unispherehost: "{{unispherehost}}"
     universion: "{{universion}}"
     verifycert: "{{verifycert}}"
@@ -234,7 +230,7 @@ EXAMPLES = r'''
     state: 'present'
 
 - name: Get SRDF Job status
-  dellemc_powermax_srdf:
+  dellemc.powermax.srdf:
     unispherehost: "{{unispherehost}}"
     universion: "{{universion}}"
     verifycert: "{{verifycert}}"
@@ -245,7 +241,7 @@ EXAMPLES = r'''
     state: 'present'
 
 - name: Establish SRDF link
-  dellemc_powermax_srdf:
+  dellemc.powermax.srdf:
     unispherehost: "{{unispherehost}}"
     universion: "{{universion}}"
     verifycert: "{{verifycert}}"
@@ -257,7 +253,7 @@ EXAMPLES = r'''
     state: 'present'
 
 - name: Suspend SRDF link
-  dellemc_powermax_srdf:
+  dellemc.powermax.srdf:
     unispherehost: "{{unispherehost}}"
     universion: "{{universion}}"
     verifycert: "{{verifycert}}"
@@ -269,7 +265,7 @@ EXAMPLES = r'''
     state: 'present'
 
 - name: Delete SRDF link
-  dellemc_powermax_srdf:
+  dellemc.powermax.srdf:
     unispherehost: "{{unispherehost}}"
     universion: "{{universion}}"
     verifycert: "{{verifycert}}"
@@ -380,19 +376,17 @@ from ansible_collections.dellemc.powermax.plugins.module_utils.storage.dell \
     import dellemc_ansible_powermax_utils as utils
 from ansible.module_utils.basic import AnsibleModule
 
-LOG = utils.get_logger(
-    module_name='dellemc_powermax_srdf',
-    log_devel=logging.INFO)
+LOG = utils.get_logger(module_name='srdf')
 
 HAS_PYU4V = utils.has_pyu4v_sdk()
 
 PYU4V_VERSION_CHECK = utils.pyu4v_version_check()
 
 # Application Type
-APPLICATION_TYPE = 'ansible_v1.6.1'
+APPLICATION_TYPE = 'ansible_v1.7.0'
 
 
-class PowerMax_SRDF(object):
+class SRDF(object):
 
     '''Class with srdf operations'''
 
@@ -401,7 +395,7 @@ class PowerMax_SRDF(object):
     def __init__(self):
         ''' Define all parameters required by this module'''
         self.module_params = utils.get_powermax_management_host_parameters()
-        self.module_params.update(self.get_powermax_srdf_pair_parameters())
+        self.module_params.update(self.get_srdf_pair_parameters())
         # initialize the ansible module
         self.module = AnsibleModule(
             argument_spec=self.module_params,
@@ -455,7 +449,7 @@ class PowerMax_SRDF(object):
 
         self.current_rdfg_no = None
 
-    def get_powermax_srdf_pair_parameters(self):
+    def get_srdf_pair_parameters(self):
         return dict(
             sg_name=dict(required=False, type='str'),
             remote_serial_no=dict(required=False, type='str'),
@@ -894,7 +888,7 @@ class PowerMax_SRDF(object):
 def main():
     ''' Create PowerMax_srdf object and perform action on it
         based on user input from playbook'''
-    obj = PowerMax_SRDF()
+    obj = SRDF()
     obj.perform_module_operation()
 
 

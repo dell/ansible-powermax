@@ -18,7 +18,7 @@
 
   tasks:
     - name: Get details of the Storage Group 
-      dellemc_powermax_storagegroup:
+      storagegroup:
         unispherehost: "{{unispherehost}}"
         universion: "{{universion}}"
         verifycert: "{{verifycert}}"
@@ -36,7 +36,7 @@
   # This task gets the details of all the volumes. This is because the volume details has the attribute volume_identifier which has the name of the volume.
     - name: Get volume details
       register: temp_result
-      dellemc_powermax_volume:
+      volume:
         unispherehost: "{{unispherehost}}"
         universion: "{{universion}}"
         verifycert: "{{verifycert}}"

@@ -6,14 +6,10 @@
 from __future__ import (absolute_import, division, print_function)
 
 __metaclass__ = type
-ANSIBLE_METADATA = {'metadata_version': '1.1',
-                    'status': ['preview'],
-                    'supported_by': 'community'
-                    }
 
 DOCUMENTATION = r'''
 ---
-module: dellemc_powermax_job
+module: job
 version_added: '1.4.0'
 short_description: Gets the detail information about a Job of a PowerMax/VMAX
  storage system
@@ -34,7 +30,7 @@ options:
 
 EXAMPLES = r'''
 - name: Get the details of a Job.
-  dellemc_powermax_job:
+  dellemc.powermax.job:
     unispherehost: "{{unispherehost}}"
     universion: "{{universion}}"
     verifycert: "{{verifycert}}"
@@ -90,17 +86,17 @@ from ansible_collections.dellemc.powermax.plugins.module_utils.storage.dell \
     import dellemc_ansible_powermax_utils as utils
 from ansible.module_utils.basic import AnsibleModule
 
-LOG = utils.get_logger('dellemc_powermax_job', log_devel=logging.INFO)
+LOG = utils.get_logger('job')
 
 HAS_PYU4V = utils.has_pyu4v_sdk()
 
 PYU4V_VERSION_CHECK = utils.pyu4v_version_check()
 
 # Application Type
-APPLICATION_TYPE = 'ansible_v1.6.1'
+APPLICATION_TYPE = 'ansible_v1.7.0'
 
 
-class PowerMaxJob(object):
+class Job(object):
     """Class with Job operations"""
 
     u4v_conn = None
@@ -109,7 +105,7 @@ class PowerMaxJob(object):
         """Define all the parameters required by this module"""
 
         self.module_params = utils.get_u4v_unisphere_connection_parameters()
-        self.module_params.update(get_powermax_job_parameters())
+        self.module_params.update(get_job_parameters())
         self.module = AnsibleModule(
             argument_spec=self.module_params,
             supports_check_mode=False)
@@ -197,7 +193,7 @@ class PowerMaxJob(object):
         )
 
 
-def get_powermax_job_parameters():
+def get_job_parameters():
     """This method provides the parameters required for the ansible job module
     of PowerMax. """
     return dict(
@@ -208,7 +204,7 @@ def get_powermax_job_parameters():
 def main():
     """ Create PowerMax Job object and perform action on it
         based on user input from playbook """
-    obj = PowerMaxJob()
+    obj = Job()
     obj.perform_module_operation()
 
 
