@@ -1,4 +1,4 @@
-# Copyright: (c) 2021, Dell EMC
+# Copyright: (c) 2021, Dell Technologies
 
 # Apache License version 2.0 (see MODULE-LICENSE or http://www.apache.org/licenses/LICENSE-2.0.txt)
 
@@ -7,7 +7,7 @@
 from __future__ import (absolute_import, division, print_function)
 from decimal import Decimal
 import logging
-from ansible_collections.dellemc.powermax.plugins.module_utils.storage.dell.dellemc_powermax_logging_handler \
+from ansible_collections.dellemc.powermax.plugins.module_utils.storage.dell.logging_handler \
     import CustomRotatingFileHandler
 
 __metaclass__ = type
@@ -123,15 +123,22 @@ options:
 '''
 
 
-def get_powermax_management_host_parameters():
+def get_powermax_management_host_parameters(metro_dr=False):
+    if metro_dr:
+        return dict(
+            unispherehost=dict(type='str', required=True, no_log=True),
+            universion=dict(type='int', required=False, choices=[91, 92]),
+            verifycert=dict(type='bool', required=True, choices=[True, False]),
+            user=dict(type='str', required=True),
+            password=dict(type='str', required=True, no_log=True))
+
     return dict(
         unispherehost=dict(type='str', required=True, no_log=True),
         universion=dict(type='int', required=False, choices=[91, 92]),
         verifycert=dict(type='bool', required=True, choices=[True, False]),
         user=dict(type='str', required=True),
         password=dict(type='str', required=True, no_log=True),
-        serial_no=dict(type='str', required=True)
-    )
+        serial_no=dict(type='str', required=True))
 
 
 '''
@@ -185,11 +192,15 @@ returns connection object to access provisioning and protection sdks
 '''
 
 
-def get_U4V_connection(module_params, application_type=None):
+def get_U4V_connection(module_params, application_type=None, metro_dr=False):
+    if metro_dr:
+        array_id = module_params['metro_r1_array_id']
+    else:
+        array_id = module_params['serial_no']
     if HAS_PYU4V:
         conn = PyU4V.U4VConn(server_ip=module_params['unispherehost'],
                              port=8443,
-                             array_id=module_params['serial_no'],
+                             array_id=array_id,
                              verify=module_params['verifycert'],
                              username=module_params['user'],
                              password=module_params['password'],

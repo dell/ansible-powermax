@@ -1,5 +1,5 @@
 #!/usr/bin/python
-# Copyright: (c) 2019-2021, DellEMC
+# Copyright: (c) 2019-2021, Dell Technologies
 
 # Apache License version 2.0 (see MODULE-LICENSE or http://www.apache.org/licenses/LICENSE-2.0.txt)
 
@@ -11,19 +11,22 @@ DOCUMENTATION = r'''
 ---
 module: storagegroup
 version_added: '1.0.0'
-short_description:  Manage storage groups on PowerMax/VMAX Storage System
+short_description:  Manage storage groups on PowerMax or VMAX Storage System
 description:
-- Managing storage groups on a PowerMax storage system includes listing the
-  volumes of a storage group, creating a new storage group, deleting an
-  existing storage group, adding existing volumes to an existing storage
-  group, removing existing volumes from an existing storage group, creating
-  new volumes in an existing storage group, modifying existing storage group
-  attributes, adding child storage groups inside an existing storage group
-  (parent), and removing a child storage group from an existing parent storage
-  group.
+- Managing storage groups on a PowerMax storage system includes-
+  listing the volumes of a storage group,
+  creating a new storage group,
+  deleting an existing storage group,
+  adding existing volumes to an existing storage group,
+  removing existing volumes from an existing storage group,
+  creating new volumes in an existing storage group,
+  modifying existing storage group attributes,
+  adding child storage groups inside an existing storage group (parent),
+  moving volumes between storage groups and
+  removing a child storage group from an existing parent storage group.
 extends_documentation_fragment:
-  - dellemc.powermax.dellemc_powermax.powermax
-  - dellemc.powermax.dellemc_powermax.powermax_serial_no
+  - dellemc.powermax.powermax
+  - dellemc.powermax.powermax.powermax_serial_no
 author:
 - Vasudevu Lakhinana (@unknown) <ansible.team@dell.com>
 - Prashant Rakheja (@prashant-dell) <ansible.team@dell.com>
@@ -46,7 +49,7 @@ options:
     type: str
   compression:
     description:
-    - compression on storage group.
+    - Compression on storage group.
     - Compression parameter is ignored if service_level is not specified.
     - Default is true.
     type: bool
@@ -71,7 +74,7 @@ options:
   vol_state:
     description:
     - Describes the state of volumes inside the SG.
-    choices: [present-in-group , absent-in-group]
+    choices: [present-in-group, absent-in-group]
     type: str
   child_storage_groups:
     description:
@@ -87,9 +90,18 @@ options:
     description:
      - The new name of the storage group.
     type: str
+  target_sg_name:
+    description:
+     - The destination SG name to move the volumes to.
+    type: str
+  force:
+    description:
+     - This flag is to be set to True while moving volumes to target
+       SG if volume is in a masking view.
+    type: bool
   snapshot_policies:
     description:
-     - List of snapshot policy(s).
+     - List of snapshot policies.
     type: list
     elements: str
   snapshot_policy_state:
@@ -106,7 +118,7 @@ options:
 '''
 
 EXAMPLES = r'''
-- name: Get storage group details including volumes
+- name: Get Storage Group details including volumes
   dellemc.powermax.storagegroup:
     unispherehost: "{{unispherehost}}"
     universion: "{{universion}}"
@@ -117,7 +129,7 @@ EXAMPLES = r'''
     sg_name: "ansible_sg"
     state: "present"
 
-- name: Create empty storage group
+- name: Create empty Storage Group
   dellemc.powermax.storagegroup:
     unispherehost: "{{unispherehost}}"
     universion: "{{universion}}"
@@ -131,7 +143,7 @@ EXAMPLES = r'''
     compression: True
     state: "present"
 
-- name: Delete the storage Group
+- name: Delete the Storage Group
   dellemc.powermax.storagegroup:
     unispherehost: "{{unispherehost}}"
     universion: "{{universion}}"
@@ -142,7 +154,7 @@ EXAMPLES = r'''
     sg_name: "foo"
     state: "absent"
 
-- name: Adding existing volume(s) to existing SG
+- name: Adding existing volumes to existing SG
   dellemc.powermax.storagegroup:
     unispherehost: "{{unispherehost}}"
     universion: "{{universion}}"
@@ -177,7 +189,7 @@ EXAMPLES = r'''
       cap_unit: "GB"
     vol_state: "present-in-group"
 
-- name: Remove volume(s) from existing SG
+- name: Remove volumes from existing SG
   dellemc.powermax.storagegroup:
     unispherehost: "{{unispherehost}}"
     universion: "{{universion}}"
@@ -186,6 +198,24 @@ EXAMPLES = r'''
     password: "{{password}}"
     serial_no: "{{serial_no}}"
     sg_name: "foo"
+    state: "present"
+    volumes:
+    - vol_id: "00028"
+    - vol_id: "00018"
+    - vol_name: "ansible-vol"
+    vol_state: "absent-in-group"
+
+- name: Move volumes to target SG
+  dellemc.powermax.storagegroup:
+    unispherehost: "{{unispherehost}}"
+    universion: "{{universion}}"
+    verifycert: "{{verifycert}}"
+    user: "{{user}}"
+    password: "{{password}}"
+    serial_no: "{{serial_no}}"
+    sg_name: "foo"
+    target_sg_name: "foo_sg"
+    force: True
     state: "present"
     volumes:
     - vol_id: "00028"
@@ -235,7 +265,7 @@ EXAMPLES = r'''
     new_sg_name: "ansible_sg_renamed"
     state: "present"
 
-- name: Create a storage group with snapshot policies
+- name: Create a Storage Group with snapshot policies
   dellemc.powermax.storagegroup:
     unispherehost: "{{unispherehost}}"
     universion: "{{universion}}"
@@ -253,7 +283,7 @@ EXAMPLES = r'''
     snapshot_policy_state: "present-in-group"
     state: "present"
 
-- name: Add snapshot policy to a storage group
+- name: Add snapshot policy to a Storage Group
   dellemc.powermax.storagegroup:
     unispherehost: "{{unispherehost}}"
     universion: "{{universion}}"
@@ -267,7 +297,7 @@ EXAMPLES = r'''
     snapshot_policy_state: "present-in-group"
     state: "present"
 
-- name: Remove snapshot policy from a storage group
+- name: Remove snapshot policy from a Storage Group
   dellemc.powermax.storagegroup:
     unispherehost: "{{unispherehost}}"
     universion: "{{universion}}"
@@ -289,15 +319,15 @@ changed:
     returned: always
     type: bool
 add_child_sg:
-    description: Sets to true when a child SG is added.
+    description: Sets to True when a child SG is added.
     returned: When value exists.
     type: bool
 add_new_vols_to_sg:
-    description: Sets to true when new volumes are added to the SG.
+    description: Sets to True when new volumes are added to the SG.
     returned: When value exists.
     type: bool
 add_vols_to_sg:
-    description: Sets to true when existing volumes are added to the SG.
+    description: Sets to True when existing volumes are added to the SG.
     returned: When value exists.
     type: bool
 added_vols_details:
@@ -305,23 +335,23 @@ added_vols_details:
     returned: When value exists.
     type: list
 create_sg:
-    description: Sets to true when a new SG is created.
+    description: Sets to True when a new SG is created.
     returned: When value exists.
     type: bool
 delete_sg:
-    description: Sets to true when an SG is deleted.
+    description: Sets to True when an SG is deleted.
     returned: When value exists.
     type: bool
 modify_sg:
-    description: Sets to true when an SG is modified.
+    description: Sets to True when an SG is modified.
     returned: When value exists.
     type: bool
 remove_child_sg:
-    description: Sets to true when a child SG is removed.
+    description: Sets to True when a child SG is removed.
     returned: When value exists.
     type: bool
 remove_vols_from_sg:
-    description: Sets to true when volumes are removed.
+    description: Sets to True when volumes are removed.
     returned: When value exists.
     type: bool
 removed_vols_details:
@@ -329,15 +359,15 @@ removed_vols_details:
     returned: When value exists.
     type: list
 rename_sg:
-    description: Sets to true when an SG is renamed.
+    description: Sets to True when an SG is renamed.
     returned: When value exists.
     type: bool
 add_snapshot_policy_to_sg:
-    description: Sets to true when snapshot policy(s) is added to SG.
+    description: Sets to True when snapshot policy is added to SG.
     returned: When value exists.
     type: bool
 remove_snapshot_policy_to_sg:
-    description: Sets to false when snapshot policy(s) is removed from SG.
+    description: Sets to false when snapshot policy is removed from SG.
     returned: When value exists.
     type: bool
 storage_group_details:
@@ -378,7 +408,7 @@ storage_group_details:
             description: Type of service level.
             type: str
         slo:
-            description: Service level objective (SLO) type.
+            description: Service Level Objective type.
             type: str
         slo_compliance:
             description: Type of SLO compliance.
@@ -387,10 +417,10 @@ storage_group_details:
             description: Storage resource pool.
             type: str
         storageGroupId:
-            description: Id for the storage group.
+            description: ID for the storage group.
             type: str
         type:
-            description: type of storage group.
+            description: Type of storage group.
             type: str
         unprotected:
             description: Flag for storage group protection.
@@ -404,7 +434,7 @@ storage_group_volumes:
     type: list
 storage_group_volumes_details:
     description: Details of the storage group volumes.
-    returned: When storage group volumes exists.
+    returned: When storage group volumes exist.
     type: complex
     contains:
         effective_wwn:
@@ -424,33 +454,33 @@ storage_group_volumes_details:
             type: str
 snapshot_policy_compliance_details:
     description: The compliance status of this storage group.
-    returned: When snapshot policy associated..
+    returned: When snapshot policy associated.
     type: complex
     contains:
         compliance:
-            description: Compliance status
+            description: Compliance status.
             type: str
         sl_compliance:
-            description: Compliance details
+            description: Compliance details.
             type: complex
             contains:
                 sl_name:
-                    description: Name of the snapshot policy
+                    description: Name of the snapshot policy.
                     type: str
                 compliance:
-                    description: Compliance status
+                    description: Compliance status.
                     type: str
         sl_count:
-            description: Number of snapshot policies associated with storage group
+            description: Number of snapshot policies associated with storage group.
             type: int
         storage_group_name:
-            description: Name of the storage group
+            description: Name of the storage group.
             type: str
 '''
 
 import logging
 from ansible_collections.dellemc.powermax.plugins.module_utils.storage.dell \
-    import dellemc_ansible_powermax_utils as utils
+    import utils
 from ansible.module_utils.basic import AnsibleModule
 
 LOG = utils.get_logger('storagegroup')
@@ -459,13 +489,13 @@ HAS_PYU4V = utils.has_pyu4v_sdk()
 PYU4V_VERSION_CHECK = utils.pyu4v_version_check()
 
 # Application Type
-APPLICATION_TYPE = 'ansible_v1.7.0'
+APPLICATION_TYPE = 'ansible_v1.8.0'
 
 
 class StorageGroup(object):
     """Class with Storage Group operations"""
 
-    protected_sg_msg = "Modifying a volume(s)/child storagegroup(s)" \
+    protected_sg_msg = "Modifying volume or child storagegroup" \
                        " for an SRDF protected storage group will " \
                        "render it unprotected and unmanageable." \
                        " Hence this operation is not allowed through" \
@@ -490,7 +520,7 @@ class StorageGroup(object):
         if HAS_PYU4V is False:
             self.show_error_exit(msg="Ansible modules for PowerMax require "
                                  "the PyU4V python library to be "
-                                 "installed. Please install the library "
+                                 "installed. Install the library "
                                  "before using these modules.")
         if PYU4V_VERSION_CHECK is not None:
             self.show_error_exit(msg=PYU4V_VERSION_CHECK)
@@ -660,8 +690,80 @@ class StorageGroup(object):
                         % (sg_name, str(e)))
             self.show_error_exit(msg=errorMsg)
 
+    def get_volumes_to_move(self, sg_name, existing_volumes, volumes):
+        """
+        Get list of volume Id's
+        :param sg_name: Source storagegroup name
+        :param existing_volumes: List of existing volumes
+        :param volumes: List of volumes to move
+        :return: List of volume Id's
+        """
+        try:
+            vol_ids = []
+            for vol in volumes:
+                if (self.validate_volume(vol)) and ('vol_id' in vol) \
+                        and vol['vol_id'].upper() in existing_volumes:
+                    vol_ids.append(vol['vol_id'])
+                elif 'vol_name' in vol:
+                    params = {"storageGroupId": sg_name,
+                              "volume_identifier": vol['vol_name']}
+                    volume_list = self.provisioning.get_volume_list(params)
+                    if volume_list:
+                        if len(volume_list) > 1:
+                            err_msg = ("Duplicate volumes found: "
+                                       "There are %s volumes with "
+                                       "the same name %s in "
+                                       "the storage group %s"
+                                       % (len(volume_list), vol['vol_name'], sg_name))
+                            self.show_error_exit(msg=err_msg)
+                        elif volume_list[0] in existing_volumes:
+                            vol_ids.append(volume_list[0])
+            return vol_ids
+        except Exception as e:
+            error_msg = ("Retrieving volume details while performing move operation "
+                         "failed with error %s" % str(e))
+            self.show_error_exit(msg=error_msg)
+
+    def move_volume_between_storage_groups(self, sg_name, target_sg_name, force):
+        """
+        Move volumes between storage groups
+        :param sg_name: Source storagegroup name
+        :param target_sg_name: Targeted storagegroup name
+        :param force: Force flag
+        :return: boolean
+        """
+        volumes = self.module.params['volumes']
+        vol_state = self.module.params['vol_state']
+        if vol_state != 'absent-in-group':
+            self.show_error_exit(msg="Specify vol_state as 'absent-in-group' to move volumes")
+        if self.if_srdf_protected(self.get_storage_group(sg_name)) or \
+                self.if_srdf_protected(self.get_storage_group(target_sg_name)):
+            error_msg = ("Move volumes to or from SRDF protected storage group is not "
+                         "supported from Ansible module as it would render it unprotected.")
+            self.show_error_exit(msg=error_msg)
+
+        try:
+            LOG.info('Move volumes to target SG %s', target_sg_name)
+            vol_ids = []
+            existing_volumes = self.get_volumes_storagegroup(sg_name)
+            vol_ids = self.get_volumes_to_move(sg_name, existing_volumes, volumes)
+
+            if vol_ids:
+                vol_ids = list(set(vol_ids))
+                if not self.module.check_mode:
+                    self.provisioning.move_volumes_between_storage_groups(
+                        device_ids=vol_ids,
+                        source_storagegroup_name=sg_name,
+                        target_storagegroup_name=target_sg_name,
+                        force=force)
+                return True
+        except Exception as e:
+            error_msg = ("Move volumes to target storage group %s failed with error %s"
+                         % (target_sg_name, str(e)))
+            self.show_error_exit(msg=error_msg)
+
     def add_volume_storage_group(self, sg_name):
-        """Add new volume(s) to existing storage group"""
+        """Add new volumes to existing storage group"""
         volumes = self.module.params['volumes']
         LOG.info('Creating new volumes for SG %s', sg_name)
         changed = False
@@ -791,7 +893,7 @@ class StorageGroup(object):
                                 changed = True
                             if len(rdfg_list) > 2:
                                 err_msg = (
-                                    "More than 2 rdf groups exists for the given "
+                                    "More than 2 RDF groups exist for the given "
                                     "storage group {0}. Create volume is not "
                                     "supported.".formate(sg_name))
                                 self.show_error_exit(msg=err_msg)
@@ -825,16 +927,16 @@ class StorageGroup(object):
                                 self.show_error_exit(
                                     msg='A volume with identifier {0} '
                                     'but different size {1} GB '
-                                    'already exists. Please use '
+                                    'already exists. Use '
                                     'a different identifier for'
-                                    ' volume creation.Currently,'
+                                    ' volume creation. Currently,'
                                     ' we support only unique '
                                     'identifiers for '
                                     'volume creation on '
                                     'PowerMax from Ansible'. format(
                                         name, vol_details['cap_gb']))
                 except Exception as e:
-                    err_msg = ("Adding new volume(s) on storage group %s failed "
+                    err_msg = ("Adding new volumes on storage group %s failed "
                                " with error %s" % (sg_name, str(e)))
                     self.show_error_exit(msg=err_msg)
         existing_volumes_details_in_sg = self.\
@@ -854,7 +956,7 @@ class StorageGroup(object):
             self.show_error_exit(msg=err_msg)
 
     def add_existing_volumes_to_sg(self, vol_list, sg_name):
-        """Add existing Volumes to existing Storage Group"""
+        """Add existing Volumes to existing storage group"""
 
         storage_group = self.provisioning.get_storage_group(sg_name)
         existing_volumes_in_sg = self.provisioning.get_volumes_from_storage_group(
@@ -902,7 +1004,6 @@ class StorageGroup(object):
                 get_volumes_details_storagegroup(sg_name)
             return False, existing_volumes_details_in_sg
         try:
-
             if self.if_srdf_protected(storage_group):
                 self.show_error_exit(msg=self.protected_sg_msg)
 
@@ -912,12 +1013,12 @@ class StorageGroup(object):
             existing_volumes_details_in_sg = self.get_volumes_details_storagegroup(sg_name)
             return True, existing_volumes_details_in_sg
         except Exception as e:
-            errorMsg = ("Adding existing volume(s) to storage group %s failed "
+            errorMsg = ("Adding existing volumes to storage group %s failed "
                         "with error %s" % (sg_name, str(e)))
             self.show_error_exit(msg=errorMsg)
 
     def remove_volumes_from_sg(self, vol_list, sg_name):
-        """Remove volume(s) from Storage Group"""
+        """Remove volumes from storage group"""
         existing_volumes_in_sg = self.provisioning.get_volumes_from_storage_group(
             sg_name)
         vol_ids = []
@@ -934,7 +1035,7 @@ class StorageGroup(object):
                         ' group %s', vol['vol_name'], sg_name)
                 elif len(volume_list) > 1:
                     errMsg = ("Duplicate volumes found: "
-                              "There are %s volume(s) with "
+                              "There are %s volumes with "
                               "the same name %s in "
                               "the storage group %s"
                               % (len(volume_list), vol['vol_name'], sg_name))
@@ -991,7 +1092,7 @@ class StorageGroup(object):
                     return True, vol_details
 
                 if len(rdfg_list) > 2:
-                    err_msg = ("More than 2 rdf groups exists for the given "
+                    err_msg = ("More than 2 RDF groups exist for the given "
                                "storage group %s. Create volume is not "
                                "supported" % sg_name)
                     self.show_error_exit(msg=err_msg)
@@ -1011,12 +1112,12 @@ class StorageGroup(object):
             return True, vol_details
 
         except Exception as e:
-            errorMsg = ("Remove existing volume(s) from storage group %s "
+            errorMsg = ("Remove existing volumes from storage group %s "
                         "failed with error %s" % (sg_name, str(e)))
             self.show_error_exit(msg=errorMsg)
 
     def modify_sg_srp(self, storage_group, new_srp):
-        """Modify SRP of the Storage Group"""
+        """Modify SRP of the storage group"""
 
         payload = {
             "editStorageGroupActionParam": {
@@ -1035,7 +1136,7 @@ class StorageGroup(object):
             self.show_error_exit(msg=errorMsg)
 
     def modify_sg_slo(self, sg_name, new_slo):
-        """Modify service level of the Storage Group"""
+        """Modify service level of the storage group"""
 
         payload = {
             "editStorageGroupActionParam": {
@@ -1063,7 +1164,7 @@ class StorageGroup(object):
                 self.show_error_exit(msg=errorMsg)
 
     def modify_sg_compression(self, sg_name, new_compression):
-        """Modify compression of the Storage Group"""
+        """Modify compression of the storage group"""
 
         payload = {
             "editStorageGroupActionParam": {
@@ -1109,7 +1210,7 @@ class StorageGroup(object):
         return changed
 
     def add_child_sg_to_parent_sg(self, child_sg_list, parent_sg):
-        """Add a child Storage Group(s) to parent Storage Group"""
+        """Add a child storage groups to parent storage group"""
         changed = False
         for child_sg in child_sg_list:
             if not self.provisioning.\
@@ -1134,7 +1235,7 @@ class StorageGroup(object):
         return changed
 
     def remove_child_sg_from_parent_sg(self, child_sg_list, parent_sg):
-        """Remove a child Storage Group from parent Storage Group"""
+        """Remove a child storage group from parent storage group"""
         changed = False
         storage_group = self.provisioning.get_storage_group(parent_sg)
         for child_sg in child_sg_list:
@@ -1151,7 +1252,7 @@ class StorageGroup(object):
                                                                          parent_sg)
                     changed = True
                 except Exception as e:
-                    error_message = ("Removing child SG %s from parent "
+                    error_message = ("Removing child storage group %s from parent "
                                      "storage group %s failed with error %s "
                                      % (child_sg, parent_sg, str(e)))
                     self.show_error_exit(msg=error_message)
@@ -1195,10 +1296,10 @@ class StorageGroup(object):
         return modified, modified_param
 
     def rename_storage_group(self, storage_group, new_sg_name):
-        """Rename the Storage Group"""
+        """Rename the storage group"""
         if not storage_group:
             error_message = ("Rename storage group %s to new name %s "
-                             "failed because SG does not exist "
+                             "failed because storage group does not exist "
                              % (self.module.params['sg_name'], new_sg_name))
             self.show_error_exit(msg=error_message)
         changed = False
@@ -1247,9 +1348,9 @@ class StorageGroup(object):
                             gen_num=gen)
                     if gen_details['isLinked']:
                         errMsg = ("Cannot delete SG %s "
-                                  "because it has snapshot(s) "
-                                  "in linked state. Please "
-                                  "unlink the snapshot(s) and "
+                                  "because it has snapshots "
+                                  "in linked state. "
+                                  "unlink the snapshots and "
                                   "and retry." % sg_name)
                         self.show_error_exit(msg=errMsg)
         except Exception as e:
@@ -1308,10 +1409,10 @@ class StorageGroup(object):
                     return True, resp
                 else:
                     LOG.info("Storage group is already associated with"
-                             " snapshot policy(s)")
+                             " snapshot policies")
                     return False, storage_group_details
         except Exception as e:
-            errmsg = ("Adding snapshot policy(s) to the "
+            errmsg = ("Adding snapshot policies to the "
                       "storage group %s failed with error %s"
                       % (sg_name, str(e)))
             self.show_error_exit(msg=errmsg)
@@ -1340,7 +1441,7 @@ class StorageGroup(object):
                     resp = self.provisioning.get_storage_group(sg_name)
                     return True, resp
                 else:
-                    LOG.info('The given snapshot policy(s) %s are not present'
+                    LOG.info('The given snapshot policies %s are not present'
                              ' on the storage group %s',
                              snapshot_policies, sg_name)
                     return False, storage_group_details
@@ -1349,7 +1450,7 @@ class StorageGroup(object):
                          ' storage group %s', sg_name)
                 return False, storage_group_details
         except Exception as e:
-            errmsg = ("Removing the snapshot policy(s) from the "
+            errmsg = ("Removing the snapshot policies from the "
                       "storage group %s failed with error %s"
                       % (sg_name, str(e)))
             self.show_error_exit(msg=errmsg)
@@ -1360,7 +1461,7 @@ class StorageGroup(object):
         is_vol_input_invalid = ('vol_id' in vol) and ('vol_name' in vol)
         if is_vol_input_invalid:
             LOG.warn('Both name and id are found for volume %s. '
-                     'No action would be taken. Please specify '
+                     'No action would be taken. Specify '
                      'either name or id', vol)
         return not is_vol_input_invalid
 
@@ -1396,6 +1497,8 @@ class StorageGroup(object):
         """
         state = self.module.params['state']
         sg_name = self.module.params['sg_name']
+        target_sg_name = self.module.params['target_sg_name']
+        force = self.module.params['force'] or False
         volumes = self.module.params['volumes']
         vol_state = self.module.params['vol_state']
         child_sgs = self.module.params['child_storage_groups']
@@ -1457,21 +1560,21 @@ class StorageGroup(object):
             result['storage_group_details'] = {}
 
         if state == 'present' and vol_state == 'present-in-group'\
-                and storage_group and volumes:
-            LOG.info('Create new volume(s) for storage group %s', sg_name)
+                and storage_group and volumes and not target_sg_name:
+            LOG.info('Create new volumes for storage group %s', sg_name)
             result['add_new_vols_to_sg'],\
                 result['storage_group_volumes_details'] = self.\
                 add_volume_storage_group(sg_name)
-            LOG.info('Add existing volume(s) to storage group %s', sg_name)
+            LOG.info('Add existing volumes to storage group %s', sg_name)
             result['add_vols_to_sg'], result['storage_group_volumes_details']\
                 = self.add_existing_volumes_to_sg(
                 volumes, sg_name)
             result['storage_group_volumes'] \
                 = self.get_volumes_storagegroup(sg_name)
         elif state == 'present' and vol_state == 'absent-in-group'\
-                and storage_group and volumes:
+                and storage_group and volumes and not target_sg_name:
             LOG.info(
-                'Remove existing volume(s) from storage group %s', sg_name)
+                'Remove existing volumes from storage group %s', sg_name)
             result['remove_vols_from_sg'], \
                 result['storage_group_volumes_details'] = self.\
                 remove_volumes_from_sg(volumes, sg_name)
@@ -1498,7 +1601,7 @@ class StorageGroup(object):
         elif state == 'present' and child_sg_state == 'absent-in-group'\
                 and storage_group and child_sgs:
             LOG.info(
-                'Removing child SG from parent storage group %s', sg_name)
+                'Removing child storage group from parent storage group %s', sg_name)
             result['remove_child_sg'] = self.remove_child_sg_from_parent_sg(
                 child_sgs, sg_name)
             LOG.info('Get volumes details of storage group %s', sg_name)
@@ -1556,6 +1659,15 @@ class StorageGroup(object):
                 result['snapshot_policy_compliance_details'] \
                     = self.snapshot_policy_compliance_details(sg_name)
 
+        if state == 'present' and target_sg_name:
+            result['modify_sg'] = \
+                self.move_volume_between_storage_groups(sg_name, target_sg_name, force)
+            if result['modify_sg']:
+                result['remove_vols_from_sg'] = True
+                result['storage_group_details'] = self.provisioning.get_storage_group(sg_name)
+                result['storage_group_volumes'] = self.get_volumes_storagegroup(sg_name)
+                result['storage_group_volumes_details'] = self.get_volumes_details_storagegroup(sg_name)
+
         if result['create_sg'] or result['modify_sg'] or \
                 result['add_vols_to_sg'] or result['remove_vols_from_sg']\
                 or result['add_child_sg'] or result['remove_child_sg'] or \
@@ -1570,7 +1682,7 @@ class StorageGroup(object):
         result['removed_vols_details'] = \
             list(set(vols_before_op) - set(vols_after_op))
 
-        LOG.info("Closing unisphere connection %s", self.u4v_conn)
+        LOG.info("Closing Unisphere connection %s", self.u4v_conn)
         utils.close_connection(self.u4v_conn)
         LOG.info("Connection closed successfully")
 
@@ -1622,6 +1734,8 @@ def get_storage_group_parameters():
             choices=[
                 'present-in-group',
                 'absent-in-group']),
+        target_sg_name=dict(type='str'),
+        force=dict(type='bool'),
         state=dict(
             required=True,
             choices=[

@@ -1,5 +1,5 @@
 #!/usr/bin/python
-# Copyright: (c) 2022, DellEMC
+# Copyright: (c) 2022, Dell Technologies
 
 # Apache License version 2.0 (see MODULE-LICENSE or http://www.apache.org/licenses/LICENSE-2.0.txt)
 
@@ -15,8 +15,8 @@ description:
 - Managing initiators on a PowerMax storage system includes retrieving details
   and renaming alias of an initiator.
 extends_documentation_fragment:
-  - dellemc.powermax.dellemc_powermax.powermax
-  - dellemc.powermax.dellemc_powermax.powermax_serial_no
+  - dellemc.powermax.powermax
+  - dellemc.powermax.powermax.powermax_serial_no
 author:
 - Jennifer John (@johnj9) <ansible.team@dell.com>
 
@@ -137,7 +137,7 @@ initiator_details:
 '''
 
 from ansible_collections.dellemc.powermax.plugins.module_utils.storage.dell \
-    import dellemc_ansible_powermax_utils as utils
+    import utils
 from ansible.module_utils.basic import AnsibleModule
 
 LOG = utils.get_logger('initiator')
@@ -146,7 +146,7 @@ HAS_PYU4V = utils.has_pyu4v_sdk()
 PYU4V_VERSION_CHECK = utils.pyu4v_version_check()
 
 # Application Type
-APPLICATION_TYPE = 'ansible_v1.7.0'
+APPLICATION_TYPE = 'ansible_v1.8.0'
 
 
 class Initiator(object):

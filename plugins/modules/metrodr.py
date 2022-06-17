@@ -1,5 +1,5 @@
 #!/usr/bin/python
-# Copyright: (c) 2021, DellEMC
+# Copyright: (c) 2021, Dell Technologies
 
 # Apache License version 2.0 (see MODULE-LICENSE or http://www.apache.org/licenses/LICENSE-2.0.txt)
 
@@ -20,8 +20,7 @@ description:
   modifying metro DR environment attributes and deleting a metro DR
   environment.
 extends_documentation_fragment:
-  - dellemc.powermax.dellemc_powermax.powermax
-  - dellemc.powermax.dellemc_powermax.powermax_serial_no
+  - dellemc.powermax.powermax
 author:
 - Vivek Soni (@v-soni11) <ansible.team@dell.com>
 - Rajshree Khare (@khareRajshree) <ansible.team@dell.com>
@@ -43,18 +42,18 @@ options:
       'convert SG into metro DR environment' operations.
     required: False
     type: str
-  serial_no:
+  metro_r1_array_id:
     description:
     - Serial number of the primary metro array.
     required: True
     type: str
-  metro_serial_no:
+  metro_r2_array_id:
     description:
       - Serial number of the remote metro array.
       - It is required only in create and convert operations.
     required: False
     type: str
-  dr_serial_no:
+  dr_array_id:
     description:
       - Serial number of the DR array.
       - It is required in create and convert operations.
@@ -158,7 +157,7 @@ EXAMPLES = r"""
     verifycert: "{{verifycert}}"
     user: "{{user}}"
     password: "{{password}}"
-    serial_no: "{{serial_no}}"
+    metro_r1_array_id: "{{metro_r1_array_id}}"
     env_name: "ansible_metrodr_env"
     state: "present"
 
@@ -171,9 +170,9 @@ EXAMPLES = r"""
     password: "{{password}}"
     sg_name: "ansible_sg"
     env_name: "ansible_metrodr_env"
-    serial_no: "{{serial_no}}"
-    metro_serial_no: "{{metro_serial_no}}"
-    dr_serial_no: "{{dr_serial_no}}"
+    metro_r1_array_id: "{{metro_r1_array_id}}"
+    metro_r2_array_id: "{{metro_r2_array_id}}"
+    dr_array_id: "{{dr_array_id}}"
     replication_mode: "Asynchronous"
     wait_for_completion: False
     state: "present"
@@ -187,9 +186,9 @@ EXAMPLES = r"""
     password: "{{password}}"
     sg_name: "ansible_sg"
     env_name: "ansible_metrodr_env"
-    serial_no: "{{serial_no}}"
-    metro_serial_no: "{{metro_serial_no}}"
-    dr_serial_no: "{{dr_serial_no}}"
+    metro_r1_array_id: "{{metro_r1_array_id}}"
+    metro_r2_array_id: "{{metro_r2_array_id}}"
+    dr_array_id: "{{dr_array_id}}"
     replication_mode: "Asynchronous"
     new_rdf_group_r1: True
     new_rdf_group_r2: True
@@ -203,7 +202,7 @@ EXAMPLES = r"""
     verifycert: "{{verifycert}}"
     user: "{{user}}"
     password: "{{password}}"
-    serial_no: "{{serial_no}}"
+    metro_r1_array_id: "{{metro_r1_array_id}}"
     env_name: "ansible_metrodr_env"
     srdf_param:
       srdf_state: "Suspend"
@@ -220,7 +219,7 @@ EXAMPLES = r"""
     verifycert: "{{verifycert}}"
     user: "{{user}}"
     password: "{{password}}"
-    serial_no: "{{serial_no}}"
+    metro_r1_array_id: "{{metro_r1_array_id}}"
     env_name: "ansible_metrodr_env"
     remove_r1_dr_rdfg: True
     state: 'absent'
@@ -334,7 +333,7 @@ metrodr_env_details:
 """
 
 from ansible_collections.dellemc.powermax.plugins.module_utils.storage.dell \
-    import dellemc_ansible_powermax_utils as utils
+    import utils
 from ansible.module_utils.basic import AnsibleModule
 
 LOG = utils.get_logger(module_name="metro")
@@ -343,7 +342,7 @@ HAS_PYU4V = utils.has_pyu4v_sdk()
 PYU4V_VERSION_CHECK = utils.pyu4v_version_check()
 
 # Application Type
-APPLICATION_TYPE = 'ansible_v1.7.0'
+APPLICATION_TYPE = 'ansible_v1.8.0'
 
 # DO NOT CHANGE BELOW REPLICATION_MODES SEQUENCE AS ITS USED IN SCRIPT
 # USING INDEX
@@ -378,7 +377,8 @@ class MetroDR(object):
         """ Initialises attributes required for metro DR environment
         operations """
 
-        self.module_params = utils.get_powermax_management_host_parameters()
+        self.module_params = \
+            utils.get_powermax_management_host_parameters(metro_dr=True)
         self.module_params.update(get_metrodr_parameters())
 
         self.module = AnsibleModule(
@@ -407,7 +407,7 @@ class MetroDR(object):
 
         try:
             self.conn = utils.get_U4V_connection(
-                self.module.params, application_type=APPLICATION_TYPE)
+                self.module.params, application_type=APPLICATION_TYPE, metro_dr=True)
             self.metro = self.conn.metro_dr
             self.provisioning = self.conn.provisioning
             self.replication = self.conn.replication
@@ -480,7 +480,7 @@ class MetroDR(object):
         environment """
         LOG.info("Prechecking for create metro DR environment")
 
-        for k in ("metro_serial_no", "dr_serial_no", "replication_mode"):
+        for k in ("metro_r2_array_id", "dr_array_id", "replication_mode"):
             if not self.module.params[k]:
                 self.show_error_exit("Please provide value for: '%s' for "
                                      "creating metro DR environment" % k)
@@ -500,9 +500,9 @@ class MetroDR(object):
             param = {
                 "storage_group_name": self.module.params["sg_name"],
                 "environment_name": self.module.params["env_name"],
-                "metro_r1_array_id": self.module.params["serial_no"],
-                "metro_r2_array_id": self.module.params["metro_serial_no"],
-                "dr_array_id": self.module.params["dr_serial_no"],
+                "metro_r1_array_id": self.module.params["metro_r1_array_id"],
+                "metro_r2_array_id": self.module.params["metro_r2_array_id"],
+                "dr_array_id": self.module.params["dr_array_id"],
                 "dr_replication_mode": self.module.params["replication_mode"],
                 "force_new_metro_r1_dr_rdfg": self.module.params[
                     "new_rdf_group_r1"],
@@ -628,28 +628,28 @@ class MetroDR(object):
             if "Adaptive Copy" in srdf_detail['modes'] or "Asynchronous" in\
                     srdf_detail['modes']:
                 LOG.info("SRDF mode is asynchronous/adaptive_copy")
-                if self.module.params["dr_serial_no"]:
-                    LOG.info("Validating given dr_serial_no")
+                if self.module.params["dr_array_id"]:
+                    LOG.info("Validating given dr_array_id")
                     if self.get_rdf_group(srdf_gr)["remoteSymmetrix"] \
-                            == self.module.params["dr_serial_no"]:
-                        LOG.info("Given dr_serial_no matches with rdfg")
+                            == self.module.params["dr_array_id"]:
+                        LOG.info("Given dr_array_id matches with rdfg")
                         is_srdf_adp_or_asyn = True
                     else:
-                        LOG.info("Given dr_serial_no not matches with rdfg")
+                        LOG.info("Given dr_array_id not matches with rdfg")
                 else:
                     is_srdf_adp_or_asyn = True
             # precheck: 3
             elif "Active" in srdf_detail['modes'] and \
                     not (set(req_metro_states) & set(srdf_detail['states'])):
                 LOG.info("SRDF metro mode is active")
-                if self.module.params["metro_serial_no"]:
-                    LOG.info("Validating given metro_serial_no")
+                if self.module.params["metro_r2_array_id"]:
+                    LOG.info("Validating given metro_r2_array_id")
                     if self.get_rdf_group(srdf_gr)["remoteSymmetrix"] \
-                            == self.module.params["metro_serial_no"]:
-                        LOG.info("Given metro_serial_no matches with rdfg")
+                            == self.module.params["metro_r2_array_id"]:
+                        LOG.info("Given metro_r2_array_id matches with rdfg")
                         is_srdf_active = True
                     else:
-                        LOG.info("Given metro_serial_no not matches with "
+                        LOG.info("Given metro_r2_array_id not matches with "
                                  "rdfg")
                 else:
                     is_srdf_active = True
@@ -974,9 +974,9 @@ def get_metrodr_parameters():
     return dict(
         env_name=dict(required=True, type='str'),
         sg_name=dict(required=False, type='str'),
-        serial_no=dict(required=True, type='str'),
-        metro_serial_no=dict(required=False, type='str'),
-        dr_serial_no=dict(required=False, type='str'),
+        metro_r1_array_id=dict(required=True, type='str'),
+        metro_r2_array_id=dict(required=False, type='str'),
+        dr_array_id=dict(required=False, type='str'),
         replication_mode=dict(required=False, type='str',
                               choices=REPLICATION_MODES),
         wait_for_completion=dict(type='bool', required=False, default=False),

@@ -1,5 +1,5 @@
 #!/usr/bin/python
-# Copyright: (c) 2021, Dell EMC
+# Copyright: (c) 2021, Dell Technologies
 
 # Apache License version 2.0 (see MODULE-LICENSE or http://www.apache.org/licenses/LICENSE-2.0.txt)
 
@@ -24,7 +24,7 @@ description:
   storage pool with maximum free storage.
 
 extends_documentation_fragment:
-  - dellemc.powermax.dellemc_powermax.powermax
+  - dellemc.powermax.powermax
 
 author:
 - Akash Shendge (@shenda1) <ansible.team@dell.com>
@@ -106,13 +106,13 @@ all_pools:
 '''
 
 from ansible_collections.dellemc.powermax.plugins.module_utils.storage.dell \
-    import dellemc_ansible_powermax_utils as utils
+    import utils
 from ansible.module_utils.basic import AnsibleModule
 
 LOG = utils.get_logger('process_storage_pool_dict')
 
 # Application Type
-APPLICATION_TYPE = 'ansible_v1.7.0'
+APPLICATION_TYPE = 'ansible_v1.8.0'
 
 
 class ProcessPoolDict(object):
