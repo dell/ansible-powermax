@@ -1,3 +1,4 @@
+---
 ### REQUIRED
 
 # The namespace of the collection. This can be a company/brand/organization or product namespace under which all
@@ -9,7 +10,7 @@ namespace: dellemc
 name: powermax
 
 # The version of the collection. Must be compatible with semantic versioning
-version: 1.7.0
+version: 1.8.0
 
 # The path to the Markdown (.md) readme file. This path is relative to the root of the collection
 readme: README.md
@@ -27,12 +28,13 @@ authors:
 - Vasudevu Lakhinana <ansible.team@dell.com>
 - Rajendra Indukuri <ansible.team@dell.com>
 - Spandita Panigrahi <ansible.team@dell.com>
+- Meenakshi Dembi <ansible.team@dell.com>
 
 
 ### OPTIONAL but strongly recommended
 
 # A short summary description of the collection
-description: Ansible modules for Dell EMC PowerMax
+description: Ansible modules for PowerMax
 
 # Either a single license or a list of licenses for content inside of a collection. Ansible Galaxy currently only
 # accepts L(SPDX,https://spdx.org/licenses/) licenses. This key is mutually exclusive with 'license_file'
@@ -51,13 +53,13 @@ tags: [storage]
 dependencies: {}
 
 # The URL of the originating SCM repository
-repository: https://github.com/dell/ansible-powermax/tree/1.7.0
+repository: https://github.com/dell/ansible-powermax/tree/1.8.0
 
 # The URL to any online docs
-documentation: https://github.com/dell/ansible-powermax/tree/1.7.0/docs
+documentation: https://github.com/dell/ansible-powermax/tree/1.8.0/docs
 
 # The URL to the homepage of the collection/project
-homepage: https://github.com/dell/ansible-powermax/tree/1.7.0
+homepage: https://github.com/dell/ansible-powermax/tree/1.8.0
 
 # The URL to the collection issue tracker
 issues: https://www.dell.com/community/Automation/bd-p/Automation

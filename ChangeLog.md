@@ -1,4 +1,10 @@
 # ansible-powermax Change Log
+## Version 1.8.0 - released on 28/06/22
+- Enhanced storage group module to support moving volumes to destination storage group.
+- Enhanced volume module to support renaming volumes created without a name.
+- Renamed metro DR module input parameters.
+- Added execution environment manifest file to support building an execution environment with ansible-builder.
+
 ## Version 1.7.0 - released on 25/03/22
 - Added initiator module to get initiator details and rename initiator alias.
 - Added rotating file handler for log files.

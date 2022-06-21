@@ -1,5 +1,5 @@
 #!/usr/bin/python
-# Copyright: (c) 2019-2021, DellEMC
+# Copyright: (c) 2019-2021, Dell Technologies
 
 # Apache License version 2.0 (see MODULE-LICENSE or http://www.apache.org/licenses/LICENSE-2.0.txt)
 
@@ -18,8 +18,8 @@ description:
   set of initiators and host flags, adding and removing initiators to or from
   a host, modifying host flag values, renaming a host, and deleting a host.
 extends_documentation_fragment:
-  - dellemc.powermax.dellemc_powermax.powermax
-  - dellemc.powermax.dellemc_powermax.powermax_serial_no
+  - dellemc.powermax.powermax
+  - dellemc.powermax.powermax.powermax_serial_no
 author:
 - Vasudevu Lakhinana (@unknown) <ansible.team@dell.com>
 - Manisha Agrawal (@agrawm3) <ansible.team@dell.com>
@@ -290,7 +290,7 @@ import re
 import copy
 import logging
 from ansible_collections.dellemc.powermax.plugins.module_utils.storage.dell \
-    import dellemc_ansible_powermax_utils as utils
+    import utils
 from ansible.module_utils.basic import AnsibleModule
 
 LOG = utils.get_logger('host')
@@ -300,7 +300,7 @@ HAS_PYU4V = utils.has_pyu4v_sdk()
 PYU4V_VERSION_CHECK = utils.pyu4v_version_check()
 
 # Application Type
-APPLICATION_TYPE = 'ansible_v1.7.0'
+APPLICATION_TYPE = 'ansible_v1.8.0'
 
 BASE_FLAGS = {'volume_set_addressing': {'enabled': False, 'override': False},
               'disable_q_reset_on_ua': {'enabled': False, 'override': False},

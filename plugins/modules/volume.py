@@ -1,5 +1,5 @@
 #!/usr/bin/python
-# Copyright: (c) 2019-2021, DellEMC
+# Copyright: (c) 2019-2021, Dell Technologies
 
 # Apache License version 2.0 (see MODULE-LICENSE or http://www.apache.org/licenses/LICENSE-2.0.txt)
 
@@ -16,8 +16,8 @@ description:
 - Managing volumes on PowerMax storage system includes creating a volume,
   renaming a volume, expanding a volume, and deleting a volume.
 extends_documentation_fragment:
-  - dellemc.powermax.dellemc_powermax.powermax
-  - dellemc.powermax.dellemc_powermax.powermax_serial_no
+  - dellemc.powermax.powermax
+  - dellemc.powermax.powermax.powermax_serial_no
 author:
 - Vasudevu Lakhinana (@unknown) <ansible.team@dell.com>
 - Akash Shendge (@shenda1) <ansible.team@dell.com>
@@ -236,7 +236,7 @@ volume_details:
 '''
 
 from ansible_collections.dellemc.powermax.plugins.module_utils.storage.dell \
-    import dellemc_ansible_powermax_utils as utils
+    import utils
 from ansible.module_utils.basic import AnsibleModule
 import logging
 
@@ -246,7 +246,7 @@ HAS_PYU4V = utils.has_pyu4v_sdk()
 PYU4V_VERSION_CHECK = utils.pyu4v_version_check()
 
 # Application Type
-APPLICATION_TYPE = 'ansible_v1.7.0'
+APPLICATION_TYPE = 'ansible_v1.8.0'
 
 
 class Volume(object):
@@ -399,6 +399,7 @@ class Volume(object):
     def rename_volume(self, vol_id, vol_new_name):
         """Rename the volume's identifier"""
         try:
+            vol_new_name = vol_new_name.strip()
             volume_sg_list = self.provisioning.get_storage_group_from_volume(
                 vol_id)
             if volume_sg_list is not None:
@@ -869,11 +870,13 @@ class Volume(object):
             if len(new_name.strip()) == 0:
                 self.show_error_exit(msg="Please provide valid volume "
                                          "name.")
-
-            vol_name = vol['volume_identifier']
-            if new_name != vol_name:
-                LOG.info('Changing the name of volume %s to %s',
-                         vol_name, new_name)
+            if 'volume_identifier' in vol:
+                vol_name = vol['volume_identifier']
+                if new_name != vol_name:
+                    LOG.info('Changing the name of volume %s to %s',
+                             vol_name, new_name)
+                    changed = self.rename_volume(vol_id, new_name) or changed
+            else:
                 changed = self.rename_volume(vol_id, new_name) or changed
 
         if state == 'absent' and vol:

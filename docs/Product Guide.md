@@ -1,5 +1,5 @@
 # Ansible Modules for Dell Technologies PowerMax
-## Product Guide 1.7.0
+## Product Guide 1.8.0
 © 2022 Dell Inc. or its subsidiaries. All rights reserved. Dell and other trademarks are trademarks of Dell Inc. or its subsidiaries. Other trademarks may be trademarks of their respective owners.
 
 --------------
@@ -7,115 +7,126 @@
 *   [Metro DR Module](#metro-dr-module)
     *   [Synopsis](#synopsis)
     *   [Parameters](#parameters)
+    *   [Notes](#notes)
     *   [Examples](#examples)
     *   [Return Values](#return-values)
     *   [Authors](#authors)
 *   [Initiator Module](#initiator-module)
     *   [Synopsis](#synopsis-1)
     *   [Parameters](#parameters-1)
-    *   [Notes](#notes)
+    *   [Notes](#notes-1)
     *   [Examples](#examples-1)
     *   [Return Values](#return-values-1)
     *   [Authors](#authors-1)
 *   [Host Group Module](#host-group-module)
     *   [Synopsis](#synopsis-2)
     *   [Parameters](#parameters-2)
-    *   [Notes](#notes-1)
+    *   [Notes](#notes-2)
     *   [Examples](#examples-2)
     *   [Return Values](#return-values-2)
     *   [Authors](#authors-2)
 *   [Host Module](#host-module)
     *   [Synopsis](#synopsis-3)
     *   [Parameters](#parameters-3)
-    *   [Notes](#notes-2)
+    *   [Notes](#notes-3)
     *   [Examples](#examples-3)
     *   [Return Values](#return-values-3)
     *   [Authors](#authors-3)
 *   [Masking View Module](#masking-view-module)
     *   [Synopsis](#synopsis-4)
     *   [Parameters](#parameters-4)
+    *   [Notes](#notes-4)
     *   [Examples](#examples-4)
     *   [Return Values](#return-values-4)
     *   [Authors](#authors-4)
 *   [Snapshot Policy Module](#snapshot-policy-module)
     *   [Synopsis](#synopsis-5)
     *   [Parameters](#parameters-5)
-    *   [Notes](#notes-3)
+    *   [Notes](#notes-5)
     *   [Examples](#examples-5)
     *   [Return Values](#return-values-5)
     *   [Authors](#authors-5)
 *   [Intelligent Volume Placement](#intelligent-volume-placement)
     *   [Synopsis](#synopsis-6)
     *   [Parameters](#parameters-6)
+    *   [Notes](#notes-6)
     *   [Examples](#examples-6)
     *   [Return Values](#return-values-6)
     *   [Authors](#authors-6)
 *   [Snapshot Module](#snapshot-module)
     *   [Synopsis](#synopsis-7)
     *   [Parameters](#parameters-7)
-    *   [Notes](#notes-4)
+    *   [Notes](#notes-7)
     *   [Examples](#examples-7)
     *   [Return Values](#return-values-7)
     *   [Authors](#authors-7)
 *   [Info Module](#info-module)
     *   [Synopsis](#synopsis-8)
     *   [Parameters](#parameters-8)
-    *   [Notes](#notes-5)
+    *   [Notes](#notes-8)
     *   [Examples](#examples-8)
     *   [Return Values](#return-values-8)
     *   [Authors](#authors-8)
 *   [SRDF Module](#srdf-module)
     *   [Synopsis](#synopsis-9)
     *   [Parameters](#parameters-9)
+    *   [Notes](#notes-9)
     *   [Examples](#examples-9)
     *   [Return Values](#return-values-9)
     *   [Authors](#authors-9)
 *   [RDF Group Module](#rdf-group-module)
     *   [Synopsis](#synopsis-10)
     *   [Parameters](#parameters-10)
+    *   [Notes](#notes-10)
     *   [Examples](#examples-10)
     *   [Return Values](#return-values-10)
     *   [Authors](#authors-10)
 *   [Port Module](#port-module)
     *   [Synopsis](#synopsis-11)
     *   [Parameters](#parameters-11)
+    *   [Notes](#notes-11)
     *   [Examples](#examples-11)
     *   [Return Values](#return-values-11)
     *   [Authors](#authors-11)
 *   [Port Group Module](#port-group-module)
     *   [Synopsis](#synopsis-12)
     *   [Parameters](#parameters-12)
+    *   [Notes](#notes-12)
     *   [Examples](#examples-12)
     *   [Return Values](#return-values-12)
     *   [Authors](#authors-12)
 *   [Storage Pool Module](#storage-pool-module)
     *   [Synopsis](#synopsis-13)
     *   [Parameters](#parameters-13)
+    *   [Notes](#notes-13)
     *   [Examples](#examples-13)
     *   [Return Values](#return-values-13)
     *   [Authors](#authors-13)
 *   [Job Module](#job-module)
     *   [Synopsis](#synopsis-14)
     *   [Parameters](#parameters-14)
+    *   [Notes](#notes-14)
     *   [Examples](#examples-14)
     *   [Return Values](#return-values-14)
     *   [Authors](#authors-14)
 *   [Storage Pool Dict Module](#storage-pool-dict-module)
     *   [Synopsis](#synopsis-15)
     *   [Parameters](#parameters-15)
+    *   [Notes](#notes-15)
     *   [Examples](#examples-15)
     *   [Return Values](#return-values-15)
     *   [Authors](#authors-15)
 *   [Volume Module](#volume-module)
     *   [Synopsis](#synopsis-16)
     *   [Parameters](#parameters-16)
-    *   [Notes](#notes-6)
+    *   [Notes](#notes-16)
     *   [Examples](#examples-16)
     *   [Return Values](#return-values-16)
     *   [Authors](#authors-16)
 *   [Storage Group Module](#storage-group-module)
     *   [Synopsis](#synopsis-17)
     *   [Parameters](#parameters-17)
+    *   [Notes](#notes-17)
     *   [Examples](#examples-17)
     *   [Return Values](#return-values-17)
     *   [Authors](#authors-17)
@@ -130,7 +141,7 @@ Manage metro DR environment on PowerMax/VMAX Storage System
  Managing a metro DR environment on a PowerMax storage system includes getting details of any specific metro DR environment, creating a metro DR environment, converting an existing SG into a metro DR environment, modifying metro DR environment attributes and deleting a metro DR environment.
 
 ### Parameters
-                                                                                                                                                                                                                                                                                                                                                                                                                                        
+                                                                                                                                                                                                                                                                                                                                                                                                                                            
 <table>
     <tr>
         <th colspan=2>Parameter</th>
@@ -157,7 +168,7 @@ Manage metro DR environment on PowerMax/VMAX Storage System
             <td> <br> Name of the storage group.  <br> Storage group will be present on the primary metro array and a storage group with the same name will be created on remote and DR arrays in a create operation.  <br> Storage group name is required in 'create metro DR environment' and 'convert SG into metro DR environment' operations. </td>
         </tr>
                     <tr>
-            <td colspan=2 > serial_no</td>
+            <td colspan=2 > metro_r1_array_id</td>
             <td> str  </td>
             <td> True </td>
             <td></td>
@@ -165,7 +176,7 @@ Manage metro DR environment on PowerMax/VMAX Storage System
             <td> <br> Serial number of the primary metro array. </td>
         </tr>
                     <tr>
-            <td colspan=2 > metro_serial_no</td>
+            <td colspan=2 > metro_r2_array_id</td>
             <td> str  </td>
             <td></td>
             <td></td>
@@ -173,7 +184,7 @@ Manage metro DR environment on PowerMax/VMAX Storage System
             <td> <br> Serial number of the remote metro array.  <br> It is required only in create and convert operations. </td>
         </tr>
                     <tr>
-            <td colspan=2 > dr_serial_no</td>
+            <td colspan=2 > dr_array_id</td>
             <td> str  </td>
             <td></td>
             <td></td>
@@ -312,8 +323,10 @@ Manage metro DR environment on PowerMax/VMAX Storage System
             <td></td>
             <td> <br> The password of the Unisphere host. </td>
         </tr>
-                                            </table>
+                                                    </table>
 
+### Notes
+* The modules present in this collection named as 'dellemc.powermax' are built to support the Dell PowerMax storage platform.
 
 ### Examples
 ```
@@ -324,7 +337,7 @@ Manage metro DR environment on PowerMax/VMAX Storage System
     verifycert: "{{verifycert}}"
     user: "{{user}}"
     password: "{{password}}"
-    serial_no: "{{serial_no}}"
+    metro_r1_array_id: "{{metro_r1_array_id}}"
     env_name: "ansible_metrodr_env"
     state: "present"
 
@@ -337,9 +350,9 @@ Manage metro DR environment on PowerMax/VMAX Storage System
     password: "{{password}}"
     sg_name: "ansible_sg"
     env_name: "ansible_metrodr_env"
-    serial_no: "{{serial_no}}"
-    metro_serial_no: "{{metro_serial_no}}"
-    dr_serial_no: "{{dr_serial_no}}"
+    metro_r1_array_id: "{{metro_r1_array_id}}"
+    metro_r2_array_id: "{{metro_r2_array_id}}"
+    dr_array_id: "{{dr_array_id}}"
     replication_mode: "Asynchronous"
     wait_for_completion: False
     state: "present"
@@ -353,9 +366,9 @@ Manage metro DR environment on PowerMax/VMAX Storage System
     password: "{{password}}"
     sg_name: "ansible_sg"
     env_name: "ansible_metrodr_env"
-    serial_no: "{{serial_no}}"
-    metro_serial_no: "{{metro_serial_no}}"
-    dr_serial_no: "{{dr_serial_no}}"
+    metro_r1_array_id: "{{metro_r1_array_id}}"
+    metro_r2_array_id: "{{metro_r2_array_id}}"
+    dr_array_id: "{{dr_array_id}}"
     replication_mode: "Asynchronous"
     new_rdf_group_r1: True
     new_rdf_group_r2: True
@@ -369,7 +382,7 @@ Manage metro DR environment on PowerMax/VMAX Storage System
     verifycert: "{{verifycert}}"
     user: "{{user}}"
     password: "{{password}}"
-    serial_no: "{{serial_no}}"
+    metro_r1_array_id: "{{metro_r1_array_id}}"
     env_name: "ansible_metrodr_env"
     srdf_param:
       srdf_state: "Suspend"
@@ -386,14 +399,14 @@ Manage metro DR environment on PowerMax/VMAX Storage System
     verifycert: "{{verifycert}}"
     user: "{{user}}"
     password: "{{password}}"
-    serial_no: "{{serial_no}}"
+    metro_r1_array_id: "{{metro_r1_array_id}}"
     env_name: "ansible_metrodr_env"
     remove_r1_dr_rdfg: True
     state: 'absent'
 ```
 
 ### Return Values
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                
 <table>
     <tr>
         <th colspan=2>Key</th>
@@ -401,7 +414,7 @@ Manage metro DR environment on PowerMax/VMAX Storage System
         <th>Returned</th>
         <th width="100%">Description</th>
     </tr>
-                                                                                    <tr>
+                                                                                            <tr>
             <td colspan=2 > Job_details </td>
             <td>  dict </td>
             <td> When job exist. </td>
@@ -687,7 +700,7 @@ Manage initiators on PowerMax/VMAX Storage System
                 <td></td>
                 <td></td>
                 <td></td>
-                <td>  <br> The new port name to rename the initiator alias.  </td>
+                <td>  <br> The new port name to rename the initiator alias. </td>
             </tr>
                             <tr>
             <td colspan=2 > state</td>
@@ -749,6 +762,7 @@ Manage initiators on PowerMax/VMAX Storage System
 
 ### Notes
 * initiator_id and alias are mutually exclusive parameters.
+* The modules present in this collection named as 'dellemc.powermax' are built to support the Dell PowerMax storage platform.
 
 ### Examples
 ```
@@ -1008,6 +1022,7 @@ Manage a host group (cascaded initiator group) on a PowerMax/VMAX storage system
 * host_flags and host_type are mutually exclusive parameters.
 * Hostgroups with 'default' host_type will have 'default' hosts.
 * Hostgroups with 'hpux' host_type will have 'hpux' hosts.
+* The modules present in this collection named as 'dellemc.powermax' are built to support the Dell PowerMax storage platform.
 
 ### Examples
 ```
@@ -1399,6 +1414,7 @@ Manage host (initiator group) on PowerMax/VMAX Storage System
 
 ### Notes
 * host_flags and host_type are mutually exclusive parameters.
+* The modules present in this collection named as 'dellemc.powermax' are built to support the Dell PowerMax storage platform.
 
 ### Examples
 ```
@@ -1682,7 +1698,7 @@ Managing masking views on PowerMax/VMAX Storage System.
  For renaming a masking view, the 'new_mv_name' is required. After a masking view is created, only its name can be changed. No underlying entity (portgroup, storagegroup, host or hostgroup) can be changed on the masking view.
 
 ### Parameters
-                                                                                                                                                                                                                                                                                                                
+                                                                                                                                                                                                                                                                                                                    
 <table>
     <tr>
         <th colspan=1>Parameter</th>
@@ -1796,8 +1812,10 @@ Managing masking views on PowerMax/VMAX Storage System.
             <td></td>
             <td> <br> The serial number of the PowerMax/VMAX array. It is a required parameter for all array-specific operations except for getting a list of arrays in the Gatherfacts module. </td>
         </tr>
-                                            </table>
+                                                    </table>
 
+### Notes
+* The modules present in this collection named as 'dellemc.powermax' are built to support the Dell PowerMax storage platform.
 
 ### Examples
 ```
@@ -1854,7 +1872,7 @@ Managing masking views on PowerMax/VMAX Storage System.
 ```
 
 ### Return Values
-                                                                                                                                                                                                                                                                                
+                                                                                                                                                                                                                                                                                    
 <table>
     <tr>
         <th colspan=2>Key</th>
@@ -1862,7 +1880,7 @@ Managing masking views on PowerMax/VMAX Storage System.
         <th>Returned</th>
         <th width="100%">Description</th>
     </tr>
-                                                                                    <tr>
+                                                                                            <tr>
             <td colspan=2 > changed </td>
             <td>  bool </td>
             <td> always </td>
@@ -1975,7 +1993,7 @@ Manage snapshot policy on PowerMax/VMAX Storage System
             <td></td>
             <td></td>
             <td> <ul> <li>True</li>  <li>False</li> </ul></td>
-            <td> <br> Secure snapshots may only be terminated after they expire or by Dell EMC support.  <br> If not specified, default value is False. </td>
+            <td> <br> Secure snapshots may only be terminated after they expire or by Dell Technologies support.  <br> If not specified, default value is False. </td>
         </tr>
                     <tr>
             <td colspan=1 > snapshot_count</td>
@@ -2095,6 +2113,7 @@ Manage snapshot policy on PowerMax/VMAX Storage System
 * The max number of snapshot policies on an array is limited to 20.
 * At most four snapshot policies can be associated with a storage group.
 * compliance_count_critical <= compliance_count_warning < total snapshot_count for the policy.
+* The modules present in this collection named as 'dellemc.powermax' are built to support the Dell PowerMax storage platform.
 
 ### Examples
 ```
@@ -2291,7 +2310,7 @@ Manage snapshot policy on PowerMax/VMAX Storage System
                 <td colspan=1 > secure </td>
                 <td> bool </td>
                 <td>success</td>
-                <td> True value indicates that the secure snapshots may only be terminated after they expire or by Dell EMC support. </td>
+                <td> True value indicates that the secure snapshots may only be terminated after they expire or by Dell Technologies support. </td>
             </tr>
                                 <tr>
                 <td class="elbow-placeholder">&nbsp;</td>
@@ -2356,7 +2375,7 @@ This role provides basic support for Intelligent volume placement for PowerMax.
  The role is intended for selecting the best suitable array and storage pool intelligently based on certain criteria accepted as user input. It scans through all available PowerMax arrays of the given Unisphere, to find available capacity, current load, service level etc. If the capacity is available in multiple arrays, it will prioritize the storage pool which is least used and returns the pool as 'assigned_pool'.
 
 ### Parameters
-                                                                                                                                                                                                                                
+                                                                                                                                                                                                                                    
 <table>
     <tr>
         <th colspan=1>Parameter</th>
@@ -2438,8 +2457,10 @@ This role provides basic support for Intelligent volume placement for PowerMax.
             <td></td>
             <td> <br> The password of the Unisphere host. </td>
         </tr>
-                                            </table>
+                                                    </table>
 
+### Notes
+* The modules present in this collection named as 'dellemc.powermax' are built to support the Dell PowerMax storage platform.
 
 ### Examples
 ```
@@ -2478,7 +2499,7 @@ This role provides basic support for Intelligent volume placement for PowerMax.
 ```
 
 ### Return Values
-                                                                                                                                                                                                
+                                                                                                                                                                                                    
 <table>
     <tr>
         <th colspan=2>Key</th>
@@ -2486,7 +2507,7 @@ This role provides basic support for Intelligent volume placement for PowerMax.
         <th>Returned</th>
         <th width="100%">Description</th>
     </tr>
-                                                                                    <tr>
+                                                                                            <tr>
             <td colspan=2 > assigned_pool </td>
             <td>  complex </td>
             <td> When exists else returns "NOT_FOUND". </td>
@@ -2678,6 +2699,7 @@ Manage Snapshots on PowerMax/VMAX Storage System
 * Paramters 'generation' and 'snapshot_id' are mutually exclusive.
 * If 'generation' or 'snapshot_id' is not provided then a list of generation versus snapshot_id is returned.
 * Use of 'snapshot_id' over 'generation' is preferably recommended for PowerMax microcode version 5978.669.669 and onwards.
+* The modules present in this collection named as 'dellemc.powermax' are built to support the Dell PowerMax storage platform.
 
 ### Examples
 ```
@@ -3147,6 +3169,7 @@ Gathers information about PowerMax/VMAX Storage entities
 * mv - host_or_host_group_name, port_group_name, protocol_endpoint_masking_view, storage_group_name.
 * alert - acknowledged, array, created_date, created_date_milliseconds, description, object, object_type, severity, state, type.
 * initiators - alias, directorId, initiator_hba, in_a_host, iscsi, logged_in, num_of_host_groups, num_of_masking_views, num_of_powerpath_hosts, num_of_vols, on_fabric, port_flag_overrides, portId, powerPathHostId.
+* The modules present in this collection named as 'dellemc.powermax' are built to support the Dell PowerMax storage platform.
 
 ### Examples
 ```
@@ -3838,7 +3861,7 @@ Manage SRDF pair on PowerMax/VMAX Storage System
  Managing SRDF link on a PowerMax storage system includes creating an SRDF pair for a storage group, modifying the SRDF mode, modifying the SRDF state of an existing SRDF pair, and deleting an SRDF pair. All create and modify calls are asynchronous by default.
 
 ### Parameters
-                                                                                                                                                                                                                                                                                                                                                                            
+                                                                                                                                                                                                                                                                                                                                                                                
 <table>
     <tr>
         <th colspan=1>Parameter</th>
@@ -3976,8 +3999,10 @@ Manage SRDF pair on PowerMax/VMAX Storage System
             <td></td>
             <td> <br> The password of the Unisphere host. </td>
         </tr>
-                                            </table>
+                                                    </table>
 
+### Notes
+* The modules present in this collection named as 'dellemc.powermax' are built to support the Dell PowerMax storage platform.
 
 ### Examples
 ```
@@ -4138,7 +4163,7 @@ Manage SRDF pair on PowerMax/VMAX Storage System
 ```
 
 ### Return Values
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    
 <table>
     <tr>
         <th colspan=2>Key</th>
@@ -4146,7 +4171,7 @@ Manage SRDF pair on PowerMax/VMAX Storage System
         <th>Returned</th>
         <th width="100%">Description</th>
     </tr>
-                                                                                    <tr>
+                                                                                            <tr>
             <td colspan=2 > Job_details </td>
             <td>  list </td>
             <td> When job exist. </td>
@@ -4362,7 +4387,7 @@ Gets the detail information about RDF Groups of a PowerMax/VMAX storage system
  Lists the volumes of an RDF Group from a specified PowerMax/VMAX storage system.
 
 ### Parameters
-                                                                                                                                                                                        
+                                                                                                                                                                                            
 <table>
     <tr>
         <th colspan=1>Parameter</th>
@@ -4428,8 +4453,10 @@ Gets the detail information about RDF Groups of a PowerMax/VMAX storage system
             <td></td>
             <td> <br> The serial number of the PowerMax/VMAX array. It is a required parameter for all array-specific operations except for getting a list of arrays in the Gatherfacts module. </td>
         </tr>
-                                            </table>
+                                                    </table>
 
+### Notes
+* The modules present in this collection named as 'dellemc.powermax' are built to support the Dell PowerMax storage platform.
 
 ### Examples
 ```
@@ -4445,7 +4472,7 @@ Gets the detail information about RDF Groups of a PowerMax/VMAX storage system
 ```
 
 ### Return Values
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                
 <table>
     <tr>
         <th colspan=4>Key</th>
@@ -4453,7 +4480,7 @@ Gets the detail information about RDF Groups of a PowerMax/VMAX storage system
         <th>Returned</th>
         <th width="100%">Description</th>
     </tr>
-                                                                                    <tr>
+                                                                                            <tr>
             <td colspan=4 > RDFGroupDetails </td>
             <td>  list </td>
             <td> When the RDF group exist. </td>
@@ -4913,7 +4940,7 @@ Manage ports on PowerMax/VMAX Storage System
  Managing ports on PowerMax storage system includes getting details of a port.
 
 ### Parameters
-                                                                                                                                                                                        
+                                                                                                                                                                                            
 <table>
     <tr>
         <th colspan=1>Parameter</th>
@@ -4979,8 +5006,10 @@ Manage ports on PowerMax/VMAX Storage System
             <td></td>
             <td> <br> The serial number of the PowerMax/VMAX array. It is a required parameter for all array-specific operations except for getting a list of arrays in the Gatherfacts module. </td>
         </tr>
-                                            </table>
+                                                    </table>
 
+### Notes
+* The modules present in this collection named as 'dellemc.powermax' are built to support the Dell PowerMax storage platform.
 
 ### Examples
 ```
@@ -4999,7 +5028,7 @@ Manage ports on PowerMax/VMAX Storage System
 ```
 
 ### Return Values
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            
 <table>
     <tr>
         <th colspan=4>Key</th>
@@ -5007,7 +5036,7 @@ Manage ports on PowerMax/VMAX Storage System
         <th>Returned</th>
         <th width="100%">Description</th>
     </tr>
-                                                                                    <tr>
+                                                                                            <tr>
             <td colspan=4 > changed </td>
             <td>  bool </td>
             <td> always </td>
@@ -5330,7 +5359,7 @@ Manage port groups on PowerMax/VMAX Storage System
  Managing port groups on a PowerMax storage system includes creating a port group with a set of ports, adding or removing single or multiple ports to or from the port group, renaming the port group and deleting the port group.
 
 ### Parameters
-                                                                                                                                                                                                                                                                        
+                                                                                                                                                                                                                                                                            
 <table>
     <tr>
         <th colspan=1>Parameter</th>
@@ -5428,8 +5457,10 @@ Manage port groups on PowerMax/VMAX Storage System
             <td></td>
             <td> <br> The serial number of the PowerMax/VMAX array. It is a required parameter for all array-specific operations except for getting a list of arrays in the Gatherfacts module. </td>
         </tr>
-                                            </table>
+                                                    </table>
 
+### Notes
+* The modules present in this collection named as 'dellemc.powermax' are built to support the Dell PowerMax storage platform.
 
 ### Examples
 ```
@@ -5520,7 +5551,7 @@ Manage port groups on PowerMax/VMAX Storage System
 ```
 
 ### Return Values
-                                                                                                                                                                                                                                                                                                                                                                                
+                                                                                                                                                                                                                                                                                                                                                                                    
 <table>
     <tr>
         <th colspan=3>Key</th>
@@ -5528,7 +5559,7 @@ Manage port groups on PowerMax/VMAX Storage System
         <th>Returned</th>
         <th width="100%">Description</th>
     </tr>
-                                                                                    <tr>
+                                                                                            <tr>
             <td colspan=3 > changed </td>
             <td>  bool </td>
             <td> always </td>
@@ -5607,7 +5638,7 @@ Manage storage pools on PowerMax/VMAX storage system
  Managing storage pools on PowerMax storage system includes getting details of storage pools.
 
 ### Parameters
-                                                                                                                                                                                                            
+                                                                                                                                                                                                                
 <table>
     <tr>
         <th colspan=1>Parameter</th>
@@ -5681,8 +5712,10 @@ Manage storage pools on PowerMax/VMAX storage system
             <td></td>
             <td> <br> The serial number of the PowerMax/VMAX array. It is a required parameter for all array-specific operations except for getting a list of arrays in the Gatherfacts module. </td>
         </tr>
-                                            </table>
+                                                    </table>
 
+### Notes
+* The modules present in this collection named as 'dellemc.powermax' are built to support the Dell PowerMax storage platform.
 
 ### Examples
 ```
@@ -5699,7 +5732,7 @@ Manage storage pools on PowerMax/VMAX storage system
 ```
 
 ### Return Values
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                
 <table>
     <tr>
         <th colspan=4>Key</th>
@@ -5707,7 +5740,7 @@ Manage storage pools on PowerMax/VMAX storage system
         <th>Returned</th>
         <th width="100%">Description</th>
     </tr>
-                                                                                    <tr>
+                                                                                            <tr>
             <td colspan=4 > changed </td>
             <td>  bool </td>
             <td> always </td>
@@ -5808,7 +5841,7 @@ Gets the detail information about a Job of a PowerMax/VMAX storage system
  The details listed are of an asynchronous task.
 
 ### Parameters
-                                                                                                                                                                    
+                                                                                                                                                                        
 <table>
     <tr>
         <th colspan=1>Parameter</th>
@@ -5866,8 +5899,10 @@ Gets the detail information about a Job of a PowerMax/VMAX storage system
             <td></td>
             <td> <br> The password of the Unisphere host. </td>
         </tr>
-                                            </table>
+                                                    </table>
 
+### Notes
+* The modules present in this collection named as 'dellemc.powermax' are built to support the Dell PowerMax storage platform.
 
 ### Examples
 ```
@@ -5882,7 +5917,7 @@ Gets the detail information about a Job of a PowerMax/VMAX storage system
 ```
 
 ### Return Values
-                                                                                                                                                                                                                                                                                                                                            
+                                                                                                                                                                                                                                                                                                                                                
 <table>
     <tr>
         <th colspan=2>Key</th>
@@ -5890,7 +5925,7 @@ Gets the detail information about a Job of a PowerMax/VMAX storage system
         <th>Returned</th>
         <th width="100%">Description</th>
     </tr>
-                                                                                    <tr>
+                                                                                            <tr>
             <td colspan=2 > Job_details </td>
             <td>  dict </td>
             <td> When job exist. </td>
@@ -5986,7 +6021,7 @@ Process storage pools on PowerMax/VMAX Storage System
  Process storage pools on PowerMax/VMAX storage system to find out the storage pool with maximum free storage.
 
 ### Parameters
-                                                                                                                                                                                                                                
+                                                                                                                                                                                                                                    
 <table>
     <tr>
         <th colspan=1>Parameter</th>
@@ -6068,8 +6103,10 @@ Process storage pools on PowerMax/VMAX Storage System
             <td></td>
             <td> <br> The password of the Unisphere host. </td>
         </tr>
-                                            </table>
+                                                    </table>
 
+### Notes
+* The modules present in this collection named as 'dellemc.powermax' are built to support the Dell PowerMax storage platform.
 
 ### Examples
 ```
@@ -6087,7 +6124,7 @@ Process storage pools on PowerMax/VMAX Storage System
 ```
 
 ### Return Values
-                                                                                                                                                                                                                                        
+                                                                                                                                                                                                                                            
 <table>
     <tr>
         <th colspan=2>Key</th>
@@ -6095,7 +6132,7 @@ Process storage pools on PowerMax/VMAX Storage System
         <th>Returned</th>
         <th width="100%">Description</th>
     </tr>
-                                                                                    <tr>
+                                                                                            <tr>
             <td colspan=2 > all_pools </td>
             <td>  list </td>
             <td> when pool exists </td>
@@ -6291,6 +6328,7 @@ Manage volumes on PowerMax Storage System
 * vol_id is required to rename/delete a volume.
 * vol_name, sg_name and new_sg_name is required to move volumes between storage groups.
 * Deletion of volume will fail if the storage group is part of a masking view.
+* The modules present in this collection named as 'dellemc.powermax' are built to support the Dell PowerMax storage platform.
 
 ### Examples
 ```
@@ -6568,13 +6606,13 @@ Manage volumes on PowerMax Storage System
 --------------------------------
 # Storage Group Module
 
-Manage storage groups on PowerMax/VMAX Storage System
+Manage storage groups on PowerMax or VMAX Storage System
 
 ### Synopsis
- Managing storage groups on a PowerMax storage system includes listing the volumes of a storage group, creating a new storage group, deleting an existing storage group, adding existing volumes to an existing storage group, removing existing volumes from an existing storage group, creating new volumes in an existing storage group, modifying existing storage group attributes, adding child storage groups inside an existing storage group (parent), and removing a child storage group from an existing parent storage group.
+ Managing storage groups on a PowerMax storage system includes listing the volumes of a storage group, creating a new storage group, deleting an existing storage group, adding existing volumes to an existing storage group, removing existing volumes from an existing storage group, creating new volumes in an existing storage group, modifying existing storage group attributes, adding child storage groups inside an existing storage group (parent), moving volumes between storage groups and removing a child storage group from an existing parent storage group.
 
 ### Parameters
-                                                                                                                                                                                                                                                                                                                                                                                                                    
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                
 <table>
     <tr>
         <th colspan=1>Parameter</th>
@@ -6614,7 +6652,7 @@ Manage storage groups on PowerMax/VMAX Storage System
             <td></td>
             <td></td>
             <td></td>
-            <td> <br> compression on storage group.  <br> Compression parameter is ignored if service_level is not specified.  <br> Default is true. </td>
+            <td> <br> Compression on storage group.  <br> Compression parameter is ignored if service_level is not specified.  <br> Default is true. </td>
         </tr>
                     <tr>
             <td colspan=1 > volumes</td>
@@ -6657,12 +6695,28 @@ Manage storage groups on PowerMax/VMAX Storage System
             <td> <br> The new name of the storage group. </td>
         </tr>
                     <tr>
+            <td colspan=1 > target_sg_name</td>
+            <td> str  </td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td> <br> The destination SG name to move the volumes to. </td>
+        </tr>
+                    <tr>
+            <td colspan=1 > force</td>
+            <td> bool  </td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td> <br> This flag is to be set to True while moving volumes to target SG if volume is in a masking view. </td>
+        </tr>
+                    <tr>
             <td colspan=1 > snapshot_policies</td>
             <td> list   <br> elements: str </td>
             <td></td>
             <td></td>
             <td></td>
-            <td> <br> List of snapshot policy(s). </td>
+            <td> <br> List of snapshot policies. </td>
         </tr>
                     <tr>
             <td colspan=1 > snapshot_policy_state</td>
@@ -6728,12 +6782,14 @@ Manage storage groups on PowerMax/VMAX Storage System
             <td></td>
             <td> <br> The serial number of the PowerMax/VMAX array. It is a required parameter for all array-specific operations except for getting a list of arrays in the Gatherfacts module. </td>
         </tr>
-                                            </table>
+                                                    </table>
 
+### Notes
+* The modules present in this collection named as 'dellemc.powermax' are built to support the Dell PowerMax storage platform.
 
 ### Examples
 ```
-- name: Get storage group details including volumes
+- name: Get Storage Group details including volumes
   dellemc.powermax.storagegroup:
     unispherehost: "{{unispherehost}}"
     universion: "{{universion}}"
@@ -6744,7 +6800,7 @@ Manage storage groups on PowerMax/VMAX Storage System
     sg_name: "ansible_sg"
     state: "present"
 
-- name: Create empty storage group
+- name: Create empty Storage Group
   dellemc.powermax.storagegroup:
     unispherehost: "{{unispherehost}}"
     universion: "{{universion}}"
@@ -6758,7 +6814,7 @@ Manage storage groups on PowerMax/VMAX Storage System
     compression: True
     state: "present"
 
-- name: Delete the storage Group
+- name: Delete the Storage Group
   dellemc.powermax.storagegroup:
     unispherehost: "{{unispherehost}}"
     universion: "{{universion}}"
@@ -6769,7 +6825,7 @@ Manage storage groups on PowerMax/VMAX Storage System
     sg_name: "foo"
     state: "absent"
 
-- name: Adding existing volume(s) to existing SG
+- name: Adding existing volumes to existing SG
   dellemc.powermax.storagegroup:
     unispherehost: "{{unispherehost}}"
     universion: "{{universion}}"
@@ -6804,7 +6860,7 @@ Manage storage groups on PowerMax/VMAX Storage System
       cap_unit: "GB"
     vol_state: "present-in-group"
 
-- name: Remove volume(s) from existing SG
+- name: Remove volumes from existing SG
   dellemc.powermax.storagegroup:
     unispherehost: "{{unispherehost}}"
     universion: "{{universion}}"
@@ -6813,6 +6869,24 @@ Manage storage groups on PowerMax/VMAX Storage System
     password: "{{password}}"
     serial_no: "{{serial_no}}"
     sg_name: "foo"
+    state: "present"
+    volumes:
+    - vol_id: "00028"
+    - vol_id: "00018"
+    - vol_name: "ansible-vol"
+    vol_state: "absent-in-group"
+
+- name: Move volumes to target SG
+  dellemc.powermax.storagegroup:
+    unispherehost: "{{unispherehost}}"
+    universion: "{{universion}}"
+    verifycert: "{{verifycert}}"
+    user: "{{user}}"
+    password: "{{password}}"
+    serial_no: "{{serial_no}}"
+    sg_name: "foo"
+    target_sg_name: "foo_sg"
+    force: True
     state: "present"
     volumes:
     - vol_id: "00028"
@@ -6862,7 +6936,7 @@ Manage storage groups on PowerMax/VMAX Storage System
     new_sg_name: "ansible_sg_renamed"
     state: "present"
 
-- name: Create a storage group with snapshot policies
+- name: Create a Storage Group with snapshot policies
   dellemc.powermax.storagegroup:
     unispherehost: "{{unispherehost}}"
     universion: "{{universion}}"
@@ -6880,7 +6954,7 @@ Manage storage groups on PowerMax/VMAX Storage System
     snapshot_policy_state: "present-in-group"
     state: "present"
 
-- name: Add snapshot policy to a storage group
+- name: Add snapshot policy to a Storage Group
   dellemc.powermax.storagegroup:
     unispherehost: "{{unispherehost}}"
     universion: "{{universion}}"
@@ -6894,7 +6968,7 @@ Manage storage groups on PowerMax/VMAX Storage System
     snapshot_policy_state: "present-in-group"
     state: "present"
 
-- name: Remove snapshot policy from a storage group
+- name: Remove snapshot policy from a Storage Group
   dellemc.powermax.storagegroup:
     unispherehost: "{{unispherehost}}"
     universion: "{{universion}}"
@@ -6910,7 +6984,7 @@ Manage storage groups on PowerMax/VMAX Storage System
 ```
 
 ### Return Values
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        
 <table>
     <tr>
         <th colspan=3>Key</th>
@@ -6918,29 +6992,29 @@ Manage storage groups on PowerMax/VMAX Storage System
         <th>Returned</th>
         <th width="100%">Description</th>
     </tr>
-                                                                                    <tr>
+                                                                                            <tr>
             <td colspan=3 > add_child_sg </td>
             <td>  bool </td>
             <td> When value exists. </td>
-            <td> Sets to true when a child SG is added. </td>
+            <td> Sets to True when a child SG is added. </td>
         </tr>
                     <tr>
             <td colspan=3 > add_new_vols_to_sg </td>
             <td>  bool </td>
             <td> When value exists. </td>
-            <td> Sets to true when new volumes are added to the SG. </td>
+            <td> Sets to True when new volumes are added to the SG. </td>
         </tr>
                     <tr>
             <td colspan=3 > add_snapshot_policy_to_sg </td>
             <td>  bool </td>
             <td> When value exists. </td>
-            <td> Sets to true when snapshot policy(s) is added to SG. </td>
+            <td> Sets to True when snapshot policy is added to SG. </td>
         </tr>
                     <tr>
             <td colspan=3 > add_vols_to_sg </td>
             <td>  bool </td>
             <td> When value exists. </td>
-            <td> Sets to true when existing volumes are added to the SG. </td>
+            <td> Sets to True when existing volumes are added to the SG. </td>
         </tr>
                     <tr>
             <td colspan=3 > added_vols_details </td>
@@ -6958,37 +7032,37 @@ Manage storage groups on PowerMax/VMAX Storage System
             <td colspan=3 > create_sg </td>
             <td>  bool </td>
             <td> When value exists. </td>
-            <td> Sets to true when a new SG is created. </td>
+            <td> Sets to True when a new SG is created. </td>
         </tr>
                     <tr>
             <td colspan=3 > delete_sg </td>
             <td>  bool </td>
             <td> When value exists. </td>
-            <td> Sets to true when an SG is deleted. </td>
+            <td> Sets to True when an SG is deleted. </td>
         </tr>
                     <tr>
             <td colspan=3 > modify_sg </td>
             <td>  bool </td>
             <td> When value exists. </td>
-            <td> Sets to true when an SG is modified. </td>
+            <td> Sets to True when an SG is modified. </td>
         </tr>
                     <tr>
             <td colspan=3 > remove_child_sg </td>
             <td>  bool </td>
             <td> When value exists. </td>
-            <td> Sets to true when a child SG is removed. </td>
+            <td> Sets to True when a child SG is removed. </td>
         </tr>
                     <tr>
             <td colspan=3 > remove_snapshot_policy_to_sg </td>
             <td>  bool </td>
             <td> When value exists. </td>
-            <td> Sets to false when snapshot policy(s) is removed from SG. </td>
+            <td> Sets to false when snapshot policy is removed from SG. </td>
         </tr>
                     <tr>
             <td colspan=3 > remove_vols_from_sg </td>
             <td>  bool </td>
             <td> When value exists. </td>
-            <td> Sets to true when volumes are removed. </td>
+            <td> Sets to True when volumes are removed. </td>
         </tr>
                     <tr>
             <td colspan=3 > removed_vols_details </td>
@@ -7000,12 +7074,12 @@ Manage storage groups on PowerMax/VMAX Storage System
             <td colspan=3 > rename_sg </td>
             <td>  bool </td>
             <td> When value exists. </td>
-            <td> Sets to true when an SG is renamed. </td>
+            <td> Sets to True when an SG is renamed. </td>
         </tr>
                     <tr>
             <td colspan=3 > snapshot_policy_compliance_details </td>
             <td>  complex </td>
-            <td> When snapshot policy associated.. </td>
+            <td> When snapshot policy associated. </td>
             <td> The compliance status of this storage group. </td>
         </tr>
                             <tr>
@@ -7013,14 +7087,14 @@ Manage storage groups on PowerMax/VMAX Storage System
                 <td colspan=2 > compliance </td>
                 <td> str </td>
                 <td>success</td>
-                <td> Compliance status </td>
+                <td> Compliance status. </td>
             </tr>
                                 <tr>
                 <td class="elbow-placeholder">&nbsp;</td>
                 <td colspan=2 > sl_compliance </td>
                 <td> complex </td>
                 <td>success</td>
-                <td> Compliance details </td>
+                <td> Compliance details. </td>
             </tr>
                                          <tr>
                     <td class="elbow-placeholder">&nbsp;</td>
@@ -7028,7 +7102,7 @@ Manage storage groups on PowerMax/VMAX Storage System
                     <td colspan=1 > compliance </td>
                     <td> str </td>
                     <td>success</td>
-                    <td> Compliance status </td>
+                    <td> Compliance status. </td>
                 </tr>
                                              <tr>
                     <td class="elbow-placeholder">&nbsp;</td>
@@ -7036,21 +7110,21 @@ Manage storage groups on PowerMax/VMAX Storage System
                     <td colspan=1 > sl_name </td>
                     <td> str </td>
                     <td>success</td>
-                    <td> Name of the snapshot policy </td>
+                    <td> Name of the snapshot policy. </td>
                 </tr>
                                                             <tr>
                 <td class="elbow-placeholder">&nbsp;</td>
                 <td colspan=2 > sl_count </td>
                 <td> int </td>
                 <td>success</td>
-                <td> Number of snapshot policies associated with storage group </td>
+                <td> Number of snapshot policies associated with storage group. </td>
             </tr>
                                 <tr>
                 <td class="elbow-placeholder">&nbsp;</td>
                 <td colspan=2 > storage_group_name </td>
                 <td> str </td>
                 <td>success</td>
-                <td> Name of the storage group </td>
+                <td> Name of the storage group. </td>
             </tr>
                                         <tr>
             <td colspan=3 > storage_group_details </td>
@@ -7133,7 +7207,7 @@ Manage storage groups on PowerMax/VMAX Storage System
                 <td colspan=2 > slo </td>
                 <td> str </td>
                 <td>success</td>
-                <td> Service level objective (SLO) type. </td>
+                <td> Service Level Objective type. </td>
             </tr>
                                 <tr>
                 <td class="elbow-placeholder">&nbsp;</td>
@@ -7154,14 +7228,14 @@ Manage storage groups on PowerMax/VMAX Storage System
                 <td colspan=2 > storageGroupId </td>
                 <td> str </td>
                 <td>success</td>
-                <td> Id for the storage group. </td>
+                <td> ID for the storage group. </td>
             </tr>
                                 <tr>
                 <td class="elbow-placeholder">&nbsp;</td>
                 <td colspan=2 > type </td>
                 <td> str </td>
                 <td>success</td>
-                <td> type of storage group. </td>
+                <td> Type of storage group. </td>
             </tr>
                                 <tr>
                 <td class="elbow-placeholder">&nbsp;</td>
@@ -7186,7 +7260,7 @@ Manage storage groups on PowerMax/VMAX Storage System
                     <tr>
             <td colspan=3 > storage_group_volumes_details </td>
             <td>  complex </td>
-            <td> When storage group volumes exists. </td>
+            <td> When storage group volumes exist. </td>
             <td> Details of the storage group volumes. </td>
         </tr>
                             <tr>
