@@ -1,5 +1,5 @@
 #!/usr/bin/python
-# Copyright: (c) 2019-2021, Dell Technologies
+# Copyright: (c) 2019, Dell Technologies
 
 # Apache License version 2.0 (see MODULE-LICENSE or http://www.apache.org/licenses/LICENSE-2.0.txt)
 
@@ -11,9 +11,9 @@ DOCUMENTATION = r'''
 ---
 module: info
 version_added: '1.0.0'
-short_description: Gathers information about PowerMax/VMAX Storage entities
+short_description: Gathers information about PowerMax or VMAX storage entities
 description:
-- Gathers the list of specified PowerMax/VMAX storage system entities, such as
+- Gathers the list of specified PowerMax or VMAX storage system entities, such as
   the list of registered arrays, storage groups, hosts, host groups, storage
   groups, storage resource pools, port groups, masking views, initiators,
   array health status, alerts and metro DR environments, so on.
@@ -23,56 +23,58 @@ extends_documentation_fragment:
 author:
 - Arindam Datta (@dattaarindam) <ansible.team@dell.com>
 - Rajshree Khare (@khareRajshree) <ansible.team@dell.com>
+- Pavan Mudunuri (@Pavan-Mudunuri) <ansible.team@dell.com>
 options:
   serial_no:
     description:
-    - The serial number of the PowerMax/VMAX array. It is not required for
+    - The serial number of the PowerMax or VMAX array. It is not required for
      getting the list of arrays.
     type: str
     required: False
   tdev_volumes:
      description:
      - Boolean variable to filter the volume list.
-       This will have a small performance impact.
-       By default it is set to true, only TDEV volumes will be returned.
-     - True - Will return only the TDEV volumes.
-     - False - Will return all the volumes.
+       This has a small performance impact.
+       The default setting is True and; only TDEV volumes will be returned.
+     - True - Returns only the TDEV volumes.
+     - False - Rreturns all the volumes.
      required: False
      type: bool
      choices: [True, False]
      default: True
   gather_subset:
     description:
-    - List of string variables to specify the PowerMax/VMAX entities for which
+    - List of string variables to specify the PowerMax or VMAX entities for which
       information is required.
     - Required only if the serial_no is present.
-    - List of all PowerMax/VMAX entities supported by the module.
-    - alert - gets alert summary information.
-    - health - health status of a specific PowerMax array.
-    - vol - volumes.
-    - srp - storage resource pools.
-    - sg - storage groups.
-    - pg - port groups.
-    - host - hosts.
-    - hg -  host groups.
-    - port - ports.
-    - mv - masking views.
-    - rdf - rdf groups.
-    - metro_dr_env - metro DR environments.
-    - snapshot_policies - snapshot policies.
-    - initiators - initiators.
+    - List of all PowerMax or VMAX entities supported by the module.
+    - To get alert summary information - alert.
+    - To get health status of a specific PowerMax array - health.
+    - To get volumes - vol.
+    - To get storage resource pools - srp.
+    - To get storage groups - sg.
+    - To get port groups - pg.
+    - To get hosts - host.
+    - To get host groups - hg.
+    - To get ports - port.
+    - To get masking views - mv.
+    - To get RDF groups - rdf.
+    - To get Metro DR environments - metro_dr_env.
+    - To get snapshot policies - snapshot_policies.
+    - To get initiators - initiators.
+    - To get masking view connections - mv_connections.
     required: False
     type: list
     elements: str
     choices: [alert, health, vol, srp, sg, pg , host, hg, port, mv, rdf,
-              metro_dr_env, snapshot_policies, initiators]
+              metro_dr_env, snapshot_policies, initiators, mv_connections]
   filters:
     description:
     - List of filters to support filtered output for storage entities.
     - Each filter is a tuple of {filter_key, filter_operator, filter_value}.
     - Supports passing of multiple filters.
     - The storage entities, 'rdf', 'health', 'snapshot_policies' and
-      'metro_dr_env', does not support filters. Filters will be ignored
+      'metro_dr_env', does not support filters. Filters are ignored
       if passed.
     required: False
     type: list
@@ -95,9 +97,9 @@ options:
         type: str
         required: True
 notes:
-    - Filter functionality will be supported only for the following
+    - Filter functionality is supported only for the following
       'filter_key' against specific 'gather_subset'.
-    - vol - allocated_percent, associated, available_thin_volumes, bound_tdev,
+    - For vol - allocated_percent, associated, available_thin_volumes, bound_tdev,
       cap_cyl, cap_gb, cap_mb, cap_tb, cu_image_num, cu_image_ssid,
       data_volume, dld, drv, effective_wwn, emulation, encapsulated,
       encapsulated_wwn, gatekeeper, has_effective_wwn, mapped,
@@ -106,21 +108,21 @@ notes:
       private_volumes, rdf_group_number, reserved, split_name, status,
       storageGroupId, symmlun, tdev, thin_bcv, type, vdev, virtual_volumes,
       volume_identifier, wwn.
-    - srp - compression_state, description, effective_used_capacity_percent,
+    - For srp - compression_state, description, effective_used_capacity_percent,
       emulation, num_of_disk_groups, num_of_srp_sg_demands,
       num_of_srp_slo_demands, rdfa_dse, reserved_cap_percent,
       total_allocated_cap_gb, total_srdf_dse_allocated_cap_gb,
       total_subscribed_cap_gb, total_usable_cap_gb.
-    - sg - base_slo_name, cap_gb, child, child_sg_name, ckd, compression,
+    - For sg - base_slo_name, cap_gb, child, child_sg_name, ckd, compression,
       compression_ratio_to_one, fba, num_of_child_sgs, num_of_masking_views,
       num_of_parent_sgs, num_of_snapshots, num_of_vols, parent,
       parent_sg_name, slo_compliance, slo_name, srp_name, storageGroupId,
       tag, volumeId.
-    - pg - dir_port, fibre, iscsi, num_of_masking_views, num_of_ports.
-    - host - host_group_name, num_of_host_groups, num_of_initiators,
+    - For pg - dir_port, fibre, iscsi, num_of_masking_views, num_of_ports.
+    - For host - host_group_name, num_of_host_groups, num_of_initiators,
       num_of_masking_views, num_of_powerpath_hosts, powerPathHostId.
-    - hg - host_name, num_of_hosts, num_of_masking_views.
-    - port - aclx, avoid_reset_broadcast, common_serial_number, director_status,
+    - For hg - host_name, num_of_hosts, num_of_masking_views.
+    - For port - aclx, avoid_reset_broadcast, common_serial_number, director_status,
       disable_q_reset_on_ua, enable_auto_negotive, environ_set, hp_3000_mode,
       identifier, init_point_to_point, ip_list, ipv4_address, ipv6_address,
       iscsi_target, max_speed, negotiated_speed, neqotiate_reset,
@@ -131,20 +133,22 @@ notes:
       rdf_software_compression_supported, scsi_3, scsi_support1, siemens,
       soft_reset, spc2_protocol_version, sunapee, type, unique_wwn, vcm_state,
       vnx_attached, volume_set_addressing, wwn_node.
-    - mv - host_or_host_group_name, port_group_name,
+    - For mv - host_or_host_group_name, port_group_name,
       protocol_endpoint_masking_view, storage_group_name.
-    - alert - acknowledged, array, created_date, created_date_milliseconds,
+    - For alert - acknowledged, array, created_date, created_date_milliseconds,
       description, object, object_type, severity, state, type.
-    - initiators - alias, directorId, initiator_hba, in_a_host, iscsi,
+    - For initiators - alias, directorId, initiator_hba, in_a_host, iscsi,
       logged_in, num_of_host_groups, num_of_masking_views,
       num_of_powerpath_hosts, num_of_vols, on_fabric, port_flag_overrides,
       portId, powerPathHostId.
+    - For mv_connections - volume_id, host_lun_address, cap_gb, initiator_id,
+      alias, dir_port, logged_in, on_fabric.
+    - The check_mode is not supported.
 '''
 
 EXAMPLES = r'''
 
-- name: Get list of volumes with filter -- all TDEV volumes of size equal
-        to 5GB
+- name: Get list of volumes with filter -- all TDEV volumes of size equal to 5 GB
   dellemc.powermax.info:
     unispherehost: "{{unispherehost}}"
     universion: "{{universion}}"
@@ -181,7 +185,7 @@ EXAMPLES = r'''
         filter_operator: "equal"
         filter_value: "5"
 
-- name: Get list of storage groups with capacity between 2GB to 10GB
+- name: Get list of storage groups with capacity between 2 GB to 10 GB
   dellemc.powermax.info:
     unispherehost: "{{unispherehost}}"
     universion: "{{universion}}"
@@ -207,10 +211,8 @@ EXAMPLES = r'''
     user: "{{user}}"
     password: "{{password}}"
   register: array_list
-- debug:
-    var: array_list
 
-- name: Get list of tdev-volumes
+- name: Get list of TDEV-volumes
   dellemc.powermax.info:
     unispherehost: "{{unispherehost}}"
     universion: "{{universion}}"
@@ -252,7 +254,7 @@ EXAMPLES = r'''
     gather_subset:
        - alert
 
-- name: Get the list of metro DR environments for a given Unisphere host
+- name: Get the list of Metro DR environments for a given Unisphere host
   dellemc.powermax.info:
     unispherehost: "{{unispherehost}}"
     universion: "{{universion}}"
@@ -263,7 +265,7 @@ EXAMPLES = r'''
     gather_subset:
        - metro_dr_env
 
-- name: Get list of Storage groups
+- name: Get list of storage groups
   dellemc.powermax.info:
     unispherehost: "{{unispherehost}}"
     universion: "{{universion}}"
@@ -285,7 +287,7 @@ EXAMPLES = r'''
     gather_subset:
        - srp
 
-- name: Get list of Ports
+- name: Get list of ports
   dellemc.powermax.info:
     unispherehost: "{{unispherehost}}"
     universion: "{{universion}}"
@@ -307,7 +309,7 @@ EXAMPLES = r'''
     gather_subset:
        - pg
 
-- name: Get list of Hosts
+- name: Get list of hosts
   dellemc.powermax.info:
     unispherehost: "{{unispherehost}}"
     universion: "{{universion}}"
@@ -372,45 +374,62 @@ EXAMPLES = r'''
     serial_no: "{{serial_no}}"
     gather_subset:
      - initiators
+
+- name: Get list of masking view connections with filter
+  dellemc.powermax.info:
+      unispherehost: "{{unispherehost}}"
+      universion: "{{universion}}"
+      verifycert: "{{verifycert}}"
+      user: "{{user}}"
+      password: "{{password}}"
+      serial_no: "{{serial_no}}"
+      gather_subset:
+       - mv_connections
+      filters:
+       - filter_key: "logged_in"
+         filter_operator: "equal"
+         filter_value: "True"
+       - filter_key: "cap_gb"
+         filter_operator: "equal"
+         filter_value: "10"
 '''
 
 RETURN = r'''
 Arrays:
-    description: List of arrays in the Unisphere.
-    returned: When the Unisphere exist.
+    description: Aviliable list of arrays in Unisphere.
+    returned: When the arrays in Unisphere exist.
     type: list
 Health:
-    description: Health status of the array.
+    description: The health status of the array.
     returned: When the array exist.
     type: complex
     contains:
         health_score_metric:
-            description: Overall health score for the specified Symmetrix.
+            description: An overall health score for the specified storage system.
             type: list
             contains:
                 cached_date:
-                    description: Date Time stamp in epoch format when it was
+                    description: A timestamp in epoch format from the date when it was
                                  cached.
                     type: int
                 data_date:
-                    description: Date Time stamp in epoch format when it was
-                                 collected.
+                    description: A timestamp in epoch format from the date it was collected.
                     type: int
                 expired:
-                    description: Flag to indicate the expiry of the score.
+                    description: A flag to indicate the expiry of the score.
                     type: bool
                 health_score:
-                    description: Overall health score in numbers.
+                    description: An overall health score in numbers.
                     type: int
                 instance_metrics:
                     description: Metrics about a specific instance.
                     type: list
                     contains:
                         health_score_instance_metric:
-                            description: Health score of a specific instance.
+                            description: The health score of a specific instance.
                             type: int
                 metric:
-                    description: Information about which sub system , such as
+                    description: Information about the sub-system , such as
                                  SYSTEM_UTILIZATION, CONFIGURATION,CAPACITY,
                                  and so on.
                     type: str
@@ -429,61 +448,61 @@ Alerts:
             description: Unique ID of alert.
             type: str
         array:
-            description: Array serial number.
+            description: The serial number of the array.
             type: str
         created_date:
-            description: Creation Date.
+            description: The creation date.
             type: str
         created_date_milliseconds:
-            description: Creation Date in milliseconds.
+            description: The creation date presented in milliseconds.
             type: str
         description:
-            description: Description about the alert.
+            description: The description of the alert.
             type: str
         object:
-            description: Object description.
+            description: An object description.
             type: str
         object_type:
             description: Resource class.
             type: str
         severity:
-            description: Severity of the alert.
+            description: The severity of the alert.
             type: str
         state:
-            description: State of the alert.
+            description: The state of the alert.
             type: str
         type:
-            description: Type of the alert.
+            description: The type of the alert.
             type: str
 HostGroups:
-    description: List of host groups present on the array.
+    description: A list of Host Groups present on the array.
     returned: When the hostgroups exist.
     type: list
 Hosts:
-    description: List of hosts present on the array.
+    description: A list of hosts present on the array.
     returned: When the hosts exist.
     type: list
 MaskingViews:
-    description: List of masking views present on the array.
+    description: A list of masking views present on the array.
     returned: When the masking views exist.
     type: list
 PortGroups:
-    description: List of port groups on the array.
-    returned: When the port groups exist.
+    description: A list of Port Groups on the array.
+    returned: When the Port Groups exist.
     type: list
 Ports:
-    description: List of ports on the array.
+    description: A list of ports on the array.
     returned: When the ports exist.
     type: complex
     contains:
         directorId:
-            description: Director ID of the port.
+            description: The director ID of the port.
             type: str
         portId:
-            description: Port number of the port.
+            description: The number of the port.
             type: str
 RDFGroups:
-    description: List of RDF groups on the array.
+    description: A list of RDF groups on the array.
     returned: When the RDF groups exist.
     type: complex
     contains:
@@ -491,47 +510,47 @@ RDFGroups:
             description: Name of the RDF group.
             type: str
         rdfgNumber:
-            description: Unique identifier of the RDF group.
+            description: An unique identifier of the RDF group.
             type: int
 StorageGroups:
-    description: List of storage groups on the array.
+    description: A list of storage groups on the array.
     returned: When the storage groups exist.
     type: list
 StorageResourcePools:
-    description: List of storage pools on the array.
+    description: A list of storage pools on the array.
     returned: When the storage pools exist.
     type: complex
     contains:
         diskGroupId:
-            description: ID of the disk group.
+            description: The ID of the disk group.
             type: list
         emulation:
-            description: Type of volume emulation.
+            description: The type of volume emulation.
             type: str
         num_of_disk_groups:
-            description: Number of disk groups.
+            description: The number of disk groups.
             type: int
         rdfa_dse:
-            description: Flag for RDFA Delta Set Extension.
+            description: A flag for RDFA Delta Set Extension.
             type: bool
         reserved_cap_percent:
-            description: Reserved capacity percentage.
+            description: The reserved capacity percentage.
             type: int
         srpId:
-            description: Unique Identifier for SRP.
+            description: An unique Identifier for SRP.
             type: str
         srp_capacity:
-            description: Different entities to measure SRP capacity.
+            description: The different entities to measure SRP capacity.
             type: dict
             contains:
                 effective_used_capacity_percent:
-                    description: Percentage of effectively used capacity.
+                    description: The percentage of effectively used capacity.
                     type: int
                 snapshot_modified_tb:
-                    description: Snapshot modified in TB.
+                    description: The snapshot modified in TB.
                     type: int
                 snapshot_total_tb:
-                    description: Total snapshot size in TB.
+                    description: The total snapshot size in TB.
                     type: int
                 subscribed_allocated_tb:
                     description: Subscribed allocated size in TB.
@@ -540,53 +559,80 @@ StorageResourcePools:
                     description: Subscribed total size in TB.
                     type: int
                 usable_total_tb:
-                    description: Usable total size in TB.
+                    description: The usable total size in TB.
                     type: int
                 usable_used_tb:
-                    description: Usable used size in TB.
+                    description: The usable used size in TB.
                     type: int
         srp_efficiency:
-            description: Different entities to measure SRP efficiency.
+            description: The different entities to measure SRP efficiency.
             type: dict
             contains:
                 compression_state:
                     description: Depicts the compression state of the SRP.
                     type: str
                 data_reduction_enabled_percent:
-                    description: Percentage of data reduction enabled in the
+                    description: The percentage of data reduction enabled in the
                                  SRP.
                     type: int
                 data_reduction_ratio_to_one:
-                    description: Data reduction ratio of SRP.
+                    description: The data reduction ratio of SRP.
                     type: int
                 overall_efficiency_ratio_to_one:
-                    description: Overall efficiency ratio of SRP.
+                    description: The overall efficiency ratio of SRP.
                     type: int
                 snapshot_savings_ratio_to_one:
-                    description: Snapshot savings ratio of SRP.
+                    description: The snapshot savings ratio of SRP.
                     type: int
                 virtual_provisioning_savings_ratio_to_one:
-                    description: Virtual provisioning savings ratio of SRP.
+                    description: The virtual provisioning savings ratio of SRP.
                     type: int
         total_srdf_dse_allocated_cap_gb:
-            description: Total SRDF dse allocated capacity in GB.
+            description: The total SRDF DSE allocated capacity in GB.
             type: int
 Volumes:
-    description: List of volumes on the array.
+    description: A list of volumes on the array.
     returned: When the volumes exist.
     type: list
 MetroDREnvironments:
-    description: List of metro DR environments on the array.
-    returned: When environment exists.
+    description: A list of Metro DR environments on the array.
+    returned: When an environment exists.
     type: list
 SnapshotPolicies:
-    description: List of snapshot policies on the array.
-    returned: When snapshot policy exists.
+    description: A list of the snapshot policies on the array.
+    returned: When a snapshot policy exists.
     type: list
 Initiators:
-    description: List of initiators on the array.
-    returned: When initiator exists.
+    description: A list of initiators on the array.
+    returned: When an initiator exists.
     type: list
+MVConnections:
+    description: A list of the masking view connections on the array.
+    returned: When the masking view connections exists.
+    type: complex
+    contains:
+        masking_view_id:
+            description: The ID of the masking view.
+            type: str
+        connections:
+            description: A list of the masking view connections.
+            type: list
+    sample:
+        {
+            "masking_view_connections": [
+                {
+                    "alias": "100000xxxx/100000xxxxxxxxx",
+                    "cap_gb": "10.0",
+                    "dir_port": "XX-XX:11",
+                    "host_lun_address": "0001",
+                    "initiatorId": "100000aaaaaaa",
+                    "logged_in": True,
+                    "on_fabric": True,
+                    "volumeId": "000XX"
+                }
+            ],
+            "masking_view_id": "mv-id-1"
+        }
 '''
 
 from ansible_collections.dellemc.powermax.plugins.module_utils.storage.dell \
@@ -599,7 +645,7 @@ HAS_PYU4V = utils.has_pyu4v_sdk()
 PYU4V_VERSION_CHECK = utils.pyu4v_version_check()
 
 # Application Type
-APPLICATION_TYPE = 'ansible_v1.8.0'
+APPLICATION_TYPE = 'ansible_v2.0.0'
 
 
 class Info(object):
@@ -637,7 +683,7 @@ class Info(object):
                     self.module.params, APPLICATION_TYPE)
                 self.common = self.u4v_unisphere_con.common
                 LOG.info("Got PyU4V Unisphere instance for common lib method "
-                         "access on Powermax")
+                         "access on PowerMax")
             else:
                 self.module_params.update(
                     utils.get_powermax_management_host_parameters())
@@ -665,7 +711,7 @@ class Info(object):
             self.show_error_exit(msg)
 
     def get_system_health(self):
-        """Get the System Health information PowerMax/VMAX storage system"""
+        """Get the System Health information of the PowerMax or VMAX storage system"""
         try:
             LOG.info('Getting System Health information ')
             health_check = self.u4v_conn.system.get_system_health()
@@ -675,7 +721,7 @@ class Info(object):
             self.show_error_exit(msg=str(e))
 
     def get_system_alerts(self, filters_dict=None):
-        """Get the alerts information PowerMax/VMAX storage system"""
+        """Get the alerts information of the PowerMax or VMAX storage system"""
         try:
             self.pre_check_for_PyU4V_version()
             alerts = []
@@ -718,7 +764,7 @@ class Info(object):
                 if item["filter_key"] is None \
                         or item["filter_operator"] is None \
                         or item["filter_value"] is None:
-                    error_msg = "Please provide input for filter sub-options."
+                    error_msg = "Provide input for filter sub-options."
                     self.show_error_exit(msg=error_msg)
                 else:
                     f_key = item["filter_key"]
@@ -760,7 +806,7 @@ class Info(object):
         return filters_dict
 
     def get_volume_list(self, tdev_volumes=False, filters_dict=None):
-        """Get the list of volumes of a given PowerMax/Vmax storage system"""
+        """Get the list of volumes of a given PowerMax or VMAX storage system"""
 
         try:
             LOG.info('Getting Volume List ')
@@ -789,7 +835,7 @@ class Info(object):
             self.show_error_exit(msg=msg)
 
     def get_storage_group_list(self, filters_dict=None):
-        """Get the list of storage groups of a given PowerMax/Vmax storage
+        """Get the list of storage groups of a given PowerMax or VMAX storage
         system"""
 
         try:
@@ -810,7 +856,7 @@ class Info(object):
             self.show_error_exit(msg=msg)
 
     def get_array_list(self):
-        """Get the list of arrays of a given PowerMax/Vmax Unisphere host"""
+        """Get the list of arrays of a given PowerMax or VMAX Unisphere host"""
 
         try:
             LOG.info('Getting Array List ')
@@ -825,7 +871,7 @@ class Info(object):
             self.show_error_exit(msg=msg)
 
     def get_srp_list(self, filters_dict=None):
-        """Get the list of Storage Resource Pools of a given PowerMax/Vmax
+        """Get the list of Storage Resource Pools of a given PowerMax or VMAX
         storage system"""
 
         try:
@@ -854,7 +900,7 @@ class Info(object):
             self.show_error_exit(msg=msg)
 
     def get_portgroup_list(self, filters_dict=None):
-        """Get the list of port groups of a given PowerMax/Vmax storage
+        """Get the list of port groups of a given PowerMax or VMAX storage
         system"""
 
         try:
@@ -875,7 +921,7 @@ class Info(object):
             self.show_error_exit(msg=msg)
 
     def get_host_list(self, filters_dict=None):
-        """Get the list of hosts of a given PowerMax/Vmax storage system"""
+        """Get the list of hosts of a given PowerMax or VMAX storage system"""
 
         try:
             LOG.info('Getting Host List ')
@@ -895,7 +941,7 @@ class Info(object):
             self.show_error_exit(msg=msg)
 
     def get_hostgroup_list(self, filters_dict=None):
-        """Get the list of host groups of a given PowerMax/Vmax storage
+        """Get the list of host groups of a given PowerMax or VMAX storage
         system"""
 
         try:
@@ -916,7 +962,7 @@ class Info(object):
             self.show_error_exit(msg=msg)
 
     def get_port_list(self, filters_dict=None):
-        """Get the list of ports of a given PowerMax/Vmax storage system"""
+        """Get the list of ports of a given PowerMax or VMAX storage system"""
 
         try:
             LOG.info('Getting Port List ')
@@ -936,7 +982,7 @@ class Info(object):
             self.show_error_exit(msg=msg)
 
     def get_masking_view_list(self, filters_dict=None):
-        """Get the list of masking views of a given PowerMax/Vmax storage
+        """Get the list of masking views of a given PowerMax or VMAX storage
         system"""
 
         try:
@@ -956,8 +1002,35 @@ class Info(object):
                   % (self.module.params['serial_no'], str(e))
             self.show_error_exit(msg=msg)
 
+    def get_mv_connections_list(self, filters_dict=None):
+        """Get the list of masking view connections of a given PowerMax or VMAX storage
+        system"""
+
+        try:
+            LOG.info('Getting Masking View Connections List')
+            array_serial_no = self.module.params['serial_no']
+            masking_view_list = self.get_masking_view_list()
+            mv_connections_list = []
+            for masking_view_id in masking_view_list:
+                connections = self.provisioning.get_masking_view_connections(masking_view_id, filters=filters_dict)
+                if connections:
+                    mv_connections_list.append(
+                        {
+                            'masking_view_id': masking_view_id,
+                            'masking_view_connections': connections
+                        }
+                    )
+            LOG.info('Got %d Getting Masking Views Connections from array %s',
+                     len(mv_connections_list), array_serial_no)
+            return mv_connections_list
+
+        except Exception as e:
+            msg = 'Get Masking View Connections for array %s failed with error %s' \
+                  % (self.module.params['serial_no'], str(e))
+            self.show_error_exit(msg=msg)
+
     def get_rdfgroup_list(self):
-        """Get the list of rdf group of a given PowerMax/Vmax storage system
+        """Get the list of rdf group of a given PowerMax or VMAX storage system
         """
 
         try:
@@ -974,7 +1047,7 @@ class Info(object):
             self.show_error_exit(msg=msg)
 
     def get_metro_dr_env_list(self):
-        """Get the list of metro DR environments of a given PowerMax/Vmax
+        """Get the list of metro DR environments of a given PowerMax or VMAX
         storage system"""
 
         try:
@@ -991,12 +1064,12 @@ class Info(object):
             return metro_dr_env_list
 
         except Exception as e:
-            msg = 'Get metro DR environment for array %s failed with error ' \
+            msg = 'Get Metro DR environment for array %s failed with error ' \
                   '%s ' % (self.module.params['serial_no'], str(e))
             self.show_error_exit(msg=msg)
 
     def get_snapshot_policies_list(self):
-        """Get the list of snapshot policies of a given PowerMax/Vmax
+        """Get the list of snapshot policies of a given PowerMax or VMAX
                 storage system"""
 
         try:
@@ -1018,7 +1091,7 @@ class Info(object):
             self.show_error_exit(msg=msg)
 
     def get_initiators_list(self, filters_dict=None):
-        """Get the list of initiators of a given PowerMax/Vmax
+        """Get the list of initiators of a given PowerMax or VMAX
             storage system"""
         try:
             LOG.info('Getting Initiators List ')
@@ -1036,11 +1109,11 @@ class Info(object):
     def show_error_exit(self, msg):
         if self.u4v_conn is not None:
             try:
-                LOG.info("Closing unisphere connection %s", self.u4v_conn)
+                LOG.info("Closing Unisphere connection %s", self.u4v_conn)
                 utils.close_connection(self.u4v_conn)
                 LOG.info("Connection closed successfully")
             except Exception as e:
-                err_msg = "Failed to close unisphere connection with " \
+                err_msg = "Failed to close Unisphere connection with " \
                           "error: %s", str(e)
                 LOG.error(err_msg)
         LOG.error(msg)
@@ -1080,6 +1153,7 @@ class Info(object):
             metro_dr_env = []
             snapshot_policies = []
             initiators = []
+            mv_connections = []
             if 'alert' in str(subset):
                 alert = self.get_system_alerts(filters_dict=filters_dict)
             if 'health' in str(subset):
@@ -1099,7 +1173,7 @@ class Info(object):
                 hg = self.get_hostgroup_list(filters_dict=filters_dict)
             if 'port' in str(subset):
                 port = self.get_port_list(filters_dict=filters_dict)
-            if 'mv' in str(subset):
+            if 'mv' in subset:
                 mv = self.get_masking_view_list(filters_dict=filters_dict)
             if 'rdf' in str(subset):
                 rdf = self.get_rdfgroup_list()
@@ -1112,8 +1186,11 @@ class Info(object):
             if 'initiators' in str(subset):
                 initiators = \
                     self.get_initiators_list(filters_dict=filters_dict)
+            if 'mv_connections' in subset:
+                mv_connections = \
+                    self.get_mv_connections_list(filters_dict=filters_dict)
 
-            LOG.info("Closing unisphere connection %s", self.u4v_conn)
+            LOG.info("Closing Unisphere connection %s", self.u4v_conn)
             utils.close_connection(self.u4v_conn)
             LOG.info("Connection closed successfully")
 
@@ -1131,17 +1208,18 @@ class Info(object):
                 RDFGroups=rdf,
                 MetroDREnvironments=metro_dr_env,
                 SnapshotPolicies=snapshot_policies,
-                Initiators=initiators)
+                Initiators=initiators,
+                MVConnections=mv_connections)
 
 
 def get_info_parameters():
-    """This method provide the parameters required for the ansible
+    """This method provide the parameters required for the Ansible
     modules on PowerMax"""
 
     return dict(
         unispherehost=dict(type='str', required=True, no_log=True),
-        universion=dict(type='int', required=False, choices=[91, 92]),
-        verifycert=dict(type='bool', required=True, choices=[True, False]),
+        universion=dict(type='int', required=False, choices=[91, 92, 100]),
+        verifycert=dict(type='str', required=True),
         user=dict(type='str', required=True),
         password=dict(type='str', required=True, no_log=True),
         serial_no=dict(type='str', required=False, default=''),
@@ -1161,7 +1239,8 @@ def get_info_parameters():
                                     'rdf',
                                     'metro_dr_env',
                                     'snapshot_policies',
-                                    'initiators'
+                                    'initiators',
+                                    'mv_connections'
                                     ]),
         filters=dict(type='list', required=False, elements='dict',
                      options=dict(

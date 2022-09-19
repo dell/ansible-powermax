@@ -16,22 +16,17 @@ options:
         required: True
     universion:
         description:
-            - Unisphere version, currently '91' and '92' versions are
+            - Unisphere version, currently '91', '92' and '100' versions are
               supported.
         type: int
         required: False
-        choices: [91, 92]
+        choices: [91, 92, 100]
     verifycert:
         description:
-            - Boolean variable to specify whether to validate SSL
-              certificate or not.
-            - True - indicates that the SSL certificate should be
-                     verified.
-            - False - indicates that the SSL certificate should not be
-                      verified.
-        type: bool
+            - Specifies system whether to validate SSL certificate or not, Values can be True or
+              False or a custom file path for SSL certificate with .pem extension or .cer with base 64 encoding.
+        type: str
         required: True
-        choices: [ True, False]
     user:
         description:
             - The username of the Unisphere host.

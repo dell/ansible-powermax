@@ -1,4 +1,11 @@
 # ansible-powermax Change Log
+## Version 2.0.0 - released on 27/09/22
+- Enhanced RDF group module to get volume pair information for an SRDF group.
+- Enhanced storage group module to support for setting host I/O limits for existing storage groups and added ability to force move devices between storage groups with SRDF protection.
+- Enhanced volume module to support cylinders option to specify size while creating LUN and added ability to create volumes with identifier_name and volume_id.
+- Enhanced verifycert parameter in all modules to support file path for custom certificate location.
+- Enhanced info module to get masking view connection information.
+
 ## Version 1.8.0 - released on 28/06/22
 - Enhanced storage group module to support moving volumes to destination storage group.
 - Enhanced volume module to support renaming volumes created without a name.

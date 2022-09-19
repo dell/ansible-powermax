@@ -301,7 +301,7 @@ HAS_PYU4V = utils.has_pyu4v_sdk()
 PYU4V_VERSION_CHECK = utils.pyu4v_version_check()
 
 # Application Type
-APPLICATION_TYPE = 'ansible_v1.8.0'
+APPLICATION_TYPE = 'ansible_v2.0.0'
 
 BASE_FLAGS = {'volume_set_addressing': {'enabled': False, 'override': False},
               'disable_q_reset_on_ua': {'enabled': False, 'override': False},
@@ -623,27 +623,29 @@ class HostGroup(object):
         '''
         self._create_default_host_flags_dict(current_flags)
 
-        for flag in host['enabled_flags'].split(','):
-            if len(flag) > 0:
-                '''
-                Remove any extra text from information received from get_host()
-                to match the desired input to VMAX python SDK
-                '''
-                self._set_to_enable(
-                    re.sub(
-                        r'\(.*?\)',
-                        '',
-                        flag),
-                    current_flags)
+        if 'enabled_flags' in host:
+            for flag in host['enabled_flags'].split(','):
+                if len(flag) > 0:
+                    '''
+                    Remove any extra text from information received from get_host()
+                    to match the desired input to VMAX python SDK
+                    '''
+                    self._set_to_enable(
+                        re.sub(
+                            r'\(.*?\)',
+                            '',
+                            flag),
+                        current_flags)
 
-        for flag in host['disabled_flags'].split(','):
-            if len(flag) > 0:
-                self._set_to_disable(
-                    re.sub(
-                        r'\(.*?\)',
-                        '',
-                        flag),
-                    current_flags)
+        if 'disabled_flags' in host:
+            for flag in host['disabled_flags'].split(','):
+                if len(flag) > 0:
+                    self._set_to_disable(
+                        re.sub(
+                            r'\(.*?\)',
+                            '',
+                            flag),
+                        current_flags)
 
         if host['consistent_lun'] is False:
             self._disable_consistent_lun(current_flags)
