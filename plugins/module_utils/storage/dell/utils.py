@@ -47,7 +47,7 @@ def pyu4v_version_check():
                                           " the required package"
             return unsupported_version_message
         min_ver = '9.1.2.0'
-        max_ver = '9.3.0.0'
+        max_ver = '10.1.0.0'
         curr_version = PyU4V.__version__
         unsupported_version_message = "PyU4V {0} is not supported by this " \
                                       "module.Minimum supported version " \
@@ -77,6 +77,8 @@ def universion_check(universion):
         if curr_version.startswith("9.1") and universion == 91:
             is_valid_universion = True
         elif curr_version.startswith("9.2") and universion == 92:
+            is_valid_universion = True
+        elif curr_version.startswith("10.0") and universion == 100:
             is_valid_universion = True
         else:
             user_message = "Unsupported unisphere version for current PyU4V"
@@ -108,8 +110,8 @@ options:
     - Version of univmax SDK.
   verifycert:
     description:
-    - Boolean value to inform system whether to verify client certificate or
-    not.
+    - Specifies system whether to validate SSL certificate or not, Values can be True or
+    False or a custom file path for SSL certificate with .pem extension or .cer with base 64 encoding.
   user:
     description:
     - User name to access on to unispherehost
@@ -127,15 +129,15 @@ def get_powermax_management_host_parameters(metro_dr=False):
     if metro_dr:
         return dict(
             unispherehost=dict(type='str', required=True, no_log=True),
-            universion=dict(type='int', required=False, choices=[91, 92]),
-            verifycert=dict(type='bool', required=True, choices=[True, False]),
+            universion=dict(type='int', required=False, choices=[91, 92, 100]),
+            verifycert=dict(type='str', required=True),
             user=dict(type='str', required=True),
             password=dict(type='str', required=True, no_log=True))
 
     return dict(
         unispherehost=dict(type='str', required=True, no_log=True),
-        universion=dict(type='int', required=False, choices=[91, 92]),
-        verifycert=dict(type='bool', required=True, choices=[True, False]),
+        universion=dict(type='int', required=False, choices=[91, 92, 100]),
+        verifycert=dict(type='str', required=True),
         user=dict(type='str', required=True),
         password=dict(type='str', required=True, no_log=True),
         serial_no=dict(type='str', required=True))
@@ -154,8 +156,8 @@ options:
     - Version of univmax SDK.
   verifycert:
     description:
-    - Boolean value to inform system whether to verify client certificate or
-    not.
+    - Specifies system whether to validate SSL certificate or not, Values can be True or
+    False or a custom file path for SSL certificate with .pem extension or .cer with base 64 encoding.
   user:
     description:
     - User name to access on to unispherehost
@@ -168,8 +170,8 @@ options:
 def get_u4v_unisphere_connection_parameters():
     return dict(
         unispherehost=dict(type='str', required=True, no_log=True),
-        universion=dict(type='int', required=False, choices=[91, 92]),
-        verifycert=dict(type='bool', required=True, choices=[True, False]),
+        universion=dict(type='int', required=False, choices=[91, 92, 100]),
+        verifycert=dict(type='str', required=True),
         user=dict(type='str', required=True),
         password=dict(type='str', required=True, no_log=True)
     )
@@ -183,8 +185,8 @@ parameters:
    details to establish connection on to Unisphere
      - unispherehost: IP/FQDN of unisphere host.
      - universion:Version of univmax SDK.
-     - verifycert: Boolean value to inform system whether to verify client
-      certificate or not.
+     - verifycert: Specifies system whether to validate SSL certificate or not, Values can be True or
+    False or a custom file path for SSL certificate with .pem extension or .cer with base 64 encoding.
      - user:  User name to access on to unispherehost
      - password: Password to access on to unispherehost
      - serial_no: Serial number of Powermax system
@@ -197,11 +199,12 @@ def get_U4V_connection(module_params, application_type=None, metro_dr=False):
         array_id = module_params['metro_r1_array_id']
     else:
         array_id = module_params['serial_no']
+    verify = validate_verifycert(module_params)
     if HAS_PYU4V:
         conn = PyU4V.U4VConn(server_ip=module_params['unispherehost'],
                              port=8443,
                              array_id=array_id,
-                             verify=module_params['verifycert'],
+                             verify=verify,
                              username=module_params['user'],
                              password=module_params['password'],
                              application_type=application_type)
@@ -216,8 +219,8 @@ parameters:
                   details to establish connection on to Unisphere
      - unispherehost: IP/FQDN of unisphere host.
      - universion:Version of univmax SDK.
-     - verifycert: Boolean value to inform system whether to verify client
-                   certificate or not.
+     - verifycert: Specifies system whether to validate SSL certificate or not, Values can be True or
+    False or a custom file path for SSL certificate with .pem extension or .cer with base 64 encoding.
      - user:  User name to access on to unispherehost
      - password: Password to access on to unispherehost
 returns connection object to access U4V Unisphere Common sdks
@@ -225,10 +228,11 @@ returns connection object to access U4V Unisphere Common sdks
 
 
 def get_u4v_unisphere_connection(module_params, application_type=None):
+    verify = validate_verifycert(module_params)
     if HAS_PYU4V:
         conn = PyU4V.U4VConn(server_ip=module_params['unispherehost'],
                              port=8443,
-                             verify=module_params['verifycert'],
+                             verify=verify,
                              username=module_params['user'],
                              password=module_params['password'],
                              application_type=application_type)
@@ -270,6 +274,7 @@ KB_IN_BYTES = 1024
 MB_IN_BYTES = 1024 * 1024
 GB_IN_BYTES = 1024 * 1024 * 1024
 TB_IN_BYTES = 1024 * 1024 * 1024 * 1024
+CYL_IN_BYTES = 1920 * 1024
 
 
 def get_size_bytes(size, cap_units):
@@ -282,6 +287,8 @@ def get_size_bytes(size, cap_units):
             return size * GB_IN_BYTES
         elif cap_units in ('tb', 'TB'):
             return size * TB_IN_BYTES
+        elif cap_units.lower() == 'cyl':
+            return size * CYL_IN_BYTES
         else:
             return size
     else:
@@ -326,3 +333,24 @@ def is_empty(val):
     if val is not None:
         return len(val.strip()) == 0
     return False
+
+
+def validate_verifycert(module_params):
+    if module_params['verifycert'].lower() == "true":
+        verify = True
+    elif module_params['verifycert'].lower() == "false":
+        verify = False
+    elif module_params['verifycert'] == "":
+        raise ValueError("Provide a valid verifycert")
+    else:
+        verify = module_params['verifycert']
+    return verify
+
+
+''' Validates if specified array is V4 '''
+
+
+def is_array_v4():
+    curr_version = PyU4V.__version__
+    if curr_version.startswith("10.0"):
+        return True

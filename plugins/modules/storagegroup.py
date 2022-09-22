@@ -1,5 +1,5 @@
 #!/usr/bin/python
-# Copyright: (c) 2019-2021, Dell Technologies
+# Copyright: (c) 2019, Dell Technologies
 
 # Apache License version 2.0 (see MODULE-LICENSE or http://www.apache.org/licenses/LICENSE-2.0.txt)
 
@@ -31,6 +31,7 @@ author:
 - Vasudevu Lakhinana (@unknown) <ansible.team@dell.com>
 - Prashant Rakheja (@prashant-dell) <ansible.team@dell.com>
 - Ambuj Dubey (@AmbujDube) <ansible.team@dell.com>
+- Pavan Mudunuri (@Pavan-Mudunuri) <ansible.team@dell.com>
 options:
   sg_name:
     description:
@@ -39,11 +40,11 @@ options:
     type: str
   service_level:
     description:
-    - The Name of SLO.
+    - The name of SLO.
     type: str
   srp:
     description:
-    - Name of the storage resource pool.
+    - The name of the storage resource pool.
     - This parameter is ignored if service_level is not specified.
     - Default is to use whichever is the default SRP on the array.
     type: str
@@ -109,16 +110,37 @@ options:
      - Describes the state of snapshot policy for an SG.
     type: str
     choices: [present-in-group, absent-in-group]
+  host_io_limit:
+    description:
+    - Host I/O limit of the storage group.
+    type: dict
+    suboptions:
+        host_io_limit_iops:
+            description:
+            - The I/Os per second host I/O limit for the storage group.
+            type: int
+        dynamic_distribution:
+            description:
+            - The dynamic distribution of host I/O limit for the storage group.
+            type: str
+            default: Never
+            choices: [Always, Never, OnFailure]
+        host_io_limit_mbps:
+            description:
+            - The MBs per second host I/O limit for the storage group.
+            type: int
   state:
     description:
     - Define whether the storage group should exist or not.
     choices: [absent, present]
     type: str
     required: true
+notes:
+- To set host_io_limit_mbps to NOLIMIT, value can be provided as 0.
 '''
 
 EXAMPLES = r'''
-- name: Get Storage Group details including volumes
+- name: Get storage group details including volumes
   dellemc.powermax.storagegroup:
     unispherehost: "{{unispherehost}}"
     universion: "{{universion}}"
@@ -129,7 +151,7 @@ EXAMPLES = r'''
     sg_name: "ansible_sg"
     state: "present"
 
-- name: Create empty Storage Group
+- name: Create empty storage group
   dellemc.powermax.storagegroup:
     unispherehost: "{{unispherehost}}"
     universion: "{{universion}}"
@@ -143,7 +165,7 @@ EXAMPLES = r'''
     compression: True
     state: "present"
 
-- name: Delete the Storage Group
+- name: Delete the storage group
   dellemc.powermax.storagegroup:
     unispherehost: "{{unispherehost}}"
     universion: "{{universion}}"
@@ -253,7 +275,7 @@ EXAMPLES = r'''
     - "bar"
     child_sg_state: "absent-in-group"
 
-- name: Rename Storage Group
+- name: Rename storage group
   dellemc.powermax.storagegroup:
     unispherehost: "{{unispherehost}}"
     universion: "{{universion}}"
@@ -265,7 +287,7 @@ EXAMPLES = r'''
     new_sg_name: "ansible_sg_renamed"
     state: "present"
 
-- name: Create a Storage Group with snapshot policies
+- name: Create a storage group with snapshot policies
   dellemc.powermax.storagegroup:
     unispherehost: "{{unispherehost}}"
     universion: "{{universion}}"
@@ -283,7 +305,7 @@ EXAMPLES = r'''
     snapshot_policy_state: "present-in-group"
     state: "present"
 
-- name: Add snapshot policy to a Storage Group
+- name: Add snapshot policy to a storage group
   dellemc.powermax.storagegroup:
     unispherehost: "{{unispherehost}}"
     universion: "{{universion}}"
@@ -297,7 +319,7 @@ EXAMPLES = r'''
     snapshot_policy_state: "present-in-group"
     state: "present"
 
-- name: Remove snapshot policy from a Storage Group
+- name: Remove snapshot policy from a storage group
   dellemc.powermax.storagegroup:
     unispherehost: "{{unispherehost}}"
     universion: "{{universion}}"
@@ -309,6 +331,21 @@ EXAMPLES = r'''
     snapshot_policies:
       - "15min_policy"
     snapshot_policy_state: "absent-in-group"
+    state: "present"
+
+- name: Set host I/O limits on an existing storage group
+  dellemc.powermax.storagegroup:
+    unispherehost: "{{unispherehost}}"
+    universion: "{{universion}}"
+    verifycert: "{{verifycert}}"
+    user: "{{user}}"
+    password: "{{password}}"
+    serial_no: "{{serial_no}}"
+    sg_name: "Test"
+    host_io_limit:
+      dynamic_distribution: "Always"
+      host_io_limit_iops: 100
+      host_io_limit_mbps: 100
     state: "present"
 '''
 
@@ -372,7 +409,7 @@ remove_snapshot_policy_to_sg:
     type: bool
 storage_group_details:
     description: Details of the storage group.
-    returned: When storage group exists.
+    returned: When a storage group exists.
     type: complex
     contains:
         base_slo_name:
@@ -414,7 +451,7 @@ storage_group_details:
             description: Type of SLO compliance.
             type: str
         srp:
-            description: Storage resource pool.
+            description: Storage Resource Pool.
             type: str
         storageGroupId:
             description: ID for the storage group.
@@ -428,6 +465,19 @@ storage_group_details:
         vp_saved_percent:
             description: Percentage saved for virtual pools.
             type: int
+        hostIOLimit:
+            description: Host I/O limit of the storage group.
+            type: complex
+            contains:
+                iops:
+                    description: The I/Os per second host I/O limit for the storage group.
+                    type: int
+                dynamic_distribution:
+                    description: The dynamic distribution of host I/O limit for the storage group.
+                    type: str
+                mbps:
+                    description: The MBs per second host I/O limit for the storage group.
+                    type: int
 storage_group_volumes:
     description: Volume IDs of storage group volumes.
     returned: When value exists.
@@ -454,7 +504,7 @@ storage_group_volumes_details:
             type: str
 snapshot_policy_compliance_details:
     description: The compliance status of this storage group.
-    returned: When snapshot policy associated.
+    returned: When a snapshot policy is associated.
     type: complex
     contains:
         compliance:
@@ -489,7 +539,7 @@ HAS_PYU4V = utils.has_pyu4v_sdk()
 PYU4V_VERSION_CHECK = utils.pyu4v_version_check()
 
 # Application Type
-APPLICATION_TYPE = 'ansible_v1.8.0'
+APPLICATION_TYPE = 'ansible_v2.0.0'
 
 
 class StorageGroup(object):
@@ -638,7 +688,7 @@ class StorageGroup(object):
             return None
 
     def if_srdf_protected(self, sg_details):
-        """Check if this storage group is protected with srdf"""
+        """Check if this storage group is protected with SRDF"""
         try:
             if not sg_details['unprotected']:
                 srdf_sgs = self.replication.get_replication_enabled_storage_groups(has_srdf=True)
@@ -646,7 +696,7 @@ class StorageGroup(object):
                     return True
             return False
         except Exception as e:
-            errorMsg = ("Determining srdf protection for storage group %s "
+            errorMsg = ("Determining SRDF protection for storage group %s "
                         "failed with error %s" % (sg_details['storageGroupId'], str(e)))
             LOG.error(errorMsg)
             self.show_error_exit(msg=errorMsg)
@@ -696,7 +746,7 @@ class StorageGroup(object):
         :param sg_name: Source storagegroup name
         :param existing_volumes: List of existing volumes
         :param volumes: List of volumes to move
-        :return: List of volume Id's
+        :return: List of volume IDs
         """
         try:
             vol_ids = []
@@ -736,10 +786,9 @@ class StorageGroup(object):
         vol_state = self.module.params['vol_state']
         if vol_state != 'absent-in-group':
             self.show_error_exit(msg="Specify vol_state as 'absent-in-group' to move volumes")
-        if self.if_srdf_protected(self.get_storage_group(sg_name)) or \
-                self.if_srdf_protected(self.get_storage_group(target_sg_name)):
-            error_msg = ("Move volumes to or from SRDF protected storage group is not "
-                         "supported from Ansible module as it would render it unprotected.")
+        if not force and (self.if_srdf_protected(self.get_storage_group(sg_name)) or
+                          self.if_srdf_protected(self.get_storage_group(target_sg_name))):
+            error_msg = ("Specify a force flag to move volumes to or from SRDF protected storage group")
             self.show_error_exit(msg=error_msg)
 
         try:
@@ -810,8 +859,8 @@ class StorageGroup(object):
                                     self.foxtail_version):
                                 msg = ("Add new volumes on SRDF protected"
                                        " storage group is supported from"
-                                       " v5978.444.444 onwards. Please"
-                                       " upgrade the array for this support.")
+                                       " v5978.444.444 onwards."
+                                       " Upgrade the array for this support.")
                                 self.show_error_exit(msg=msg)
                             rdfg_list = self.replication. \
                                 get_storage_group_srdf_group_list(
@@ -956,7 +1005,7 @@ class StorageGroup(object):
             self.show_error_exit(msg=err_msg)
 
     def add_existing_volumes_to_sg(self, vol_list, sg_name):
-        """Add existing Volumes to existing storage group"""
+        """Add existing volumes to existing storage group"""
 
         storage_group = self.provisioning.get_storage_group(sg_name)
         existing_volumes_in_sg = self.provisioning.get_volumes_from_storage_group(
@@ -1191,7 +1240,7 @@ class StorageGroup(object):
                 self.show_error_exit(msg=errorMsg)
 
     def modify_storage_group_attributes(self, storage_group, modified_param):
-        """Modify the Storage group attributes"""
+        """Modify the storage group attributes"""
 
         changed = False
         if 'modified_srp' in modified_param:
@@ -1332,7 +1381,7 @@ class StorageGroup(object):
                     sg_name)
             except utils.PyU4V.utils.exception.ResourceNotFoundException as e:
                 LOG.info(
-                    "Got exception error while deleting  storage group: %s",
+                    "Got exception error while deleting storage group: %s",
                     str(e))
                 return snap_list
             for snap in snap_list:
@@ -1350,7 +1399,7 @@ class StorageGroup(object):
                         errMsg = ("Cannot delete SG %s "
                                   "because it has snapshots "
                                   "in linked state. "
-                                  "unlink the snapshots and "
+                                  "Unlink the snapshots and "
                                   "and retry." % sg_name)
                         self.show_error_exit(msg=errMsg)
         except Exception as e:
@@ -1477,14 +1526,72 @@ class StorageGroup(object):
                    "%s" % curr_version)
             self.show_error_exit(msg)
 
+    def validate_host_io_limit_params(self, iops=None, mbps=None):
+        """Validate host I/O limits params"""
+        if iops and (iops < 100 or iops > 2000000 or iops % 100 != 0):
+            errormsg = ('IOPS is not in the allowed value range of 100 - 2000000 '
+                        'and must be specified as multiple of 100')
+            LOG.error(errormsg)
+            self.module.fail_json(msg=errormsg)
+        if mbps and (mbps < 0 or mbps > 100000):
+            errormsg = ('MBPS is not in the allowed value range of 0 - 100000')
+            LOG.error(errormsg)
+            self.module.fail_json(msg=errormsg)
+
+    def is_host_io_modification_required(self, storage_group_details,
+                                         mbps, iops, dynamic_distribution):
+        if 'hostIOLimit' in storage_group_details:
+            host_io_limit \
+                = storage_group_details['hostIOLimit']
+            if host_io_limit['host_io_limit_mb_sec'] == 'NOLIMIT':
+                host_io_limit_mb_sec = 0
+            else:
+                host_io_limit_mb_sec = host_io_limit['host_io_limit_mb_sec']
+            if mbps is None and iops and dynamic_distribution:
+                mbps = 0
+            if host_io_limit['host_io_limit_io_sec'] and iops is None:
+                iops = host_io_limit['host_io_limit_io_sec']
+            if str(host_io_limit_mb_sec) != str(mbps) or \
+                host_io_limit['host_io_limit_io_sec'] != str(iops) or \
+               host_io_limit['dynamicDistribution'] != dynamic_distribution:
+                return True
+        if 'hostIOLimit' not in storage_group_details and \
+           iops is None and mbps is None and dynamic_distribution:
+            errmsg = ("Either host_io_limit_mbps or host_io_limit_iops "
+                      "is required along with dynamic_distribution")
+            self.show_error_exit(msg=errmsg)
+
+    def set_host_io_limit(self, sg_name,
+                          iops=None,
+                          dynamic_distribution=None,
+                          mbps=None):
+        """Set the host I/O limits on an existing storage group"""
+        try:
+            storage_group_details \
+                = self.provisioning.get_storage_group(sg_name)
+            modify = self.is_host_io_modification_required(storage_group_details,
+                                                           mbps, iops, dynamic_distribution)
+            if modify or 'hostIOLimit' not in storage_group_details:
+                self.validate_host_io_limit_params(iops=iops, mbps=mbps)
+                host_io = self.provisioning.set_host_io_limit_iops_or_mbps(storage_group=sg_name,
+                                                                           iops=iops,
+                                                                           dynamic_distribution=dynamic_distribution,
+                                                                           mbps=mbps)
+                return True, host_io
+            else:
+                return False, storage_group_details
+        except Exception as e:
+            errmsg = 'Failed to set host I/O limit. Exception received was %s ' % str(e)
+            self.show_error_exit(msg=errmsg)
+
     def show_error_exit(self, msg):
         if self.u4v_conn is not None:
             try:
-                LOG.info("Closing unisphere connection %s", self.u4v_conn)
+                LOG.info("Closing Unisphere connection %s", self.u4v_conn)
                 utils.close_connection(self.u4v_conn)
                 LOG.info("Connection closed successfully")
             except Exception as e:
-                err_msg = ("Closing unisphere connection failed with error:"
+                err_msg = ("Closing Unisphere connection failed with error:"
                            " %s" % str(e))
                 LOG.error(err_msg)
         LOG.error(msg)
@@ -1506,6 +1613,7 @@ class StorageGroup(object):
         new_sg_name = self.module.params['new_sg_name']
         snapshot_policies = self.module.params['snapshot_policies']
         snapshot_policy_state = self.module.params['snapshot_policy_state']
+        host_io_limit = self.module.params['host_io_limit']
 
         storage_group = self.get_storage_group(sg_name)
 
@@ -1580,7 +1688,7 @@ class StorageGroup(object):
                 remove_volumes_from_sg(volumes, sg_name)
 
         if state == 'present' and storage_group and modified:
-            LOG.info('Modifying Storage group %s', sg_name)
+            LOG.info('Modifying storage group %s', sg_name)
             result['modify_sg'] = self.modify_storage_group_attributes(
                 sg_name, modified_param)
             result['storage_group_volumes_details'] = self.\
@@ -1668,8 +1776,16 @@ class StorageGroup(object):
                 result['storage_group_volumes'] = self.get_volumes_storagegroup(sg_name)
                 result['storage_group_volumes_details'] = self.get_volumes_details_storagegroup(sg_name)
 
+        if state == 'present' and sg_name and host_io_limit:
+            result['changed'], storage_group_details \
+                = self.set_host_io_limit(sg_name=sg_name,
+                                         dynamic_distribution=host_io_limit['dynamic_distribution'],
+                                         iops=host_io_limit['host_io_limit_iops'],
+                                         mbps=host_io_limit['host_io_limit_mbps'])
+            result['storage_group_details'] = storage_group_details
+
         if result['create_sg'] or result['modify_sg'] or \
-                result['add_vols_to_sg'] or result['remove_vols_from_sg']\
+                result['add_vols_to_sg'] or result['remove_vols_from_sg'] \
                 or result['add_child_sg'] or result['remove_child_sg'] or \
                 result['delete_sg'] or result['add_new_vols_to_sg'] or \
                 result['rename_sg']:
@@ -1736,12 +1852,19 @@ def get_storage_group_parameters():
                 'absent-in-group']),
         target_sg_name=dict(type='str'),
         force=dict(type='bool'),
+        host_io_limit=dict(required=False, type='dict',
+                           options=dict(host_io_limit_mbps=dict(required=False, type='int'),
+                                        host_io_limit_iops=dict(required=False, type='int'),
+                                        dynamic_distribution=dict(
+                                            required=False, type='str',
+                                            choices=['Always', 'Never', 'OnFailure'],
+                                            default='Never'))),
         state=dict(
             required=True,
             choices=[
                 'present',
                 'absent'],
-            type='str'),
+            type='str')
     )
 
 

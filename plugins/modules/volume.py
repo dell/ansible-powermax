@@ -22,6 +22,7 @@ author:
 - Vasudevu Lakhinana (@unknown) <ansible.team@dell.com>
 - Akash Shendge (@shenda1) <ansible.team@dell.com>
 - Ambuj Dubey (@AmbujDube) <ansible.team@dell.com>
+- Pavan Mudunuri (@Pavan-Mudunuri) <ansible.team@dell.com>
 options:
   vol_name:
     description:
@@ -49,7 +50,7 @@ options:
     description:
     - volume capacity units.
     - If not specified, default value is GB.
-    choices: [ MB, GB, TB ]
+    choices: [ MB, GB, TB, CYL ]
     type: str
   new_name:
     description:
@@ -59,6 +60,10 @@ options:
     description:
     - The WWN of the volume.
     type: str
+  append_vol_id:
+    description:
+    - Appends volume id to the volume name, Applicable from V4 (Juniper).
+    type: bool
   state:
     description:
     - Defines whether the volume should exist or not.
@@ -88,6 +93,7 @@ EXAMPLES = r'''
     sg_name: "{{sg_name}}"
     size: 1
     cap_unit: "{{cap_unit}}"
+    append_vol_id: True
     state: 'present'
 
 - name: Expanding volume size
@@ -148,6 +154,20 @@ EXAMPLES = r'''
     vol_name: "{{vol_name}}"
     sg_name: "{{sg_name}}"
     new_sg_name: "{{new_sg_name}}"
+    state: 'present'
+
+- name: Create volume with capacity unit as cylinder
+  dellemc.powermax.volume:
+    unispherehost: "{{unispherehost}}"
+    universion: "{{universion}}"
+    verifycert: "{{verifycert}}"
+    user: "{{user}}"
+    password: "{{password}}"
+    serial_no: "{{serial_no}}"
+    vol_name: "{{vol_name}}"
+    sg_name: "{{sg_name}}"
+    size: 1
+    cap_unit: "CYL"
     state: 'present'
 '''
 
@@ -239,6 +259,7 @@ from ansible_collections.dellemc.powermax.plugins.module_utils.storage.dell \
     import utils
 from ansible.module_utils.basic import AnsibleModule
 import logging
+import math
 
 LOG = utils.get_logger('volume')
 HAS_PYU4V = utils.has_pyu4v_sdk()
@@ -246,7 +267,7 @@ HAS_PYU4V = utils.has_pyu4v_sdk()
 PYU4V_VERSION_CHECK = utils.pyu4v_version_check()
 
 # Application Type
-APPLICATION_TYPE = 'ansible_v1.8.0'
+APPLICATION_TYPE = 'ansible_v2.0.0'
 
 
 class Volume(object):
@@ -317,7 +338,6 @@ class Volume(object):
             return self.get_volume_by_nativeid(self.volume_id)
 
         sg_name = self.module.params['sg_name']
-
         volume_list = None
         volume_name = None
         if self.module.params['vol_name'] is not None:
@@ -677,17 +697,18 @@ class Volume(object):
                                )
                         LOG.info(msg)
                         if not self.module.check_mode:
-                            self.provisioning.add_new_volume_to_storage_group(
-                                storage_group_id=sg_name, num_vols=1,
-                                vol_size=size,
-                                cap_unit=cap_unit, vol_name=vol_name,
-                                create_new_volumes=True,
-                                remote_array_1_id=remote_array_1,
-                                remote_array_1_sgs=remote_array_1_sg,
-                                remote_array_2_id=remote_array_2,
-                                remote_array_2_sgs=remote_array_2_sg)
-                            vol_id = self.provisioning.find_volume_device_id(
-                                volume_name=vol_name)
+                            if cap_unit == "CYL":
+                                size = math.floor(size)
+                            vol_params = self.get_create_volume_params(sg_name=sg_name,
+                                                                       num_vols=1, size=size,
+                                                                       cap_unit=cap_unit, vol_name=vol_name,
+                                                                       create_new_volumes=True,
+                                                                       remote_array=remote_array,
+                                                                       remote_array_1_sg=remote_array_sg,
+                                                                       remote_array_2=remote_array_2,
+                                                                       remote_array_2_sg=remote_array_2_sg)
+                            job = self.provisioning.add_new_volume_to_storage_group(**vol_params)
+                            vol_id = self.get_created_vol_id(job, vol_name)
                         LOG.info('Created volume native ID: %s', vol_id)
                         return vol_id
 
@@ -714,21 +735,72 @@ class Volume(object):
                    remote_array_1,
                    ', remote_array_1_sgs= ',
                    remote_array_1_sg)
-            LOG.info(msg)
             if not self.module.check_mode:
-                self.provisioning.add_new_volume_to_storage_group(
-                    storage_group_id=sg_name, num_vols=1, vol_size=size,
-                    cap_unit=cap_unit, vol_name=vol_name,
-                    create_new_volumes=True, remote_array_1_id=remote_array,
-                    remote_array_1_sgs=remote_array_sg)
-                vol_id = self.provisioning.find_volume_device_id(
-                    volume_name=vol_name)
+                if cap_unit == "CYL":
+                    size = math.floor(size)
+                vol_params = self.get_create_volume_params(sg_name=sg_name,
+                                                           num_vols=1, size=size,
+                                                           cap_unit=cap_unit, vol_name=vol_name,
+                                                           create_new_volumes=True,
+                                                           remote_array=remote_array,
+                                                           remote_array_1_sg=remote_array_sg)
+                job = self.provisioning.add_new_volume_to_storage_group(**vol_params)
+                vol_id = self.get_created_vol_id(job, vol_name)
             LOG.info('Created volume native ID: %s', vol_id)
             return vol_id
         except Exception as e:
             error_message = 'Create volume %s failed with error %s' \
                             % (vol_name, str(e))
             self.show_error_exit(msg=error_message)
+
+    def get_created_vol_id(self, job, vol_name):
+        """Get created volume ID"""
+        try:
+            append_vol_id = self.module.params['append_vol_id'] or False
+            vol_id = None
+            if append_vol_id:
+                task = self.common.wait_for_job('Create volume from storage group',
+                                                202, job)
+                if task:
+                    for job in task:
+                        desc = job['description']
+                        if 'Creating new Volumes' in desc:
+                            job_list = desc.split()
+                            vol_id = job_list[(len(job_list) - 1)]
+                            vol_id = vol_id[1:-1]
+                            break
+            else:
+                vol_id = self.provisioning.find_volume_device_id(
+                    volume_name=vol_name)
+            return vol_id
+        except Exception as e:
+            LOG.info('Failed to retrieve volume id. Exception '
+                     'received was %s.', e)
+
+    def get_create_volume_params(self, sg_name=None, num_vols=None,
+                                 size=None, cap_unit=None, vol_name=None,
+                                 create_new_volumes=None,
+                                 remote_array=None, remote_array_1_sg=None,
+                                 remote_array_2=None, remote_array_2_sg=None):
+        vol_params = {}
+        vol_params['storage_group_id'] = sg_name
+        vol_params['num_vols'] = num_vols
+        vol_params['vol_size'] = size
+        vol_params['cap_unit'] = cap_unit
+        vol_params['vol_name'] = vol_name
+        vol_params['create_new_volumes'] = create_new_volumes
+        vol_params['remote_array_1_id'] = remote_array
+        vol_params['remote_array_1_sgs'] = remote_array_1_sg
+        universion = self.module.params['universion']
+        append_vol_id = self.module.params['append_vol_id']
+
+        if remote_array_2 is not None and remote_array_2_sg is not None:
+            vol_params['remote_array_2_id'] = remote_array_2
+            vol_params['remote_array_2_sgs'] = remote_array_2_sg
+        if append_vol_id and universion == 100:
+            vol_params['_async'] = True
+            vol_params['append_vol_id'] = append_vol_id
+        return vol_params
 
     def move_volume_between_storage_groups(self, vol, sg_name,
                                            new_sg_name):
@@ -853,7 +925,7 @@ class Volume(object):
                                          "while creating a volume")
             if size is None:
                 self.show_error_exit(msg='Size is required to create volume')
-            vol_id = self.create_volume(vol_name, sg_name, size, cap_unit)
+            self.volume_id = self.create_volume(vol_name, sg_name, size, cap_unit)
             changed = True
 
         if state == 'present' and vol and size:
@@ -915,8 +987,9 @@ def get_volume_parameters():
         sg_name=dict(required=False, type='str'),
         new_sg_name=dict(required=False, type='str'),
         new_name=dict(required=False, type='str'),
-        cap_unit=dict(choices=['MB', 'GB', 'TB'], type='str'),
+        cap_unit=dict(choices=['MB', 'GB', 'TB', 'CYL'], type='str'),
         vol_wwn=dict(required=False, type='str'),
+        append_vol_id=dict(required=False, type='bool'),
         state=dict(required=True, type='str', choices=['absent', 'present'])
     )
 

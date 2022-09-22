@@ -1,73 +1,73 @@
 # Ansible Modules for Dell Technologies PowerMax
-## Product Guide 1.8.0
+## Product Guide 2.0.0
 © 2022 Dell Inc. or its subsidiaries. All rights reserved. Dell and other trademarks are trademarks of Dell Inc. or its subsidiaries. Other trademarks may be trademarks of their respective owners.
 
 --------------
 ## Contents
-*   [Metro DR Module](#metro-dr-module)
+*   [Host Module](#host-module)
     *   [Synopsis](#synopsis)
     *   [Parameters](#parameters)
     *   [Notes](#notes)
     *   [Examples](#examples)
     *   [Return Values](#return-values)
     *   [Authors](#authors)
-*   [Initiator Module](#initiator-module)
+*   [Host Group Module](#host-group-module)
     *   [Synopsis](#synopsis-1)
     *   [Parameters](#parameters-1)
     *   [Notes](#notes-1)
     *   [Examples](#examples-1)
     *   [Return Values](#return-values-1)
     *   [Authors](#authors-1)
-*   [Host Group Module](#host-group-module)
+*   [Info Module](#info-module)
     *   [Synopsis](#synopsis-2)
     *   [Parameters](#parameters-2)
     *   [Notes](#notes-2)
     *   [Examples](#examples-2)
     *   [Return Values](#return-values-2)
     *   [Authors](#authors-2)
-*   [Host Module](#host-module)
+*   [Initiator Module](#initiator-module)
     *   [Synopsis](#synopsis-3)
     *   [Parameters](#parameters-3)
     *   [Notes](#notes-3)
     *   [Examples](#examples-3)
     *   [Return Values](#return-values-3)
     *   [Authors](#authors-3)
-*   [Masking View Module](#masking-view-module)
+*   [Job Module](#job-module)
     *   [Synopsis](#synopsis-4)
     *   [Parameters](#parameters-4)
     *   [Notes](#notes-4)
     *   [Examples](#examples-4)
     *   [Return Values](#return-values-4)
     *   [Authors](#authors-4)
-*   [Snapshot Policy Module](#snapshot-policy-module)
+*   [Masking View Module](#masking-view-module)
     *   [Synopsis](#synopsis-5)
     *   [Parameters](#parameters-5)
     *   [Notes](#notes-5)
     *   [Examples](#examples-5)
     *   [Return Values](#return-values-5)
     *   [Authors](#authors-5)
-*   [Intelligent Volume Placement](#intelligent-volume-placement)
+*   [Metro DR Module](#metro-dr-module)
     *   [Synopsis](#synopsis-6)
     *   [Parameters](#parameters-6)
     *   [Notes](#notes-6)
     *   [Examples](#examples-6)
     *   [Return Values](#return-values-6)
     *   [Authors](#authors-6)
-*   [Snapshot Module](#snapshot-module)
+*   [Port Module](#port-module)
     *   [Synopsis](#synopsis-7)
     *   [Parameters](#parameters-7)
     *   [Notes](#notes-7)
     *   [Examples](#examples-7)
     *   [Return Values](#return-values-7)
     *   [Authors](#authors-7)
-*   [Info Module](#info-module)
+*   [Port Group Module](#port-group-module)
     *   [Synopsis](#synopsis-8)
     *   [Parameters](#parameters-8)
     *   [Notes](#notes-8)
     *   [Examples](#examples-8)
     *   [Return Values](#return-values-8)
     *   [Authors](#authors-8)
-*   [SRDF Module](#srdf-module)
+*   [Storage Pool Dict Module](#storage-pool-dict-module)
     *   [Synopsis](#synopsis-9)
     *   [Parameters](#parameters-9)
     *   [Notes](#notes-9)
@@ -81,35 +81,35 @@
     *   [Examples](#examples-10)
     *   [Return Values](#return-values-10)
     *   [Authors](#authors-10)
-*   [Port Module](#port-module)
+*   [Snapshot Module](#snapshot-module)
     *   [Synopsis](#synopsis-11)
     *   [Parameters](#parameters-11)
     *   [Notes](#notes-11)
     *   [Examples](#examples-11)
     *   [Return Values](#return-values-11)
     *   [Authors](#authors-11)
-*   [Port Group Module](#port-group-module)
+*   [Snapshot Policy Module](#snapshot-policy-module)
     *   [Synopsis](#synopsis-12)
     *   [Parameters](#parameters-12)
     *   [Notes](#notes-12)
     *   [Examples](#examples-12)
     *   [Return Values](#return-values-12)
     *   [Authors](#authors-12)
-*   [Storage Pool Module](#storage-pool-module)
+*   [SRDF Module](#srdf-module)
     *   [Synopsis](#synopsis-13)
     *   [Parameters](#parameters-13)
     *   [Notes](#notes-13)
     *   [Examples](#examples-13)
     *   [Return Values](#return-values-13)
     *   [Authors](#authors-13)
-*   [Job Module](#job-module)
+*   [Storage Group Module](#storage-group-module)
     *   [Synopsis](#synopsis-14)
     *   [Parameters](#parameters-14)
     *   [Notes](#notes-14)
     *   [Examples](#examples-14)
     *   [Return Values](#return-values-14)
     *   [Authors](#authors-14)
-*   [Storage Pool Dict Module](#storage-pool-dict-module)
+*   [Storage Pool Module](#storage-pool-module)
     *   [Synopsis](#synopsis-15)
     *   [Parameters](#parameters-15)
     *   [Notes](#notes-15)
@@ -123,7 +123,7 @@
     *   [Examples](#examples-16)
     *   [Return Values](#return-values-16)
     *   [Authors](#authors-16)
-*   [Storage Group Module](#storage-group-module)
+*   [Intelligent Volume Placement](#intelligent-volume-placement)
     *   [Synopsis](#synopsis-17)
     *   [Parameters](#parameters-17)
     *   [Notes](#notes-17)
@@ -133,6 +133,2343 @@
 
 --------------
 
+# Host Module
+
+Manage host (initiator group) on PowerMax/VMAX Storage System
+
+### Synopsis
+ Managing hosts on a PowerMax storage system includes creating a host with a set of initiators and host flags, adding and removing initiators to or from a host, modifying host flag values, renaming a host, and deleting a host.
+
+### Parameters
+                                                                                                                                                                                                                                                                                                                    
+<table>
+    <tr>
+        <th colspan=1>Parameter</th>
+        <th width="20%">Type</th>
+        <th>Required</th>
+        <th>Default</th>
+        <th>Choices</th>
+        <th width="80%">Description</th>
+    </tr>
+                                                            <tr>
+            <td colspan=1 > host_name</td>
+            <td> str  </td>
+            <td> True </td>
+            <td></td>
+            <td></td>
+            <td> <br> The name of the host. No Special Character support except for _. Case sensitive for REST Calls.  <br> Creation of an empty host is allowed. </td>
+        </tr>
+                    <tr>
+            <td colspan=1 > initiators</td>
+            <td> list   <br> elements: str </td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td> <br> List of Initiator WWN or IQN or alias to be added to or removed from the host. </td>
+        </tr>
+                    <tr>
+            <td colspan=1 > state</td>
+            <td> str  </td>
+            <td> True </td>
+            <td></td>
+            <td> <ul> <li>absent</li>  <li>present</li> </ul></td>
+            <td> <br> Define whether the host should exist or not.  <br> absent - indicates that the host should not exist in the system.  <br> present - indicates that the host should exist in the system. </td>
+        </tr>
+                    <tr>
+            <td colspan=1 > initiator_state</td>
+            <td> str  </td>
+            <td></td>
+            <td></td>
+            <td> <ul> <li>absent-in-host</li>  <li>present-in-host</li> </ul></td>
+            <td> <br> Define whether the initiators should be present or absent on the host.  <br> absent-in-host - indicates that the initiators should not exist on the host.  <br> present-in-host - indicates that the initiators should exist on the host.  <br> Required when creating a host with initiators or adding and removing initiators to or from an existing host. </td>
+        </tr>
+                    <tr>
+            <td colspan=1 > host_flags</td>
+            <td> dict  </td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td> <br> Input as a yaml dictionary.  <br> List of all host_flags-  <br> 1. volume_set_addressing.  <br> 2. disable_q_reset_on_ua.  <br> 3. environ_set.  <br> 4. avoid_reset_broadcast.  <br> 5. openvms.  <br> 6. scsi_3.  <br> 7. spc2_protocol_version.  <br> 8. scsi_support1.  <br> 9. consistent_lun.  <br> Possible values are true, false, unset (default state). </td>
+        </tr>
+                    <tr>
+            <td colspan=1 > host_type</td>
+            <td> str  </td>
+            <td></td>
+            <td></td>
+            <td> <ul> <li>default</li>  <li>hpux</li> </ul></td>
+            <td> <br> Describing the OS type. </td>
+        </tr>
+                    <tr>
+            <td colspan=1 > new_name</td>
+            <td> str  </td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td> <br> The new name of the host for the renaming function. No Special Character support except for _. Case sensitive for REST Calls. </td>
+        </tr>
+                    <tr>
+            <td colspan=1 > unispherehost</td>
+            <td> str  </td>
+            <td> True </td>
+            <td></td>
+            <td></td>
+            <td> <br> IP or FQDN of the Unisphere host </td>
+        </tr>
+                    <tr>
+            <td colspan=1 > universion</td>
+            <td> int  </td>
+            <td></td>
+            <td></td>
+            <td> <ul> <li>91</li>  <li>92</li>  <li>100</li> </ul></td>
+            <td> <br> Unisphere version, currently '91', '92' and '100' versions are supported. </td>
+        </tr>
+                    <tr>
+            <td colspan=1 > verifycert</td>
+            <td> str  </td>
+            <td> True </td>
+            <td></td>
+            <td></td>
+            <td> <br> Specifies system whether to validate SSL certificate or not, Values can be True or False or a custom file path for SSL certificate with .pem extension or .cer with base 64 encoding. </td>
+        </tr>
+                    <tr>
+            <td colspan=1 > user</td>
+            <td> str  </td>
+            <td> True </td>
+            <td></td>
+            <td></td>
+            <td> <br> The username of the Unisphere host. </td>
+        </tr>
+                    <tr>
+            <td colspan=1 > password</td>
+            <td> str  </td>
+            <td> True </td>
+            <td></td>
+            <td></td>
+            <td> <br> The password of the Unisphere host. </td>
+        </tr>
+                    <tr>
+            <td colspan=1 > serial_no</td>
+            <td> str  </td>
+            <td> True </td>
+            <td></td>
+            <td></td>
+            <td> <br> The serial number of the PowerMax/VMAX array. It is a required parameter for all array-specific operations except for getting a list of arrays in the Gatherfacts module. </td>
+        </tr>
+                                                    </table>
+
+### Notes
+* host_flags and host_type are mutually exclusive parameters.
+* The modules present in this collection named as 'dellemc.powermax' are built to support the Dell PowerMax storage platform.
+
+### Examples
+```
+- name: Create host with host_type 'default'
+  dellemc.powermax.host:
+    unispherehost: "{{unispherehost}}"
+    universion: "{{universion}}"
+    verifycert: "{{verifycert}}"
+    user: "{{user}}"
+    password: "{{password}}"
+    serial_no: "{{serial_no}}"
+    host_name: "ansible_test_1"
+    host_type: "default"
+    state: 'present'
+
+- name: Create host with host_type 'hpux'
+  dellemc.powermax.host:
+    unispherehost: "{{unispherehost}}"
+    universion: "{{universion}}"
+    verifycert: "{{verifycert}}"
+    user: "{{user}}"
+    password: "{{password}}"
+    serial_no: "{{serial_no}}"
+    host_name: "ansible_test_2"
+    host_type: "hpux"
+    state: 'present'
+
+- name: Create host with host_flags
+  dellemc.powermax.host:
+    unispherehost: "{{unispherehost}}"
+    universion: "{{universion}}"
+    verifycert: "{{verifycert}}"
+    user: "{{user}}"
+    password: "{{password}}"
+    serial_no: "{{serial_no}}"
+    host_name: "ansible_test_3"
+    initiators:
+      - 1000000000000001
+      - 'host/HBA01'
+    host_flags:
+      spc2_protocol_version: true
+      consistent_lun: true
+      volume_set_addressing: 'unset'
+      disable_q_reset_on_ua: false
+      openvms: 'unset'
+    state: 'present'
+    initiator_state: 'present-in-host'
+
+- name: Get host details
+  dellemc.powermax.host:
+    unispherehost: "{{unispherehost}}"
+    universion: "{{universion}}"
+    verifycert: "{{verifycert}}"
+    user: "{{user}}"
+    password: "{{password}}"
+    serial_no: "{{serial_no}}"
+    host_name: "ansible_test_1"
+    state: 'present'
+
+- name: Adding initiator to host
+  dellemc.powermax.host:
+    unispherehost: "{{unispherehost}}"
+    universion: "{{universion}}"
+    verifycert: "{{verifycert}}"
+    user: "{{user}}"
+    password: "{{password}}"
+    serial_no: "{{serial_no}}"
+    host_name: "ansible_test_1"
+    initiators:
+      - 1000000000000001
+      - 'host/HBA01'
+    initiator_state: 'present-in-host'
+    state: 'present'
+
+- name: Removing initiator from host
+  dellemc.powermax.host:
+    unispherehost: "{{unispherehost}}"
+    universion: "{{universion}}"
+    verifycert: "{{verifycert}}"
+    user: "{{user}}"
+    password: "{{password}}"
+    serial_no: "{{serial_no}}"
+    host_name: "ansible_test_1"
+    initiators:
+      - 1000000000000001
+      - 'host/HBA01'
+    initiator_state: 'absent-in-host'
+    state: 'present'
+
+- name: Modify host using host_type
+  dellemc.powermax.host:
+    unispherehost: "{{unispherehost}}"
+    universion: "{{universion}}"
+    verifycert: "{{verifycert}}"
+    user: "{{user}}"
+    password: "{{password}}"
+    serial_no: "{{serial_no}}"
+    host_name: "ansible_test_1"
+    host_type: "hpux"
+    state: 'present'
+
+- name: Modify host using host_flags
+  dellemc.powermax.host:
+    unispherehost: "{{unispherehost}}"
+    universion: "{{universion}}"
+    verifycert: "{{verifycert}}"
+    user: "{{user}}"
+    password: "{{password}}"
+    serial_no: "{{serial_no}}"
+    host_name: "ansible_test_1"
+    host_flags:
+      spc2_protocol_version: unset
+      consistent_lun: unset
+      volume_set_addressing: true
+      disable_q_reset_on_ua: false
+      openvms: false
+      avoid_reset_broadcast: true
+    state: 'present'
+
+- name: Rename host
+  dellemc.powermax.host:
+    unispherehost: "{{unispherehost}}"
+    universion: "{{universion}}"
+    verifycert: "{{verifycert}}"
+    user: "{{user}}"
+    password: "{{password}}"
+    serial_no: "{{serial_no}}"
+    host_name: "ansible_test_1"
+    new_name: "ansible_test_1_host"
+    state: 'present'
+
+- name: Delete host
+  dellemc.powermax.host:
+    unispherehost: "{{unispherehost}}"
+    universion: "{{universion}}"
+    verifycert: "{{verifycert}}"
+    user: "{{user}}"
+    password: "{{password}}"
+    serial_no: "{{serial_no}}"
+    host_name: "ansible_test_1_host"
+    state: 'absent'
+```
+
+### Return Values
+                                                                                                                                                                                                                                                                                                                                                                                                                                
+<table>
+    <tr>
+        <th colspan=2>Key</th>
+        <th>Type</th>
+        <th>Returned</th>
+        <th width="100%">Description</th>
+    </tr>
+                                                                                            <tr>
+            <td colspan=2 > changed </td>
+            <td>  bool </td>
+            <td> always </td>
+            <td> Whether or not the resource has changed. </td>
+        </tr>
+                    <tr>
+            <td colspan=2 > host_details </td>
+            <td>  complex </td>
+            <td> When host exist. </td>
+            <td> Details of the host. </td>
+        </tr>
+                            <tr>
+                <td class="elbow-placeholder">&nbsp;</td>
+                <td colspan=1 > bw_limit </td>
+                <td> int </td>
+                <td>success</td>
+                <td> Bandwidth limit of the host. </td>
+            </tr>
+                                <tr>
+                <td class="elbow-placeholder">&nbsp;</td>
+                <td colspan=1 > consistent_lun </td>
+                <td> bool </td>
+                <td>success</td>
+                <td> Flag for consistent LUN in host. </td>
+            </tr>
+                                <tr>
+                <td class="elbow-placeholder">&nbsp;</td>
+                <td colspan=1 > disabled_flags </td>
+                <td> list </td>
+                <td>success</td>
+                <td> List of any disabled port flags overridden by the initiator. </td>
+            </tr>
+                                <tr>
+                <td class="elbow-placeholder">&nbsp;</td>
+                <td colspan=1 > enabled_flags </td>
+                <td> list </td>
+                <td>success</td>
+                <td> List of any enabled port flags overridden by the initiator. </td>
+            </tr>
+                                <tr>
+                <td class="elbow-placeholder">&nbsp;</td>
+                <td colspan=1 > hostId </td>
+                <td> str </td>
+                <td>success</td>
+                <td> Host ID. </td>
+            </tr>
+                                <tr>
+                <td class="elbow-placeholder">&nbsp;</td>
+                <td colspan=1 > hostgroup </td>
+                <td> list </td>
+                <td>success</td>
+                <td> List of host groups that the host is associated with. </td>
+            </tr>
+                                <tr>
+                <td class="elbow-placeholder">&nbsp;</td>
+                <td colspan=1 > initiator </td>
+                <td> list </td>
+                <td>success</td>
+                <td> List of initiators present in the host. </td>
+            </tr>
+                                <tr>
+                <td class="elbow-placeholder">&nbsp;</td>
+                <td colspan=1 > maskingview </td>
+                <td> list </td>
+                <td>success</td>
+                <td> List of masking view in which the host group is present. </td>
+            </tr>
+                                <tr>
+                <td class="elbow-placeholder">&nbsp;</td>
+                <td colspan=1 > num_of_hostgroups </td>
+                <td> int </td>
+                <td>success</td>
+                <td> Number of host groups associated with the host. </td>
+            </tr>
+                                <tr>
+                <td class="elbow-placeholder">&nbsp;</td>
+                <td colspan=1 > num_of_initiators </td>
+                <td> int </td>
+                <td>success</td>
+                <td> Number of initiators present in the host. </td>
+            </tr>
+                                <tr>
+                <td class="elbow-placeholder">&nbsp;</td>
+                <td colspan=1 > num_of_masking_views </td>
+                <td> int </td>
+                <td>success</td>
+                <td> Number of masking views associated with the host. </td>
+            </tr>
+                                <tr>
+                <td class="elbow-placeholder">&nbsp;</td>
+                <td colspan=1 > num_of_powerpath_hosts </td>
+                <td> int </td>
+                <td>success</td>
+                <td> Number of PowerPath hosts associated with the host. </td>
+            </tr>
+                                <tr>
+                <td class="elbow-placeholder">&nbsp;</td>
+                <td colspan=1 > port_flags_override </td>
+                <td> bool </td>
+                <td>success</td>
+                <td> Whether any of the initiator port flags are overridden. </td>
+            </tr>
+                                <tr>
+                <td class="elbow-placeholder">&nbsp;</td>
+                <td colspan=1 > type </td>
+                <td> str </td>
+                <td>success</td>
+                <td> Type of initiator. </td>
+            </tr>
+                                        </table>
+
+### Authors
+* Vasudevu Lakhinana (@unknown) <ansible.team@dell.com>
+* Manisha Agrawal (@agrawm3) <ansible.team@dell.com>
+
+--------------------------------
+# Host Group Module
+
+Manage a host group (cascaded initiator group) on a PowerMax/VMAX storage system
+
+### Synopsis
+ Managing a host group on a PowerMax storage system includes creating a host group with a set of hosts, adding or removing hosts to or from a host group, renaming a host group, modifying host flags of a host group, and deleting a host group.
+
+### Parameters
+                                                                                                                                                                                                                                                                                                                    
+<table>
+    <tr>
+        <th colspan=1>Parameter</th>
+        <th width="20%">Type</th>
+        <th>Required</th>
+        <th>Default</th>
+        <th>Choices</th>
+        <th width="80%">Description</th>
+    </tr>
+                                                            <tr>
+            <td colspan=1 > hostgroup_name</td>
+            <td> str  </td>
+            <td> True </td>
+            <td></td>
+            <td></td>
+            <td> <br> The name of the host group. No Special Character support except for _. Case sensitive for REST Calls. </td>
+        </tr>
+                    <tr>
+            <td colspan=1 > hosts</td>
+            <td> list   <br> elements: str </td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td> <br> List of host names to be added to the host group or removed from the host group.  <br> Creation of an empty host group is allowed. </td>
+        </tr>
+                    <tr>
+            <td colspan=1 > state</td>
+            <td> str  </td>
+            <td> True </td>
+            <td></td>
+            <td> <ul> <li>absent</li>  <li>present</li> </ul></td>
+            <td> <br> Define whether the host group should be present or absent on the system.  <br> present - indicates that the host group should be present on the system.  <br> absent - indicates that the host group should be absent on the system. </td>
+        </tr>
+                    <tr>
+            <td colspan=1 > host_state</td>
+            <td> str  </td>
+            <td></td>
+            <td></td>
+            <td> <ul> <li>present-in-group</li>  <li>absent-in-group</li> </ul></td>
+            <td> <br> Define whether the host should be present or absent in the host group.  <br> present-in-group - indicates that the hosts should exist in the host group.  <br> absent-in-group - indicates that the hosts should not exist in the host group. </td>
+        </tr>
+                    <tr>
+            <td colspan=1 > host_flags</td>
+            <td> dict  </td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td> <br> input as an yaml dictionary.  <br> List of all host_flags -  <br> 1. volume_set_addressing.  <br> 2. disable_q_reset_on_ua.  <br> 3. environ_set.  <br> 4. avoid_reset_broadcast.  <br> 5. openvms.  <br> 6. scsi_3.  <br> 7. spc2_protocol_version.  <br> 8. scsi_support1.  <br> 9. consistent_lun.  <br> Possible values are true, false, unset(default state). </td>
+        </tr>
+                    <tr>
+            <td colspan=1 > host_type</td>
+            <td> str  </td>
+            <td></td>
+            <td></td>
+            <td> <ul> <li>default</li>  <li>hpux</li> </ul></td>
+            <td> <br> Describing the OS type (default or hpux). </td>
+        </tr>
+                    <tr>
+            <td colspan=1 > new_name</td>
+            <td> str  </td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td> <br> The new name for the host group for the renaming function. No Special Character support except for _. Case sensitive for REST Calls. </td>
+        </tr>
+                    <tr>
+            <td colspan=1 > unispherehost</td>
+            <td> str  </td>
+            <td> True </td>
+            <td></td>
+            <td></td>
+            <td> <br> IP or FQDN of the Unisphere host </td>
+        </tr>
+                    <tr>
+            <td colspan=1 > universion</td>
+            <td> int  </td>
+            <td></td>
+            <td></td>
+            <td> <ul> <li>91</li>  <li>92</li>  <li>100</li> </ul></td>
+            <td> <br> Unisphere version, currently '91', '92' and '100' versions are supported. </td>
+        </tr>
+                    <tr>
+            <td colspan=1 > verifycert</td>
+            <td> str  </td>
+            <td> True </td>
+            <td></td>
+            <td></td>
+            <td> <br> Specifies system whether to validate SSL certificate or not, Values can be True or False or a custom file path for SSL certificate with .pem extension or .cer with base 64 encoding. </td>
+        </tr>
+                    <tr>
+            <td colspan=1 > user</td>
+            <td> str  </td>
+            <td> True </td>
+            <td></td>
+            <td></td>
+            <td> <br> The username of the Unisphere host. </td>
+        </tr>
+                    <tr>
+            <td colspan=1 > password</td>
+            <td> str  </td>
+            <td> True </td>
+            <td></td>
+            <td></td>
+            <td> <br> The password of the Unisphere host. </td>
+        </tr>
+                    <tr>
+            <td colspan=1 > serial_no</td>
+            <td> str  </td>
+            <td> True </td>
+            <td></td>
+            <td></td>
+            <td> <br> The serial number of the PowerMax/VMAX array. It is a required parameter for all array-specific operations except for getting a list of arrays in the Gatherfacts module. </td>
+        </tr>
+                                                    </table>
+
+### Notes
+* In the gather facts module, empty host groups will be listed as hosts.
+* host_flags and host_type are mutually exclusive parameters.
+* Hostgroups with 'default' host_type will have 'default' hosts.
+* Hostgroups with 'hpux' host_type will have 'hpux' hosts.
+* The modules present in this collection named as 'dellemc.powermax' are built to support the Dell PowerMax storage platform.
+
+### Examples
+```
+- name: Create host group with 'default' host_type
+  dellemc.powermax.hostgroup:
+    unispherehost: "{{unispherehost}}"
+    universion: "{{universion}}"
+    verifycert: "{{verifycert}}"
+    user: "{{user}}"
+    password: "{{password}}"
+    serial_no: "{{serial_no}}"
+    hostgroup_name: "ansible_test_HG_1"
+    host_type: "default"
+    hosts:
+      - ansible_test_1
+    host_state: 'present-in-group'
+    state: 'present'
+
+- name: Create host group with 'hpux' host_type
+  dellemc.powermax.hostgroup:
+    unispherehost: "{{unispherehost}}"
+    universion: "{{universion}}"
+    verifycert: "{{verifycert}}"
+    user: "{{user}}"
+    password: "{{password}}"
+    serial_no: "{{serial_no}}"
+    hostgroup_name: "ansible_test_HG_2"
+    host_type: "hpux"
+    hosts:
+      - ansible_test_2
+    host_state: 'present-in-group'
+    state: 'present'
+
+- name: Create host group with host_flags
+  dellemc.powermax.hostgroup:
+    unispherehost: "{{unispherehost}}"
+    universion: "{{universion}}"
+    verifycert: "{{verifycert}}"
+    user: "{{user}}"
+    password: "{{password}}"
+    serial_no: "{{serial_no}}"
+    hostgroup_name: "ansible_test_HG_3"
+    hosts:
+      - ansible_test_3
+    state: 'present'
+    host_state: 'present-in-group'
+    host_flags:
+      spc2_protocol_version: true
+      consistent_lun: true
+      volume_set_addressing: 'unset'
+      disable_q_reset_on_ua: false
+      openvms: 'unset'
+
+- name: Get host group details
+  dellemc.powermax.hostgroup:
+    unispherehost: "{{unispherehost}}"
+    universion: "{{universion}}"
+    verifycert: "{{verifycert}}"
+    user: "{{user}}"
+    password: "{{password}}"
+    serial_no: "{{serial_no}}"
+    hostgroup_name: "ansible_test_HG_1"
+    state: 'present'
+
+- name: Adding host to host group
+  dellemc.powermax.hostgroup:
+    unispherehost: "{{unispherehost}}"
+    universion: "{{universion}}"
+    verifycert: "{{verifycert}}"
+    user: "{{user}}"
+    password: "{{password}}"
+    serial_no: "{{serial_no}}"
+    hostgroup_name: "ansible_test_HG_1"
+    hosts:
+      - Ansible_Testing_host2
+    state: 'present'
+    host_state: 'present-in-group'
+
+- name: Removing host from host group
+  dellemc.powermax.hostgroup:
+    unispherehost: "{{unispherehost}}"
+    universion: "{{universion}}"
+    verifycert: "{{verifycert}}"
+    user: "{{user}}"
+    password: "{{password}}"
+    serial_no: "{{serial_no}}"
+    hostgroup_name: "ansible_test_HG_1"
+    hosts:
+      - Ansible_Testing_host2
+    state: 'present'
+    host_state: 'absent-in-group'
+
+- name: Modify host group using host_type
+  dellemc.powermax.hostgroup:
+    unispherehost: "{{unispherehost}}"
+    universion: "{{universion}}"
+    verifycert: "{{verifycert}}"
+    user: "{{user}}"
+    password: "{{password}}"
+    serial_no: "{{serial_no}}"
+    hostgroup_name: "ansible_test_HG_1"
+    host_type: "hpux"
+    state: 'present'
+
+- name: Modify host group using host_flags
+  dellemc.powermax.hostgroup:
+    unispherehost: "{{unispherehost}}"
+    universion: "{{universion}}"
+    verifycert: "{{verifycert}}"
+    user: "{{user}}"
+    password: "{{password}}"
+    serial_no: "{{serial_no}}"
+    hostgroup_name: "ansible_test_HG_1"
+    host_flags:
+      spc2_protocol_version: unset
+      disable_q_reset_on_ua: false
+      openvms: false
+      avoid_reset_broadcast: true
+    state: 'present'
+
+- name: Rename host group
+  dellemc.powermax.hostgroup:
+    unispherehost: "{{unispherehost}}"
+    universion: "{{universion}}"
+    verifycert: "{{verifycert}}"
+    user: "{{user}}"
+    password: "{{password}}"
+    serial_no: "{{serial_no}}"
+    hostgroup_name: "ansible_test_HG_1"
+    new_name: "ansible_test_hostgroup_1"
+    state: 'present'
+
+- name: Delete host group
+  dellemc.powermax.hostgroup:
+    unispherehost: "{{unispherehost}}"
+    universion: "{{universion}}"
+    verifycert: "{{verifycert}}"
+    user: "{{user}}"
+    password: "{{password}}"
+    serial_no: "{{serial_no}}"
+    hostgroup_name: "ansible_test_hostgroup_1"
+    state: 'absent'
+```
+
+### Return Values
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            
+<table>
+    <tr>
+        <th colspan=3>Key</th>
+        <th>Type</th>
+        <th>Returned</th>
+        <th width="100%">Description</th>
+    </tr>
+                                                                                            <tr>
+            <td colspan=3 > changed </td>
+            <td>  bool </td>
+            <td> always </td>
+            <td> Whether or not the resource has changed. </td>
+        </tr>
+                    <tr>
+            <td colspan=3 > hostgroup_details </td>
+            <td>  complex </td>
+            <td> When host group exist. </td>
+            <td> Details of the host group. </td>
+        </tr>
+                            <tr>
+                <td class="elbow-placeholder">&nbsp;</td>
+                <td colspan=2 > consistent_lun </td>
+                <td> bool </td>
+                <td>success</td>
+                <td> Flag for consistent LUN in the host group. </td>
+            </tr>
+                                <tr>
+                <td class="elbow-placeholder">&nbsp;</td>
+                <td colspan=2 > disabled_flags </td>
+                <td> list </td>
+                <td>success</td>
+                <td> List of any disabled port flags overridden by the initiator. </td>
+            </tr>
+                                <tr>
+                <td class="elbow-placeholder">&nbsp;</td>
+                <td colspan=2 > enabled_flags </td>
+                <td> list </td>
+                <td>success</td>
+                <td> List of any enabled port flags overridden by the initiator. </td>
+            </tr>
+                                <tr>
+                <td class="elbow-placeholder">&nbsp;</td>
+                <td colspan=2 > host </td>
+                <td> list </td>
+                <td>success</td>
+                <td> List of hosts present in the host group. </td>
+            </tr>
+                                         <tr>
+                    <td class="elbow-placeholder">&nbsp;</td>
+                    <td class="elbow-placeholder">&nbsp;</td>
+                    <td colspan=1 > hostId </td>
+                    <td> str </td>
+                    <td>success</td>
+                    <td> Unique identifier for the host. </td>
+                </tr>
+                                             <tr>
+                    <td class="elbow-placeholder">&nbsp;</td>
+                    <td class="elbow-placeholder">&nbsp;</td>
+                    <td colspan=1 > initiator </td>
+                    <td> list </td>
+                    <td>success</td>
+                    <td> List of initiators present in the host. </td>
+                </tr>
+                                                            <tr>
+                <td class="elbow-placeholder">&nbsp;</td>
+                <td colspan=2 > hostGroupId </td>
+                <td> str </td>
+                <td>success</td>
+                <td> Host group ID. </td>
+            </tr>
+                                <tr>
+                <td class="elbow-placeholder">&nbsp;</td>
+                <td colspan=2 > maskingview </td>
+                <td> list </td>
+                <td>success</td>
+                <td> Masking view in which host group is present. </td>
+            </tr>
+                                <tr>
+                <td class="elbow-placeholder">&nbsp;</td>
+                <td colspan=2 > num_of_hosts </td>
+                <td> int </td>
+                <td>success</td>
+                <td> Number of hosts in the host group. </td>
+            </tr>
+                                <tr>
+                <td class="elbow-placeholder">&nbsp;</td>
+                <td colspan=2 > num_of_initiators </td>
+                <td> int </td>
+                <td>success</td>
+                <td> Number of initiators in the host group. </td>
+            </tr>
+                                <tr>
+                <td class="elbow-placeholder">&nbsp;</td>
+                <td colspan=2 > num_of_masking_views </td>
+                <td> int </td>
+                <td>success</td>
+                <td> Number of masking views associated with the host group. </td>
+            </tr>
+                                <tr>
+                <td class="elbow-placeholder">&nbsp;</td>
+                <td colspan=2 > port_flags_override </td>
+                <td> bool </td>
+                <td>success</td>
+                <td> Whether any of the initiator's port flags are overridden. </td>
+            </tr>
+                                <tr>
+                <td class="elbow-placeholder">&nbsp;</td>
+                <td colspan=2 > type </td>
+                <td> str </td>
+                <td>success</td>
+                <td> Type of initiator of the hosts of the host group. </td>
+            </tr>
+                                        </table>
+
+### Authors
+* Vasudevu Lakhinana (@unknown) <ansible.team@dell.com>
+* Manisha Agrawal (@agrawm3) <ansible.team@dell.com>
+
+--------------------------------
+# Info Module
+
+Gathers information about PowerMax or VMAX storage entities
+
+### Synopsis
+ Gathers the list of specified PowerMax or VMAX storage system entities, such as the list of registered arrays, storage groups, hosts, host groups, storage groups, storage resource pools, port groups, masking views, initiators, array health status, alerts and metro DR environments, so on.
+
+### Parameters
+                                                                                                                                                                                                                                                                                                                                                
+<table>
+    <tr>
+        <th colspan=2>Parameter</th>
+        <th width="20%">Type</th>
+        <th>Required</th>
+        <th>Default</th>
+        <th>Choices</th>
+        <th width="80%">Description</th>
+    </tr>
+                                                            <tr>
+            <td colspan=2 > serial_no</td>
+            <td> str  </td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td> <br> The serial number of the PowerMax or VMAX array. It is not required for getting the list of arrays. </td>
+        </tr>
+                    <tr>
+            <td colspan=2 > tdev_volumes</td>
+            <td> bool  </td>
+            <td></td>
+            <td> True </td>
+            <td> <ul> <li>True</li>  <li>False</li> </ul></td>
+            <td> <br> Boolean variable to filter the volume list. This has a small performance impact. The default setting is True and; only TDEV volumes will be returned.  <br> True - Returns only the TDEV volumes.  <br> False - Rreturns all the volumes. </td>
+        </tr>
+                    <tr>
+            <td colspan=2 > gather_subset</td>
+            <td> list   <br> elements: str </td>
+            <td></td>
+            <td></td>
+            <td> <ul> <li>alert</li>  <li>health</li>  <li>vol</li>  <li>srp</li>  <li>sg</li>  <li>pg</li>  <li>host</li>  <li>hg</li>  <li>port</li>  <li>mv</li>  <li>rdf</li>  <li>metro_dr_env</li>  <li>snapshot_policies</li>  <li>initiators</li>  <li>mv_connections</li> </ul></td>
+            <td> <br> List of string variables to specify the PowerMax or VMAX entities for which information is required.  <br> Required only if the serial_no is present.  <br> List of all PowerMax or VMAX entities supported by the module.  <br> To get alert summary information - alert.  <br> To get health status of a specific PowerMax array - health.  <br> To get volumes - vol.  <br> To get storage resource pools - srp.  <br> To get storage groups - sg.  <br> To get port groups - pg.  <br> To get hosts - host.  <br> To get host groups - hg.  <br> To get ports - port.  <br> To get masking views - mv.  <br> To get RDF groups - rdf.  <br> To get Metro DR environments - metro_dr_env.  <br> To get snapshot policies - snapshot_policies.  <br> To get initiators - initiators.  <br> To get masking view connections - mv_connections. </td>
+        </tr>
+                    <tr>
+            <td colspan=2 > filters</td>
+            <td> list   <br> elements: dict </td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td> <br> List of filters to support filtered output for storage entities.  <br> Each filter is a tuple of {filter_key, filter_operator, filter_value}.  <br> Supports passing of multiple filters.  <br> The storage entities, 'rdf', 'health', 'snapshot_policies' and 'metro_dr_env', does not support filters. Filters are ignored if passed. </td>
+        </tr>
+                            <tr>
+                <td class="elbow-placeholder">&nbsp;</td>
+                <td colspan=1 > filter_key </td>
+                <td> str  </td>
+                <td> True </td>
+                <td></td>
+                <td></td>
+                <td>  <br> Name identifier of the filter.  </td>
+            </tr>
+                                <tr>
+                <td class="elbow-placeholder">&nbsp;</td>
+                <td colspan=1 > filter_operator </td>
+                <td> str  </td>
+                <td> True </td>
+                <td></td>
+                <td> <ul> <li>equal</li>  <li>greater</li>  <li>lesser</li>  <li>like</li> </ul></td>
+                <td>  <br> Operation to be performed on filter key.  </td>
+            </tr>
+                                <tr>
+                <td class="elbow-placeholder">&nbsp;</td>
+                <td colspan=1 > filter_value </td>
+                <td> str  </td>
+                <td> True </td>
+                <td></td>
+                <td></td>
+                <td>  <br> Value of the filter key.  </td>
+            </tr>
+                                        <tr>
+            <td colspan=2 > unispherehost</td>
+            <td> str  </td>
+            <td> True </td>
+            <td></td>
+            <td></td>
+            <td> <br> IP or FQDN of the Unisphere host </td>
+        </tr>
+                    <tr>
+            <td colspan=2 > universion</td>
+            <td> int  </td>
+            <td></td>
+            <td></td>
+            <td> <ul> <li>91</li>  <li>92</li>  <li>100</li> </ul></td>
+            <td> <br> Unisphere version, currently '91', '92' and '100' versions are supported. </td>
+        </tr>
+                    <tr>
+            <td colspan=2 > verifycert</td>
+            <td> str  </td>
+            <td> True </td>
+            <td></td>
+            <td></td>
+            <td> <br> Specifies system whether to validate SSL certificate or not, Values can be True or False or a custom file path for SSL certificate with .pem extension or .cer with base 64 encoding. </td>
+        </tr>
+                    <tr>
+            <td colspan=2 > user</td>
+            <td> str  </td>
+            <td> True </td>
+            <td></td>
+            <td></td>
+            <td> <br> The username of the Unisphere host. </td>
+        </tr>
+                    <tr>
+            <td colspan=2 > password</td>
+            <td> str  </td>
+            <td> True </td>
+            <td></td>
+            <td></td>
+            <td> <br> The password of the Unisphere host. </td>
+        </tr>
+                                                    </table>
+
+### Notes
+* Filter functionality is supported only for the following 'filter_key' against specific 'gather_subset'.
+* For vol - allocated_percent, associated, available_thin_volumes, bound_tdev, cap_cyl, cap_gb, cap_mb, cap_tb, cu_image_num, cu_image_ssid, data_volume, dld, drv, effective_wwn, emulation, encapsulated, encapsulated_wwn, gatekeeper, has_effective_wwn, mapped, mobility_id_enabled, num_of_front_end_paths, num_of_masking_views, num_of_storage_groups, oracle_instance_name, physical_name, pinned, private_volumes, rdf_group_number, reserved, split_name, status, storageGroupId, symmlun, tdev, thin_bcv, type, vdev, virtual_volumes, volume_identifier, wwn.
+* For srp - compression_state, description, effective_used_capacity_percent, emulation, num_of_disk_groups, num_of_srp_sg_demands, num_of_srp_slo_demands, rdfa_dse, reserved_cap_percent, total_allocated_cap_gb, total_srdf_dse_allocated_cap_gb, total_subscribed_cap_gb, total_usable_cap_gb.
+* For sg - base_slo_name, cap_gb, child, child_sg_name, ckd, compression, compression_ratio_to_one, fba, num_of_child_sgs, num_of_masking_views, num_of_parent_sgs, num_of_snapshots, num_of_vols, parent, parent_sg_name, slo_compliance, slo_name, srp_name, storageGroupId, tag, volumeId.
+* For pg - dir_port, fibre, iscsi, num_of_masking_views, num_of_ports.
+* For host - host_group_name, num_of_host_groups, num_of_initiators, num_of_masking_views, num_of_powerpath_hosts, powerPathHostId.
+* For hg - host_name, num_of_hosts, num_of_masking_views.
+* For port - aclx, avoid_reset_broadcast, common_serial_number, director_status, disable_q_reset_on_ua, enable_auto_negotive, environ_set, hp_3000_mode, identifier, init_point_to_point, ip_list, ipv4_address, ipv6_address, iscsi_target, max_speed, negotiated_speed, neqotiate_reset, no_participating, node_wwn, num_of_cores, num_of_hypers, num_of_mapped_vols, num_of_masking_views, num_of_port_groups, port_interface, port_status, rdf_hardware_compression, rdf_hardware_compression_supported, rdf_software_compression, rdf_software_compression_supported, scsi_3, scsi_support1, siemens, soft_reset, spc2_protocol_version, sunapee, type, unique_wwn, vcm_state, vnx_attached, volume_set_addressing, wwn_node.
+* For mv - host_or_host_group_name, port_group_name, protocol_endpoint_masking_view, storage_group_name.
+* For alert - acknowledged, array, created_date, created_date_milliseconds, description, object, object_type, severity, state, type.
+* For initiators - alias, directorId, initiator_hba, in_a_host, iscsi, logged_in, num_of_host_groups, num_of_masking_views, num_of_powerpath_hosts, num_of_vols, on_fabric, port_flag_overrides, portId, powerPathHostId.
+* For mv_connections - volume_id, host_lun_address, cap_gb, initiator_id, alias, dir_port, logged_in, on_fabric.
+* The check_mode is not supported.
+* The modules present in this collection named as 'dellemc.powermax' are built to support the Dell PowerMax storage platform.
+
+### Examples
+```
+- name: Get list of volumes with filter -- all TDEV volumes of size equal to 5 GB
+  dellemc.powermax.info:
+    unispherehost: "{{unispherehost}}"
+    universion: "{{universion}}"
+    verifycert: "{{verifycert}}"
+    user: "{{user}}"
+    password: "{{password}}"
+    serial_no: "{{serial_no}}"
+    gather_subset:
+      - vol
+    filters:
+      - filter_key: "tdev"
+        filter_operator: "equal"
+        filter_value: "True"
+      - filter_key: "cap_gb"
+        filter_operator: "equal"
+        filter_value: "5"
+
+- name: Get list of volumes and storage groups with filter
+  dellemc.powermax.info:
+    unispherehost: "{{unispherehost}}"
+    universion: "{{universion}}"
+    verifycert: "{{verifycert}}"
+    user: "{{user}}"
+    password: "{{password}}"
+    serial_no: "{{serial_no}}"
+    gather_subset:
+      - vol
+      - sg
+    filters:
+      - filter_key: "tdev"
+        filter_operator: "equal"
+        filter_value: "True"
+      - filter_key: "cap_gb"
+        filter_operator: "equal"
+        filter_value: "5"
+
+- name: Get list of storage groups with capacity between 2 GB to 10 GB
+  dellemc.powermax.info:
+    unispherehost: "{{unispherehost}}"
+    universion: "{{universion}}"
+    verifycert: "{{verifycert}}"
+    user: "{{user}}"
+    password: "{{password}}"
+    serial_no: "{{serial_no}}"
+    gather_subset:
+      - sg
+    filters:
+      - filter_key: "cap_gb"
+        filter_operator: "greater"
+        filter_value: "2"
+      - filter_key: "cap_gb"
+        filter_operator: "lesser"
+        filter_value: "10"
+
+- name: Get the list of arrays for a given Unisphere host
+  dellemc.powermax.info:
+    unispherehost: "{{unispherehost}}"
+    universion: "{{universion}}"
+    verifycert: "{{verifycert}}"
+    user: "{{user}}"
+    password: "{{password}}"
+  register: array_list
+
+- name: Get list of TDEV-volumes
+  dellemc.powermax.info:
+    unispherehost: "{{unispherehost}}"
+    universion: "{{universion}}"
+    verifycert: "{{verifycert}}"
+    user: "{{user}}"
+    password: "{{password}}"
+    serial_no: "{{serial_no}}"
+    tdev_volumes: True
+    gather_subset:
+      - vol
+
+- name: Get the list of arrays for a given Unisphere host
+  dellemc.powermax.info:
+    unispherehost: "{{unispherehost}}"
+    universion: "{{universion}}"
+    verifycert: "{{verifycert}}"
+    user: "{{user}}"
+    password: "{{password}}"
+
+- name: Get array health status
+  dellemc.powermax.info:
+    unispherehost: "{{unispherehost}}"
+    universion: "{{universion}}"
+    verifycert: "{{verifycert}}"
+    user: "{{user}}"
+    password: "{{password}}"
+    serial_no: "{{serial_no}}"
+    gather_subset:
+       - health
+
+- name: Get array alerts summary
+  dellemc.powermax.info:
+    unispherehost: "{{unispherehost}}"
+    universion: "{{universion}}"
+    verifycert: "{{verifycert}}"
+    user: "{{user}}"
+    password: "{{password}}"
+    serial_no: "{{serial_no}}"
+    gather_subset:
+       - alert
+
+- name: Get the list of Metro DR environments for a given Unisphere host
+  dellemc.powermax.info:
+    unispherehost: "{{unispherehost}}"
+    universion: "{{universion}}"
+    verifycert: "{{verifycert}}"
+    user: "{{user}}"
+    password: "{{password}}"
+    serial_no: "{{serial_no}}"
+    gather_subset:
+       - metro_dr_env
+
+- name: Get list of storage groups
+  dellemc.powermax.info:
+    unispherehost: "{{unispherehost}}"
+    universion: "{{universion}}"
+    verifycert: "{{verifycert}}"
+    user: "{{user}}"
+    password: "{{password}}"
+    serial_no: "{{serial_no}}"
+    gather_subset:
+       - sg
+
+- name: Get list of Storage Resource Pools
+  dellemc.powermax.info:
+    unispherehost: "{{unispherehost}}"
+    universion: "{{universion}}"
+    verifycert: "{{verifycert}}"
+    user: "{{user}}"
+    password: "{{password}}"
+    serial_no: "{{serial_no}}"
+    gather_subset:
+       - srp
+
+- name: Get list of ports
+  dellemc.powermax.info:
+    unispherehost: "{{unispherehost}}"
+    universion: "{{universion}}"
+    verifycert: "{{verifycert}}"
+    user: "{{user}}"
+    password: "{{password}}"
+    serial_no: "{{serial_no}}"
+    gather_subset:
+       - port
+
+- name: Get list of Port Groups
+  dellemc.powermax.info:
+    unispherehost: "{{unispherehost}}"
+    universion: "{{universion}}"
+    verifycert: "{{verifycert}}"
+    user: "{{user}}"
+    password: "{{password}}"
+    serial_no: "{{serial_no}}"
+    gather_subset:
+       - pg
+
+- name: Get list of hosts
+  dellemc.powermax.info:
+    unispherehost: "{{unispherehost}}"
+    universion: "{{universion}}"
+    verifycert: "{{verifycert}}"
+    user: "{{user}}"
+    password: "{{password}}"
+    serial_no: "{{serial_no}}"
+    gather_subset:
+       - host
+
+- name: Get list of Host Groups
+  dellemc.powermax.info:
+    unispherehost: "{{unispherehost}}"
+    universion: "{{universion}}"
+    verifycert: "{{verifycert}}"
+    user: "{{user}}"
+    password: "{{password}}"
+    serial_no: "{{serial_no}}"
+    gather_subset:
+       - hg
+
+- name: Get list of Masking Views
+  dellemc.powermax.info:
+    unispherehost: "{{unispherehost}}"
+    universion: "{{universion}}"
+    verifycert: "{{verifycert}}"
+    user: "{{user}}"
+    password: "{{password}}"
+    serial_no: "{{serial_no}}"
+    gather_subset:
+       - mv
+
+- name: Get list of RDF Groups
+  dellemc.powermax.info:
+    unispherehost: "{{unispherehost}}"
+    universion: "{{universion}}"
+    verifycert: "{{verifycert}}"
+    user: "{{user}}"
+    password: "{{password}}"
+    serial_no: "{{serial_no}}"
+    gather_subset:
+       - rdf
+
+- name: Get list of snapshot policies
+  dellemc.powermax.info:
+    unispherehost: "{{unispherehost}}"
+    universion: "{{universion}}"
+    verifycert: "{{verifycert}}"
+    user: "{{user}}"
+    password: "{{password}}"
+    serial_no: "{{serial_no}}"
+    gather_subset:
+     - snapshot_policies
+
+- name: Get list of initiators
+  dellemc.powermax.info:
+    unispherehost: "{{unispherehost}}"
+    universion: "{{universion}}"
+    verifycert: "{{verifycert}}"
+    user: "{{user}}"
+    password: "{{password}}"
+    serial_no: "{{serial_no}}"
+    gather_subset:
+     - initiators
+
+- name: Get list of masking view connections with filter
+  dellemc.powermax.info:
+      unispherehost: "{{unispherehost}}"
+      universion: "{{universion}}"
+      verifycert: "{{verifycert}}"
+      user: "{{user}}"
+      password: "{{password}}"
+      serial_no: "{{serial_no}}"
+      gather_subset:
+       - mv_connections
+      filters:
+       - filter_key: "logged_in"
+         filter_operator: "equal"
+         filter_value: "True"
+       - filter_key: "cap_gb"
+         filter_operator: "equal"
+         filter_value: "10"
+```
+
+### Return Values
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    
+<table>
+    <tr>
+        <th colspan=4>Key</th>
+        <th>Type</th>
+        <th>Returned</th>
+        <th width="100%">Description</th>
+    </tr>
+                                                                                            <tr>
+            <td colspan=4 > Alerts </td>
+            <td>  list </td>
+            <td> When the alert exists. </td>
+            <td> Alert summary of the array. </td>
+        </tr>
+                            <tr>
+                <td class="elbow-placeholder">&nbsp;</td>
+                <td colspan=3 > acknowledged </td>
+                <td> str </td>
+                <td>success</td>
+                <td> Whether or not this alert is acknowledged. </td>
+            </tr>
+                                <tr>
+                <td class="elbow-placeholder">&nbsp;</td>
+                <td colspan=3 > alertId </td>
+                <td> str </td>
+                <td>success</td>
+                <td> Unique ID of alert. </td>
+            </tr>
+                                <tr>
+                <td class="elbow-placeholder">&nbsp;</td>
+                <td colspan=3 > array </td>
+                <td> str </td>
+                <td>success</td>
+                <td> The serial number of the array. </td>
+            </tr>
+                                <tr>
+                <td class="elbow-placeholder">&nbsp;</td>
+                <td colspan=3 > created_date </td>
+                <td> str </td>
+                <td>success</td>
+                <td> The creation date. </td>
+            </tr>
+                                <tr>
+                <td class="elbow-placeholder">&nbsp;</td>
+                <td colspan=3 > created_date_milliseconds </td>
+                <td> str </td>
+                <td>success</td>
+                <td> The creation date presented in milliseconds. </td>
+            </tr>
+                                <tr>
+                <td class="elbow-placeholder">&nbsp;</td>
+                <td colspan=3 > description </td>
+                <td> str </td>
+                <td>success</td>
+                <td> The description of the alert. </td>
+            </tr>
+                                <tr>
+                <td class="elbow-placeholder">&nbsp;</td>
+                <td colspan=3 > object </td>
+                <td> str </td>
+                <td>success</td>
+                <td> An object description. </td>
+            </tr>
+                                <tr>
+                <td class="elbow-placeholder">&nbsp;</td>
+                <td colspan=3 > object_type </td>
+                <td> str </td>
+                <td>success</td>
+                <td> Resource class. </td>
+            </tr>
+                                <tr>
+                <td class="elbow-placeholder">&nbsp;</td>
+                <td colspan=3 > severity </td>
+                <td> str </td>
+                <td>success</td>
+                <td> The severity of the alert. </td>
+            </tr>
+                                <tr>
+                <td class="elbow-placeholder">&nbsp;</td>
+                <td colspan=3 > state </td>
+                <td> str </td>
+                <td>success</td>
+                <td> The state of the alert. </td>
+            </tr>
+                                <tr>
+                <td class="elbow-placeholder">&nbsp;</td>
+                <td colspan=3 > type </td>
+                <td> str </td>
+                <td>success</td>
+                <td> The type of the alert. </td>
+            </tr>
+                                        <tr>
+            <td colspan=4 > Arrays </td>
+            <td>  list </td>
+            <td> When the arrays in Unisphere exist. </td>
+            <td> Aviliable list of arrays in Unisphere. </td>
+        </tr>
+                    <tr>
+            <td colspan=4 > Health </td>
+            <td>  complex </td>
+            <td> When the array exist. </td>
+            <td> The health status of the array. </td>
+        </tr>
+                            <tr>
+                <td class="elbow-placeholder">&nbsp;</td>
+                <td colspan=3 > health_score_metric </td>
+                <td> list </td>
+                <td>success</td>
+                <td> An overall health score for the specified storage system. </td>
+            </tr>
+                                         <tr>
+                    <td class="elbow-placeholder">&nbsp;</td>
+                    <td class="elbow-placeholder">&nbsp;</td>
+                    <td colspan=2 > cached_date </td>
+                    <td> int </td>
+                    <td>success</td>
+                    <td> A timestamp in epoch format from the date when it was cached. </td>
+                </tr>
+                                             <tr>
+                    <td class="elbow-placeholder">&nbsp;</td>
+                    <td class="elbow-placeholder">&nbsp;</td>
+                    <td colspan=2 > data_date </td>
+                    <td> int </td>
+                    <td>success</td>
+                    <td> A timestamp in epoch format from the date it was collected. </td>
+                </tr>
+                                             <tr>
+                    <td class="elbow-placeholder">&nbsp;</td>
+                    <td class="elbow-placeholder">&nbsp;</td>
+                    <td colspan=2 > expired </td>
+                    <td> bool </td>
+                    <td>success</td>
+                    <td> A flag to indicate the expiry of the score. </td>
+                </tr>
+                                             <tr>
+                    <td class="elbow-placeholder">&nbsp;</td>
+                    <td class="elbow-placeholder">&nbsp;</td>
+                    <td colspan=2 > health_score </td>
+                    <td> int </td>
+                    <td>success</td>
+                    <td> An overall health score in numbers. </td>
+                </tr>
+                                             <tr>
+                    <td class="elbow-placeholder">&nbsp;</td>
+                    <td class="elbow-placeholder">&nbsp;</td>
+                    <td colspan=2 > instance_metrics </td>
+                    <td> list </td>
+                    <td>success</td>
+                    <td> Metrics about a specific instance. </td>
+                </tr>
+                                                    <tr>
+                        <td class="elbow-placeholder">&nbsp;</td>
+                        <td class="elbow-placeholder">&nbsp;</td>
+                        <td class="elbow-placeholder">&nbsp;</td>
+                        <td colspan=1 > health_score_instance_metric </td>
+                        <td> int </td>
+                        <td>success</td>
+                        <td> The health score of a specific instance. </td>
+                    </tr>
+                                                             <tr>
+                    <td class="elbow-placeholder">&nbsp;</td>
+                    <td class="elbow-placeholder">&nbsp;</td>
+                    <td colspan=2 > metric </td>
+                    <td> str </td>
+                    <td>success</td>
+                    <td> Information about the sub-system , such as SYSTEM_UTILIZATION, CONFIGURATION,CAPACITY, and so on. </td>
+                </tr>
+                                                            <tr>
+                <td class="elbow-placeholder">&nbsp;</td>
+                <td colspan=3 > num_failed_disks </td>
+                <td> int </td>
+                <td>success</td>
+                <td> Numbers of the disk failure in this system. </td>
+            </tr>
+                                        <tr>
+            <td colspan=4 > HostGroups </td>
+            <td>  list </td>
+            <td> When the hostgroups exist. </td>
+            <td> A list of Host Groups present on the array. </td>
+        </tr>
+                    <tr>
+            <td colspan=4 > Hosts </td>
+            <td>  list </td>
+            <td> When the hosts exist. </td>
+            <td> A list of hosts present on the array. </td>
+        </tr>
+                    <tr>
+            <td colspan=4 > Initiators </td>
+            <td>  list </td>
+            <td> When an initiator exists. </td>
+            <td> A list of initiators on the array. </td>
+        </tr>
+                    <tr>
+            <td colspan=4 > MVConnections </td>
+            <td>  complex </td>
+            <td> When the masking view connections exists. </td>
+            <td> A list of the masking view connections on the array. </td>
+        </tr>
+                            <tr>
+                <td class="elbow-placeholder">&nbsp;</td>
+                <td colspan=3 > connections </td>
+                <td> list </td>
+                <td>success</td>
+                <td> A list of the masking view connections. </td>
+            </tr>
+                                <tr>
+                <td class="elbow-placeholder">&nbsp;</td>
+                <td colspan=3 > masking_view_id </td>
+                <td> str </td>
+                <td>success</td>
+                <td> The ID of the masking view. </td>
+            </tr>
+                                        <tr>
+            <td colspan=4 > MaskingViews </td>
+            <td>  list </td>
+            <td> When the masking views exist. </td>
+            <td> A list of masking views present on the array. </td>
+        </tr>
+                    <tr>
+            <td colspan=4 > MetroDREnvironments </td>
+            <td>  list </td>
+            <td> When an environment exists. </td>
+            <td> A list of Metro DR environments on the array. </td>
+        </tr>
+                    <tr>
+            <td colspan=4 > PortGroups </td>
+            <td>  list </td>
+            <td> When the Port Groups exist. </td>
+            <td> A list of Port Groups on the array. </td>
+        </tr>
+                    <tr>
+            <td colspan=4 > Ports </td>
+            <td>  complex </td>
+            <td> When the ports exist. </td>
+            <td> A list of ports on the array. </td>
+        </tr>
+                            <tr>
+                <td class="elbow-placeholder">&nbsp;</td>
+                <td colspan=3 > directorId </td>
+                <td> str </td>
+                <td>success</td>
+                <td> The director ID of the port. </td>
+            </tr>
+                                <tr>
+                <td class="elbow-placeholder">&nbsp;</td>
+                <td colspan=3 > portId </td>
+                <td> str </td>
+                <td>success</td>
+                <td> The number of the port. </td>
+            </tr>
+                                        <tr>
+            <td colspan=4 > RDFGroups </td>
+            <td>  complex </td>
+            <td> When the RDF groups exist. </td>
+            <td> A list of RDF groups on the array. </td>
+        </tr>
+                            <tr>
+                <td class="elbow-placeholder">&nbsp;</td>
+                <td colspan=3 > label </td>
+                <td> str </td>
+                <td>success</td>
+                <td> Name of the RDF group. </td>
+            </tr>
+                                <tr>
+                <td class="elbow-placeholder">&nbsp;</td>
+                <td colspan=3 > rdfgNumber </td>
+                <td> int </td>
+                <td>success</td>
+                <td> An unique identifier of the RDF group. </td>
+            </tr>
+                                        <tr>
+            <td colspan=4 > SnapshotPolicies </td>
+            <td>  list </td>
+            <td> When a snapshot policy exists. </td>
+            <td> A list of the snapshot policies on the array. </td>
+        </tr>
+                    <tr>
+            <td colspan=4 > StorageGroups </td>
+            <td>  list </td>
+            <td> When the storage groups exist. </td>
+            <td> A list of storage groups on the array. </td>
+        </tr>
+                    <tr>
+            <td colspan=4 > StorageResourcePools </td>
+            <td>  complex </td>
+            <td> When the storage pools exist. </td>
+            <td> A list of storage pools on the array. </td>
+        </tr>
+                            <tr>
+                <td class="elbow-placeholder">&nbsp;</td>
+                <td colspan=3 > diskGroupId </td>
+                <td> list </td>
+                <td>success</td>
+                <td> The ID of the disk group. </td>
+            </tr>
+                                <tr>
+                <td class="elbow-placeholder">&nbsp;</td>
+                <td colspan=3 > emulation </td>
+                <td> str </td>
+                <td>success</td>
+                <td> The type of volume emulation. </td>
+            </tr>
+                                <tr>
+                <td class="elbow-placeholder">&nbsp;</td>
+                <td colspan=3 > num_of_disk_groups </td>
+                <td> int </td>
+                <td>success</td>
+                <td> The number of disk groups. </td>
+            </tr>
+                                <tr>
+                <td class="elbow-placeholder">&nbsp;</td>
+                <td colspan=3 > rdfa_dse </td>
+                <td> bool </td>
+                <td>success</td>
+                <td> A flag for RDFA Delta Set Extension. </td>
+            </tr>
+                                <tr>
+                <td class="elbow-placeholder">&nbsp;</td>
+                <td colspan=3 > reserved_cap_percent </td>
+                <td> int </td>
+                <td>success</td>
+                <td> The reserved capacity percentage. </td>
+            </tr>
+                                <tr>
+                <td class="elbow-placeholder">&nbsp;</td>
+                <td colspan=3 > srpId </td>
+                <td> str </td>
+                <td>success</td>
+                <td> An unique Identifier for SRP. </td>
+            </tr>
+                                <tr>
+                <td class="elbow-placeholder">&nbsp;</td>
+                <td colspan=3 > srp_capacity </td>
+                <td> dict </td>
+                <td>success</td>
+                <td> The different entities to measure SRP capacity. </td>
+            </tr>
+                                         <tr>
+                    <td class="elbow-placeholder">&nbsp;</td>
+                    <td class="elbow-placeholder">&nbsp;</td>
+                    <td colspan=2 > effective_used_capacity_percent </td>
+                    <td> int </td>
+                    <td>success</td>
+                    <td> The percentage of effectively used capacity. </td>
+                </tr>
+                                             <tr>
+                    <td class="elbow-placeholder">&nbsp;</td>
+                    <td class="elbow-placeholder">&nbsp;</td>
+                    <td colspan=2 > snapshot_modified_tb </td>
+                    <td> int </td>
+                    <td>success</td>
+                    <td> The snapshot modified in TB. </td>
+                </tr>
+                                             <tr>
+                    <td class="elbow-placeholder">&nbsp;</td>
+                    <td class="elbow-placeholder">&nbsp;</td>
+                    <td colspan=2 > snapshot_total_tb </td>
+                    <td> int </td>
+                    <td>success</td>
+                    <td> The total snapshot size in TB. </td>
+                </tr>
+                                             <tr>
+                    <td class="elbow-placeholder">&nbsp;</td>
+                    <td class="elbow-placeholder">&nbsp;</td>
+                    <td colspan=2 > subscribed_allocated_tb </td>
+                    <td> int </td>
+                    <td>success</td>
+                    <td> Subscribed allocated size in TB. </td>
+                </tr>
+                                             <tr>
+                    <td class="elbow-placeholder">&nbsp;</td>
+                    <td class="elbow-placeholder">&nbsp;</td>
+                    <td colspan=2 > subscribed_total_tb </td>
+                    <td> int </td>
+                    <td>success</td>
+                    <td> Subscribed total size in TB. </td>
+                </tr>
+                                             <tr>
+                    <td class="elbow-placeholder">&nbsp;</td>
+                    <td class="elbow-placeholder">&nbsp;</td>
+                    <td colspan=2 > usable_total_tb </td>
+                    <td> int </td>
+                    <td>success</td>
+                    <td> The usable total size in TB. </td>
+                </tr>
+                                             <tr>
+                    <td class="elbow-placeholder">&nbsp;</td>
+                    <td class="elbow-placeholder">&nbsp;</td>
+                    <td colspan=2 > usable_used_tb </td>
+                    <td> int </td>
+                    <td>success</td>
+                    <td> The usable used size in TB. </td>
+                </tr>
+                                                            <tr>
+                <td class="elbow-placeholder">&nbsp;</td>
+                <td colspan=3 > srp_efficiency </td>
+                <td> dict </td>
+                <td>success</td>
+                <td> The different entities to measure SRP efficiency. </td>
+            </tr>
+                                         <tr>
+                    <td class="elbow-placeholder">&nbsp;</td>
+                    <td class="elbow-placeholder">&nbsp;</td>
+                    <td colspan=2 > compression_state </td>
+                    <td> str </td>
+                    <td>success</td>
+                    <td> Depicts the compression state of the SRP. </td>
+                </tr>
+                                             <tr>
+                    <td class="elbow-placeholder">&nbsp;</td>
+                    <td class="elbow-placeholder">&nbsp;</td>
+                    <td colspan=2 > data_reduction_enabled_percent </td>
+                    <td> int </td>
+                    <td>success</td>
+                    <td> The percentage of data reduction enabled in the SRP. </td>
+                </tr>
+                                             <tr>
+                    <td class="elbow-placeholder">&nbsp;</td>
+                    <td class="elbow-placeholder">&nbsp;</td>
+                    <td colspan=2 > data_reduction_ratio_to_one </td>
+                    <td> int </td>
+                    <td>success</td>
+                    <td> The data reduction ratio of SRP. </td>
+                </tr>
+                                             <tr>
+                    <td class="elbow-placeholder">&nbsp;</td>
+                    <td class="elbow-placeholder">&nbsp;</td>
+                    <td colspan=2 > overall_efficiency_ratio_to_one </td>
+                    <td> int </td>
+                    <td>success</td>
+                    <td> The overall efficiency ratio of SRP. </td>
+                </tr>
+                                             <tr>
+                    <td class="elbow-placeholder">&nbsp;</td>
+                    <td class="elbow-placeholder">&nbsp;</td>
+                    <td colspan=2 > snapshot_savings_ratio_to_one </td>
+                    <td> int </td>
+                    <td>success</td>
+                    <td> The snapshot savings ratio of SRP. </td>
+                </tr>
+                                             <tr>
+                    <td class="elbow-placeholder">&nbsp;</td>
+                    <td class="elbow-placeholder">&nbsp;</td>
+                    <td colspan=2 > virtual_provisioning_savings_ratio_to_one </td>
+                    <td> int </td>
+                    <td>success</td>
+                    <td> The virtual provisioning savings ratio of SRP. </td>
+                </tr>
+                                                            <tr>
+                <td class="elbow-placeholder">&nbsp;</td>
+                <td colspan=3 > total_srdf_dse_allocated_cap_gb </td>
+                <td> int </td>
+                <td>success</td>
+                <td> The total SRDF DSE allocated capacity in GB. </td>
+            </tr>
+                                        <tr>
+            <td colspan=4 > Volumes </td>
+            <td>  list </td>
+            <td> When the volumes exist. </td>
+            <td> A list of volumes on the array. </td>
+        </tr>
+                    </table>
+
+### Authors
+* Arindam Datta (@dattaarindam) <ansible.team@dell.com>
+* Rajshree Khare (@khareRajshree) <ansible.team@dell.com>
+* Pavan Mudunuri (@Pavan-Mudunuri) <ansible.team@dell.com>
+
+--------------------------------
+# Initiator Module
+
+Manage initiators on PowerMax/VMAX Storage System
+
+### Synopsis
+ Managing initiators on a PowerMax storage system includes retrieving details and renaming alias of an initiator.
+
+### Parameters
+                                                                                                                                                                                                                                                                                                                                                
+<table>
+    <tr>
+        <th colspan=2>Parameter</th>
+        <th width="20%">Type</th>
+        <th>Required</th>
+        <th>Default</th>
+        <th>Choices</th>
+        <th width="80%">Description</th>
+    </tr>
+                                                            <tr>
+            <td colspan=2 > initiator_id</td>
+            <td> str  </td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td> <br> The initiator WWN or IQN. </td>
+        </tr>
+                    <tr>
+            <td colspan=2 > alias</td>
+            <td> str  </td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td> <br> Alias of initiator. </td>
+        </tr>
+                    <tr>
+            <td colspan=2 > new_alias</td>
+            <td> dict  </td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td> <br> Rename alias for specified initiator. </td>
+        </tr>
+                            <tr>
+                <td class="elbow-placeholder">&nbsp;</td>
+                <td colspan=1 > new_node_name </td>
+                <td> str  </td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td>  <br> The new node name to rename the initiator alias. </td>
+            </tr>
+                                <tr>
+                <td class="elbow-placeholder">&nbsp;</td>
+                <td colspan=1 > new_port_name </td>
+                <td> str  </td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td>  <br> The new port name to rename the initiator alias. </td>
+            </tr>
+                                        <tr>
+            <td colspan=2 > state</td>
+            <td> str  </td>
+            <td> True </td>
+            <td></td>
+            <td> <ul> <li>absent</li>  <li>present</li> </ul></td>
+            <td> <br> The state of the initiator after the task is performed.  <br> absent - indicates that the initiator should not exist in the system.  <br> present - indicates that the initiator should exist in the system. </td>
+        </tr>
+                    <tr>
+            <td colspan=2 > unispherehost</td>
+            <td> str  </td>
+            <td> True </td>
+            <td></td>
+            <td></td>
+            <td> <br> IP or FQDN of the Unisphere host </td>
+        </tr>
+                    <tr>
+            <td colspan=2 > universion</td>
+            <td> int  </td>
+            <td></td>
+            <td></td>
+            <td> <ul> <li>91</li>  <li>92</li>  <li>100</li> </ul></td>
+            <td> <br> Unisphere version, currently '91', '92' and '100' versions are supported. </td>
+        </tr>
+                    <tr>
+            <td colspan=2 > verifycert</td>
+            <td> str  </td>
+            <td> True </td>
+            <td></td>
+            <td></td>
+            <td> <br> Specifies system whether to validate SSL certificate or not, Values can be True or False or a custom file path for SSL certificate with .pem extension or .cer with base 64 encoding. </td>
+        </tr>
+                    <tr>
+            <td colspan=2 > user</td>
+            <td> str  </td>
+            <td> True </td>
+            <td></td>
+            <td></td>
+            <td> <br> The username of the Unisphere host. </td>
+        </tr>
+                    <tr>
+            <td colspan=2 > password</td>
+            <td> str  </td>
+            <td> True </td>
+            <td></td>
+            <td></td>
+            <td> <br> The password of the Unisphere host. </td>
+        </tr>
+                    <tr>
+            <td colspan=2 > serial_no</td>
+            <td> str  </td>
+            <td> True </td>
+            <td></td>
+            <td></td>
+            <td> <br> The serial number of the PowerMax/VMAX array. It is a required parameter for all array-specific operations except for getting a list of arrays in the Gatherfacts module. </td>
+        </tr>
+                                                    </table>
+
+### Notes
+* initiator_id and alias are mutually exclusive parameters.
+* The modules present in this collection named as 'dellemc.powermax' are built to support the Dell PowerMax storage platform.
+
+### Examples
+```
+- name: Get initiator details using initiator id
+  dellemc.powermax.initiator:
+    unispherehost: "{{unispherehost}}"
+    universion: "{{universion}}"
+    verifycert: "{{verifycert}}"
+    user: "{{user}}"
+    password: "{{password}}"
+    serial_no: "{{serial_no}}"
+    initiator_id: 1000000000000001
+    state: 'present'
+
+- name: Get initiator details using alias
+  dellemc.powermax.initiator:
+    unispherehost: "{{unispherehost}}"
+    universion: "{{universion}}"
+    verifycert: "{{verifycert}}"
+    user: "{{user}}"
+    password: "{{password}}"
+    serial_no: "{{serial_no}}"
+    alias: 'test/host_initiator'
+    state: 'present'
+
+- name: Rename initiator alias using initiator id
+  dellemc.powermax.initiator:
+    unispherehost: "{{unispherehost}}"
+    universion: "{{universion}}"
+    verifycert: "{{verifycert}}"
+    user: "{{user}}"
+    password: "{{password}}"
+    serial_no: "{{serial_no}}"
+    initiator_id: 1000000000000001
+    new_alias:
+      new_node_name: 'test_rename'
+      new_port_name: 'host_initiator_rename'
+    state: 'present'
+
+- name: Rename initiator alias using alias
+  dellemc.powermax.initiator:
+    unispherehost: "{{unispherehost}}"
+    universion: "{{universion}}"
+    verifycert: "{{verifycert}}"
+    user: "{{user}}"
+    password: "{{password}}"
+    serial_no: "{{serial_no}}"
+    alias: 'test/host_initiator'
+    new_alias:
+      new_node_name: 'test_rename'
+      new_port_name: 'host_initiator_rename'
+    state: 'present'
+```
+
+### Return Values
+                                                                                                                                                                                                                                                                                    
+<table>
+    <tr>
+        <th colspan=2>Key</th>
+        <th>Type</th>
+        <th>Returned</th>
+        <th width="100%">Description</th>
+    </tr>
+                                                                                            <tr>
+            <td colspan=2 > changed </td>
+            <td>  bool </td>
+            <td> always </td>
+            <td> Whether or not the resource has changed. </td>
+        </tr>
+                    <tr>
+            <td colspan=2 > initiator_details </td>
+            <td>  complex </td>
+            <td> When initiator exists. </td>
+            <td> Details of the initiator. </td>
+        </tr>
+                            <tr>
+                <td class="elbow-placeholder">&nbsp;</td>
+                <td colspan=1 > alias </td>
+                <td> str </td>
+                <td>success</td>
+                <td> Initiator alias. </td>
+            </tr>
+                                <tr>
+                <td class="elbow-placeholder">&nbsp;</td>
+                <td colspan=1 > fabric_name </td>
+                <td> str </td>
+                <td>success</td>
+                <td> Fabric associated with the initiator. </td>
+            </tr>
+                                <tr>
+                <td class="elbow-placeholder">&nbsp;</td>
+                <td colspan=1 > fcid </td>
+                <td> str </td>
+                <td>success</td>
+                <td> FCID associated with the initiator. </td>
+            </tr>
+                                <tr>
+                <td class="elbow-placeholder">&nbsp;</td>
+                <td colspan=1 > host </td>
+                <td> str </td>
+                <td>success</td>
+                <td> Host associated with the initiator. </td>
+            </tr>
+                                <tr>
+                <td class="elbow-placeholder">&nbsp;</td>
+                <td colspan=1 > hostGroup </td>
+                <td> list </td>
+                <td>success</td>
+                <td> Host groups associated with the initiator. </td>
+            </tr>
+                                <tr>
+                <td class="elbow-placeholder">&nbsp;</td>
+                <td colspan=1 > initiatorId </td>
+                <td> str </td>
+                <td>success</td>
+                <td> ID of the initiator. </td>
+            </tr>
+                                <tr>
+                <td class="elbow-placeholder">&nbsp;</td>
+                <td colspan=1 > logged_in </td>
+                <td> bool </td>
+                <td>success</td>
+                <td> States whether the initiator is logged in. </td>
+            </tr>
+                                        </table>
+
+### Authors
+* Jennifer John (@johnj9) <ansible.team@dell.com>
+
+--------------------------------
+# Job Module
+
+Gets the detail information about a Job of a PowerMax/VMAX storage system
+
+### Synopsis
+ Gets details of a Job from a specified PowerMax/VMAX storage system.
+ The details listed are of an asynchronous task.
+
+### Parameters
+                                                                                                                                                                        
+<table>
+    <tr>
+        <th colspan=1>Parameter</th>
+        <th width="20%">Type</th>
+        <th>Required</th>
+        <th>Default</th>
+        <th>Choices</th>
+        <th width="80%">Description</th>
+    </tr>
+                                                            <tr>
+            <td colspan=1 > job_id</td>
+            <td> str  </td>
+            <td> True </td>
+            <td></td>
+            <td></td>
+            <td> <br> Job ID of an asynchronous task, used for getting details of a job. </td>
+        </tr>
+                    <tr>
+            <td colspan=1 > unispherehost</td>
+            <td> str  </td>
+            <td> True </td>
+            <td></td>
+            <td></td>
+            <td> <br> IP or FQDN of the Unisphere host </td>
+        </tr>
+                    <tr>
+            <td colspan=1 > universion</td>
+            <td> int  </td>
+            <td></td>
+            <td></td>
+            <td> <ul> <li>91</li>  <li>92</li>  <li>100</li> </ul></td>
+            <td> <br> Unisphere version, currently '91', '92' and '100' versions are supported. </td>
+        </tr>
+                    <tr>
+            <td colspan=1 > verifycert</td>
+            <td> str  </td>
+            <td> True </td>
+            <td></td>
+            <td></td>
+            <td> <br> Specifies system whether to validate SSL certificate or not, Values can be True or False or a custom file path for SSL certificate with .pem extension or .cer with base 64 encoding. </td>
+        </tr>
+                    <tr>
+            <td colspan=1 > user</td>
+            <td> str  </td>
+            <td> True </td>
+            <td></td>
+            <td></td>
+            <td> <br> The username of the Unisphere host. </td>
+        </tr>
+                    <tr>
+            <td colspan=1 > password</td>
+            <td> str  </td>
+            <td> True </td>
+            <td></td>
+            <td></td>
+            <td> <br> The password of the Unisphere host. </td>
+        </tr>
+                                                    </table>
+
+### Notes
+* The modules present in this collection named as 'dellemc.powermax' are built to support the Dell PowerMax storage platform.
+
+### Examples
+```
+- name: Get the details of a Job.
+  dellemc.powermax.job:
+    unispherehost: "{{unispherehost}}"
+    universion: "{{universion}}"
+    verifycert: "{{verifycert}}"
+    user: "{{user}}"
+    password: "{{password}}"
+    job_id: "1570622921504"
+```
+
+### Return Values
+                                                                                                                                                                                                                                                                                                                                                
+<table>
+    <tr>
+        <th colspan=2>Key</th>
+        <th>Type</th>
+        <th>Returned</th>
+        <th width="100%">Description</th>
+    </tr>
+                                                                                            <tr>
+            <td colspan=2 > Job_details </td>
+            <td>  dict </td>
+            <td> When job exist. </td>
+            <td> Details of the job. </td>
+        </tr>
+                            <tr>
+                <td class="elbow-placeholder">&nbsp;</td>
+                <td colspan=1 > completed_date_milliseconds </td>
+                <td> int </td>
+                <td>success</td>
+                <td> Date of job completion in milliseconds. </td>
+            </tr>
+                                <tr>
+                <td class="elbow-placeholder">&nbsp;</td>
+                <td colspan=1 > jobId </td>
+                <td> str </td>
+                <td>success</td>
+                <td> Unique identifier of the job. </td>
+            </tr>
+                                <tr>
+                <td class="elbow-placeholder">&nbsp;</td>
+                <td colspan=1 > last_modified_date </td>
+                <td> str </td>
+                <td>success</td>
+                <td> Last modified date of job. </td>
+            </tr>
+                                <tr>
+                <td class="elbow-placeholder">&nbsp;</td>
+                <td colspan=1 > last_modified_date_milliseconds </td>
+                <td> int </td>
+                <td>success</td>
+                <td> Last modified date of job in milliseconds. </td>
+            </tr>
+                                <tr>
+                <td class="elbow-placeholder">&nbsp;</td>
+                <td colspan=1 > name </td>
+                <td> str </td>
+                <td>success</td>
+                <td> Name of the job. </td>
+            </tr>
+                                <tr>
+                <td class="elbow-placeholder">&nbsp;</td>
+                <td colspan=1 > resourceLink </td>
+                <td> str </td>
+                <td>success</td>
+                <td> Resource link w.r.t Unisphere. </td>
+            </tr>
+                                <tr>
+                <td class="elbow-placeholder">&nbsp;</td>
+                <td colspan=1 > result </td>
+                <td> str </td>
+                <td>success</td>
+                <td> Job description </td>
+            </tr>
+                                <tr>
+                <td class="elbow-placeholder">&nbsp;</td>
+                <td colspan=1 > status </td>
+                <td> str </td>
+                <td>success</td>
+                <td> Status of the job. </td>
+            </tr>
+                                <tr>
+                <td class="elbow-placeholder">&nbsp;</td>
+                <td colspan=1 > task </td>
+                <td> list </td>
+                <td>success</td>
+                <td> Details about the job. </td>
+            </tr>
+                                <tr>
+                <td class="elbow-placeholder">&nbsp;</td>
+                <td colspan=1 > username </td>
+                <td> str </td>
+                <td>success</td>
+                <td> Unisphere username. </td>
+            </tr>
+                                        <tr>
+            <td colspan=2 > changed </td>
+            <td>  bool </td>
+            <td> always </td>
+            <td> Whether or not the resource has changed. </td>
+        </tr>
+                    </table>
+
+### Authors
+* Rajshree Khare (@khareRajshree) <ansible.team@dell.com>
+
+--------------------------------
+# Masking View Module
+
+Managing masking views on PowerMax/VMAX Storage System.
+
+### Synopsis
+ Managing masking views on PowerMax storage system includes, creating masking view with port group, storage group and host or host group, renaming masking view and deleting masking view.
+ For creating a masking view -
+ (i) portgroup_name,
+ (ii) sg_name and
+ (iii) any one of host_name or hostgroup_name is required.
+ All three entities must be present on the array.
+ For renaming a masking view, the 'new_mv_name' is required. After a masking view is created, only its name can be changed. No underlying entity (portgroup, storagegroup, host or hostgroup) can be changed on the masking view.
+
+### Parameters
+                                                                                                                                                                                                                                                                                                                    
+<table>
+    <tr>
+        <th colspan=1>Parameter</th>
+        <th width="20%">Type</th>
+        <th>Required</th>
+        <th>Default</th>
+        <th>Choices</th>
+        <th width="80%">Description</th>
+    </tr>
+                                                            <tr>
+            <td colspan=1 > mv_name</td>
+            <td> str  </td>
+            <td> True </td>
+            <td></td>
+            <td></td>
+            <td> <br> The name of the masking view. No Special Character support except for _. Case sensitive for REST Calls. </td>
+        </tr>
+                    <tr>
+            <td colspan=1 > portgroup_name</td>
+            <td> str  </td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td> <br> The name of the existing port group. </td>
+        </tr>
+                    <tr>
+            <td colspan=1 > host_name</td>
+            <td> str  </td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td> <br> The name of the existing host. This parameter is to create an exclusive or host export. </td>
+        </tr>
+                    <tr>
+            <td colspan=1 > hostgroup_name</td>
+            <td> str  </td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td> <br> The name of the existing host group. This parameter is used to create cluster export. </td>
+        </tr>
+                    <tr>
+            <td colspan=1 > sg_name</td>
+            <td> str  </td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td> <br> The name of the existing storage group. </td>
+        </tr>
+                    <tr>
+            <td colspan=1 > new_mv_name</td>
+            <td> str  </td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td> <br> The new name for the renaming function. No Special Character support except for _. Case sensitive for REST Calls. </td>
+        </tr>
+                    <tr>
+            <td colspan=1 > state</td>
+            <td> str  </td>
+            <td> True </td>
+            <td></td>
+            <td> <ul> <li>absent</li>  <li>present</li> </ul></td>
+            <td> <br> Defines whether the masking view should exist or not. </td>
+        </tr>
+                    <tr>
+            <td colspan=1 > unispherehost</td>
+            <td> str  </td>
+            <td> True </td>
+            <td></td>
+            <td></td>
+            <td> <br> IP or FQDN of the Unisphere host </td>
+        </tr>
+                    <tr>
+            <td colspan=1 > universion</td>
+            <td> int  </td>
+            <td></td>
+            <td></td>
+            <td> <ul> <li>91</li>  <li>92</li>  <li>100</li> </ul></td>
+            <td> <br> Unisphere version, currently '91', '92' and '100' versions are supported. </td>
+        </tr>
+                    <tr>
+            <td colspan=1 > verifycert</td>
+            <td> str  </td>
+            <td> True </td>
+            <td></td>
+            <td></td>
+            <td> <br> Specifies system whether to validate SSL certificate or not, Values can be True or False or a custom file path for SSL certificate with .pem extension or .cer with base 64 encoding. </td>
+        </tr>
+                    <tr>
+            <td colspan=1 > user</td>
+            <td> str  </td>
+            <td> True </td>
+            <td></td>
+            <td></td>
+            <td> <br> The username of the Unisphere host. </td>
+        </tr>
+                    <tr>
+            <td colspan=1 > password</td>
+            <td> str  </td>
+            <td> True </td>
+            <td></td>
+            <td></td>
+            <td> <br> The password of the Unisphere host. </td>
+        </tr>
+                    <tr>
+            <td colspan=1 > serial_no</td>
+            <td> str  </td>
+            <td> True </td>
+            <td></td>
+            <td></td>
+            <td> <br> The serial number of the PowerMax/VMAX array. It is a required parameter for all array-specific operations except for getting a list of arrays in the Gatherfacts module. </td>
+        </tr>
+                                                    </table>
+
+### Notes
+* The modules present in this collection named as 'dellemc.powermax' are built to support the Dell PowerMax storage platform.
+
+### Examples
+```
+- name: Create MV with hostgroup
+  dellemc.powermax.maskingview:
+    unispherehost: "{{unispherehost}}"
+    universion: "{{universion}}"
+    verifycert: "{{verifycert}}"
+    user: "{{user}}"
+    password: "{{password}}"
+    serial_no: "{{serial_no}}"
+    mv_name: "{{mv_name}}"
+    portgroup_name: "Ansible_Testing_portgroup"
+    hostgroup_name: "Ansible_Testing_hostgroup"
+    sg_name: "Ansible_Testing_SG"
+    state: "present"
+
+- name: Create MV with host
+  dellemc.powermax.maskingview:
+    unispherehost: "{{unispherehost}}"
+    universion: "{{universion}}"
+    verifycert: "{{verifycert}}"
+    user: "{{user}}"
+    password: "{{password}}"
+    serial_no: "{{serial_no}}"
+    mv_name: "{{mv_name}}"
+    portgroup_name: "Ansible_Testing_portgroup"
+    host_name: "Ansible_Testing_host"
+    sg_name: "Ansible_Testing_SG"
+    state: "present"
+
+- name: Rename host masking view
+  dellemc.powermax.maskingview:
+    unispherehost: "{{unispherehost}}"
+    universion: "{{universion}}"
+    verifycert: "{{verifycert}}"
+    user: "{{user}}"
+    password: "{{password}}"
+    serial_no: "{{serial_no}}"
+    mv_name: "{{mv_name}}"
+    new_mv_name: "Ansible_Testing_mv_renamed"
+    state: "present"
+
+- name: Delete host masking view
+  dellemc.powermax.maskingview:
+    unispherehost: "{{unispherehost}}"
+    universion: "{{universion}}"
+    verifycert: "{{verifycert}}"
+    user: "{{user}}"
+    password: "{{password}}"
+    serial_no: "{{serial_no}}"
+    mv_name: "Ansible_Testing_mv_renamed"
+    state: "absent"
+```
+
+### Return Values
+                                                                                                                                                                                                                                                                                    
+<table>
+    <tr>
+        <th colspan=2>Key</th>
+        <th>Type</th>
+        <th>Returned</th>
+        <th width="100%">Description</th>
+    </tr>
+                                                                                            <tr>
+            <td colspan=2 > changed </td>
+            <td>  bool </td>
+            <td> always </td>
+            <td> Whether or not the resource has changed. </td>
+        </tr>
+                    <tr>
+            <td colspan=2 > create_mv </td>
+            <td>  bool </td>
+            <td> When masking view is created. </td>
+            <td> Flag sets to true when a new masking view is created. </td>
+        </tr>
+                    <tr>
+            <td colspan=2 > delete_mv </td>
+            <td>  bool </td>
+            <td> When masking view is deleted. </td>
+            <td> Flag sets to true when a masking view is deleted. </td>
+        </tr>
+                    <tr>
+            <td colspan=2 > modify_mv </td>
+            <td>  bool </td>
+            <td> When masking view is modified. </td>
+            <td> Flag sets to true when a masking view is modified. </td>
+        </tr>
+                    <tr>
+            <td colspan=2 > mv_details </td>
+            <td>  list </td>
+            <td> When masking view exist. </td>
+            <td> Details of masking view. </td>
+        </tr>
+                            <tr>
+                <td class="elbow-placeholder">&nbsp;</td>
+                <td colspan=1 > hostId </td>
+                <td> str </td>
+                <td>success</td>
+                <td> Host group present in the masking view. </td>
+            </tr>
+                                <tr>
+                <td class="elbow-placeholder">&nbsp;</td>
+                <td colspan=1 > maskingViewId </td>
+                <td> str </td>
+                <td>success</td>
+                <td> Masking view ID. </td>
+            </tr>
+                                <tr>
+                <td class="elbow-placeholder">&nbsp;</td>
+                <td colspan=1 > portGroupId </td>
+                <td> str </td>
+                <td>success</td>
+                <td> Port group present in the masking view. </td>
+            </tr>
+                                <tr>
+                <td class="elbow-placeholder">&nbsp;</td>
+                <td colspan=1 > storageGroupId </td>
+                <td> str </td>
+                <td>success</td>
+                <td> Storage group present in the masking view. </td>
+            </tr>
+                                        </table>
+
+### Authors
+* Vasudevu Lakhinana (@unknown) <ansible.team@dell.com>
+* Prashant Rakheja (@prashant-dell) <ansible.team@dell.com>
+
+--------------------------------
 # Metro DR Module
 
 Manage metro DR environment on PowerMax/VMAX Storage System
@@ -141,7 +2478,7 @@ Manage metro DR environment on PowerMax/VMAX Storage System
  Managing a metro DR environment on a PowerMax storage system includes getting details of any specific metro DR environment, creating a metro DR environment, converting an existing SG into a metro DR environment, modifying metro DR environment attributes and deleting a metro DR environment.
 
 ### Parameters
-                                                                                                                                                                                                                                                                                                                                                                                                                                            
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    
 <table>
     <tr>
         <th colspan=2>Parameter</th>
@@ -248,7 +2585,7 @@ Manage metro DR environment on PowerMax/VMAX Storage System
                 <td> <ul> <li>Split</li>  <li>Restore</li>  <li>SetMode</li>  <li>Failback</li>  <li>Failover</li>  <li>Establish</li>  <li>Suspend</li>  <li>UpdateR1</li>  <li>Recover</li> </ul></td>
                 <td>  <br> State of the SRDF link.  <br> It is a mandatory parameter for modify operations.  </td>
             </tr>
-                    <tr>
+                                <tr>
                 <td class="elbow-placeholder">&nbsp;</td>
                 <td colspan=1 > metro </td>
                 <td> bool  </td>
@@ -257,7 +2594,7 @@ Manage metro DR environment on PowerMax/VMAX Storage System
                 <td></td>
                 <td>  <br> The flag indicates whether or not to direct srdf_state change towards the R1--R2 Metro Device leg of the metro DR environment.  </td>
             </tr>
-                    <tr>
+                                <tr>
                 <td class="elbow-placeholder">&nbsp;</td>
                 <td colspan=1 > dr </td>
                 <td> bool  </td>
@@ -266,7 +2603,7 @@ Manage metro DR environment on PowerMax/VMAX Storage System
                 <td></td>
                 <td>  <br> The flag indicates whether or not to direct srdf_state change towards device pairs on the disaster recovery leg of the metro DR environment.  </td>
             </tr>
-                    <tr>
+                                <tr>
                 <td class="elbow-placeholder">&nbsp;</td>
                 <td colspan=1 > keep_r2 </td>
                 <td> bool  </td>
@@ -275,7 +2612,7 @@ Manage metro DR environment on PowerMax/VMAX Storage System
                 <td></td>
                 <td>  <br> The flag indicates whether or not in the case of srdf state suspend to make R2 data on metro available to the host.  </td>
             </tr>
-                            <tr>
+                                        <tr>
             <td colspan=2 > state</td>
             <td> str  </td>
             <td> True </td>
@@ -296,16 +2633,16 @@ Manage metro DR environment on PowerMax/VMAX Storage System
             <td> int  </td>
             <td></td>
             <td></td>
-            <td> <ul> <li>91</li>  <li>92</li> </ul></td>
-            <td> <br> Unisphere version, currently '91' and '92' versions are supported. </td>
+            <td> <ul> <li>91</li>  <li>92</li>  <li>100</li> </ul></td>
+            <td> <br> Unisphere version, currently '91', '92' and '100' versions are supported. </td>
         </tr>
                     <tr>
             <td colspan=2 > verifycert</td>
-            <td> bool  </td>
+            <td> str  </td>
             <td> True </td>
             <td></td>
-            <td> <ul> <li>True</li>  <li>False</li> </ul></td>
-            <td> <br> Boolean variable to specify whether to validate SSL certificate or not.  <br> True - indicates that the SSL certificate should be verified.  <br> False - indicates that the SSL certificate should not be verified. </td>
+            <td></td>
+            <td> <br> Specifies system whether to validate SSL certificate or not, Values can be True or False or a custom file path for SSL certificate with .pem extension or .cer with base 64 encoding. </td>
         </tr>
                     <tr>
             <td colspan=2 > user</td>
@@ -642,266 +2979,15 @@ Manage metro DR environment on PowerMax/VMAX Storage System
 * Rajshree Khare (@khareRajshree) <ansible.team@dell.com>
 
 --------------------------------
-# Initiator Module
+# Port Module
 
-Manage initiators on PowerMax/VMAX Storage System
-
-### Synopsis
- Managing initiators on a PowerMax storage system includes retrieving details and renaming alias of an initiator.
-
-### Parameters
-                                                                                                                                                                                                                                                                                                
-<table>
-    <tr>
-        <th colspan=2>Parameter</th>
-        <th width="20%">Type</th>
-        <th>Required</th>
-        <th>Default</th>
-        <th>Choices</th>
-        <th width="80%">Description</th>
-    </tr>
-                                                            <tr>
-            <td colspan=2 > initiator_id</td>
-            <td> str  </td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td> <br> The initiator WWN or IQN. </td>
-        </tr>
-                    <tr>
-            <td colspan=2 > alias</td>
-            <td> str  </td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td> <br> Alias of initiator. </td>
-        </tr>
-                    <tr>
-            <td colspan=2 > new_alias</td>
-            <td> dict  </td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td> <br> Rename alias for specified initiator. </td>
-        </tr>
-                            <tr>
-                <td class="elbow-placeholder">&nbsp;</td>
-                <td colspan=1 > new_node_name </td>
-                <td> str  </td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td>  <br> The new node name to rename the initiator alias. </td>
-            </tr>
-                    <tr>
-                <td class="elbow-placeholder">&nbsp;</td>
-                <td colspan=1 > new_port_name </td>
-                <td> str  </td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td>  <br> The new port name to rename the initiator alias. </td>
-            </tr>
-                            <tr>
-            <td colspan=2 > state</td>
-            <td> str  </td>
-            <td> True </td>
-            <td></td>
-            <td> <ul> <li>absent</li>  <li>present</li> </ul></td>
-            <td> <br> The state of the initiator after the task is performed.  <br> absent - indicates that the initiator should not exist in the system.  <br> present - indicates that the initiator should exist in the system. </td>
-        </tr>
-                    <tr>
-            <td colspan=2 > unispherehost</td>
-            <td> str  </td>
-            <td> True </td>
-            <td></td>
-            <td></td>
-            <td> <br> IP or FQDN of the Unisphere host </td>
-        </tr>
-                    <tr>
-            <td colspan=2 > universion</td>
-            <td> int  </td>
-            <td></td>
-            <td></td>
-            <td> <ul> <li>91</li>  <li>92</li> </ul></td>
-            <td> <br> Unisphere version, currently '91' and '92' versions are supported. </td>
-        </tr>
-                    <tr>
-            <td colspan=2 > verifycert</td>
-            <td> bool  </td>
-            <td> True </td>
-            <td></td>
-            <td> <ul> <li>True</li>  <li>False</li> </ul></td>
-            <td> <br> Boolean variable to specify whether to validate SSL certificate or not.  <br> True - indicates that the SSL certificate should be verified.  <br> False - indicates that the SSL certificate should not be verified. </td>
-        </tr>
-                    <tr>
-            <td colspan=2 > user</td>
-            <td> str  </td>
-            <td> True </td>
-            <td></td>
-            <td></td>
-            <td> <br> The username of the Unisphere host. </td>
-        </tr>
-                    <tr>
-            <td colspan=2 > password</td>
-            <td> str  </td>
-            <td> True </td>
-            <td></td>
-            <td></td>
-            <td> <br> The password of the Unisphere host. </td>
-        </tr>
-                    <tr>
-            <td colspan=2 > serial_no</td>
-            <td> str  </td>
-            <td> True </td>
-            <td></td>
-            <td></td>
-            <td> <br> The serial number of the PowerMax/VMAX array. It is a required parameter for all array-specific operations except for getting a list of arrays in the Gatherfacts module. </td>
-        </tr>
-                                                    </table>
-
-### Notes
-* initiator_id and alias are mutually exclusive parameters.
-* The modules present in this collection named as 'dellemc.powermax' are built to support the Dell PowerMax storage platform.
-
-### Examples
-```
-- name: Get initiator details using initiator id
-  dellemc.powermax.initiator:
-    unispherehost: "{{unispherehost}}"
-    universion: "{{universion}}"
-    verifycert: "{{verifycert}}"
-    user: "{{user}}"
-    password: "{{password}}"
-    serial_no: "{{serial_no}}"
-    initiator_id: 1000000000000001
-    state: 'present'
-
-- name: Get initiator details using alias
-  dellemc.powermax.initiator:
-    unispherehost: "{{unispherehost}}"
-    universion: "{{universion}}"
-    verifycert: "{{verifycert}}"
-    user: "{{user}}"
-    password: "{{password}}"
-    serial_no: "{{serial_no}}"
-    alias: 'test/host_initiator'
-    state: 'present'
-
-- name: Rename initiator alias using initiator id
-  dellemc.powermax.initiator:
-    unispherehost: "{{unispherehost}}"
-    universion: "{{universion}}"
-    verifycert: "{{verifycert}}"
-    user: "{{user}}"
-    password: "{{password}}"
-    serial_no: "{{serial_no}}"
-    initiator_id: 1000000000000001
-    new_alias:
-      new_node_name: 'test_rename'
-      new_port_name: 'host_initiator_rename'
-    state: 'present'
-
-- name: Rename initiator alias using alias
-  dellemc.powermax.initiator:
-    unispherehost: "{{unispherehost}}"
-    universion: "{{universion}}"
-    verifycert: "{{verifycert}}"
-    user: "{{user}}"
-    password: "{{password}}"
-    serial_no: "{{serial_no}}"
-    alias: 'test/host_initiator'
-    new_alias:
-      new_node_name: 'test_rename'
-      new_port_name: 'host_initiator_rename'
-    state: 'present'
-```
-
-### Return Values
-                                                                                                                                                                                                                                                                                    
-<table>
-    <tr>
-        <th colspan=2>Key</th>
-        <th>Type</th>
-        <th>Returned</th>
-        <th width="100%">Description</th>
-    </tr>
-                                                                                            <tr>
-            <td colspan=2 > changed </td>
-            <td>  bool </td>
-            <td> always </td>
-            <td> Whether or not the resource has changed. </td>
-        </tr>
-                    <tr>
-            <td colspan=2 > initiator_details </td>
-            <td>  complex </td>
-            <td> When initiator exists. </td>
-            <td> Details of the initiator. </td>
-        </tr>
-                            <tr>
-                <td class="elbow-placeholder">&nbsp;</td>
-                <td colspan=1 > alias </td>
-                <td> str </td>
-                <td>success</td>
-                <td> Initiator alias. </td>
-            </tr>
-                                <tr>
-                <td class="elbow-placeholder">&nbsp;</td>
-                <td colspan=1 > fabric_name </td>
-                <td> str </td>
-                <td>success</td>
-                <td> Fabric associated with the initiator. </td>
-            </tr>
-                                <tr>
-                <td class="elbow-placeholder">&nbsp;</td>
-                <td colspan=1 > fcid </td>
-                <td> str </td>
-                <td>success</td>
-                <td> FCID associated with the initiator. </td>
-            </tr>
-                                <tr>
-                <td class="elbow-placeholder">&nbsp;</td>
-                <td colspan=1 > host </td>
-                <td> str </td>
-                <td>success</td>
-                <td> Host associated with the initiator. </td>
-            </tr>
-                                <tr>
-                <td class="elbow-placeholder">&nbsp;</td>
-                <td colspan=1 > hostGroup </td>
-                <td> list </td>
-                <td>success</td>
-                <td> Host groups associated with the initiator. </td>
-            </tr>
-                                <tr>
-                <td class="elbow-placeholder">&nbsp;</td>
-                <td colspan=1 > initiatorId </td>
-                <td> str </td>
-                <td>success</td>
-                <td> ID of the initiator. </td>
-            </tr>
-                                <tr>
-                <td class="elbow-placeholder">&nbsp;</td>
-                <td colspan=1 > logged_in </td>
-                <td> bool </td>
-                <td>success</td>
-                <td> States whether the initiator is logged in. </td>
-            </tr>
-                                        </table>
-
-### Authors
-* Jennifer John (@johnj9) <ansible.team@dell.com>
-
---------------------------------
-# Host Group Module
-
-Manage a host group (cascaded initiator group) on a PowerMax/VMAX storage system
+Manage ports on PowerMax/VMAX Storage System
 
 ### Synopsis
- Managing a host group on a PowerMax storage system includes creating a host group with a set of hosts, adding or removing hosts to or from a host group, renaming a host group, modifying host flags of a host group, and deleting a host group.
+ Managing ports on PowerMax storage system includes getting details of a port.
 
 ### Parameters
-                                                                                                                                                                                                                                                                                                                    
+                                                                                                                                                                                            
 <table>
     <tr>
         <th colspan=1>Parameter</th>
@@ -912,60 +2998,12 @@ Manage a host group (cascaded initiator group) on a PowerMax/VMAX storage system
         <th width="80%">Description</th>
     </tr>
                                                             <tr>
-            <td colspan=1 > hostgroup_name</td>
-            <td> str  </td>
+            <td colspan=1 > ports</td>
+            <td> list   <br> elements: dict </td>
             <td> True </td>
             <td></td>
             <td></td>
-            <td> <br> The name of the host group. No Special Character support except for _. Case sensitive for REST Calls. </td>
-        </tr>
-                    <tr>
-            <td colspan=1 > hosts</td>
-            <td> list   <br> elements: str </td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td> <br> List of host names to be added to the host group or removed from the host group.  <br> Creation of an empty host group is allowed. </td>
-        </tr>
-                    <tr>
-            <td colspan=1 > state</td>
-            <td> str  </td>
-            <td> True </td>
-            <td></td>
-            <td> <ul> <li>absent</li>  <li>present</li> </ul></td>
-            <td> <br> Define whether the host group should be present or absent on the system.  <br> present - indicates that the host group should be present on the system.  <br> absent - indicates that the host group should be absent on the system. </td>
-        </tr>
-                    <tr>
-            <td colspan=1 > host_state</td>
-            <td> str  </td>
-            <td></td>
-            <td></td>
-            <td> <ul> <li>present-in-group</li>  <li>absent-in-group</li> </ul></td>
-            <td> <br> Define whether the host should be present or absent in the host group.  <br> present-in-group - indicates that the hosts should exist in the host group.  <br> absent-in-group - indicates that the hosts should not exist in the host group. </td>
-        </tr>
-                    <tr>
-            <td colspan=1 > host_flags</td>
-            <td> dict  </td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td> <br> input as an yaml dictionary.  <br> List of all host_flags -  <br> 1. volume_set_addressing.  <br> 2. disable_q_reset_on_ua.  <br> 3. environ_set.  <br> 4. avoid_reset_broadcast.  <br> 5. openvms.  <br> 6. scsi_3.  <br> 7. spc2_protocol_version.  <br> 8. scsi_support1.  <br> 9. consistent_lun.  <br> Possible values are true, false, unset(default state). </td>
-        </tr>
-                    <tr>
-            <td colspan=1 > host_type</td>
-            <td> str  </td>
-            <td></td>
-            <td></td>
-            <td> <ul> <li>default</li>  <li>hpux</li> </ul></td>
-            <td> <br> Describing the OS type (default or hpux). </td>
-        </tr>
-                    <tr>
-            <td colspan=1 > new_name</td>
-            <td> str  </td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td> <br> The new name for the host group for the renaming function. No Special Character support except for _. Case sensitive for REST Calls. </td>
+            <td> <br> List of port director and port id </td>
         </tr>
                     <tr>
             <td colspan=1 > unispherehost</td>
@@ -980,16 +3018,16 @@ Manage a host group (cascaded initiator group) on a PowerMax/VMAX storage system
             <td> int  </td>
             <td></td>
             <td></td>
-            <td> <ul> <li>91</li>  <li>92</li> </ul></td>
-            <td> <br> Unisphere version, currently '91' and '92' versions are supported. </td>
+            <td> <ul> <li>91</li>  <li>92</li>  <li>100</li> </ul></td>
+            <td> <br> Unisphere version, currently '91', '92' and '100' versions are supported. </td>
         </tr>
                     <tr>
             <td colspan=1 > verifycert</td>
-            <td> bool  </td>
+            <td> str  </td>
             <td> True </td>
             <td></td>
-            <td> <ul> <li>True</li>  <li>False</li> </ul></td>
-            <td> <br> Boolean variable to specify whether to validate SSL certificate or not.  <br> True - indicates that the SSL certificate should be verified.  <br> False - indicates that the SSL certificate should not be verified. </td>
+            <td></td>
+            <td> <br> Specifies system whether to validate SSL certificate or not, Values can be True or False or a custom file path for SSL certificate with .pem extension or .cer with base 64 encoding. </td>
         </tr>
                     <tr>
             <td colspan=1 > user</td>
@@ -1018,157 +3056,569 @@ Manage a host group (cascaded initiator group) on a PowerMax/VMAX storage system
                                                     </table>
 
 ### Notes
-* In the gather facts module, empty host groups will be listed as hosts.
-* host_flags and host_type are mutually exclusive parameters.
-* Hostgroups with 'default' host_type will have 'default' hosts.
-* Hostgroups with 'hpux' host_type will have 'hpux' hosts.
 * The modules present in this collection named as 'dellemc.powermax' are built to support the Dell PowerMax storage platform.
 
 ### Examples
 ```
-- name: Create host group with 'default' host_type
-  dellemc.powermax.hostgroup:
+- name: Get details of single/multiple ports
+  dellemc.powermax.port:
     unispherehost: "{{unispherehost}}"
-    universion: "{{universion}}"
     verifycert: "{{verifycert}}"
     user: "{{user}}"
     password: "{{password}}"
-    serial_no: "{{serial_no}}"
-    hostgroup_name: "ansible_test_HG_1"
-    host_type: "default"
-    hosts:
-      - ansible_test_1
-    host_state: 'present-in-group'
-    state: 'present'
-
-- name: Create host group with 'hpux' host_type
-  dellemc.powermax.hostgroup:
-    unispherehost: "{{unispherehost}}"
-    universion: "{{universion}}"
-    verifycert: "{{verifycert}}"
-    user: "{{user}}"
-    password: "{{password}}"
-    serial_no: "{{serial_no}}"
-    hostgroup_name: "ansible_test_HG_2"
-    host_type: "hpux"
-    hosts:
-      - ansible_test_2
-    host_state: 'present-in-group'
-    state: 'present'
-
-- name: Create host group with host_flags
-  dellemc.powermax.hostgroup:
-    unispherehost: "{{unispherehost}}"
-    universion: "{{universion}}"
-    verifycert: "{{verifycert}}"
-    user: "{{user}}"
-    password: "{{password}}"
-    serial_no: "{{serial_no}}"
-    hostgroup_name: "ansible_test_HG_3"
-    hosts:
-      - ansible_test_3
-    state: 'present'
-    host_state: 'present-in-group'
-    host_flags:
-      spc2_protocol_version: true
-      consistent_lun: true
-      volume_set_addressing: 'unset'
-      disable_q_reset_on_ua: false
-      openvms: 'unset'
-
-- name: Get host group details
-  dellemc.powermax.hostgroup:
-    unispherehost: "{{unispherehost}}"
-    universion: "{{universion}}"
-    verifycert: "{{verifycert}}"
-    user: "{{user}}"
-    password: "{{password}}"
-    serial_no: "{{serial_no}}"
-    hostgroup_name: "ansible_test_HG_1"
-    state: 'present'
-
-- name: Adding host to host group
-  dellemc.powermax.hostgroup:
-    unispherehost: "{{unispherehost}}"
-    universion: "{{universion}}"
-    verifycert: "{{verifycert}}"
-    user: "{{user}}"
-    password: "{{password}}"
-    serial_no: "{{serial_no}}"
-    hostgroup_name: "ansible_test_HG_1"
-    hosts:
-      - Ansible_Testing_host2
-    state: 'present'
-    host_state: 'present-in-group'
-
-- name: Removing host from host group
-  dellemc.powermax.hostgroup:
-    unispherehost: "{{unispherehost}}"
-    universion: "{{universion}}"
-    verifycert: "{{verifycert}}"
-    user: "{{user}}"
-    password: "{{password}}"
-    serial_no: "{{serial_no}}"
-    hostgroup_name: "ansible_test_HG_1"
-    hosts:
-      - Ansible_Testing_host2
-    state: 'present'
-    host_state: 'absent-in-group'
-
-- name: Modify host group using host_type
-  dellemc.powermax.hostgroup:
-    unispherehost: "{{unispherehost}}"
-    universion: "{{universion}}"
-    verifycert: "{{verifycert}}"
-    user: "{{user}}"
-    password: "{{password}}"
-    serial_no: "{{serial_no}}"
-    hostgroup_name: "ansible_test_HG_1"
-    host_type: "hpux"
-    state: 'present'
-
-- name: Modify host group using host_flags
-  dellemc.powermax.hostgroup:
-    unispherehost: "{{unispherehost}}"
-    universion: "{{universion}}"
-    verifycert: "{{verifycert}}"
-    user: "{{user}}"
-    password: "{{password}}"
-    serial_no: "{{serial_no}}"
-    hostgroup_name: "ansible_test_HG_1"
-    host_flags:
-      spc2_protocol_version: unset
-      disable_q_reset_on_ua: false
-      openvms: false
-      avoid_reset_broadcast: true
-    state: 'present'
-
-- name: Rename host group
-  dellemc.powermax.hostgroup:
-    unispherehost: "{{unispherehost}}"
-    universion: "{{universion}}"
-    verifycert: "{{verifycert}}"
-    user: "{{user}}"
-    password: "{{password}}"
-    serial_no: "{{serial_no}}"
-    hostgroup_name: "ansible_test_HG_1"
-    new_name: "ansible_test_hostgroup_1"
-    state: 'present'
-
-- name: Delete host group
-  dellemc.powermax.hostgroup:
-    unispherehost: "{{unispherehost}}"
-    universion: "{{universion}}"
-    verifycert: "{{verifycert}}"
-    user: "{{user}}"
-    password: "{{password}}"
-    serial_no: "{{serial_no}}"
-    hostgroup_name: "ansible_test_hostgroup_1"
-    state: 'absent'
+    serial_no: "{{array_id}}"
+    ports:
+    - director_id: "FA-1D"
+      port_id: "5"
+    - director_id: "SE-1F"
+      port_id: "29"
 ```
 
 ### Return Values
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            
+<table>
+    <tr>
+        <th colspan=4>Key</th>
+        <th>Type</th>
+        <th>Returned</th>
+        <th width="100%">Description</th>
+    </tr>
+                                                                                            <tr>
+            <td colspan=4 > changed </td>
+            <td>  bool </td>
+            <td> always </td>
+            <td> Whether or not the resource has changed. </td>
+        </tr>
+                    <tr>
+            <td colspan=4 > port_details </td>
+            <td>  list </td>
+            <td> When the port exist. </td>
+            <td> Details of the port. </td>
+        </tr>
+                            <tr>
+                <td class="elbow-placeholder">&nbsp;</td>
+                <td colspan=3 > symmetrixPort </td>
+                <td> list </td>
+                <td>success</td>
+                <td> Type of volume. </td>
+            </tr>
+                                         <tr>
+                    <td class="elbow-placeholder">&nbsp;</td>
+                    <td class="elbow-placeholder">&nbsp;</td>
+                    <td colspan=2 > aclx </td>
+                    <td> bool </td>
+                    <td>success</td>
+                    <td> Indicates whether access control logic is enabled or disabled. </td>
+                </tr>
+                                             <tr>
+                    <td class="elbow-placeholder">&nbsp;</td>
+                    <td class="elbow-placeholder">&nbsp;</td>
+                    <td colspan=2 > avoid_reset_broadcast </td>
+                    <td> bool </td>
+                    <td>success</td>
+                    <td> Indicates whether the Avoid Reset Broadcasting feature is enabled or disabled. </td>
+                </tr>
+                                             <tr>
+                    <td class="elbow-placeholder">&nbsp;</td>
+                    <td class="elbow-placeholder">&nbsp;</td>
+                    <td colspan=2 > common_serial_number </td>
+                    <td> bool </td>
+                    <td>success</td>
+                    <td> Indicates whether the Common Serial Number feature is enabled or disabled. </td>
+                </tr>
+                                             <tr>
+                    <td class="elbow-placeholder">&nbsp;</td>
+                    <td class="elbow-placeholder">&nbsp;</td>
+                    <td colspan=2 > director_status </td>
+                    <td> str </td>
+                    <td>success</td>
+                    <td> Director status. </td>
+                </tr>
+                                             <tr>
+                    <td class="elbow-placeholder">&nbsp;</td>
+                    <td class="elbow-placeholder">&nbsp;</td>
+                    <td colspan=2 > disable_q_reset_on_ua </td>
+                    <td> bool </td>
+                    <td>success</td>
+                    <td> Indicates whether the Disable Q Reset on UA (Unit Attention) is enabled or disabled. </td>
+                </tr>
+                                             <tr>
+                    <td class="elbow-placeholder">&nbsp;</td>
+                    <td class="elbow-placeholder">&nbsp;</td>
+                    <td colspan=2 > enable_auto_negotiate </td>
+                    <td> bool </td>
+                    <td>success</td>
+                    <td> Indicates whether the Enable Auto Negotiate feature is enabled or disabled. </td>
+                </tr>
+                                             <tr>
+                    <td class="elbow-placeholder">&nbsp;</td>
+                    <td class="elbow-placeholder">&nbsp;</td>
+                    <td colspan=2 > environ_set </td>
+                    <td> bool </td>
+                    <td>success</td>
+                    <td> Indicates whether the environmental error reporting feature is enabled or disabled. </td>
+                </tr>
+                                             <tr>
+                    <td class="elbow-placeholder">&nbsp;</td>
+                    <td class="elbow-placeholder">&nbsp;</td>
+                    <td colspan=2 > hp_3000_mode </td>
+                    <td> bool </td>
+                    <td>success</td>
+                    <td> Indicates whether HP 3000 Mode is enabled or disabled. </td>
+                </tr>
+                                             <tr>
+                    <td class="elbow-placeholder">&nbsp;</td>
+                    <td class="elbow-placeholder">&nbsp;</td>
+                    <td colspan=2 > identifier </td>
+                    <td> str </td>
+                    <td>success</td>
+                    <td> Unique identifier for port. </td>
+                </tr>
+                                             <tr>
+                    <td class="elbow-placeholder">&nbsp;</td>
+                    <td class="elbow-placeholder">&nbsp;</td>
+                    <td colspan=2 > init_point_to_point </td>
+                    <td> bool </td>
+                    <td>success</td>
+                    <td> Indicates whether Init Point to Point is enabled or disabled. </td>
+                </tr>
+                                             <tr>
+                    <td class="elbow-placeholder">&nbsp;</td>
+                    <td class="elbow-placeholder">&nbsp;</td>
+                    <td colspan=2 > iscsi_target </td>
+                    <td> bool </td>
+                    <td>success</td>
+                    <td> Indicates whether ISCSI target is enabled or disabled. </td>
+                </tr>
+                                             <tr>
+                    <td class="elbow-placeholder">&nbsp;</td>
+                    <td class="elbow-placeholder">&nbsp;</td>
+                    <td colspan=2 > maskingview </td>
+                    <td> list </td>
+                    <td>success</td>
+                    <td> List of Masking views that the port is a part of. </td>
+                </tr>
+                                             <tr>
+                    <td class="elbow-placeholder">&nbsp;</td>
+                    <td class="elbow-placeholder">&nbsp;</td>
+                    <td colspan=2 > max_speed </td>
+                    <td> str </td>
+                    <td>success</td>
+                    <td> Maximum port speed in GB/Second. </td>
+                </tr>
+                                             <tr>
+                    <td class="elbow-placeholder">&nbsp;</td>
+                    <td class="elbow-placeholder">&nbsp;</td>
+                    <td colspan=2 > negotiate_reset </td>
+                    <td> bool </td>
+                    <td>success</td>
+                    <td> Indicates whether the Negotiate Reset feature is enabled or disabled. </td>
+                </tr>
+                                             <tr>
+                    <td class="elbow-placeholder">&nbsp;</td>
+                    <td class="elbow-placeholder">&nbsp;</td>
+                    <td colspan=2 > negotiated_speed </td>
+                    <td> str </td>
+                    <td>success</td>
+                    <td> Negotiated speed in GB/Second. </td>
+                </tr>
+                                             <tr>
+                    <td class="elbow-placeholder">&nbsp;</td>
+                    <td class="elbow-placeholder">&nbsp;</td>
+                    <td colspan=2 > no_participating </td>
+                    <td> bool </td>
+                    <td>success</td>
+                    <td> Indicates whether the No Participate feature is enabled or disabled. </td>
+                </tr>
+                                             <tr>
+                    <td class="elbow-placeholder">&nbsp;</td>
+                    <td class="elbow-placeholder">&nbsp;</td>
+                    <td colspan=2 > num_of_cores </td>
+                    <td> int </td>
+                    <td>success</td>
+                    <td> Number of cores for the director. </td>
+                </tr>
+                                             <tr>
+                    <td class="elbow-placeholder">&nbsp;</td>
+                    <td class="elbow-placeholder">&nbsp;</td>
+                    <td colspan=2 > num_of_mapped_vols </td>
+                    <td> int </td>
+                    <td>success</td>
+                    <td> Number of volumes mapped with the port. </td>
+                </tr>
+                                             <tr>
+                    <td class="elbow-placeholder">&nbsp;</td>
+                    <td class="elbow-placeholder">&nbsp;</td>
+                    <td colspan=2 > num_of_masking_views </td>
+                    <td> int </td>
+                    <td>success</td>
+                    <td> Number of masking views associated with the port. </td>
+                </tr>
+                                             <tr>
+                    <td class="elbow-placeholder">&nbsp;</td>
+                    <td class="elbow-placeholder">&nbsp;</td>
+                    <td colspan=2 > num_of_port_groups </td>
+                    <td> int </td>
+                    <td>success</td>
+                    <td> Number of port groups associated with the port. </td>
+                </tr>
+                                             <tr>
+                    <td class="elbow-placeholder">&nbsp;</td>
+                    <td class="elbow-placeholder">&nbsp;</td>
+                    <td colspan=2 > port_status </td>
+                    <td> str </td>
+                    <td>success</td>
+                    <td> Port status, ON/OFF. </td>
+                </tr>
+                                             <tr>
+                    <td class="elbow-placeholder">&nbsp;</td>
+                    <td class="elbow-placeholder">&nbsp;</td>
+                    <td colspan=2 > portgroup </td>
+                    <td> list </td>
+                    <td>success</td>
+                    <td> List of masking views associated with the port. </td>
+                </tr>
+                                             <tr>
+                    <td class="elbow-placeholder">&nbsp;</td>
+                    <td class="elbow-placeholder">&nbsp;</td>
+                    <td colspan=2 > scsi_3 </td>
+                    <td> bool </td>
+                    <td>success</td>
+                    <td> Indicates whether the SCSI-3 protocol is enabled or disabled. </td>
+                </tr>
+                                             <tr>
+                    <td class="elbow-placeholder">&nbsp;</td>
+                    <td class="elbow-placeholder">&nbsp;</td>
+                    <td colspan=2 > scsi_support1 </td>
+                    <td> bool </td>
+                    <td>success</td>
+                    <td> Indicates whether the SCSI Support1 is enabled or disabled. </td>
+                </tr>
+                                             <tr>
+                    <td class="elbow-placeholder">&nbsp;</td>
+                    <td class="elbow-placeholder">&nbsp;</td>
+                    <td colspan=2 > siemens </td>
+                    <td> bool </td>
+                    <td>success</td>
+                    <td> Indicates whether the Siemens feature is enabled or disabled. </td>
+                </tr>
+                                             <tr>
+                    <td class="elbow-placeholder">&nbsp;</td>
+                    <td class="elbow-placeholder">&nbsp;</td>
+                    <td colspan=2 > soft_reset </td>
+                    <td> bool </td>
+                    <td>success</td>
+                    <td> Indicates whether the Soft Reset feature is enabled or disabled. </td>
+                </tr>
+                                             <tr>
+                    <td class="elbow-placeholder">&nbsp;</td>
+                    <td class="elbow-placeholder">&nbsp;</td>
+                    <td colspan=2 > spc2_protocol_version </td>
+                    <td> bool </td>
+                    <td>success</td>
+                    <td> Indicates whether the SPC2 Protocol Version feature is enabled or disabled. </td>
+                </tr>
+                                             <tr>
+                    <td class="elbow-placeholder">&nbsp;</td>
+                    <td class="elbow-placeholder">&nbsp;</td>
+                    <td colspan=2 > sunapee </td>
+                    <td> bool </td>
+                    <td>success</td>
+                    <td> Indicates whether the Sunapee feature is enabled or disabled. </td>
+                </tr>
+                                             <tr>
+                    <td class="elbow-placeholder">&nbsp;</td>
+                    <td class="elbow-placeholder">&nbsp;</td>
+                    <td colspan=2 > symmetrixPortKey </td>
+                    <td> list </td>
+                    <td>success</td>
+                    <td> Symmetrix system director and port in the port group. </td>
+                </tr>
+                                                    <tr>
+                        <td class="elbow-placeholder">&nbsp;</td>
+                        <td class="elbow-placeholder">&nbsp;</td>
+                        <td class="elbow-placeholder">&nbsp;</td>
+                        <td colspan=1 > drectorId </td>
+                        <td> str </td>
+                        <td>success</td>
+                        <td> Director ID of the port. </td>
+                    </tr>
+                                    <tr>
+                        <td class="elbow-placeholder">&nbsp;</td>
+                        <td class="elbow-placeholder">&nbsp;</td>
+                        <td class="elbow-placeholder">&nbsp;</td>
+                        <td colspan=1 > portId </td>
+                        <td> str </td>
+                        <td>success</td>
+                        <td> Port number of the port. </td>
+                    </tr>
+                                                             <tr>
+                    <td class="elbow-placeholder">&nbsp;</td>
+                    <td class="elbow-placeholder">&nbsp;</td>
+                    <td colspan=2 > type </td>
+                    <td> str </td>
+                    <td>success</td>
+                    <td> Type of port. </td>
+                </tr>
+                                             <tr>
+                    <td class="elbow-placeholder">&nbsp;</td>
+                    <td class="elbow-placeholder">&nbsp;</td>
+                    <td colspan=2 > unique_wwn </td>
+                    <td> bool </td>
+                    <td>success</td>
+                    <td> Indicates whether the Unique WWN feature is enabled or disabled. </td>
+                </tr>
+                                             <tr>
+                    <td class="elbow-placeholder">&nbsp;</td>
+                    <td class="elbow-placeholder">&nbsp;</td>
+                    <td colspan=2 > vnx_attached </td>
+                    <td> bool </td>
+                    <td>success</td>
+                    <td> Indicates whether the VNX attached feature is enabled or disabled. </td>
+                </tr>
+                                             <tr>
+                    <td class="elbow-placeholder">&nbsp;</td>
+                    <td class="elbow-placeholder">&nbsp;</td>
+                    <td colspan=2 > volume_set_addressing </td>
+                    <td> bool </td>
+                    <td>success</td>
+                    <td> Indicates whether Volume Vet Addressing is enabled or disabled. </td>
+                </tr>
+                                             <tr>
+                    <td class="elbow-placeholder">&nbsp;</td>
+                    <td class="elbow-placeholder">&nbsp;</td>
+                    <td colspan=2 > wwn_node </td>
+                    <td> str </td>
+                    <td>success</td>
+                    <td> WWN node of port. </td>
+                </tr>
+                                                                    </table>
+
+### Authors
+* Ashish Verma (@vermaa31) <ansible.team@dell.com>
+
+--------------------------------
+# Port Group Module
+
+Manage port groups on PowerMax/VMAX Storage System
+
+### Synopsis
+ Managing port groups on a PowerMax storage system includes creating a port group with a set of ports, adding or removing single or multiple ports to or from the port group, renaming the port group and deleting the port group.
+
+### Parameters
+                                                                                                                                                                                                                                                                                                
+<table>
+    <tr>
+        <th colspan=1>Parameter</th>
+        <th width="20%">Type</th>
+        <th>Required</th>
+        <th>Default</th>
+        <th>Choices</th>
+        <th width="80%">Description</th>
+    </tr>
+                                                            <tr>
+            <td colspan=1 > portgroup_name</td>
+            <td> str  </td>
+            <td> True </td>
+            <td></td>
+            <td></td>
+            <td> <br> The name of the port group. No Special Character support except for _. Case sensitive for REST Calls. </td>
+        </tr>
+                    <tr>
+            <td colspan=1 > ports</td>
+            <td> list   <br> elements: dict </td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td> <br> List of directors and ports to be added or removed to or from the port group. </td>
+        </tr>
+                    <tr>
+            <td colspan=1 > port_group_protocol</td>
+            <td> str  </td>
+            <td></td>
+            <td></td>
+            <td> <ul> <li>SCSI_FC</li>  <li>iSCSI</li>  <li>NVMe_TCP</li> </ul></td>
+            <td> <br> Port Group protocol.  <br> Required only for V4(Juniper). </td>
+        </tr>
+                    <tr>
+            <td colspan=1 > new_name</td>
+            <td> str  </td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td> <br> New name of the port group while renaming. No Special Character support except for _. Case sensitive for REST Calls. </td>
+        </tr>
+                    <tr>
+            <td colspan=1 > state</td>
+            <td> str  </td>
+            <td> True </td>
+            <td></td>
+            <td> <ul> <li>absent</li>  <li>present</li> </ul></td>
+            <td> <br> Define whether the port group should exist or not.  <br> present - indicates that the port group should be present on the system.  <br> absent - indicates that the port group should not be present on the system. </td>
+        </tr>
+                    <tr>
+            <td colspan=1 > port_state</td>
+            <td> str  </td>
+            <td></td>
+            <td></td>
+            <td> <ul> <li>present-in-group</li>  <li>absent-in-group</li> </ul></td>
+            <td> <br> Define whether the port should be present or absent in the port group.  <br> present-in-group - indicates that the ports should be present on a port group object.  <br> absent-in-group - indicates that the ports should not be present on a port group object. </td>
+        </tr>
+                    <tr>
+            <td colspan=1 > unispherehost</td>
+            <td> str  </td>
+            <td> True </td>
+            <td></td>
+            <td></td>
+            <td> <br> IP or FQDN of the Unisphere host </td>
+        </tr>
+                    <tr>
+            <td colspan=1 > universion</td>
+            <td> int  </td>
+            <td></td>
+            <td></td>
+            <td> <ul> <li>91</li>  <li>92</li>  <li>100</li> </ul></td>
+            <td> <br> Unisphere version, currently '91', '92' and '100' versions are supported. </td>
+        </tr>
+                    <tr>
+            <td colspan=1 > verifycert</td>
+            <td> str  </td>
+            <td> True </td>
+            <td></td>
+            <td></td>
+            <td> <br> Specifies system whether to validate SSL certificate or not, Values can be True or False or a custom file path for SSL certificate with .pem extension or .cer with base 64 encoding. </td>
+        </tr>
+                    <tr>
+            <td colspan=1 > user</td>
+            <td> str  </td>
+            <td> True </td>
+            <td></td>
+            <td></td>
+            <td> <br> The username of the Unisphere host. </td>
+        </tr>
+                    <tr>
+            <td colspan=1 > password</td>
+            <td> str  </td>
+            <td> True </td>
+            <td></td>
+            <td></td>
+            <td> <br> The password of the Unisphere host. </td>
+        </tr>
+                    <tr>
+            <td colspan=1 > serial_no</td>
+            <td> str  </td>
+            <td> True </td>
+            <td></td>
+            <td></td>
+            <td> <br> The serial number of the PowerMax/VMAX array. It is a required parameter for all array-specific operations except for getting a list of arrays in the Gatherfacts module. </td>
+        </tr>
+                                                    </table>
+
+### Notes
+* The modules present in this collection named as 'dellemc.powermax' are built to support the Dell PowerMax storage platform.
+
+### Examples
+```
+- name: Create port group without ports
+  dellemc.powermax.portgroup:
+    unispherehost: "{{unispherehost}}"
+    universion: "{{universion}}"
+    verifycert: "{{verifycert}}"
+    user: "{{user}}"
+    password: "{{password}}"
+    serial_no: "{{array_id}}"
+    portgroup_name: "{{portgroup_name}}"
+    state: "present"
+
+- name: Create port group in V4 without ports
+  dellemc.powermax.portgroup:
+    unispherehost: "{{unispherehost}}"
+    universion: "{{universion}}"
+    verifycert: "{{verifycert}}"
+    user: "{{user}}"
+    password: "{{password}}"
+    serial_no: "{{array_id}}"
+    portgroup_name: "new_PG"
+    port_group_protocol: "SCSI_FC"
+    state: "present"
+
+- name: Create port group with ports
+  dellemc.powermax.portgroup:
+    unispherehost: "{{unispherehost}}"
+    universion: "{{universion}}"
+    verifycert: "{{verifycert}}"
+    user: "{{user}}"
+    password: "{{password}}"
+    serial_no: "{{array_id}}"
+    portgroup_name: "{{portgroup_name}}"
+    state: "present"
+    ports:
+    - director_id: "FA-1D"
+      port_id: "5"
+    - director_id: "FA-2D"
+      port_id: "5"
+    port_state: "present-in-group"
+
+- name: Add ports to port group
+  dellemc.powermax.portgroup:
+    unispherehost: "{{unispherehost}}"
+    universion: "{{universion}}"
+    verifycert: "{{verifycert}}"
+    user: "{{user}}"
+    password: "{{password}}"
+    serial_no: "{{array_id}}"
+    portgroup_name: "{{portgroup_name}}"
+    state: "present"
+    ports:
+    - director_id: "FA-2D"
+      port_id: "8"
+    - director_id: "FA-2D"
+      port_id: "9"
+    port_state: "present-in-group"
+
+- name: Remove ports from port group
+  dellemc.powermax.portgroup:
+    unispherehost: "{{unispherehost}}"
+    universion: "{{universion}}"
+    verifycert: "{{verifycert}}"
+    user: "{{user}}"
+    password: "{{password}}"
+    serial_no: "{{array_id}}"
+    portgroup_name: "{{portgroup_name}}"
+    state: "present"
+    ports:
+    - director_id: "FA-2D"
+      port_id: "8"
+    - director_id: "FA-2D"
+      port_id: "9"
+    port_state: "absent-in-group"
+
+- name: Modify port group
+  dellemc.powermax.portgroup:
+    unispherehost: "{{unispherehost}}"
+    universion: "{{universion}}"
+    verifycert: "{{verifycert}}"
+    user: "{{user}}"
+    password: "{{password}}"
+    serial_no: "{{array_id}}"
+    portgroup_name: "{{portgroup_name}}"
+    state: "present"
+    new_name: "{{new_name}}"
+
+- name: Delete port group
+  dellemc.powermax.portgroup:
+    unispherehost: "{{unispherehost}}"
+    universion: "{{universion}}"
+    verifycert: "{{verifycert}}"
+    user: "{{user}}"
+    password: "{{password}}"
+    serial_no: "{{array_id}}"
+    portgroup_name: "{{portgroup_name}}"
+    state: "absent"
+```
+
+### Return Values
+                                                                                                                                                                                                                                                                                                                                                                                    
 <table>
     <tr>
         <th colspan=3>Key</th>
@@ -1183,1196 +3633,76 @@ Manage a host group (cascaded initiator group) on a PowerMax/VMAX storage system
             <td> Whether or not the resource has changed. </td>
         </tr>
                     <tr>
-            <td colspan=3 > hostgroup_details </td>
-            <td>  complex </td>
-            <td> When host group exist. </td>
-            <td> Details of the host group. </td>
+            <td colspan=3 > portgroup_details </td>
+            <td>  list </td>
+            <td> When the port group exist. </td>
+            <td> Details of the port group. </td>
         </tr>
                             <tr>
-                <td class="elbow-placeholder">&nbsp;</td>
-                <td colspan=2 > consistent_lun </td>
-                <td> bool </td>
-                <td>success</td>
-                <td> Flag for consistent LUN in the host group. </td>
-            </tr>
-                                <tr>
-                <td class="elbow-placeholder">&nbsp;</td>
-                <td colspan=2 > disabled_flags </td>
-                <td> list </td>
-                <td>success</td>
-                <td> List of any disabled port flags overridden by the initiator. </td>
-            </tr>
-                                <tr>
-                <td class="elbow-placeholder">&nbsp;</td>
-                <td colspan=2 > enabled_flags </td>
-                <td> list </td>
-                <td>success</td>
-                <td> List of any enabled port flags overridden by the initiator. </td>
-            </tr>
-                                <tr>
-                <td class="elbow-placeholder">&nbsp;</td>
-                <td colspan=2 > host </td>
-                <td> list </td>
-                <td>success</td>
-                <td> List of hosts present in the host group. </td>
-            </tr>
-                                         <tr>
-                    <td class="elbow-placeholder">&nbsp;</td>
-                    <td class="elbow-placeholder">&nbsp;</td>
-                    <td colspan=1 > hostId </td>
-                    <td> str </td>
-                    <td>success</td>
-                    <td> Unique identifier for the host. </td>
-                </tr>
-                                             <tr>
-                    <td class="elbow-placeholder">&nbsp;</td>
-                    <td class="elbow-placeholder">&nbsp;</td>
-                    <td colspan=1 > initiator </td>
-                    <td> list </td>
-                    <td>success</td>
-                    <td> List of initiators present in the host. </td>
-                </tr>
-                                                            <tr>
-                <td class="elbow-placeholder">&nbsp;</td>
-                <td colspan=2 > hostGroupId </td>
-                <td> str </td>
-                <td>success</td>
-                <td> Host group ID. </td>
-            </tr>
-                                <tr>
-                <td class="elbow-placeholder">&nbsp;</td>
-                <td colspan=2 > maskingview </td>
-                <td> list </td>
-                <td>success</td>
-                <td> Masking view in which host group is present. </td>
-            </tr>
-                                <tr>
-                <td class="elbow-placeholder">&nbsp;</td>
-                <td colspan=2 > num_of_hosts </td>
-                <td> int </td>
-                <td>success</td>
-                <td> Number of hosts in the host group. </td>
-            </tr>
-                                <tr>
-                <td class="elbow-placeholder">&nbsp;</td>
-                <td colspan=2 > num_of_initiators </td>
-                <td> int </td>
-                <td>success</td>
-                <td> Number of initiators in the host group. </td>
-            </tr>
-                                <tr>
                 <td class="elbow-placeholder">&nbsp;</td>
                 <td colspan=2 > num_of_masking_views </td>
                 <td> int </td>
                 <td>success</td>
-                <td> Number of masking views associated with the host group. </td>
+                <td> Number of masking views in where port group is associated. </td>
             </tr>
                                 <tr>
                 <td class="elbow-placeholder">&nbsp;</td>
-                <td colspan=2 > port_flags_override </td>
-                <td> bool </td>
+                <td colspan=2 > num_of_ports </td>
+                <td> int </td>
                 <td>success</td>
-                <td> Whether any of the initiator's port flags are overridden. </td>
+                <td> Number of ports in the port group. </td>
             </tr>
                                 <tr>
+                <td class="elbow-placeholder">&nbsp;</td>
+                <td colspan=2 > portGroupId </td>
+                <td> str </td>
+                <td>success</td>
+                <td> Port group ID. </td>
+            </tr>
+                                <tr>
+                <td class="elbow-placeholder">&nbsp;</td>
+                <td colspan=2 > symmetrixPortKey </td>
+                <td> list </td>
+                <td>success</td>
+                <td> Symmetrix system director and port in the port group. </td>
+            </tr>
+                                         <tr>
+                    <td class="elbow-placeholder">&nbsp;</td>
+                    <td class="elbow-placeholder">&nbsp;</td>
+                    <td colspan=1 > directorId </td>
+                    <td> str </td>
+                    <td>success</td>
+                    <td> Director ID of the port. </td>
+                </tr>
+                                             <tr>
+                    <td class="elbow-placeholder">&nbsp;</td>
+                    <td class="elbow-placeholder">&nbsp;</td>
+                    <td colspan=1 > portId </td>
+                    <td> str </td>
+                    <td>success</td>
+                    <td> Port number of the port. </td>
+                </tr>
+                                                            <tr>
                 <td class="elbow-placeholder">&nbsp;</td>
                 <td colspan=2 > type </td>
                 <td> str </td>
                 <td>success</td>
-                <td> Type of initiator of the hosts of the host group. </td>
+                <td> Type of ports in port group. </td>
             </tr>
                                         </table>
 
 ### Authors
 * Vasudevu Lakhinana (@unknown) <ansible.team@dell.com>
-* Manisha Agrawal (@agrawm3) <ansible.team@dell.com>
-
---------------------------------
-# Host Module
-
-Manage host (initiator group) on PowerMax/VMAX Storage System
-
-### Synopsis
- Managing hosts on a PowerMax storage system includes creating a host with a set of initiators and host flags, adding and removing initiators to or from a host, modifying host flag values, renaming a host, and deleting a host.
-
-### Parameters
-                                                                                                                                                                                                                                                                                                                    
-<table>
-    <tr>
-        <th colspan=1>Parameter</th>
-        <th width="20%">Type</th>
-        <th>Required</th>
-        <th>Default</th>
-        <th>Choices</th>
-        <th width="80%">Description</th>
-    </tr>
-                                                            <tr>
-            <td colspan=1 > host_name</td>
-            <td> str  </td>
-            <td> True </td>
-            <td></td>
-            <td></td>
-            <td> <br> The name of the host. No Special Character support except for _. Case sensitive for REST Calls.  <br> Creation of an empty host is allowed. </td>
-        </tr>
-                    <tr>
-            <td colspan=1 > initiators</td>
-            <td> list   <br> elements: str </td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td> <br> List of Initiator WWN or IQN or alias to be added to or removed from the host. </td>
-        </tr>
-                    <tr>
-            <td colspan=1 > state</td>
-            <td> str  </td>
-            <td> True </td>
-            <td></td>
-            <td> <ul> <li>absent</li>  <li>present</li> </ul></td>
-            <td> <br> Define whether the host should exist or not.  <br> absent - indicates that the host should not exist in the system.  <br> present - indicates that the host should exist in the system. </td>
-        </tr>
-                    <tr>
-            <td colspan=1 > initiator_state</td>
-            <td> str  </td>
-            <td></td>
-            <td></td>
-            <td> <ul> <li>absent-in-host</li>  <li>present-in-host</li> </ul></td>
-            <td> <br> Define whether the initiators should be present or absent on the host.  <br> absent-in-host - indicates that the initiators should not exist on the host.  <br> present-in-host - indicates that the initiators should exist on the host.  <br> Required when creating a host with initiators or adding and removing initiators to or from an existing host. </td>
-        </tr>
-                    <tr>
-            <td colspan=1 > host_flags</td>
-            <td> dict  </td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td> <br> Input as a yaml dictionary.  <br> List of all host_flags-  <br> 1. volume_set_addressing.  <br> 2. disable_q_reset_on_ua.  <br> 3. environ_set.  <br> 4. avoid_reset_broadcast.  <br> 5. openvms.  <br> 6. scsi_3.  <br> 7. spc2_protocol_version.  <br> 8. scsi_support1.  <br> 9. consistent_lun.  <br> Possible values are true, false, unset (default state). </td>
-        </tr>
-                    <tr>
-            <td colspan=1 > host_type</td>
-            <td> str  </td>
-            <td></td>
-            <td></td>
-            <td> <ul> <li>default</li>  <li>hpux</li> </ul></td>
-            <td> <br> Describing the OS type. </td>
-        </tr>
-                    <tr>
-            <td colspan=1 > new_name</td>
-            <td> str  </td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td> <br> The new name of the host for the renaming function. No Special Character support except for _. Case sensitive for REST Calls. </td>
-        </tr>
-                    <tr>
-            <td colspan=1 > unispherehost</td>
-            <td> str  </td>
-            <td> True </td>
-            <td></td>
-            <td></td>
-            <td> <br> IP or FQDN of the Unisphere host </td>
-        </tr>
-                    <tr>
-            <td colspan=1 > universion</td>
-            <td> int  </td>
-            <td></td>
-            <td></td>
-            <td> <ul> <li>91</li>  <li>92</li> </ul></td>
-            <td> <br> Unisphere version, currently '91' and '92' versions are supported. </td>
-        </tr>
-                    <tr>
-            <td colspan=1 > verifycert</td>
-            <td> bool  </td>
-            <td> True </td>
-            <td></td>
-            <td> <ul> <li>True</li>  <li>False</li> </ul></td>
-            <td> <br> Boolean variable to specify whether to validate SSL certificate or not.  <br> True - indicates that the SSL certificate should be verified.  <br> False - indicates that the SSL certificate should not be verified. </td>
-        </tr>
-                    <tr>
-            <td colspan=1 > user</td>
-            <td> str  </td>
-            <td> True </td>
-            <td></td>
-            <td></td>
-            <td> <br> The username of the Unisphere host. </td>
-        </tr>
-                    <tr>
-            <td colspan=1 > password</td>
-            <td> str  </td>
-            <td> True </td>
-            <td></td>
-            <td></td>
-            <td> <br> The password of the Unisphere host. </td>
-        </tr>
-                    <tr>
-            <td colspan=1 > serial_no</td>
-            <td> str  </td>
-            <td> True </td>
-            <td></td>
-            <td></td>
-            <td> <br> The serial number of the PowerMax/VMAX array. It is a required parameter for all array-specific operations except for getting a list of arrays in the Gatherfacts module. </td>
-        </tr>
-                                                    </table>
-
-### Notes
-* host_flags and host_type are mutually exclusive parameters.
-* The modules present in this collection named as 'dellemc.powermax' are built to support the Dell PowerMax storage platform.
-
-### Examples
-```
-- name: Create host with host_type 'default'
-  dellemc.powermax.host:
-    unispherehost: "{{unispherehost}}"
-    universion: "{{universion}}"
-    verifycert: "{{verifycert}}"
-    user: "{{user}}"
-    password: "{{password}}"
-    serial_no: "{{serial_no}}"
-    host_name: "ansible_test_1"
-    host_type: "default"
-    state: 'present'
-
-- name: Create host with host_type 'hpux'
-  dellemc.powermax.host:
-    unispherehost: "{{unispherehost}}"
-    universion: "{{universion}}"
-    verifycert: "{{verifycert}}"
-    user: "{{user}}"
-    password: "{{password}}"
-    serial_no: "{{serial_no}}"
-    host_name: "ansible_test_2"
-    host_type: "hpux"
-    state: 'present'
-
-- name: Create host with host_flags
-  dellemc.powermax.host:
-    unispherehost: "{{unispherehost}}"
-    universion: "{{universion}}"
-    verifycert: "{{verifycert}}"
-    user: "{{user}}"
-    password: "{{password}}"
-    serial_no: "{{serial_no}}"
-    host_name: "ansible_test_3"
-    initiators:
-      - 1000000000000001
-      - 'host/HBA01'
-    host_flags:
-      spc2_protocol_version: true
-      consistent_lun: true
-      volume_set_addressing: 'unset'
-      disable_q_reset_on_ua: false
-      openvms: 'unset'
-    state: 'present'
-    initiator_state: 'present-in-host'
-
-- name: Get host details
-  dellemc.powermax.host:
-    unispherehost: "{{unispherehost}}"
-    universion: "{{universion}}"
-    verifycert: "{{verifycert}}"
-    user: "{{user}}"
-    password: "{{password}}"
-    serial_no: "{{serial_no}}"
-    host_name: "ansible_test_1"
-    state: 'present'
-
-- name: Adding initiator to host
-  dellemc.powermax.host:
-    unispherehost: "{{unispherehost}}"
-    universion: "{{universion}}"
-    verifycert: "{{verifycert}}"
-    user: "{{user}}"
-    password: "{{password}}"
-    serial_no: "{{serial_no}}"
-    host_name: "ansible_test_1"
-    initiators:
-      - 1000000000000001
-      - 'host/HBA01'
-    initiator_state: 'present-in-host'
-    state: 'present'
-
-- name: Removing initiator from host
-  dellemc.powermax.host:
-    unispherehost: "{{unispherehost}}"
-    universion: "{{universion}}"
-    verifycert: "{{verifycert}}"
-    user: "{{user}}"
-    password: "{{password}}"
-    serial_no: "{{serial_no}}"
-    host_name: "ansible_test_1"
-    initiators:
-      - 1000000000000001
-      - 'host/HBA01'
-    initiator_state: 'absent-in-host'
-    state: 'present'
-
-- name: Modify host using host_type
-  dellemc.powermax.host:
-    unispherehost: "{{unispherehost}}"
-    universion: "{{universion}}"
-    verifycert: "{{verifycert}}"
-    user: "{{user}}"
-    password: "{{password}}"
-    serial_no: "{{serial_no}}"
-    host_name: "ansible_test_1"
-    host_type: "hpux"
-    state: 'present'
-
-- name: Modify host using host_flags
-  dellemc.powermax.host:
-    unispherehost: "{{unispherehost}}"
-    universion: "{{universion}}"
-    verifycert: "{{verifycert}}"
-    user: "{{user}}"
-    password: "{{password}}"
-    serial_no: "{{serial_no}}"
-    host_name: "ansible_test_1"
-    host_flags:
-      spc2_protocol_version: unset
-      consistent_lun: unset
-      volume_set_addressing: true
-      disable_q_reset_on_ua: false
-      openvms: false
-      avoid_reset_broadcast: true
-    state: 'present'
-
-- name: Rename host
-  dellemc.powermax.host:
-    unispherehost: "{{unispherehost}}"
-    universion: "{{universion}}"
-    verifycert: "{{verifycert}}"
-    user: "{{user}}"
-    password: "{{password}}"
-    serial_no: "{{serial_no}}"
-    host_name: "ansible_test_1"
-    new_name: "ansible_test_1_host"
-    state: 'present'
-
-- name: Delete host
-  dellemc.powermax.host:
-    unispherehost: "{{unispherehost}}"
-    universion: "{{universion}}"
-    verifycert: "{{verifycert}}"
-    user: "{{user}}"
-    password: "{{password}}"
-    serial_no: "{{serial_no}}"
-    host_name: "ansible_test_1_host"
-    state: 'absent'
-```
-
-### Return Values
-                                                                                                                                                                                                                                                                                                                                                                                                                                
-<table>
-    <tr>
-        <th colspan=2>Key</th>
-        <th>Type</th>
-        <th>Returned</th>
-        <th width="100%">Description</th>
-    </tr>
-                                                                                            <tr>
-            <td colspan=2 > changed </td>
-            <td>  bool </td>
-            <td> always </td>
-            <td> Whether or not the resource has changed. </td>
-        </tr>
-                    <tr>
-            <td colspan=2 > host_details </td>
-            <td>  complex </td>
-            <td> When host exist. </td>
-            <td> Details of the host. </td>
-        </tr>
-                            <tr>
-                <td class="elbow-placeholder">&nbsp;</td>
-                <td colspan=1 > bw_limit </td>
-                <td> int </td>
-                <td>success</td>
-                <td> Bandwidth limit of the host. </td>
-            </tr>
-                                <tr>
-                <td class="elbow-placeholder">&nbsp;</td>
-                <td colspan=1 > consistent_lun </td>
-                <td> bool </td>
-                <td>success</td>
-                <td> Flag for consistent LUN in host. </td>
-            </tr>
-                                <tr>
-                <td class="elbow-placeholder">&nbsp;</td>
-                <td colspan=1 > disabled_flags </td>
-                <td> list </td>
-                <td>success</td>
-                <td> List of any disabled port flags overridden by the initiator. </td>
-            </tr>
-                                <tr>
-                <td class="elbow-placeholder">&nbsp;</td>
-                <td colspan=1 > enabled_flags </td>
-                <td> list </td>
-                <td>success</td>
-                <td> List of any enabled port flags overridden by the initiator. </td>
-            </tr>
-                                <tr>
-                <td class="elbow-placeholder">&nbsp;</td>
-                <td colspan=1 > hostId </td>
-                <td> str </td>
-                <td>success</td>
-                <td> Host ID. </td>
-            </tr>
-                                <tr>
-                <td class="elbow-placeholder">&nbsp;</td>
-                <td colspan=1 > hostgroup </td>
-                <td> list </td>
-                <td>success</td>
-                <td> List of host groups that the host is associated with. </td>
-            </tr>
-                                <tr>
-                <td class="elbow-placeholder">&nbsp;</td>
-                <td colspan=1 > initiator </td>
-                <td> list </td>
-                <td>success</td>
-                <td> List of initiators present in the host. </td>
-            </tr>
-                                <tr>
-                <td class="elbow-placeholder">&nbsp;</td>
-                <td colspan=1 > maskingview </td>
-                <td> list </td>
-                <td>success</td>
-                <td> List of masking view in which the host group is present. </td>
-            </tr>
-                                <tr>
-                <td class="elbow-placeholder">&nbsp;</td>
-                <td colspan=1 > num_of_hostgroups </td>
-                <td> int </td>
-                <td>success</td>
-                <td> Number of host groups associated with the host. </td>
-            </tr>
-                                <tr>
-                <td class="elbow-placeholder">&nbsp;</td>
-                <td colspan=1 > num_of_initiators </td>
-                <td> int </td>
-                <td>success</td>
-                <td> Number of initiators present in the host. </td>
-            </tr>
-                                <tr>
-                <td class="elbow-placeholder">&nbsp;</td>
-                <td colspan=1 > num_of_masking_views </td>
-                <td> int </td>
-                <td>success</td>
-                <td> Number of masking views associated with the host. </td>
-            </tr>
-                                <tr>
-                <td class="elbow-placeholder">&nbsp;</td>
-                <td colspan=1 > num_of_powerpath_hosts </td>
-                <td> int </td>
-                <td>success</td>
-                <td> Number of PowerPath hosts associated with the host. </td>
-            </tr>
-                                <tr>
-                <td class="elbow-placeholder">&nbsp;</td>
-                <td colspan=1 > port_flags_override </td>
-                <td> bool </td>
-                <td>success</td>
-                <td> Whether any of the initiator port flags are overridden. </td>
-            </tr>
-                                <tr>
-                <td class="elbow-placeholder">&nbsp;</td>
-                <td colspan=1 > type </td>
-                <td> str </td>
-                <td>success</td>
-                <td> Type of initiator. </td>
-            </tr>
-                                        </table>
-
-### Authors
-* Vasudevu Lakhinana (@unknown) <ansible.team@dell.com>
-* Manisha Agrawal (@agrawm3) <ansible.team@dell.com>
-
---------------------------------
-# Masking View Module
-
-Managing masking views on PowerMax/VMAX Storage System.
-
-### Synopsis
- Managing masking views on PowerMax storage system includes, creating masking view with port group, storage group and host or host group, renaming masking view and deleting masking view.
- For creating a masking view -
- (i) portgroup_name,
- (ii) sg_name and
- (iii) any one of host_name or hostgroup_name is required.
- All three entities must be present on the array.
- For renaming a masking view, the 'new_mv_name' is required. After a masking view is created, only its name can be changed. No underlying entity (portgroup, storagegroup, host or hostgroup) can be changed on the masking view.
-
-### Parameters
-                                                                                                                                                                                                                                                                                                                    
-<table>
-    <tr>
-        <th colspan=1>Parameter</th>
-        <th width="20%">Type</th>
-        <th>Required</th>
-        <th>Default</th>
-        <th>Choices</th>
-        <th width="80%">Description</th>
-    </tr>
-                                                            <tr>
-            <td colspan=1 > mv_name</td>
-            <td> str  </td>
-            <td> True </td>
-            <td></td>
-            <td></td>
-            <td> <br> The name of the masking view. No Special Character support except for _. Case sensitive for REST Calls. </td>
-        </tr>
-                    <tr>
-            <td colspan=1 > portgroup_name</td>
-            <td> str  </td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td> <br> The name of the existing port group. </td>
-        </tr>
-                    <tr>
-            <td colspan=1 > host_name</td>
-            <td> str  </td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td> <br> The name of the existing host. This parameter is to create an exclusive or host export. </td>
-        </tr>
-                    <tr>
-            <td colspan=1 > hostgroup_name</td>
-            <td> str  </td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td> <br> The name of the existing host group. This parameter is used to create cluster export. </td>
-        </tr>
-                    <tr>
-            <td colspan=1 > sg_name</td>
-            <td> str  </td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td> <br> The name of the existing storage group. </td>
-        </tr>
-                    <tr>
-            <td colspan=1 > new_mv_name</td>
-            <td> str  </td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td> <br> The new name for the renaming function. No Special Character support except for _. Case sensitive for REST Calls. </td>
-        </tr>
-                    <tr>
-            <td colspan=1 > state</td>
-            <td> str  </td>
-            <td> True </td>
-            <td></td>
-            <td> <ul> <li>absent</li>  <li>present</li> </ul></td>
-            <td> <br> Defines whether the masking view should exist or not. </td>
-        </tr>
-                    <tr>
-            <td colspan=1 > unispherehost</td>
-            <td> str  </td>
-            <td> True </td>
-            <td></td>
-            <td></td>
-            <td> <br> IP or FQDN of the Unisphere host </td>
-        </tr>
-                    <tr>
-            <td colspan=1 > universion</td>
-            <td> int  </td>
-            <td></td>
-            <td></td>
-            <td> <ul> <li>91</li>  <li>92</li> </ul></td>
-            <td> <br> Unisphere version, currently '91' and '92' versions are supported. </td>
-        </tr>
-                    <tr>
-            <td colspan=1 > verifycert</td>
-            <td> bool  </td>
-            <td> True </td>
-            <td></td>
-            <td> <ul> <li>True</li>  <li>False</li> </ul></td>
-            <td> <br> Boolean variable to specify whether to validate SSL certificate or not.  <br> True - indicates that the SSL certificate should be verified.  <br> False - indicates that the SSL certificate should not be verified. </td>
-        </tr>
-                    <tr>
-            <td colspan=1 > user</td>
-            <td> str  </td>
-            <td> True </td>
-            <td></td>
-            <td></td>
-            <td> <br> The username of the Unisphere host. </td>
-        </tr>
-                    <tr>
-            <td colspan=1 > password</td>
-            <td> str  </td>
-            <td> True </td>
-            <td></td>
-            <td></td>
-            <td> <br> The password of the Unisphere host. </td>
-        </tr>
-                    <tr>
-            <td colspan=1 > serial_no</td>
-            <td> str  </td>
-            <td> True </td>
-            <td></td>
-            <td></td>
-            <td> <br> The serial number of the PowerMax/VMAX array. It is a required parameter for all array-specific operations except for getting a list of arrays in the Gatherfacts module. </td>
-        </tr>
-                                                    </table>
-
-### Notes
-* The modules present in this collection named as 'dellemc.powermax' are built to support the Dell PowerMax storage platform.
-
-### Examples
-```
-- name: Create MV with hostgroup
-  dellemc.powermax.maskingview:
-    unispherehost: "{{unispherehost}}"
-    universion: "{{universion}}"
-    verifycert: "{{verifycert}}"
-    user: "{{user}}"
-    password: "{{password}}"
-    serial_no: "{{serial_no}}"
-    mv_name: "{{mv_name}}"
-    portgroup_name: "Ansible_Testing_portgroup"
-    hostgroup_name: "Ansible_Testing_hostgroup"
-    sg_name: "Ansible_Testing_SG"
-    state: "present"
-
-- name: Create MV with host
-  dellemc.powermax.maskingview:
-    unispherehost: "{{unispherehost}}"
-    universion: "{{universion}}"
-    verifycert: "{{verifycert}}"
-    user: "{{user}}"
-    password: "{{password}}"
-    serial_no: "{{serial_no}}"
-    mv_name: "{{mv_name}}"
-    portgroup_name: "Ansible_Testing_portgroup"
-    host_name: "Ansible_Testing_host"
-    sg_name: "Ansible_Testing_SG"
-    state: "present"
-
-- name: Rename host masking view
-  dellemc.powermax.maskingview:
-    unispherehost: "{{unispherehost}}"
-    universion: "{{universion}}"
-    verifycert: "{{verifycert}}"
-    user: "{{user}}"
-    password: "{{password}}"
-    serial_no: "{{serial_no}}"
-    mv_name: "{{mv_name}}"
-    new_mv_name: "Ansible_Testing_mv_renamed"
-    state: "present"
-
-- name: Delete host masking view
-  dellemc.powermax.maskingview:
-    unispherehost: "{{unispherehost}}"
-    universion: "{{universion}}"
-    verifycert: "{{verifycert}}"
-    user: "{{user}}"
-    password: "{{password}}"
-    serial_no: "{{serial_no}}"
-    mv_name: "Ansible_Testing_mv_renamed"
-    state: "absent"
-```
-
-### Return Values
-                                                                                                                                                                                                                                                                                    
-<table>
-    <tr>
-        <th colspan=2>Key</th>
-        <th>Type</th>
-        <th>Returned</th>
-        <th width="100%">Description</th>
-    </tr>
-                                                                                            <tr>
-            <td colspan=2 > changed </td>
-            <td>  bool </td>
-            <td> always </td>
-            <td> Whether or not the resource has changed. </td>
-        </tr>
-                    <tr>
-            <td colspan=2 > create_mv </td>
-            <td>  bool </td>
-            <td> When masking view is created. </td>
-            <td> Flag sets to true when a new masking view is created. </td>
-        </tr>
-                    <tr>
-            <td colspan=2 > delete_mv </td>
-            <td>  bool </td>
-            <td> When masking view is deleted. </td>
-            <td> Flag sets to true when a masking view is deleted. </td>
-        </tr>
-                    <tr>
-            <td colspan=2 > modify_mv </td>
-            <td>  bool </td>
-            <td> When masking view is modified. </td>
-            <td> Flag sets to true when a masking view is modified. </td>
-        </tr>
-                    <tr>
-            <td colspan=2 > mv_details </td>
-            <td>  list </td>
-            <td> When masking view exist. </td>
-            <td> Details of masking view. </td>
-        </tr>
-                            <tr>
-                <td class="elbow-placeholder">&nbsp;</td>
-                <td colspan=1 > hostId </td>
-                <td> str </td>
-                <td>success</td>
-                <td> Host group present in the masking view. </td>
-            </tr>
-                                <tr>
-                <td class="elbow-placeholder">&nbsp;</td>
-                <td colspan=1 > maskingViewId </td>
-                <td> str </td>
-                <td>success</td>
-                <td> Masking view ID. </td>
-            </tr>
-                                <tr>
-                <td class="elbow-placeholder">&nbsp;</td>
-                <td colspan=1 > portGroupId </td>
-                <td> str </td>
-                <td>success</td>
-                <td> Port group present in the masking view. </td>
-            </tr>
-                                <tr>
-                <td class="elbow-placeholder">&nbsp;</td>
-                <td colspan=1 > storageGroupId </td>
-                <td> str </td>
-                <td>success</td>
-                <td> Storage group present in the masking view. </td>
-            </tr>
-                                        </table>
-
-### Authors
-* Vasudevu Lakhinana (@unknown) <ansible.team@dell.com>
-* Prashant Rakheja (@prashant-dell) <ansible.team@dell.com>
-
---------------------------------
-# Snapshot Policy Module
-
-Manage snapshot policy on PowerMax/VMAX Storage System
-
-### Synopsis
- Managing a snapshot policy on a PowerMax storage system includes getting details of any specific snapshot policy, creating a snapshot policy, modifying snapshot policy attributes, modifying snapshot policy state, associating or disassociating storage groups to or from snapshot policy and deleting a snapshot policy.
-
-### Parameters
-                                                                                                                                                                                                                                                                                                                                                                                                                        
-<table>
-    <tr>
-        <th colspan=1>Parameter</th>
-        <th width="20%">Type</th>
-        <th>Required</th>
-        <th>Default</th>
-        <th>Choices</th>
-        <th width="80%">Description</th>
-    </tr>
-                                                            <tr>
-            <td colspan=1 > universion</td>
-            <td> int  </td>
-            <td></td>
-            <td></td>
-            <td> <ul> <li>92</li> </ul></td>
-            <td> <br> Unisphere version, currently '92' version is supported. </td>
-        </tr>
-                    <tr>
-            <td colspan=1 > snapshot_policy_name</td>
-            <td> str  </td>
-            <td> True </td>
-            <td></td>
-            <td></td>
-            <td> <br> Name of the snapshot policy. </td>
-        </tr>
-                    <tr>
-            <td colspan=1 > interval</td>
-            <td> str  </td>
-            <td></td>
-            <td></td>
-            <td> <ul> <li>10 Minutes</li>  <li>12 Minutes</li>  <li>15 Minutes</li>  <li>20 Minutes</li>  <li>30 Minutes</li>  <li>1 Hour</li>  <li>2 Hours</li>  <li>3 Hours</li>  <li>4 Hours</li>  <li>6 Hours</li>  <li>8 Hours</li>  <li>12 Hours</li>  <li>1 Day</li>  <li>7 Days</li> </ul></td>
-            <td> <br> The value of the interval counter for snapshot policy execution. </td>
-        </tr>
-                    <tr>
-            <td colspan=1 > secure</td>
-            <td> bool  </td>
-            <td></td>
-            <td></td>
-            <td> <ul> <li>True</li>  <li>False</li> </ul></td>
-            <td> <br> Secure snapshots may only be terminated after they expire or by Dell Technologies support.  <br> If not specified, default value is False. </td>
-        </tr>
-                    <tr>
-            <td colspan=1 > snapshot_count</td>
-            <td> int  </td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td> <br> The max snapshot count of the policy.  <br> Max value is 1024. </td>
-        </tr>
-                    <tr>
-            <td colspan=1 > offset_mins</td>
-            <td> int  </td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td> <br> Defines when, within the interval the snapshots will be taken for a specified snapshot policy.  <br> The offset must be less than the interval of the snapshot policy.  <br> The format must be in minutes.  <br> If not specified, default value is 0. </td>
-        </tr>
-                    <tr>
-            <td colspan=1 > compliance_count_warning</td>
-            <td> int  </td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td> <br> If the number of valid snapshots falls below this number, the compliance changes to warning (yellow). </td>
-        </tr>
-                    <tr>
-            <td colspan=1 > compliance_count_critical</td>
-            <td> int  </td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td> <br> If the number of valid snapshots falls below this number, the compliance changes to critical (red). </td>
-        </tr>
-                    <tr>
-            <td colspan=1 > storage_groups</td>
-            <td> list   <br> elements: str </td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td> <br> List of storage groups. </td>
-        </tr>
-                    <tr>
-            <td colspan=1 > storage_group_state</td>
-            <td> str  </td>
-            <td></td>
-            <td></td>
-            <td> <ul> <li>present-in-policy</li>  <li>absent-in-policy</li> </ul></td>
-            <td> <br> The state of the storage group with regard to the snapshot policy.  <br> present-in-policy indicates associate SG to SP.  <br> absent-in-policy indicates disassociate SG from SP. </td>
-        </tr>
-                    <tr>
-            <td colspan=1 > suspend</td>
-            <td> bool  </td>
-            <td></td>
-            <td></td>
-            <td> <ul> <li>True</li>  <li>False</li> </ul></td>
-            <td> <br> Suspend the snapshot policy.  <br> True indicates snapshot policy is in suspend state.  <br> False indicates snapshot policy is in resume state. </td>
-        </tr>
-                    <tr>
-            <td colspan=1 > new_snapshot_policy_name</td>
-            <td> str  </td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td> <br> New name of the snapshot policy. </td>
-        </tr>
-                    <tr>
-            <td colspan=1 > state</td>
-            <td> str  </td>
-            <td> True </td>
-            <td></td>
-            <td> <ul> <li>present</li>  <li>absent</li> </ul></td>
-            <td> <br> Shows if the snapshot policy should be present or absent. </td>
-        </tr>
-                    <tr>
-            <td colspan=1 > unispherehost</td>
-            <td> str  </td>
-            <td> True </td>
-            <td></td>
-            <td></td>
-            <td> <br> IP or FQDN of the Unisphere host </td>
-        </tr>
-                    <tr>
-            <td colspan=1 > verifycert</td>
-            <td> bool  </td>
-            <td> True </td>
-            <td></td>
-            <td> <ul> <li>True</li>  <li>False</li> </ul></td>
-            <td> <br> Boolean variable to specify whether to validate SSL certificate or not.  <br> True - indicates that the SSL certificate should be verified.  <br> False - indicates that the SSL certificate should not be verified. </td>
-        </tr>
-                    <tr>
-            <td colspan=1 > user</td>
-            <td> str  </td>
-            <td> True </td>
-            <td></td>
-            <td></td>
-            <td> <br> The username of the Unisphere host. </td>
-        </tr>
-                    <tr>
-            <td colspan=1 > password</td>
-            <td> str  </td>
-            <td> True </td>
-            <td></td>
-            <td></td>
-            <td> <br> The password of the Unisphere host. </td>
-        </tr>
-                    <tr>
-            <td colspan=1 > serial_no</td>
-            <td> str  </td>
-            <td> True </td>
-            <td></td>
-            <td></td>
-            <td> <br> The serial number of the PowerMax/VMAX array. It is a required parameter for all array-specific operations except for getting a list of arrays in the Gatherfacts module. </td>
-        </tr>
-                                                    </table>
-
-### Notes
-* The max number of snapshot policies on an array is limited to 20.
-* At most four snapshot policies can be associated with a storage group.
-* compliance_count_critical <= compliance_count_warning < total snapshot_count for the policy.
-* The modules present in this collection named as 'dellemc.powermax' are built to support the Dell PowerMax storage platform.
-
-### Examples
-```
-- name: Create a snapshot policy
-  dellemc.powermax.snapshotpolicy:
-    unispherehost: "{{unispherehost}}"
-    universion: "{{universion}}"
-    verifycert: "{{verifycert}}"
-    user: "{{user}}"
-    password: "{{password}}"
-    serial_no: "{{serial_no}}"
-    snapshot_policy_name: "10min_policy_1"
-    interval: "10 Minutes"
-    secure: false
-    snapshot_count: 10
-    offset_mins: 2
-    compliance_count_warning: 6
-    compliance_count_critical: 4
-    state: "present"
-
-- name: Create a snapshot policy and associate storage groups to it
-  dellemc.powermax.snapshotpolicy:
-    unispherehost: "{{unispherehost}}"
-    universion: "{{universion}}"
-    verifycert: "{{verifycert}}"
-    user: "{{user}}"
-    password: "{{password}}"
-    serial_no: "{{serial_no}}"
-    snapshot_policy_name: "10min_policy_2"
-    interval: "10 Minutes"
-    secure: false
-    snapshot_count: 12
-    offset_mins: 5
-    compliance_count_warning: 8
-    compliance_count_critical: 4
-    storage_groups:
-      - "11_ansible_test_1"
-      - "11_ansible_test_2"
-    storage_group_state: "present-in-policy"
-    state: "present"
-
-- name: Get snapshot policy details
-  dellemc.powermax.snapshotpolicy:
-    unispherehost: "{{unispherehost}}"
-    universion: "{{universion}}"
-    verifycert: "{{verifycert}}"
-    user: "{{user}}"
-    password: "{{password}}"
-    serial_no: "{{serial_no}}"
-    snapshot_policy_name: "10min_policy_2"
-    state: "present"
-
-- name: Modify snapshot policy attributes
-  dellemc.powermax.snapshotpolicy:
-    unispherehost: "{{unispherehost}}"
-    universion: "{{universion}}"
-    verifycert: "{{verifycert}}"
-    user: "{{user}}"
-    password: "{{password}}"
-    serial_no: "{{serial_no}}"
-    snapshot_policy_name: "10min_policy_2"
-    new_snapshot_policy_name: "10min_policy_2_new"
-    interval: "10 Minutes"
-    snapshot_count: 16
-    offset_mins: 8
-    compliance_count_warning: 9
-    compliance_count_critical: 7
-    state: "present"
-
-- name: Modify snapshot policy, associate to storage groups
-  dellemc.powermax.snapshotpolicy:
-    unispherehost: "{{unispherehost}}"
-    universion: "{{universion}}"
-    verifycert: "{{verifycert}}"
-    user: "{{user}}"
-    password: "{{password}}"
-    serial_no: "{{serial_no}}"
-    snapshot_policy_name: "10min_policy_1"
-    storage_groups:
-      - "11_ansible_test_1"
-      - "11_ansible_test_2"
-    storage_group_state: "present-in-policy"
-    state: "present"
-
-- name: Modify snapshot policy, disassociate from storage groups
-  dellemc.powermax.snapshotpolicy:
-    unispherehost: "{{unispherehost}}"
-    universion: "{{universion}}"
-    verifycert: "{{verifycert}}"
-    user: "{{user}}"
-    password: "{{password}}"
-    serial_no: "{{serial_no}}"
-    snapshot_policy_name: "10min_policy_1"
-    storage_groups:
-      - "11_ansible_test_1"
-      - "11_ansible_test_2"
-    storage_group_state: "absent-in-policy"
-    state: "present"
-
-- name: Modify snapshot policy state to suspend
-  dellemc.powermax.snapshotpolicy:
-    unispherehost: "{{unispherehost}}"
-    universion: "{{universion}}"
-    verifycert: "{{verifycert}}"
-    user: "{{user}}"
-    password: "{{password}}"
-    serial_no: "{{serial_no}}"
-    snapshot_policy_name: "10min_policy_1"
-    suspend: true
-    state: "present"
-
-- name: Modify snapshot policy state to resume
-  dellemc.powermax.snapshotpolicy:
-    unispherehost: "{{unispherehost}}"
-    universion: "{{universion}}"
-    verifycert: "{{verifycert}}"
-    user: "{{user}}"
-    password: "{{password}}"
-    serial_no: "{{serial_no}}"
-    snapshot_policy_name: "10min_policy_1"
-    suspend: false
-    state: "present"
-
-- name: Delete a snapshot policy
-  dellemc.powermax.snapshotpolicy:
-    unispherehost: "{{unispherehost}}"
-    universion: "{{universion}}"
-    verifycert: "{{verifycert}}"
-    user: "{{user}}"
-    password: "{{password}}"
-    serial_no: "{{serial_no}}"
-    snapshot_policy_name: "10min_policy_1"
-    state: "absent"
-```
-
-### Return Values
-                                                                                                                                                                                                                                                                                                                                                                                                            
-<table>
-    <tr>
-        <th colspan=2>Key</th>
-        <th>Type</th>
-        <th>Returned</th>
-        <th width="100%">Description</th>
-    </tr>
-                                                                                            <tr>
-            <td colspan=2 > changed </td>
-            <td>  bool </td>
-            <td> always </td>
-            <td> Whether or not the resource has changed. </td>
-        </tr>
-                    <tr>
-            <td colspan=2 > snapshot_policy_details </td>
-            <td>  complex </td>
-            <td> When snapshot policy exists. </td>
-            <td> Details of the snapshot policy. </td>
-        </tr>
-                            <tr>
-                <td class="elbow-placeholder">&nbsp;</td>
-                <td colspan=1 > compliance_count_critical </td>
-                <td> int </td>
-                <td>success</td>
-                <td> The number of valid snapshots that have critical compliance. </td>
-            </tr>
-                                <tr>
-                <td class="elbow-placeholder">&nbsp;</td>
-                <td colspan=1 > compliance_count_warning </td>
-                <td> int </td>
-                <td>success</td>
-                <td> The number of valid snapshots that have warning compliance. </td>
-            </tr>
-                                <tr>
-                <td class="elbow-placeholder">&nbsp;</td>
-                <td colspan=1 > interval_minutes </td>
-                <td> int </td>
-                <td>success</td>
-                <td> The interval minutes for snapshot policy execution. </td>
-            </tr>
-                                <tr>
-                <td class="elbow-placeholder">&nbsp;</td>
-                <td colspan=1 > last_time_used </td>
-                <td> str </td>
-                <td>success</td>
-                <td> The timestamp indicating the last time snapshot policy was used. </td>
-            </tr>
-                                <tr>
-                <td class="elbow-placeholder">&nbsp;</td>
-                <td colspan=1 > offset_minutes </td>
-                <td> int </td>
-                <td>success</td>
-                <td> It is the time in minutes within the interval when the snapshots will be taken for a specified Snapshot Policy. </td>
-            </tr>
-                                <tr>
-                <td class="elbow-placeholder">&nbsp;</td>
-                <td colspan=1 > secure </td>
-                <td> bool </td>
-                <td>success</td>
-                <td> True value indicates that the secure snapshots may only be terminated after they expire or by Dell Technologies support. </td>
-            </tr>
-                                <tr>
-                <td class="elbow-placeholder">&nbsp;</td>
-                <td colspan=1 > snapshot_count </td>
-                <td> int </td>
-                <td>success</td>
-                <td> It is the max snapshot count of the policy. </td>
-            </tr>
-                                <tr>
-                <td class="elbow-placeholder">&nbsp;</td>
-                <td colspan=1 > snapshot_policy_name </td>
-                <td> str </td>
-                <td>success</td>
-                <td> Name of the snapshot policy. </td>
-            </tr>
-                                <tr>
-                <td class="elbow-placeholder">&nbsp;</td>
-                <td colspan=1 > storage_group </td>
-                <td> list </td>
-                <td>success</td>
-                <td> The list of storage groups associated with the snapshot policy. </td>
-            </tr>
-                                <tr>
-                <td class="elbow-placeholder">&nbsp;</td>
-                <td colspan=1 > storage_group_count </td>
-                <td> int </td>
-                <td>success</td>
-                <td> The number of storage groups associated with the snapshot policy. </td>
-            </tr>
-                                <tr>
-                <td class="elbow-placeholder">&nbsp;</td>
-                <td colspan=1 > storage_group_snapshotID </td>
-                <td> list </td>
-                <td>success</td>
-                <td> Pair of storage group and list of snapshot IDs associated with the snapshot policy. </td>
-            </tr>
-                                <tr>
-                <td class="elbow-placeholder">&nbsp;</td>
-                <td colspan=1 > suspended </td>
-                <td> bool </td>
-                <td>success</td>
-                <td> The state of the snapshot policy, true indicates policy is in suspend state. </td>
-            </tr>
-                                <tr>
-                <td class="elbow-placeholder">&nbsp;</td>
-                <td colspan=1 > symmetrixID </td>
-                <td> str </td>
-                <td>success</td>
-                <td> The symmetrix on which snapshot policy exists. </td>
-            </tr>
-                                        </table>
-
-### Authors
+* Ashish Verma (@vermaa31) <ansible.team@dell.com>
 * Rajshree Khare (@khareRajshree) <ansible.team@dell.com>
 
 --------------------------------
-# Intelligent Volume Placement
+# Storage Pool Dict Module
 
-This role provides basic support for Intelligent volume placement for PowerMax.
+Process storage pools on PowerMax/VMAX Storage System
 
 ### Synopsis
- The role is intended for selecting the best suitable array and storage pool intelligently based on certain criteria accepted as user input. It scans through all available PowerMax arrays of the given Unisphere, to find available capacity, current load, service level etc. If the capacity is available in multiple arrays, it will prioritize the storage pool which is least used and returns the pool as 'assigned_pool'.
+ Process storage pools on PowerMax/VMAX storage system to find out the storage pool with maximum free storage.
 
 ### Parameters
                                                                                                                                                                                                                                     
@@ -2386,28 +3716,20 @@ This role provides basic support for Intelligent volume placement for PowerMax.
         <th width="80%">Description</th>
     </tr>
                                                             <tr>
+            <td colspan=1 > pool_data</td>
+            <td> list   <br> elements: dict </td>
+            <td> True </td>
+            <td></td>
+            <td></td>
+            <td> <br> Storage pool details including service levels, usable total space, usable free space, total free space. </td>
+        </tr>
+                    <tr>
             <td colspan=1 > size</td>
             <td> float  </td>
             <td> True </td>
             <td></td>
             <td></td>
-            <td> <br> The size of the storage group. </td>
-        </tr>
-                    <tr>
-            <td colspan=1 > cap_unit</td>
-            <td> str  </td>
-            <td> True </td>
-            <td> GB </td>
-            <td> <ul> <li>GB</li>  <li>TB</li> </ul></td>
-            <td> <br> The capacity unit. </td>
-        </tr>
-                    <tr>
-            <td colspan=1 > service_level</td>
-            <td> str  </td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td> <br> The service level supported by storage pool. </td>
+            <td> <br> Size of the storage group in GB. </td>
         </tr>
                     <tr>
             <td colspan=1 > sg_name</td>
@@ -2415,7 +3737,15 @@ This role provides basic support for Intelligent volume placement for PowerMax.
             <td></td>
             <td></td>
             <td></td>
-            <td> <br> The name of the storage group. </td>
+            <td> <br> Name of the storage group. </td>
+        </tr>
+                    <tr>
+            <td colspan=1 > service_level</td>
+            <td> str  </td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td> <br> Service level of the storage group. </td>
         </tr>
                     <tr>
             <td colspan=1 > unispherehost</td>
@@ -2430,16 +3760,16 @@ This role provides basic support for Intelligent volume placement for PowerMax.
             <td> int  </td>
             <td></td>
             <td></td>
-            <td> <ul> <li>91</li>  <li>92</li> </ul></td>
-            <td> <br> Unisphere version, currently '91' and '92' versions are supported. </td>
+            <td> <ul> <li>91</li>  <li>92</li>  <li>100</li> </ul></td>
+            <td> <br> Unisphere version, currently '91', '92' and '100' versions are supported. </td>
         </tr>
                     <tr>
             <td colspan=1 > verifycert</td>
-            <td> bool  </td>
+            <td> str  </td>
             <td> True </td>
             <td></td>
-            <td> <ul> <li>True</li>  <li>False</li> </ul></td>
-            <td> <br> Boolean variable to specify whether to validate SSL certificate or not.  <br> True - indicates that the SSL certificate should be verified.  <br> False - indicates that the SSL certificate should not be verified. </td>
+            <td></td>
+            <td> <br> Specifies system whether to validate SSL certificate or not, Values can be True or False or a custom file path for SSL certificate with .pem extension or .cer with base 64 encoding. </td>
         </tr>
                     <tr>
             <td colspan=1 > user</td>
@@ -2464,42 +3794,21 @@ This role provides basic support for Intelligent volume placement for PowerMax.
 
 ### Examples
 ```
-    - name: Include the PowerMax role to get the Serial Number and Assigned Pool
-      include_role:
-        name: capacity_role
-
-    - name: Create storage group on the assigned serial number and SRP
-      register: storage_group_details
-      dellemc_powermax_storagegroup:
-        unispherehost: "{{unispherehost}}"
-        universion: "{{universion}}"
-        verifycert: "{{verifycert}}"
-        user: "{{user}}"
-        password: "{{password}}"
-        serial_no: "{{assigned_pool.serial_no}}"
-        sg_name: "test_sg"
-        service_level: "Diamond"
-        srp: "{{assigned_pool.storage_pool}}"
-        compression: True
-        state: "present"
-
-    - name: Create volume on the storage group
-      dellemc_powermax_volume:
-        unispherehost: "{{unispherehost}}"
-        universion: "{{universion}}"
-        verifycert: "{{verifycert}}"
-        user: "{{user}}"
-        password: "{{password}}"
-        serial_no: "{{assigned_pool.serial_no}}"
-        vol_name: "test_vol"
-        sg_name: "test_sg"
-        size: 10
-        cap_unit: "GB"
-        state: 'present'
+- name: Get best suitable Pool using our python sorting module
+  register: assigned_pool
+  dellemc.powermax.process_storage_pool_dict:
+    unispherehost: "{{unispherehost}}"
+    verifycert: "{{verifycert}}"
+    user: "{{user}}"
+    password: "{{password}}"
+    pool_data: "{{ pools_list }}"
+    size: 40
+    service_level: "Diamond"
+    sg_name: "intellgent_provisioning"
 ```
 
 ### Return Values
-                                                                                                                                                                                                    
+                                                                                                                                                                                                                                            
 <table>
     <tr>
         <th colspan=2>Key</th>
@@ -2508,43 +3817,734 @@ This role provides basic support for Intelligent volume placement for PowerMax.
         <th width="100%">Description</th>
     </tr>
                                                                                             <tr>
-            <td colspan=2 > assigned_pool </td>
-            <td>  complex </td>
-            <td> When exists else returns "NOT_FOUND". </td>
-            <td> The role returns storage system (serial number) and pool (SRP name) with the lowest capacity utilization if the capacity provided by user is satisfied. </td>
+            <td colspan=2 > all_pools </td>
+            <td>  list </td>
+            <td> when pool exists </td>
+            <td> List of all pools on unisphere </td>
         </tr>
                             <tr>
-                <td class="elbow-placeholder">&nbsp;</td>
-                <td colspan=1 > changed </td>
-                <td> bool </td>
-                <td>success</td>
-                <td> Whether or not the resource has changed. </td>
-            </tr>
-                                <tr>
                 <td class="elbow-placeholder">&nbsp;</td>
                 <td colspan=1 > serial_no </td>
                 <td> str </td>
                 <td>success</td>
-                <td> The serial number of the PowerMax/VMAX array. </td>
-            </tr>
-                                <tr>
-                <td class="elbow-placeholder">&nbsp;</td>
-                <td colspan=1 > storage_group </td>
-                <td> str </td>
-                <td>success</td>
-                <td> Storage group of the volume. </td>
+                <td> The PowerMax array on which storage pool resides </td>
             </tr>
                                 <tr>
                 <td class="elbow-placeholder">&nbsp;</td>
                 <td colspan=1 > storage_pool </td>
                 <td> str </td>
                 <td>success</td>
-                <td> The ID of the storage pool. </td>
+                <td> The ID of the storage pool </td>
             </tr>
-                                        </table>
+                                        <tr>
+            <td colspan=2 > changed </td>
+            <td>  bool </td>
+            <td> always </td>
+            <td> Whether or not the resource has changed. </td>
+        </tr>
+                    <tr>
+            <td colspan=2 > serial_no </td>
+            <td>  str </td>
+            <td> when array satisfies the given criteria </td>
+            <td> The PowerMax array on which storage pool resides </td>
+        </tr>
+                    <tr>
+            <td colspan=2 > storage_group </td>
+            <td>  str </td>
+            <td> when storage group exists satisfying the given criteria </td>
+            <td> Name of the storage group </td>
+        </tr>
+                    <tr>
+            <td colspan=2 > storage_pool </td>
+            <td>  str </td>
+            <td> when storage pool exists satisfying the given criteria </td>
+            <td> The ID of the storage pool </td>
+        </tr>
+                    </table>
 
 ### Authors
 * Akash Shendge (@shenda1) <ansible.team@dell.com>
+
+--------------------------------
+# RDF Group Module
+
+Gets the detail information about RDF Groups of a PowerMax or VMAX storage system
+
+### Synopsis
+ Gets details of an RDF Group from a specified PowerMax or VMAX storage system.
+ Lists the volumes of an RDF Group from a specified PowerMax or VMAX storage system.
+ Get specific volume details of an RDF Group from a specified PowerMax or VMAX storage system.
+
+### Parameters
+                                                                                                                                                                                                                
+<table>
+    <tr>
+        <th colspan=1>Parameter</th>
+        <th width="20%">Type</th>
+        <th>Required</th>
+        <th>Default</th>
+        <th>Choices</th>
+        <th width="80%">Description</th>
+    </tr>
+                                                            <tr>
+            <td colspan=1 > rdfgroup_number</td>
+            <td> str  </td>
+            <td> True </td>
+            <td></td>
+            <td></td>
+            <td> <br> Identifier of an RDF Group of type string. </td>
+        </tr>
+                    <tr>
+            <td colspan=1 > vol_name</td>
+            <td> str  </td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td> <br> Name of the volume. </td>
+        </tr>
+                    <tr>
+            <td colspan=1 > unispherehost</td>
+            <td> str  </td>
+            <td> True </td>
+            <td></td>
+            <td></td>
+            <td> <br> IP or FQDN of the Unisphere host </td>
+        </tr>
+                    <tr>
+            <td colspan=1 > universion</td>
+            <td> int  </td>
+            <td></td>
+            <td></td>
+            <td> <ul> <li>91</li>  <li>92</li>  <li>100</li> </ul></td>
+            <td> <br> Unisphere version, currently '91', '92' and '100' versions are supported. </td>
+        </tr>
+                    <tr>
+            <td colspan=1 > verifycert</td>
+            <td> str  </td>
+            <td> True </td>
+            <td></td>
+            <td></td>
+            <td> <br> Specifies system whether to validate SSL certificate or not, Values can be True or False or a custom file path for SSL certificate with .pem extension or .cer with base 64 encoding. </td>
+        </tr>
+                    <tr>
+            <td colspan=1 > user</td>
+            <td> str  </td>
+            <td> True </td>
+            <td></td>
+            <td></td>
+            <td> <br> The username of the Unisphere host. </td>
+        </tr>
+                    <tr>
+            <td colspan=1 > password</td>
+            <td> str  </td>
+            <td> True </td>
+            <td></td>
+            <td></td>
+            <td> <br> The password of the Unisphere host. </td>
+        </tr>
+                    <tr>
+            <td colspan=1 > serial_no</td>
+            <td> str  </td>
+            <td> True </td>
+            <td></td>
+            <td></td>
+            <td> <br> The serial number of the PowerMax/VMAX array. It is a required parameter for all array-specific operations except for getting a list of arrays in the Gatherfacts module. </td>
+        </tr>
+                                                    </table>
+
+### Notes
+* The check_mode is not supported.
+* The modules present in this collection named as 'dellemc.powermax' are built to support the Dell PowerMax storage platform.
+
+### Examples
+```
+- name: Get the details of an RDF group and volumes
+  dellemc.powermax.rdfgroup:
+    unispherehost: "{{unispherehost}}"
+    universion: "{{universion}}"
+    verifycert: "{{verifycert}}"
+    user: "{{user}}"
+    password: "{{password}}"
+    serial_no: "{{serial_no}}"
+    rdfgroup_number: "{{rdfgroup_id}}"
+
+- name: Get specific volume details of an RDF Group
+  dellemc.powermax.rdfgroup:
+    unispherehost: "{{unispherehost}}"
+    serial_no:  "{{serial_no}}"
+    universion: "{{universion}}"
+    verifycert: "{{verifycert}}"
+    user: "{{user}}"
+    password: "{{password}}"
+    rdfgroup_number: "1"
+    vol_name: "0001"
+```
+
+### Return Values
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            
+<table>
+    <tr>
+        <th colspan=4>Key</th>
+        <th>Type</th>
+        <th>Returned</th>
+        <th width="100%">Description</th>
+    </tr>
+                                                                                            <tr>
+            <td colspan=4 > RDFGroupDetails </td>
+            <td>  list </td>
+            <td> When the RDF group exists. </td>
+            <td> Details of the RDF group. </td>
+        </tr>
+                            <tr>
+                <td class="elbow-placeholder">&nbsp;</td>
+                <td colspan=3 > RDFGroupVolumes </td>
+                <td> list </td>
+                <td>success</td>
+                <td> List of various properties of RDF group volumes. </td>
+            </tr>
+                                         <tr>
+                    <td class="elbow-placeholder">&nbsp;</td>
+                    <td class="elbow-placeholder">&nbsp;</td>
+                    <td colspan=2 > largerRdfSide </td>
+                    <td> str </td>
+                    <td>success</td>
+                    <td> Larger RDF side among the devices. </td>
+                </tr>
+                                             <tr>
+                    <td class="elbow-placeholder">&nbsp;</td>
+                    <td class="elbow-placeholder">&nbsp;</td>
+                    <td colspan=2 > localRdfGroupNumber </td>
+                    <td> int </td>
+                    <td>success</td>
+                    <td> RDF group number at primary device. </td>
+                </tr>
+                                             <tr>
+                    <td class="elbow-placeholder">&nbsp;</td>
+                    <td class="elbow-placeholder">&nbsp;</td>
+                    <td colspan=2 > localSymmetrixId </td>
+                    <td> int </td>
+                    <td>success</td>
+                    <td> Primary device ID. </td>
+                </tr>
+                                             <tr>
+                    <td class="elbow-placeholder">&nbsp;</td>
+                    <td class="elbow-placeholder">&nbsp;</td>
+                    <td colspan=2 > localVolumeName </td>
+                    <td> str </td>
+                    <td>success</td>
+                    <td> Volume name at primary device. </td>
+                </tr>
+                                             <tr>
+                    <td class="elbow-placeholder">&nbsp;</td>
+                    <td class="elbow-placeholder">&nbsp;</td>
+                    <td colspan=2 > localVolumeState </td>
+                    <td> str </td>
+                    <td>success</td>
+                    <td> Volume state at primary device. </td>
+                </tr>
+                                             <tr>
+                    <td class="elbow-placeholder">&nbsp;</td>
+                    <td class="elbow-placeholder">&nbsp;</td>
+                    <td colspan=2 > local_wwn_external </td>
+                    <td> int </td>
+                    <td>success</td>
+                    <td> External WWN of volume at primary device. </td>
+                </tr>
+                                             <tr>
+                    <td class="elbow-placeholder">&nbsp;</td>
+                    <td class="elbow-placeholder">&nbsp;</td>
+                    <td colspan=2 > rdfMode </td>
+                    <td> str </td>
+                    <td>success</td>
+                    <td> SRDF mode of pairing. </td>
+                </tr>
+                                             <tr>
+                    <td class="elbow-placeholder">&nbsp;</td>
+                    <td class="elbow-placeholder">&nbsp;</td>
+                    <td colspan=2 > rdfpairState </td>
+                    <td> str </td>
+                    <td>success</td>
+                    <td> SRDF state of pairing. </td>
+                </tr>
+                                             <tr>
+                    <td class="elbow-placeholder">&nbsp;</td>
+                    <td class="elbow-placeholder">&nbsp;</td>
+                    <td colspan=2 > remoteRdfGroupNumber </td>
+                    <td> int </td>
+                    <td>success</td>
+                    <td> RDF group number at remote device. </td>
+                </tr>
+                                             <tr>
+                    <td class="elbow-placeholder">&nbsp;</td>
+                    <td class="elbow-placeholder">&nbsp;</td>
+                    <td colspan=2 > remoteSymmetrixId </td>
+                    <td> int </td>
+                    <td>success</td>
+                    <td> Remote device ID. </td>
+                </tr>
+                                             <tr>
+                    <td class="elbow-placeholder">&nbsp;</td>
+                    <td class="elbow-placeholder">&nbsp;</td>
+                    <td colspan=2 > remoteVolumeName </td>
+                    <td> str </td>
+                    <td>success</td>
+                    <td> Volume name at remote device. </td>
+                </tr>
+                                             <tr>
+                    <td class="elbow-placeholder">&nbsp;</td>
+                    <td class="elbow-placeholder">&nbsp;</td>
+                    <td colspan=2 > remoteVolumeState </td>
+                    <td> str </td>
+                    <td>success</td>
+                    <td> Volume state at remote device. </td>
+                </tr>
+                                             <tr>
+                    <td class="elbow-placeholder">&nbsp;</td>
+                    <td class="elbow-placeholder">&nbsp;</td>
+                    <td colspan=2 > remote_wwn_external </td>
+                    <td> int </td>
+                    <td>success</td>
+                    <td> External WWN of volume at remote device. </td>
+                </tr>
+                                             <tr>
+                    <td class="elbow-placeholder">&nbsp;</td>
+                    <td class="elbow-placeholder">&nbsp;</td>
+                    <td colspan=2 > volumeConfig </td>
+                    <td> str </td>
+                    <td>success</td>
+                    <td> Type of volume. </td>
+                </tr>
+                                                            <tr>
+                <td class="elbow-placeholder">&nbsp;</td>
+                <td colspan=3 > async </td>
+                <td> bool </td>
+                <td>success</td>
+                <td> Flag sets to true when an SRDF pair is in async mode. </td>
+            </tr>
+                                <tr>
+                <td class="elbow-placeholder">&nbsp;</td>
+                <td colspan=3 > biasConfigured </td>
+                <td> bool </td>
+                <td>success</td>
+                <td> Flag for configured bias. </td>
+            </tr>
+                                <tr>
+                <td class="elbow-placeholder">&nbsp;</td>
+                <td colspan=3 > biasEffective </td>
+                <td> bool </td>
+                <td>success</td>
+                <td> Flag for effective bias. </td>
+            </tr>
+                                <tr>
+                <td class="elbow-placeholder">&nbsp;</td>
+                <td colspan=3 > device_polarity </td>
+                <td> str </td>
+                <td>success</td>
+                <td> Type of device polarity. </td>
+            </tr>
+                                <tr>
+                <td class="elbow-placeholder">&nbsp;</td>
+                <td colspan=3 > hardware_compression </td>
+                <td> bool </td>
+                <td>success</td>
+                <td> Flag for hardware compression. </td>
+            </tr>
+                                <tr>
+                <td class="elbow-placeholder">&nbsp;</td>
+                <td colspan=3 > label </td>
+                <td> str </td>
+                <td>success</td>
+                <td> RDF group label. </td>
+            </tr>
+                                <tr>
+                <td class="elbow-placeholder">&nbsp;</td>
+                <td colspan=3 > link_limbo </td>
+                <td> int </td>
+                <td>success</td>
+                <td> The amount of time that the operating environment of the array waits after the SRDF link goes down before updating the status of the link. The link limbo value can be set from 0 to 120 seconds. The default value is 10 seconds. </td>
+            </tr>
+                                <tr>
+                <td class="elbow-placeholder">&nbsp;</td>
+                <td colspan=3 > localOnlinePorts </td>
+                <td> list </td>
+                <td>success</td>
+                <td> List of local online ports. </td>
+            </tr>
+                                <tr>
+                <td class="elbow-placeholder">&nbsp;</td>
+                <td colspan=3 > localPorts </td>
+                <td> list </td>
+                <td>success</td>
+                <td> List of local ports. </td>
+            </tr>
+                                <tr>
+                <td class="elbow-placeholder">&nbsp;</td>
+                <td colspan=3 > metro </td>
+                <td> list </td>
+                <td>success</td>
+                <td> Flag for Metro configuration. </td>
+            </tr>
+                                <tr>
+                <td class="elbow-placeholder">&nbsp;</td>
+                <td colspan=3 > modes </td>
+                <td> str </td>
+                <td>success</td>
+                <td> Mode of the SRDF link. </td>
+            </tr>
+                                <tr>
+                <td class="elbow-placeholder">&nbsp;</td>
+                <td colspan=3 > numDevices </td>
+                <td> int </td>
+                <td>success</td>
+                <td> Number of devices involved in the pairing. </td>
+            </tr>
+                                <tr>
+                <td class="elbow-placeholder">&nbsp;</td>
+                <td colspan=3 > offline </td>
+                <td> bool </td>
+                <td>success</td>
+                <td> Offline flag. </td>
+            </tr>
+                                <tr>
+                <td class="elbow-placeholder">&nbsp;</td>
+                <td colspan=3 > rdfa_properties </td>
+                <td> list </td>
+                <td>success</td>
+                <td> Properties associated with the RDF group. </td>
+            </tr>
+                                         <tr>
+                    <td class="elbow-placeholder">&nbsp;</td>
+                    <td class="elbow-placeholder">&nbsp;</td>
+                    <td colspan=2 > average_cycle_time </td>
+                    <td> int </td>
+                    <td>success</td>
+                    <td> Average cycle time in seconds that the session configured for. </td>
+                </tr>
+                                             <tr>
+                    <td class="elbow-placeholder">&nbsp;</td>
+                    <td class="elbow-placeholder">&nbsp;</td>
+                    <td colspan=2 > consistency_exempt_volumes </td>
+                    <td> bool </td>
+                    <td>success</td>
+                    <td> Flag that indicates if consistency is exempt. </td>
+                </tr>
+                                             <tr>
+                    <td class="elbow-placeholder">&nbsp;</td>
+                    <td class="elbow-placeholder">&nbsp;</td>
+                    <td colspan=2 > cycle_number </td>
+                    <td> int </td>
+                    <td>success</td>
+                    <td> Number of cycles in seconds. </td>
+                </tr>
+                                             <tr>
+                    <td class="elbow-placeholder">&nbsp;</td>
+                    <td class="elbow-placeholder">&nbsp;</td>
+                    <td colspan=2 > dse_active </td>
+                    <td> bool </td>
+                    <td>success</td>
+                    <td> Flag for active Delta Set Extension. </td>
+                </tr>
+                                             <tr>
+                    <td class="elbow-placeholder">&nbsp;</td>
+                    <td class="elbow-placeholder">&nbsp;</td>
+                    <td colspan=2 > dse_autostart </td>
+                    <td> str </td>
+                    <td>success</td>
+                    <td> Indicates DSE autostart state. </td>
+                </tr>
+                                             <tr>
+                    <td class="elbow-placeholder">&nbsp;</td>
+                    <td class="elbow-placeholder">&nbsp;</td>
+                    <td colspan=2 > dse_threshold </td>
+                    <td> int </td>
+                    <td>success</td>
+                    <td> Flag for DSE threshold. </td>
+                </tr>
+                                             <tr>
+                    <td class="elbow-placeholder">&nbsp;</td>
+                    <td class="elbow-placeholder">&nbsp;</td>
+                    <td colspan=2 > duration_of_last_cycle </td>
+                    <td> int </td>
+                    <td>success</td>
+                    <td> The cycle time in seconds of the most recently completed cycle. </td>
+                </tr>
+                                             <tr>
+                    <td class="elbow-placeholder">&nbsp;</td>
+                    <td class="elbow-placeholder">&nbsp;</td>
+                    <td colspan=2 > duration_of_last_transmit_cycle </td>
+                    <td> int </td>
+                    <td>success</td>
+                    <td> Duration of last transmitted cycle in seconds. </td>
+                </tr>
+                                             <tr>
+                    <td class="elbow-placeholder">&nbsp;</td>
+                    <td class="elbow-placeholder">&nbsp;</td>
+                    <td colspan=2 > r1_to_r2_lag_time </td>
+                    <td> int </td>
+                    <td>success</td>
+                    <td> Time that R2 is behind R1 in seconds. </td>
+                </tr>
+                                             <tr>
+                    <td class="elbow-placeholder">&nbsp;</td>
+                    <td class="elbow-placeholder">&nbsp;</td>
+                    <td colspan=2 > session_priority </td>
+                    <td> int </td>
+                    <td>success</td>
+                    <td> Priority used to determine which RDFA sessions to drop if cache becomes full. Values range from 1 to 64, with 1 being the highest priority, meaning it is the last to be dropped. </td>
+                </tr>
+                                             <tr>
+                    <td class="elbow-placeholder">&nbsp;</td>
+                    <td class="elbow-placeholder">&nbsp;</td>
+                    <td colspan=2 > session_uncommitted_tracks </td>
+                    <td> int </td>
+                    <td>success</td>
+                    <td> Number of uncommitted session tracks. </td>
+                </tr>
+                                             <tr>
+                    <td class="elbow-placeholder">&nbsp;</td>
+                    <td class="elbow-placeholder">&nbsp;</td>
+                    <td colspan=2 > transmit_idle_state </td>
+                    <td> str </td>
+                    <td>success</td>
+                    <td> Indicates RDFA transmit idle state. </td>
+                </tr>
+                                             <tr>
+                    <td class="elbow-placeholder">&nbsp;</td>
+                    <td class="elbow-placeholder">&nbsp;</td>
+                    <td colspan=2 > transmit_idle_time </td>
+                    <td> int </td>
+                    <td>success</td>
+                    <td> Time the transmit cycle has been idle. </td>
+                </tr>
+                                             <tr>
+                    <td class="elbow-placeholder">&nbsp;</td>
+                    <td class="elbow-placeholder">&nbsp;</td>
+                    <td colspan=2 > transmit_queue_depth </td>
+                    <td> int </td>
+                    <td>success</td>
+                    <td> The transmitted queue depth of disks. </td>
+                </tr>
+                                                            <tr>
+                <td class="elbow-placeholder">&nbsp;</td>
+                <td colspan=3 > rdfgNumber </td>
+                <td> int </td>
+                <td>success</td>
+                <td> RDF group number on primary device. </td>
+            </tr>
+                                <tr>
+                <td class="elbow-placeholder">&nbsp;</td>
+                <td colspan=3 > remoteOnlinePorts </td>
+                <td> list </td>
+                <td>success</td>
+                <td> List of remote online ports. </td>
+            </tr>
+                                <tr>
+                <td class="elbow-placeholder">&nbsp;</td>
+                <td colspan=3 > remotePorts </td>
+                <td> list </td>
+                <td>success</td>
+                <td> List of remote ports. </td>
+            </tr>
+                                <tr>
+                <td class="elbow-placeholder">&nbsp;</td>
+                <td colspan=3 > remoteRdfgNumber </td>
+                <td> int </td>
+                <td>success</td>
+                <td> RDF group number at remote device. </td>
+            </tr>
+                                <tr>
+                <td class="elbow-placeholder">&nbsp;</td>
+                <td colspan=3 > remoteSymmetrix </td>
+                <td> int </td>
+                <td>success</td>
+                <td> Remote device ID. </td>
+            </tr>
+                                <tr>
+                <td class="elbow-placeholder">&nbsp;</td>
+                <td colspan=3 > software_compression </td>
+                <td> bool </td>
+                <td>success</td>
+                <td> Flag for software compression. </td>
+            </tr>
+                                <tr>
+                <td class="elbow-placeholder">&nbsp;</td>
+                <td colspan=3 > totalDeviceCapacity </td>
+                <td> int </td>
+                <td>success</td>
+                <td> Total capacity of RDF group in GB. </td>
+            </tr>
+                                <tr>
+                <td class="elbow-placeholder">&nbsp;</td>
+                <td colspan=3 > type </td>
+                <td> str </td>
+                <td>success</td>
+                <td> Type of RDF group. </td>
+            </tr>
+                                <tr>
+                <td class="elbow-placeholder">&nbsp;</td>
+                <td colspan=3 > vasa_group </td>
+                <td> bool </td>
+                <td>success</td>
+                <td> Flag for VASA group member. </td>
+            </tr>
+                                <tr>
+                <td class="elbow-placeholder">&nbsp;</td>
+                <td colspan=3 > witness </td>
+                <td> bool </td>
+                <td>success</td>
+                <td> Flag for witness. </td>
+            </tr>
+                                <tr>
+                <td class="elbow-placeholder">&nbsp;</td>
+                <td colspan=3 > witnessConfigured </td>
+                <td> bool </td>
+                <td>success</td>
+                <td> Flag for configured witness. </td>
+            </tr>
+                                <tr>
+                <td class="elbow-placeholder">&nbsp;</td>
+                <td colspan=3 > witnessDegraded </td>
+                <td> bool </td>
+                <td>success</td>
+                <td> Flag for degraded witness. </td>
+            </tr>
+                                <tr>
+                <td class="elbow-placeholder">&nbsp;</td>
+                <td colspan=3 > witnessEffective </td>
+                <td> bool </td>
+                <td>success</td>
+                <td> Flag for effective witness. </td>
+            </tr>
+                                <tr>
+                <td class="elbow-placeholder">&nbsp;</td>
+                <td colspan=3 > witnessProtectedPhysical </td>
+                <td> bool </td>
+                <td>success</td>
+                <td> Flag for physically protected witness. </td>
+            </tr>
+                                <tr>
+                <td class="elbow-placeholder">&nbsp;</td>
+                <td colspan=3 > witnessProtectedVirtual </td>
+                <td> bool </td>
+                <td>success</td>
+                <td> Flag for virtually protected witness. </td>
+            </tr>
+                                        <tr>
+            <td colspan=4 > RDFGroupVolumeDetails </td>
+            <td>  complex </td>
+            <td> When the RDF group volume exist. </td>
+            <td> RDF group volume details. </td>
+        </tr>
+                            <tr>
+                <td class="elbow-placeholder">&nbsp;</td>
+                <td colspan=3 > largerRdfSide </td>
+                <td> str </td>
+                <td>success</td>
+                <td> Larger RDF side among the devices. </td>
+            </tr>
+                                <tr>
+                <td class="elbow-placeholder">&nbsp;</td>
+                <td colspan=3 > localRdfGroupNumber </td>
+                <td> int </td>
+                <td>success</td>
+                <td> RDF group number at primary device. </td>
+            </tr>
+                                <tr>
+                <td class="elbow-placeholder">&nbsp;</td>
+                <td colspan=3 > localSymmetrixId </td>
+                <td> int </td>
+                <td>success</td>
+                <td> Primary device ID. </td>
+            </tr>
+                                <tr>
+                <td class="elbow-placeholder">&nbsp;</td>
+                <td colspan=3 > localVolumeName </td>
+                <td> str </td>
+                <td>success</td>
+                <td> Volume name at primary device. </td>
+            </tr>
+                                <tr>
+                <td class="elbow-placeholder">&nbsp;</td>
+                <td colspan=3 > localVolumeState </td>
+                <td> str </td>
+                <td>success</td>
+                <td> Volume state at primary device. </td>
+            </tr>
+                                <tr>
+                <td class="elbow-placeholder">&nbsp;</td>
+                <td colspan=3 > local_wwn_external </td>
+                <td> int </td>
+                <td>success</td>
+                <td> External WWN of volume at primary device. </td>
+            </tr>
+                                <tr>
+                <td class="elbow-placeholder">&nbsp;</td>
+                <td colspan=3 > rdfMode </td>
+                <td> str </td>
+                <td>success</td>
+                <td> SRDF mode of pairing. </td>
+            </tr>
+                                <tr>
+                <td class="elbow-placeholder">&nbsp;</td>
+                <td colspan=3 > rdfpairState </td>
+                <td> str </td>
+                <td>success</td>
+                <td> SRDF state of pairing. </td>
+            </tr>
+                                <tr>
+                <td class="elbow-placeholder">&nbsp;</td>
+                <td colspan=3 > remoteRdfGroupNumber </td>
+                <td> int </td>
+                <td>success</td>
+                <td> RDF group number at remote device. </td>
+            </tr>
+                                <tr>
+                <td class="elbow-placeholder">&nbsp;</td>
+                <td colspan=3 > remoteSymmetrixId </td>
+                <td> int </td>
+                <td>success</td>
+                <td> Remote device ID. </td>
+            </tr>
+                                <tr>
+                <td class="elbow-placeholder">&nbsp;</td>
+                <td colspan=3 > remoteVolumeName </td>
+                <td> str </td>
+                <td>success</td>
+                <td> Volume name at remote device. </td>
+            </tr>
+                                <tr>
+                <td class="elbow-placeholder">&nbsp;</td>
+                <td colspan=3 > remoteVolumeState </td>
+                <td> str </td>
+                <td>success</td>
+                <td> Volume state at remote device. </td>
+            </tr>
+                                <tr>
+                <td class="elbow-placeholder">&nbsp;</td>
+                <td colspan=3 > remote_wwn_external </td>
+                <td> int </td>
+                <td>success</td>
+                <td> External WWN of volume at remote device. </td>
+            </tr>
+                                <tr>
+                <td class="elbow-placeholder">&nbsp;</td>
+                <td colspan=3 > volumeConfig </td>
+                <td> str </td>
+                <td>success</td>
+                <td> Type of volume. </td>
+            </tr>
+                                        <tr>
+            <td colspan=4 > changed </td>
+            <td>  bool </td>
+            <td> always </td>
+            <td> Whether or not the resource has changed. </td>
+        </tr>
+                    </table>
+
+### Authors
+* Arindam Datta (@dattaarindam) <ansible.team@dell.com>
+* Ananthu S Kuttattu (@kuttattz) <ansible.team@dell.com>
+* Pavan Mudunuri (@Pavan-Mudunuri) <ansible.team@dell.com>
 
 --------------------------------
 # Snapshot Module
@@ -2658,16 +4658,16 @@ Manage Snapshots on PowerMax/VMAX Storage System
             <td> int  </td>
             <td></td>
             <td></td>
-            <td> <ul> <li>91</li>  <li>92</li> </ul></td>
-            <td> <br> Unisphere version, currently '91' and '92' versions are supported. </td>
+            <td> <ul> <li>91</li>  <li>92</li>  <li>100</li> </ul></td>
+            <td> <br> Unisphere version, currently '91', '92' and '100' versions are supported. </td>
         </tr>
                     <tr>
             <td colspan=1 > verifycert</td>
-            <td> bool  </td>
+            <td> str  </td>
             <td> True </td>
             <td></td>
-            <td> <ul> <li>True</li>  <li>False</li> </ul></td>
-            <td> <br> Boolean variable to specify whether to validate SSL certificate or not.  <br> True - indicates that the SSL certificate should be verified.  <br> False - indicates that the SSL certificate should not be verified. </td>
+            <td></td>
+            <td> <br> Specifies system whether to validate SSL certificate or not, Values can be True or False or a custom file path for SSL certificate with .pem extension or .cer with base 64 encoding. </td>
         </tr>
                     <tr>
             <td colspan=1 > user</td>
@@ -3038,18 +5038,18 @@ Manage Snapshots on PowerMax/VMAX Storage System
 * Rajshree Khare (@khareRajshree) <ansible.team@dell.com>
 
 --------------------------------
-# Info Module
+# Snapshot Policy Module
 
-Gathers information about PowerMax/VMAX Storage entities
+Manage snapshot policy on PowerMax/VMAX Storage System
 
 ### Synopsis
- Gathers the list of specified PowerMax/VMAX storage system entities, such as the list of registered arrays, storage groups, hosts, host groups, storage groups, storage resource pools, port groups, masking views, initiators, array health status, alerts and metro DR environments, so on.
+ Managing a snapshot policy on a PowerMax storage system includes getting details of any specific snapshot policy, creating a snapshot policy, modifying snapshot policy attributes, modifying snapshot policy state, associating or disassociating storage groups to or from snapshot policy and deleting a snapshot policy.
 
 ### Parameters
-                                                                                                                                                                                                                                                                            
+                                                                                                                                                                                                                                                                                                                                                                                                                        
 <table>
     <tr>
-        <th colspan=2>Parameter</th>
+        <th colspan=1>Parameter</th>
         <th width="20%">Type</th>
         <th>Required</th>
         <th>Default</th>
@@ -3057,66 +5057,111 @@ Gathers information about PowerMax/VMAX Storage entities
         <th width="80%">Description</th>
     </tr>
                                                             <tr>
-            <td colspan=2 > serial_no</td>
+            <td colspan=1 > universion</td>
+            <td> int  </td>
+            <td></td>
+            <td></td>
+            <td> <ul> <li>92</li>  <li>100</li> </ul></td>
+            <td> <br> Unisphere version, currently '92', '100' version is supported. </td>
+        </tr>
+                    <tr>
+            <td colspan=1 > snapshot_policy_name</td>
+            <td> str  </td>
+            <td> True </td>
+            <td></td>
+            <td></td>
+            <td> <br> Name of the snapshot policy. </td>
+        </tr>
+                    <tr>
+            <td colspan=1 > interval</td>
+            <td> str  </td>
+            <td></td>
+            <td></td>
+            <td> <ul> <li>10 Minutes</li>  <li>12 Minutes</li>  <li>15 Minutes</li>  <li>20 Minutes</li>  <li>30 Minutes</li>  <li>1 Hour</li>  <li>2 Hours</li>  <li>3 Hours</li>  <li>4 Hours</li>  <li>6 Hours</li>  <li>8 Hours</li>  <li>12 Hours</li>  <li>1 Day</li>  <li>7 Days</li> </ul></td>
+            <td> <br> The value of the interval counter for snapshot policy execution. </td>
+        </tr>
+                    <tr>
+            <td colspan=1 > secure</td>
+            <td> bool  </td>
+            <td></td>
+            <td></td>
+            <td> <ul> <li>True</li>  <li>False</li> </ul></td>
+            <td> <br> Secure snapshots may only be terminated after they expire or by Dell Technologies support.  <br> If not specified, default value is False. </td>
+        </tr>
+                    <tr>
+            <td colspan=1 > snapshot_count</td>
+            <td> int  </td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td> <br> The max snapshot count of the policy.  <br> Max value is 1024. </td>
+        </tr>
+                    <tr>
+            <td colspan=1 > offset_mins</td>
+            <td> int  </td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td> <br> Defines when, within the interval the snapshots will be taken for a specified snapshot policy.  <br> The offset must be less than the interval of the snapshot policy.  <br> The format must be in minutes.  <br> If not specified, default value is 0. </td>
+        </tr>
+                    <tr>
+            <td colspan=1 > compliance_count_warning</td>
+            <td> int  </td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td> <br> If the number of valid snapshots falls below this number, the compliance changes to warning (yellow). </td>
+        </tr>
+                    <tr>
+            <td colspan=1 > compliance_count_critical</td>
+            <td> int  </td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td> <br> If the number of valid snapshots falls below this number, the compliance changes to critical (red). </td>
+        </tr>
+                    <tr>
+            <td colspan=1 > storage_groups</td>
+            <td> list   <br> elements: str </td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td> <br> List of storage groups. </td>
+        </tr>
+                    <tr>
+            <td colspan=1 > storage_group_state</td>
+            <td> str  </td>
+            <td></td>
+            <td></td>
+            <td> <ul> <li>present-in-policy</li>  <li>absent-in-policy</li> </ul></td>
+            <td> <br> The state of the storage group with regard to the snapshot policy.  <br> present-in-policy indicates associate SG to SP.  <br> absent-in-policy indicates disassociate SG from SP. </td>
+        </tr>
+                    <tr>
+            <td colspan=1 > suspend</td>
+            <td> bool  </td>
+            <td></td>
+            <td></td>
+            <td> <ul> <li>True</li>  <li>False</li> </ul></td>
+            <td> <br> Suspend the snapshot policy.  <br> True indicates snapshot policy is in suspend state.  <br> False indicates snapshot policy is in resume state. </td>
+        </tr>
+                    <tr>
+            <td colspan=1 > new_snapshot_policy_name</td>
             <td> str  </td>
             <td></td>
             <td></td>
             <td></td>
-            <td> <br> The serial number of the PowerMax/VMAX array. It is not required for getting the list of arrays. </td>
+            <td> <br> New name of the snapshot policy. </td>
         </tr>
                     <tr>
-            <td colspan=2 > tdev_volumes</td>
-            <td> bool  </td>
-            <td></td>
+            <td colspan=1 > state</td>
+            <td> str  </td>
             <td> True </td>
-            <td> <ul> <li>True</li>  <li>False</li> </ul></td>
-            <td> <br> Boolean variable to filter the volume list. This will have a small performance impact. By default it is set to true, only TDEV volumes will be returned.  <br> True - Will return only the TDEV volumes.  <br> False - Will return all the volumes. </td>
+            <td></td>
+            <td> <ul> <li>present</li>  <li>absent</li> </ul></td>
+            <td> <br> Shows if the snapshot policy should be present or absent. </td>
         </tr>
                     <tr>
-            <td colspan=2 > gather_subset</td>
-            <td> list   <br> elements: str </td>
-            <td></td>
-            <td></td>
-            <td> <ul> <li>alert</li>  <li>health</li>  <li>vol</li>  <li>srp</li>  <li>sg</li>  <li>pg</li>  <li>host</li>  <li>hg</li>  <li>port</li>  <li>mv</li>  <li>rdf</li>  <li>metro_dr_env</li>  <li>snapshot_policies</li>  <li>initiators</li> </ul></td>
-            <td> <br> List of string variables to specify the PowerMax/VMAX entities for which information is required.  <br> Required only if the serial_no is present.  <br> List of all PowerMax/VMAX entities supported by the module.  <br> alert - gets alert summary information.  <br> health - health status of a specific PowerMax array.  <br> vol - volumes.  <br> srp - storage resource pools.  <br> sg - storage groups.  <br> pg - port groups.  <br> host - hosts.  <br> hg -  host groups.  <br> port - ports.  <br> mv - masking views.  <br> rdf - rdf groups.  <br> metro_dr_env - metro DR environments.  <br> snapshot_policies - snapshot policies.  <br> initiators - initiators. </td>
-        </tr>
-                    <tr>
-            <td colspan=2 > filters</td>
-            <td> list   <br> elements: dict </td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td> <br> List of filters to support filtered output for storage entities.  <br> Each filter is a tuple of {filter_key, filter_operator, filter_value}.  <br> Supports passing of multiple filters.  <br> The storage entities, 'rdf', 'health', 'snapshot_policies' and 'metro_dr_env', does not support filters. Filters will be ignored if passed. </td>
-        </tr>
-                            <tr>
-                <td class="elbow-placeholder">&nbsp;</td>
-                <td colspan=1 > filter_key </td>
-                <td> str  </td>
-                <td> True </td>
-                <td></td>
-                <td></td>
-                <td>  <br> Name identifier of the filter.  </td>
-            </tr>
-                    <tr>
-                <td class="elbow-placeholder">&nbsp;</td>
-                <td colspan=1 > filter_operator </td>
-                <td> str  </td>
-                <td> True </td>
-                <td></td>
-                <td> <ul> <li>equal</li>  <li>greater</li>  <li>lesser</li>  <li>like</li> </ul></td>
-                <td>  <br> Operation to be performed on filter key.  </td>
-            </tr>
-                    <tr>
-                <td class="elbow-placeholder">&nbsp;</td>
-                <td colspan=1 > filter_value </td>
-                <td> str  </td>
-                <td> True </td>
-                <td></td>
-                <td></td>
-                <td>  <br> Value of the filter key.  </td>
-            </tr>
-                            <tr>
-            <td colspan=2 > unispherehost</td>
+            <td colspan=1 > unispherehost</td>
             <td> str  </td>
             <td> True </td>
             <td></td>
@@ -3124,23 +5169,15 @@ Gathers information about PowerMax/VMAX Storage entities
             <td> <br> IP or FQDN of the Unisphere host </td>
         </tr>
                     <tr>
-            <td colspan=2 > universion</td>
-            <td> int  </td>
-            <td></td>
-            <td></td>
-            <td> <ul> <li>91</li>  <li>92</li> </ul></td>
-            <td> <br> Unisphere version, currently '91' and '92' versions are supported. </td>
-        </tr>
-                    <tr>
-            <td colspan=2 > verifycert</td>
-            <td> bool  </td>
+            <td colspan=1 > verifycert</td>
+            <td> str  </td>
             <td> True </td>
             <td></td>
-            <td> <ul> <li>True</li>  <li>False</li> </ul></td>
-            <td> <br> Boolean variable to specify whether to validate SSL certificate or not.  <br> True - indicates that the SSL certificate should be verified.  <br> False - indicates that the SSL certificate should not be verified. </td>
+            <td></td>
+            <td> <br> Specifies system whether to validate SSL certificate or not, Values can be True or False or a custom file path for SSL certificate with .pem extension or .cer with base 64 encoding. </td>
         </tr>
                     <tr>
-            <td colspan=2 > user</td>
+            <td colspan=1 > user</td>
             <td> str  </td>
             <td> True </td>
             <td></td>
@@ -3148,708 +5185,278 @@ Gathers information about PowerMax/VMAX Storage entities
             <td> <br> The username of the Unisphere host. </td>
         </tr>
                     <tr>
-            <td colspan=2 > password</td>
+            <td colspan=1 > password</td>
             <td> str  </td>
             <td> True </td>
             <td></td>
             <td></td>
             <td> <br> The password of the Unisphere host. </td>
         </tr>
+                    <tr>
+            <td colspan=1 > serial_no</td>
+            <td> str  </td>
+            <td> True </td>
+            <td></td>
+            <td></td>
+            <td> <br> The serial number of the PowerMax/VMAX array. It is a required parameter for all array-specific operations except for getting a list of arrays in the Gatherfacts module. </td>
+        </tr>
                                                     </table>
 
 ### Notes
-* Filter functionality will be supported only for the following 'filter_key' against specific 'gather_subset'.
-* vol - allocated_percent, associated, available_thin_volumes, bound_tdev, cap_cyl, cap_gb, cap_mb, cap_tb, cu_image_num, cu_image_ssid, data_volume, dld, drv, effective_wwn, emulation, encapsulated, encapsulated_wwn, gatekeeper, has_effective_wwn, mapped, mobility_id_enabled, num_of_front_end_paths, num_of_masking_views, num_of_storage_groups, oracle_instance_name, physical_name, pinned, private_volumes, rdf_group_number, reserved, split_name, status, storageGroupId, symmlun, tdev, thin_bcv, type, vdev, virtual_volumes, volume_identifier, wwn.
-* srp - compression_state, description, effective_used_capacity_percent, emulation, num_of_disk_groups, num_of_srp_sg_demands, num_of_srp_slo_demands, rdfa_dse, reserved_cap_percent, total_allocated_cap_gb, total_srdf_dse_allocated_cap_gb, total_subscribed_cap_gb, total_usable_cap_gb.
-* sg - base_slo_name, cap_gb, child, child_sg_name, ckd, compression, compression_ratio_to_one, fba, num_of_child_sgs, num_of_masking_views, num_of_parent_sgs, num_of_snapshots, num_of_vols, parent, parent_sg_name, slo_compliance, slo_name, srp_name, storageGroupId, tag, volumeId.
-* pg - dir_port, fibre, iscsi, num_of_masking_views, num_of_ports.
-* host - host_group_name, num_of_host_groups, num_of_initiators, num_of_masking_views, num_of_powerpath_hosts, powerPathHostId.
-* hg - host_name, num_of_hosts, num_of_masking_views.
-* port - aclx, avoid_reset_broadcast, common_serial_number, director_status, disable_q_reset_on_ua, enable_auto_negotive, environ_set, hp_3000_mode, identifier, init_point_to_point, ip_list, ipv4_address, ipv6_address, iscsi_target, max_speed, negotiated_speed, neqotiate_reset, no_participating, node_wwn, num_of_cores, num_of_hypers, num_of_mapped_vols, num_of_masking_views, num_of_port_groups, port_interface, port_status, rdf_hardware_compression, rdf_hardware_compression_supported, rdf_software_compression, rdf_software_compression_supported, scsi_3, scsi_support1, siemens, soft_reset, spc2_protocol_version, sunapee, type, unique_wwn, vcm_state, vnx_attached, volume_set_addressing, wwn_node.
-* mv - host_or_host_group_name, port_group_name, protocol_endpoint_masking_view, storage_group_name.
-* alert - acknowledged, array, created_date, created_date_milliseconds, description, object, object_type, severity, state, type.
-* initiators - alias, directorId, initiator_hba, in_a_host, iscsi, logged_in, num_of_host_groups, num_of_masking_views, num_of_powerpath_hosts, num_of_vols, on_fabric, port_flag_overrides, portId, powerPathHostId.
+* The max number of snapshot policies on an array is limited to 20.
+* At most four snapshot policies can be associated with a storage group.
+* compliance_count_critical <= compliance_count_warning < total snapshot_count for the policy.
 * The modules present in this collection named as 'dellemc.powermax' are built to support the Dell PowerMax storage platform.
 
 ### Examples
 ```
-- name: Get list of volumes with filter -- all TDEV volumes of size equal
-        to 5GB
-  dellemc.powermax.info:
+- name: Create a snapshot policy
+  dellemc.powermax.snapshotpolicy:
     unispherehost: "{{unispherehost}}"
     universion: "{{universion}}"
     verifycert: "{{verifycert}}"
     user: "{{user}}"
     password: "{{password}}"
     serial_no: "{{serial_no}}"
-    gather_subset:
-      - vol
-    filters:
-      - filter_key: "tdev"
-        filter_operator: "equal"
-        filter_value: "True"
-      - filter_key: "cap_gb"
-        filter_operator: "equal"
-        filter_value: "5"
+    snapshot_policy_name: "10min_policy_1"
+    interval: "10 Minutes"
+    secure: false
+    snapshot_count: 10
+    offset_mins: 2
+    compliance_count_warning: 6
+    compliance_count_critical: 4
+    state: "present"
 
-- name: Get list of volumes and storage groups with filter
-  dellemc.powermax.info:
+- name: Create a snapshot policy and associate storage groups to it
+  dellemc.powermax.snapshotpolicy:
     unispherehost: "{{unispherehost}}"
     universion: "{{universion}}"
     verifycert: "{{verifycert}}"
     user: "{{user}}"
     password: "{{password}}"
     serial_no: "{{serial_no}}"
-    gather_subset:
-      - vol
-      - sg
-    filters:
-      - filter_key: "tdev"
-        filter_operator: "equal"
-        filter_value: "True"
-      - filter_key: "cap_gb"
-        filter_operator: "equal"
-        filter_value: "5"
+    snapshot_policy_name: "10min_policy_2"
+    interval: "10 Minutes"
+    secure: false
+    snapshot_count: 12
+    offset_mins: 5
+    compliance_count_warning: 8
+    compliance_count_critical: 4
+    storage_groups:
+      - "11_ansible_test_1"
+      - "11_ansible_test_2"
+    storage_group_state: "present-in-policy"
+    state: "present"
 
-- name: Get list of storage groups with capacity between 2GB to 10GB
-  dellemc.powermax.info:
+- name: Get snapshot policy details
+  dellemc.powermax.snapshotpolicy:
     unispherehost: "{{unispherehost}}"
     universion: "{{universion}}"
     verifycert: "{{verifycert}}"
     user: "{{user}}"
     password: "{{password}}"
     serial_no: "{{serial_no}}"
-    gather_subset:
-      - sg
-    filters:
-      - filter_key: "cap_gb"
-        filter_operator: "greater"
-        filter_value: "2"
-      - filter_key: "cap_gb"
-        filter_operator: "lesser"
-        filter_value: "10"
+    snapshot_policy_name: "10min_policy_2"
+    state: "present"
 
-- name: Get the list of arrays for a given Unisphere host
-  dellemc.powermax.info:
-    unispherehost: "{{unispherehost}}"
-    universion: "{{universion}}"
-    verifycert: "{{verifycert}}"
-    user: "{{user}}"
-    password: "{{password}}"
-  register: array_list
-- debug:
-    var: array_list
-
-- name: Get list of tdev-volumes
-  dellemc.powermax.info:
+- name: Modify snapshot policy attributes
+  dellemc.powermax.snapshotpolicy:
     unispherehost: "{{unispherehost}}"
     universion: "{{universion}}"
     verifycert: "{{verifycert}}"
     user: "{{user}}"
     password: "{{password}}"
     serial_no: "{{serial_no}}"
-    tdev_volumes: True
-    gather_subset:
-      - vol
+    snapshot_policy_name: "10min_policy_2"
+    new_snapshot_policy_name: "10min_policy_2_new"
+    interval: "10 Minutes"
+    snapshot_count: 16
+    offset_mins: 8
+    compliance_count_warning: 9
+    compliance_count_critical: 7
+    state: "present"
 
-- name: Get the list of arrays for a given Unisphere host
-  dellemc.powermax.info:
-    unispherehost: "{{unispherehost}}"
-    universion: "{{universion}}"
-    verifycert: "{{verifycert}}"
-    user: "{{user}}"
-    password: "{{password}}"
-
-- name: Get array health status
-  dellemc.powermax.info:
-    unispherehost: "{{unispherehost}}"
-    universion: "{{universion}}"
-    verifycert: "{{verifycert}}"
-    user: "{{user}}"
-    password: "{{password}}"
-    serial_no: "{{serial_no}}"
-    gather_subset:
-       - health
-
-- name: Get array alerts summary
-  dellemc.powermax.info:
+- name: Modify snapshot policy, associate to storage groups
+  dellemc.powermax.snapshotpolicy:
     unispherehost: "{{unispherehost}}"
     universion: "{{universion}}"
     verifycert: "{{verifycert}}"
     user: "{{user}}"
     password: "{{password}}"
     serial_no: "{{serial_no}}"
-    gather_subset:
-       - alert
+    snapshot_policy_name: "10min_policy_1"
+    storage_groups:
+      - "11_ansible_test_1"
+      - "11_ansible_test_2"
+    storage_group_state: "present-in-policy"
+    state: "present"
 
-- name: Get the list of metro DR environments for a given Unisphere host
-  dellemc.powermax.info:
+- name: Modify snapshot policy, disassociate from storage groups
+  dellemc.powermax.snapshotpolicy:
     unispherehost: "{{unispherehost}}"
     universion: "{{universion}}"
     verifycert: "{{verifycert}}"
     user: "{{user}}"
     password: "{{password}}"
     serial_no: "{{serial_no}}"
-    gather_subset:
-       - metro_dr_env
+    snapshot_policy_name: "10min_policy_1"
+    storage_groups:
+      - "11_ansible_test_1"
+      - "11_ansible_test_2"
+    storage_group_state: "absent-in-policy"
+    state: "present"
 
-- name: Get list of Storage groups
-  dellemc.powermax.info:
+- name: Modify snapshot policy state to suspend
+  dellemc.powermax.snapshotpolicy:
     unispherehost: "{{unispherehost}}"
     universion: "{{universion}}"
     verifycert: "{{verifycert}}"
     user: "{{user}}"
     password: "{{password}}"
     serial_no: "{{serial_no}}"
-    gather_subset:
-       - sg
+    snapshot_policy_name: "10min_policy_1"
+    suspend: true
+    state: "present"
 
-- name: Get list of Storage Resource Pools
-  dellemc.powermax.info:
+- name: Modify snapshot policy state to resume
+  dellemc.powermax.snapshotpolicy:
     unispherehost: "{{unispherehost}}"
     universion: "{{universion}}"
     verifycert: "{{verifycert}}"
     user: "{{user}}"
     password: "{{password}}"
     serial_no: "{{serial_no}}"
-    gather_subset:
-       - srp
+    snapshot_policy_name: "10min_policy_1"
+    suspend: false
+    state: "present"
 
-- name: Get list of Ports
-  dellemc.powermax.info:
+- name: Delete a snapshot policy
+  dellemc.powermax.snapshotpolicy:
     unispherehost: "{{unispherehost}}"
     universion: "{{universion}}"
     verifycert: "{{verifycert}}"
     user: "{{user}}"
     password: "{{password}}"
     serial_no: "{{serial_no}}"
-    gather_subset:
-       - port
-
-- name: Get list of Port Groups
-  dellemc.powermax.info:
-    unispherehost: "{{unispherehost}}"
-    universion: "{{universion}}"
-    verifycert: "{{verifycert}}"
-    user: "{{user}}"
-    password: "{{password}}"
-    serial_no: "{{serial_no}}"
-    gather_subset:
-       - pg
-
-- name: Get list of Hosts
-  dellemc.powermax.info:
-    unispherehost: "{{unispherehost}}"
-    universion: "{{universion}}"
-    verifycert: "{{verifycert}}"
-    user: "{{user}}"
-    password: "{{password}}"
-    serial_no: "{{serial_no}}"
-    gather_subset:
-       - host
-
-- name: Get list of Host Groups
-  dellemc.powermax.info:
-    unispherehost: "{{unispherehost}}"
-    universion: "{{universion}}"
-    verifycert: "{{verifycert}}"
-    user: "{{user}}"
-    password: "{{password}}"
-    serial_no: "{{serial_no}}"
-    gather_subset:
-       - hg
-
-- name: Get list of Masking Views
-  dellemc.powermax.info:
-    unispherehost: "{{unispherehost}}"
-    universion: "{{universion}}"
-    verifycert: "{{verifycert}}"
-    user: "{{user}}"
-    password: "{{password}}"
-    serial_no: "{{serial_no}}"
-    gather_subset:
-       - mv
-
-- name: Get list of RDF Groups
-  dellemc.powermax.info:
-    unispherehost: "{{unispherehost}}"
-    universion: "{{universion}}"
-    verifycert: "{{verifycert}}"
-    user: "{{user}}"
-    password: "{{password}}"
-    serial_no: "{{serial_no}}"
-    gather_subset:
-       - rdf
-
-- name: Get list of snapshot policies
-  dellemc.powermax.info:
-    unispherehost: "{{unispherehost}}"
-    universion: "{{universion}}"
-    verifycert: "{{verifycert}}"
-    user: "{{user}}"
-    password: "{{password}}"
-    serial_no: "{{serial_no}}"
-    gather_subset:
-     - snapshot_policies
-
-- name: Get list of initiators
-  dellemc.powermax.info:
-    unispherehost: "{{unispherehost}}"
-    universion: "{{universion}}"
-    verifycert: "{{verifycert}}"
-    user: "{{user}}"
-    password: "{{password}}"
-    serial_no: "{{serial_no}}"
-    gather_subset:
-     - initiators
+    snapshot_policy_name: "10min_policy_1"
+    state: "absent"
 ```
 
 ### Return Values
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        
+                                                                                                                                                                                                                                                                                                                                                                                                            
 <table>
     <tr>
-        <th colspan=4>Key</th>
+        <th colspan=2>Key</th>
         <th>Type</th>
         <th>Returned</th>
         <th width="100%">Description</th>
     </tr>
                                                                                             <tr>
-            <td colspan=4 > Alerts </td>
-            <td>  list </td>
-            <td> When the alert exists. </td>
-            <td> Alert summary of the array. </td>
-        </tr>
-                            <tr>
-                <td class="elbow-placeholder">&nbsp;</td>
-                <td colspan=3 > acknowledged </td>
-                <td> str </td>
-                <td>success</td>
-                <td> Whether or not this alert is acknowledged. </td>
-            </tr>
-                                <tr>
-                <td class="elbow-placeholder">&nbsp;</td>
-                <td colspan=3 > alertId </td>
-                <td> str </td>
-                <td>success</td>
-                <td> Unique ID of alert. </td>
-            </tr>
-                                <tr>
-                <td class="elbow-placeholder">&nbsp;</td>
-                <td colspan=3 > array </td>
-                <td> str </td>
-                <td>success</td>
-                <td> Array serial number. </td>
-            </tr>
-                                <tr>
-                <td class="elbow-placeholder">&nbsp;</td>
-                <td colspan=3 > created_date </td>
-                <td> str </td>
-                <td>success</td>
-                <td> Creation Date. </td>
-            </tr>
-                                <tr>
-                <td class="elbow-placeholder">&nbsp;</td>
-                <td colspan=3 > created_date_milliseconds </td>
-                <td> str </td>
-                <td>success</td>
-                <td> Creation Date in milliseconds. </td>
-            </tr>
-                                <tr>
-                <td class="elbow-placeholder">&nbsp;</td>
-                <td colspan=3 > description </td>
-                <td> str </td>
-                <td>success</td>
-                <td> Description about the alert. </td>
-            </tr>
-                                <tr>
-                <td class="elbow-placeholder">&nbsp;</td>
-                <td colspan=3 > object </td>
-                <td> str </td>
-                <td>success</td>
-                <td> Object description. </td>
-            </tr>
-                                <tr>
-                <td class="elbow-placeholder">&nbsp;</td>
-                <td colspan=3 > object_type </td>
-                <td> str </td>
-                <td>success</td>
-                <td> Resource class. </td>
-            </tr>
-                                <tr>
-                <td class="elbow-placeholder">&nbsp;</td>
-                <td colspan=3 > severity </td>
-                <td> str </td>
-                <td>success</td>
-                <td> Severity of the alert. </td>
-            </tr>
-                                <tr>
-                <td class="elbow-placeholder">&nbsp;</td>
-                <td colspan=3 > state </td>
-                <td> str </td>
-                <td>success</td>
-                <td> State of the alert. </td>
-            </tr>
-                                <tr>
-                <td class="elbow-placeholder">&nbsp;</td>
-                <td colspan=3 > type </td>
-                <td> str </td>
-                <td>success</td>
-                <td> Type of the alert. </td>
-            </tr>
-                                        <tr>
-            <td colspan=4 > Arrays </td>
-            <td>  list </td>
-            <td> When the Unisphere exist. </td>
-            <td> List of arrays in the Unisphere. </td>
+            <td colspan=2 > changed </td>
+            <td>  bool </td>
+            <td> always </td>
+            <td> Whether or not the resource has changed. </td>
         </tr>
                     <tr>
-            <td colspan=4 > Health </td>
+            <td colspan=2 > snapshot_policy_details </td>
             <td>  complex </td>
-            <td> When the array exist. </td>
-            <td> Health status of the array. </td>
-        </tr>
-                            <tr>
-                <td class="elbow-placeholder">&nbsp;</td>
-                <td colspan=3 > health_score_metric </td>
-                <td> list </td>
-                <td>success</td>
-                <td> Overall health score for the specified Symmetrix. </td>
-            </tr>
-                                         <tr>
-                    <td class="elbow-placeholder">&nbsp;</td>
-                    <td class="elbow-placeholder">&nbsp;</td>
-                    <td colspan=2 > cached_date </td>
-                    <td> int </td>
-                    <td>success</td>
-                    <td> Date Time stamp in epoch format when it was cached. </td>
-                </tr>
-                                             <tr>
-                    <td class="elbow-placeholder">&nbsp;</td>
-                    <td class="elbow-placeholder">&nbsp;</td>
-                    <td colspan=2 > data_date </td>
-                    <td> int </td>
-                    <td>success</td>
-                    <td> Date Time stamp in epoch format when it was collected. </td>
-                </tr>
-                                             <tr>
-                    <td class="elbow-placeholder">&nbsp;</td>
-                    <td class="elbow-placeholder">&nbsp;</td>
-                    <td colspan=2 > expired </td>
-                    <td> bool </td>
-                    <td>success</td>
-                    <td> Flag to indicate the expiry of the score. </td>
-                </tr>
-                                             <tr>
-                    <td class="elbow-placeholder">&nbsp;</td>
-                    <td class="elbow-placeholder">&nbsp;</td>
-                    <td colspan=2 > health_score </td>
-                    <td> int </td>
-                    <td>success</td>
-                    <td> Overall health score in numbers. </td>
-                </tr>
-                                             <tr>
-                    <td class="elbow-placeholder">&nbsp;</td>
-                    <td class="elbow-placeholder">&nbsp;</td>
-                    <td colspan=2 > instance_metrics </td>
-                    <td> list </td>
-                    <td>success</td>
-                    <td> Metrics about a specific instance. </td>
-                </tr>
-                                                    <tr>
-                        <td class="elbow-placeholder">&nbsp;</td>
-                        <td class="elbow-placeholder">&nbsp;</td>
-                        <td class="elbow-placeholder">&nbsp;</td>
-                        <td colspan=1 > health_score_instance_metric </td>
-                        <td> int </td>
-                        <td>success</td>
-                        <td> Health score of a specific instance. </td>
-                    </tr>
-                                                             <tr>
-                    <td class="elbow-placeholder">&nbsp;</td>
-                    <td class="elbow-placeholder">&nbsp;</td>
-                    <td colspan=2 > metric </td>
-                    <td> str </td>
-                    <td>success</td>
-                    <td> Information about which sub system , such as SYSTEM_UTILIZATION, CONFIGURATION,CAPACITY, and so on. </td>
-                </tr>
-                                                            <tr>
-                <td class="elbow-placeholder">&nbsp;</td>
-                <td colspan=3 > num_failed_disks </td>
-                <td> int </td>
-                <td>success</td>
-                <td> Numbers of the disk failure in this system. </td>
-            </tr>
-                                        <tr>
-            <td colspan=4 > HostGroups </td>
-            <td>  list </td>
-            <td> When the hostgroups exist. </td>
-            <td> List of host groups present on the array. </td>
-        </tr>
-                    <tr>
-            <td colspan=4 > Hosts </td>
-            <td>  list </td>
-            <td> When the hosts exist. </td>
-            <td> List of hosts present on the array. </td>
-        </tr>
-                    <tr>
-            <td colspan=4 > Initiators </td>
-            <td>  list </td>
-            <td> When initiator exists. </td>
-            <td> List of initiators on the array. </td>
-        </tr>
-                    <tr>
-            <td colspan=4 > MaskingViews </td>
-            <td>  list </td>
-            <td> When the masking views exist. </td>
-            <td> List of masking views present on the array. </td>
-        </tr>
-                    <tr>
-            <td colspan=4 > MetroDREnvironments </td>
-            <td>  list </td>
-            <td> When environment exists. </td>
-            <td> List of metro DR environments on the array. </td>
-        </tr>
-                    <tr>
-            <td colspan=4 > PortGroups </td>
-            <td>  list </td>
-            <td> When the port groups exist. </td>
-            <td> List of port groups on the array. </td>
-        </tr>
-                    <tr>
-            <td colspan=4 > Ports </td>
-            <td>  complex </td>
-            <td> When the ports exist. </td>
-            <td> List of ports on the array. </td>
-        </tr>
-                            <tr>
-                <td class="elbow-placeholder">&nbsp;</td>
-                <td colspan=3 > directorId </td>
-                <td> str </td>
-                <td>success</td>
-                <td> Director ID of the port. </td>
-            </tr>
-                                <tr>
-                <td class="elbow-placeholder">&nbsp;</td>
-                <td colspan=3 > portId </td>
-                <td> str </td>
-                <td>success</td>
-                <td> Port number of the port. </td>
-            </tr>
-                                        <tr>
-            <td colspan=4 > RDFGroups </td>
-            <td>  complex </td>
-            <td> When the RDF groups exist. </td>
-            <td> List of RDF groups on the array. </td>
-        </tr>
-                            <tr>
-                <td class="elbow-placeholder">&nbsp;</td>
-                <td colspan=3 > label </td>
-                <td> str </td>
-                <td>success</td>
-                <td> Name of the RDF group. </td>
-            </tr>
-                                <tr>
-                <td class="elbow-placeholder">&nbsp;</td>
-                <td colspan=3 > rdfgNumber </td>
-                <td> int </td>
-                <td>success</td>
-                <td> Unique identifier of the RDF group. </td>
-            </tr>
-                                        <tr>
-            <td colspan=4 > SnapshotPolicies </td>
-            <td>  list </td>
             <td> When snapshot policy exists. </td>
-            <td> List of snapshot policies on the array. </td>
-        </tr>
-                    <tr>
-            <td colspan=4 > StorageGroups </td>
-            <td>  list </td>
-            <td> When the storage groups exist. </td>
-            <td> List of storage groups on the array. </td>
-        </tr>
-                    <tr>
-            <td colspan=4 > StorageResourcePools </td>
-            <td>  complex </td>
-            <td> When the storage pools exist. </td>
-            <td> List of storage pools on the array. </td>
+            <td> Details of the snapshot policy. </td>
         </tr>
                             <tr>
                 <td class="elbow-placeholder">&nbsp;</td>
-                <td colspan=3 > diskGroupId </td>
-                <td> list </td>
-                <td>success</td>
-                <td> ID of the disk group. </td>
-            </tr>
-                                <tr>
-                <td class="elbow-placeholder">&nbsp;</td>
-                <td colspan=3 > emulation </td>
-                <td> str </td>
-                <td>success</td>
-                <td> Type of volume emulation. </td>
-            </tr>
-                                <tr>
-                <td class="elbow-placeholder">&nbsp;</td>
-                <td colspan=3 > num_of_disk_groups </td>
+                <td colspan=1 > compliance_count_critical </td>
                 <td> int </td>
                 <td>success</td>
-                <td> Number of disk groups. </td>
+                <td> The number of valid snapshots that have critical compliance. </td>
             </tr>
                                 <tr>
                 <td class="elbow-placeholder">&nbsp;</td>
-                <td colspan=3 > rdfa_dse </td>
+                <td colspan=1 > compliance_count_warning </td>
+                <td> int </td>
+                <td>success</td>
+                <td> The number of valid snapshots that have warning compliance. </td>
+            </tr>
+                                <tr>
+                <td class="elbow-placeholder">&nbsp;</td>
+                <td colspan=1 > interval_minutes </td>
+                <td> int </td>
+                <td>success</td>
+                <td> The interval minutes for snapshot policy execution. </td>
+            </tr>
+                                <tr>
+                <td class="elbow-placeholder">&nbsp;</td>
+                <td colspan=1 > last_time_used </td>
+                <td> str </td>
+                <td>success</td>
+                <td> The timestamp indicating the last time snapshot policy was used. </td>
+            </tr>
+                                <tr>
+                <td class="elbow-placeholder">&nbsp;</td>
+                <td colspan=1 > offset_minutes </td>
+                <td> int </td>
+                <td>success</td>
+                <td> It is the time in minutes within the interval when the snapshots will be taken for a specified Snapshot Policy. </td>
+            </tr>
+                                <tr>
+                <td class="elbow-placeholder">&nbsp;</td>
+                <td colspan=1 > secure </td>
                 <td> bool </td>
                 <td>success</td>
-                <td> Flag for RDFA Delta Set Extension. </td>
+                <td> True value indicates that the secure snapshots may only be terminated after they expire or by Dell Technologies support. </td>
             </tr>
                                 <tr>
                 <td class="elbow-placeholder">&nbsp;</td>
-                <td colspan=3 > reserved_cap_percent </td>
+                <td colspan=1 > snapshot_count </td>
                 <td> int </td>
                 <td>success</td>
-                <td> Reserved capacity percentage. </td>
+                <td> It is the max snapshot count of the policy. </td>
             </tr>
                                 <tr>
                 <td class="elbow-placeholder">&nbsp;</td>
-                <td colspan=3 > srpId </td>
+                <td colspan=1 > snapshot_policy_name </td>
                 <td> str </td>
                 <td>success</td>
-                <td> Unique Identifier for SRP. </td>
+                <td> Name of the snapshot policy. </td>
             </tr>
                                 <tr>
                 <td class="elbow-placeholder">&nbsp;</td>
-                <td colspan=3 > srp_capacity </td>
-                <td> dict </td>
+                <td colspan=1 > storage_group </td>
+                <td> list </td>
                 <td>success</td>
-                <td> Different entities to measure SRP capacity. </td>
+                <td> The list of storage groups associated with the snapshot policy. </td>
             </tr>
-                                         <tr>
-                    <td class="elbow-placeholder">&nbsp;</td>
-                    <td class="elbow-placeholder">&nbsp;</td>
-                    <td colspan=2 > effective_used_capacity_percent </td>
-                    <td> int </td>
-                    <td>success</td>
-                    <td> Percentage of effectively used capacity. </td>
-                </tr>
-                                             <tr>
-                    <td class="elbow-placeholder">&nbsp;</td>
-                    <td class="elbow-placeholder">&nbsp;</td>
-                    <td colspan=2 > snapshot_modified_tb </td>
-                    <td> int </td>
-                    <td>success</td>
-                    <td> Snapshot modified in TB. </td>
-                </tr>
-                                             <tr>
-                    <td class="elbow-placeholder">&nbsp;</td>
-                    <td class="elbow-placeholder">&nbsp;</td>
-                    <td colspan=2 > snapshot_total_tb </td>
-                    <td> int </td>
-                    <td>success</td>
-                    <td> Total snapshot size in TB. </td>
-                </tr>
-                                             <tr>
-                    <td class="elbow-placeholder">&nbsp;</td>
-                    <td class="elbow-placeholder">&nbsp;</td>
-                    <td colspan=2 > subscribed_allocated_tb </td>
-                    <td> int </td>
-                    <td>success</td>
-                    <td> Subscribed allocated size in TB. </td>
-                </tr>
-                                             <tr>
-                    <td class="elbow-placeholder">&nbsp;</td>
-                    <td class="elbow-placeholder">&nbsp;</td>
-                    <td colspan=2 > subscribed_total_tb </td>
-                    <td> int </td>
-                    <td>success</td>
-                    <td> Subscribed total size in TB. </td>
-                </tr>
-                                             <tr>
-                    <td class="elbow-placeholder">&nbsp;</td>
-                    <td class="elbow-placeholder">&nbsp;</td>
-                    <td colspan=2 > usable_total_tb </td>
-                    <td> int </td>
-                    <td>success</td>
-                    <td> Usable total size in TB. </td>
-                </tr>
-                                             <tr>
-                    <td class="elbow-placeholder">&nbsp;</td>
-                    <td class="elbow-placeholder">&nbsp;</td>
-                    <td colspan=2 > usable_used_tb </td>
-                    <td> int </td>
-                    <td>success</td>
-                    <td> Usable used size in TB. </td>
-                </tr>
-                                                            <tr>
+                                <tr>
                 <td class="elbow-placeholder">&nbsp;</td>
-                <td colspan=3 > srp_efficiency </td>
-                <td> dict </td>
-                <td>success</td>
-                <td> Different entities to measure SRP efficiency. </td>
-            </tr>
-                                         <tr>
-                    <td class="elbow-placeholder">&nbsp;</td>
-                    <td class="elbow-placeholder">&nbsp;</td>
-                    <td colspan=2 > compression_state </td>
-                    <td> str </td>
-                    <td>success</td>
-                    <td> Depicts the compression state of the SRP. </td>
-                </tr>
-                                             <tr>
-                    <td class="elbow-placeholder">&nbsp;</td>
-                    <td class="elbow-placeholder">&nbsp;</td>
-                    <td colspan=2 > data_reduction_enabled_percent </td>
-                    <td> int </td>
-                    <td>success</td>
-                    <td> Percentage of data reduction enabled in the SRP. </td>
-                </tr>
-                                             <tr>
-                    <td class="elbow-placeholder">&nbsp;</td>
-                    <td class="elbow-placeholder">&nbsp;</td>
-                    <td colspan=2 > data_reduction_ratio_to_one </td>
-                    <td> int </td>
-                    <td>success</td>
-                    <td> Data reduction ratio of SRP. </td>
-                </tr>
-                                             <tr>
-                    <td class="elbow-placeholder">&nbsp;</td>
-                    <td class="elbow-placeholder">&nbsp;</td>
-                    <td colspan=2 > overall_efficiency_ratio_to_one </td>
-                    <td> int </td>
-                    <td>success</td>
-                    <td> Overall efficiency ratio of SRP. </td>
-                </tr>
-                                             <tr>
-                    <td class="elbow-placeholder">&nbsp;</td>
-                    <td class="elbow-placeholder">&nbsp;</td>
-                    <td colspan=2 > snapshot_savings_ratio_to_one </td>
-                    <td> int </td>
-                    <td>success</td>
-                    <td> Snapshot savings ratio of SRP. </td>
-                </tr>
-                                             <tr>
-                    <td class="elbow-placeholder">&nbsp;</td>
-                    <td class="elbow-placeholder">&nbsp;</td>
-                    <td colspan=2 > virtual_provisioning_savings_ratio_to_one </td>
-                    <td> int </td>
-                    <td>success</td>
-                    <td> Virtual provisioning savings ratio of SRP. </td>
-                </tr>
-                                                            <tr>
-                <td class="elbow-placeholder">&nbsp;</td>
-                <td colspan=3 > total_srdf_dse_allocated_cap_gb </td>
+                <td colspan=1 > storage_group_count </td>
                 <td> int </td>
                 <td>success</td>
-                <td> Total SRDF dse allocated capacity in GB. </td>
+                <td> The number of storage groups associated with the snapshot policy. </td>
             </tr>
-                                        <tr>
-            <td colspan=4 > Volumes </td>
-            <td>  list </td>
-            <td> When the volumes exist. </td>
-            <td> List of volumes on the array. </td>
-        </tr>
-                    </table>
+                                <tr>
+                <td class="elbow-placeholder">&nbsp;</td>
+                <td colspan=1 > storage_group_snapshotID </td>
+                <td> list </td>
+                <td>success</td>
+                <td> Pair of storage group and list of snapshot IDs associated with the snapshot policy. </td>
+            </tr>
+                                <tr>
+                <td class="elbow-placeholder">&nbsp;</td>
+                <td colspan=1 > suspended </td>
+                <td> bool </td>
+                <td>success</td>
+                <td> The state of the snapshot policy, true indicates policy is in suspend state. </td>
+            </tr>
+                                <tr>
+                <td class="elbow-placeholder">&nbsp;</td>
+                <td colspan=1 > symmetrixID </td>
+                <td> str </td>
+                <td>success</td>
+                <td> The symmetrix on which snapshot policy exists. </td>
+            </tr>
+                                        </table>
 
 ### Authors
-* Arindam Datta (@dattaarindam) <ansible.team@dell.com>
 * Rajshree Khare (@khareRajshree) <ansible.team@dell.com>
 
 --------------------------------
@@ -3972,16 +5579,16 @@ Manage SRDF pair on PowerMax/VMAX Storage System
             <td> int  </td>
             <td></td>
             <td></td>
-            <td> <ul> <li>91</li>  <li>92</li> </ul></td>
-            <td> <br> Unisphere version, currently '91' and '92' versions are supported. </td>
+            <td> <ul> <li>91</li>  <li>92</li>  <li>100</li> </ul></td>
+            <td> <br> Unisphere version, currently '91', '92' and '100' versions are supported. </td>
         </tr>
                     <tr>
             <td colspan=1 > verifycert</td>
-            <td> bool  </td>
+            <td> str  </td>
             <td> True </td>
             <td></td>
-            <td> <ul> <li>True</li>  <li>False</li> </ul></td>
-            <td> <br> Boolean variable to specify whether to validate SSL certificate or not.  <br> True - indicates that the SSL certificate should be verified.  <br> False - indicates that the SSL certificate should not be verified. </td>
+            <td></td>
+            <td> <br> Specifies system whether to validate SSL certificate or not, Values can be True or False or a custom file path for SSL certificate with .pem extension or .cer with base 64 encoding. </td>
         </tr>
                     <tr>
             <td colspan=1 > user</td>
@@ -4378,19 +5985,18 @@ Manage SRDF pair on PowerMax/VMAX Storage System
 * Rajshree Khare (@khareRajshree) <ansible.team@dell.com>
 
 --------------------------------
-# RDF Group Module
+# Storage Group Module
 
-Gets the detail information about RDF Groups of a PowerMax/VMAX storage system
+Manage storage groups on PowerMax or VMAX Storage System
 
 ### Synopsis
- Gets details of an RDF Group from a specified PowerMax/VMAX storage system.
- Lists the volumes of an RDF Group from a specified PowerMax/VMAX storage system.
+ Managing storage groups on a PowerMax storage system includes- listing the volumes of a storage group, creating a new storage group, deleting an existing storage group, adding existing volumes to an existing storage group, removing existing volumes from an existing storage group, creating new volumes in an existing storage group, modifying existing storage group attributes, adding child storage groups inside an existing storage group (parent), moving volumes between storage groups and removing a child storage group from an existing parent storage group.
 
 ### Parameters
-                                                                                                                                                                                            
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                
 <table>
     <tr>
-        <th colspan=1>Parameter</th>
+        <th colspan=2>Parameter</th>
         <th width="20%">Type</th>
         <th>Required</th>
         <th>Default</th>
@@ -4398,15 +6004,154 @@ Gets the detail information about RDF Groups of a PowerMax/VMAX storage system
         <th width="80%">Description</th>
     </tr>
                                                             <tr>
-            <td colspan=1 > rdfgroup_number</td>
+            <td colspan=2 > sg_name</td>
             <td> str  </td>
             <td> True </td>
             <td></td>
             <td></td>
-            <td> <br> Identifier of an RDF Group of type string. </td>
+            <td> <br> The name of the storage group. </td>
         </tr>
                     <tr>
-            <td colspan=1 > unispherehost</td>
+            <td colspan=2 > service_level</td>
+            <td> str  </td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td> <br> The name of SLO. </td>
+        </tr>
+                    <tr>
+            <td colspan=2 > srp</td>
+            <td> str  </td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td> <br> The name of the storage resource pool.  <br> This parameter is ignored if service_level is not specified.  <br> Default is to use whichever is the default SRP on the array. </td>
+        </tr>
+                    <tr>
+            <td colspan=2 > compression</td>
+            <td> bool  </td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td> <br> Compression on storage group.  <br> Compression parameter is ignored if service_level is not specified.  <br> Default is true. </td>
+        </tr>
+                    <tr>
+            <td colspan=2 > volumes</td>
+            <td> list   <br> elements: dict </td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td> <br> This is a list of volumes.  <br> Each volume has four attributes-  <br> vol_name.  <br> size.  <br> cap_unit.  <br> vol_id.  <br> Either the volume ID must be provided for existing volumes, or the name and size must be provided to add new volumes to SG. The unit is optional.  <br> vol_name - Represents the name of the volume.  <br> size - Represents the volume size.  <br> cap_unit - The unit in which size is represented. Default unit is GB. Choices are MB, GB, TB.  <br> vol_id - This is the volume ID. </td>
+        </tr>
+                    <tr>
+            <td colspan=2 > vol_state</td>
+            <td> str  </td>
+            <td></td>
+            <td></td>
+            <td> <ul> <li>present-in-group</li>  <li>absent-in-group</li> </ul></td>
+            <td> <br> Describes the state of volumes inside the SG. </td>
+        </tr>
+                    <tr>
+            <td colspan=2 > child_storage_groups</td>
+            <td> list   <br> elements: str </td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td> <br> This is a list of child storage groups. </td>
+        </tr>
+                    <tr>
+            <td colspan=2 > child_sg_state</td>
+            <td> str  </td>
+            <td></td>
+            <td></td>
+            <td> <ul> <li>present-in-group</li>  <li>absent-in-group</li> </ul></td>
+            <td> <br> Describes the state of CSG inside parent SG. </td>
+        </tr>
+                    <tr>
+            <td colspan=2 > new_sg_name</td>
+            <td> str  </td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td> <br> The new name of the storage group. </td>
+        </tr>
+                    <tr>
+            <td colspan=2 > target_sg_name</td>
+            <td> str  </td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td> <br> The destination SG name to move the volumes to. </td>
+        </tr>
+                    <tr>
+            <td colspan=2 > force</td>
+            <td> bool  </td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td> <br> This flag is to be set to True while moving volumes to target SG if volume is in a masking view. </td>
+        </tr>
+                    <tr>
+            <td colspan=2 > snapshot_policies</td>
+            <td> list   <br> elements: str </td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td> <br> List of snapshot policies. </td>
+        </tr>
+                    <tr>
+            <td colspan=2 > snapshot_policy_state</td>
+            <td> str  </td>
+            <td></td>
+            <td></td>
+            <td> <ul> <li>present-in-group</li>  <li>absent-in-group</li> </ul></td>
+            <td> <br> Describes the state of snapshot policy for an SG. </td>
+        </tr>
+                    <tr>
+            <td colspan=2 > host_io_limit</td>
+            <td> dict  </td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td> <br> Host I/O limit of the storage group. </td>
+        </tr>
+                            <tr>
+                <td class="elbow-placeholder">&nbsp;</td>
+                <td colspan=1 > host_io_limit_iops </td>
+                <td> int  </td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td>  <br> The I/Os per second host I/O limit for the storage group.  </td>
+            </tr>
+                                <tr>
+                <td class="elbow-placeholder">&nbsp;</td>
+                <td colspan=1 > dynamic_distribution </td>
+                <td> str  </td>
+                <td></td>
+                <td> Never </td>
+                <td> <ul> <li>Always</li>  <li>Never</li>  <li>OnFailure</li> </ul></td>
+                <td>  <br> The dynamic distribution of host I/O limit for the storage group.  </td>
+            </tr>
+                                <tr>
+                <td class="elbow-placeholder">&nbsp;</td>
+                <td colspan=1 > host_io_limit_mbps </td>
+                <td> int  </td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td>  <br> The MBs per second host I/O limit for the storage group.  </td>
+            </tr>
+                                        <tr>
+            <td colspan=2 > state</td>
+            <td> str  </td>
+            <td> True </td>
+            <td></td>
+            <td> <ul> <li>absent</li>  <li>present</li> </ul></td>
+            <td> <br> Define whether the storage group should exist or not. </td>
+        </tr>
+                    <tr>
+            <td colspan=2 > unispherehost</td>
             <td> str  </td>
             <td> True </td>
             <td></td>
@@ -4414,23 +6159,23 @@ Gets the detail information about RDF Groups of a PowerMax/VMAX storage system
             <td> <br> IP or FQDN of the Unisphere host </td>
         </tr>
                     <tr>
-            <td colspan=1 > universion</td>
+            <td colspan=2 > universion</td>
             <td> int  </td>
             <td></td>
             <td></td>
-            <td> <ul> <li>91</li>  <li>92</li> </ul></td>
-            <td> <br> Unisphere version, currently '91' and '92' versions are supported. </td>
+            <td> <ul> <li>91</li>  <li>92</li>  <li>100</li> </ul></td>
+            <td> <br> Unisphere version, currently '91', '92' and '100' versions are supported. </td>
         </tr>
                     <tr>
-            <td colspan=1 > verifycert</td>
-            <td> bool  </td>
+            <td colspan=2 > verifycert</td>
+            <td> str  </td>
             <td> True </td>
             <td></td>
-            <td> <ul> <li>True</li>  <li>False</li> </ul></td>
-            <td> <br> Boolean variable to specify whether to validate SSL certificate or not.  <br> True - indicates that the SSL certificate should be verified.  <br> False - indicates that the SSL certificate should not be verified. </td>
+            <td></td>
+            <td> <br> Specifies system whether to validate SSL certificate or not, Values can be True or False or a custom file path for SSL certificate with .pem extension or .cer with base 64 encoding. </td>
         </tr>
                     <tr>
-            <td colspan=1 > user</td>
+            <td colspan=2 > user</td>
             <td> str  </td>
             <td> True </td>
             <td></td>
@@ -4438,7 +6183,7 @@ Gets the detail information about RDF Groups of a PowerMax/VMAX storage system
             <td> <br> The username of the Unisphere host. </td>
         </tr>
                     <tr>
-            <td colspan=1 > password</td>
+            <td colspan=2 > password</td>
             <td> str  </td>
             <td> True </td>
             <td></td>
@@ -4446,7 +6191,7 @@ Gets the detail information about RDF Groups of a PowerMax/VMAX storage system
             <td> <br> The password of the Unisphere host. </td>
         </tr>
                     <tr>
-            <td colspan=1 > serial_no</td>
+            <td colspan=2 > serial_no</td>
             <td> str  </td>
             <td> True </td>
             <td></td>
@@ -4456,1102 +6201,222 @@ Gets the detail information about RDF Groups of a PowerMax/VMAX storage system
                                                     </table>
 
 ### Notes
+* To set host_io_limit_mbps to NOLIMIT, value can be provided as 0.
 * The modules present in this collection named as 'dellemc.powermax' are built to support the Dell PowerMax storage platform.
 
 ### Examples
 ```
-- name: Get the details of rdf group and volumes
-  dellemc.powermax.rdfgroup:
+- name: Get storage group details including volumes
+  dellemc.powermax.storagegroup:
     unispherehost: "{{unispherehost}}"
     universion: "{{universion}}"
     verifycert: "{{verifycert}}"
     user: "{{user}}"
     password: "{{password}}"
     serial_no: "{{serial_no}}"
-    rdfgroup_number: "{{rdfgroup_id}}"
-```
-
-### Return Values
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                
-<table>
-    <tr>
-        <th colspan=4>Key</th>
-        <th>Type</th>
-        <th>Returned</th>
-        <th width="100%">Description</th>
-    </tr>
-                                                                                            <tr>
-            <td colspan=4 > RDFGroupDetails </td>
-            <td>  list </td>
-            <td> When the RDF group exist. </td>
-            <td> Details of the RDF group. </td>
-        </tr>
-                            <tr>
-                <td class="elbow-placeholder">&nbsp;</td>
-                <td colspan=3 > RDFGroupVolumes </td>
-                <td> list </td>
-                <td>success</td>
-                <td> List of various properties of RDF group volume(s). </td>
-            </tr>
-                                         <tr>
-                    <td class="elbow-placeholder">&nbsp;</td>
-                    <td class="elbow-placeholder">&nbsp;</td>
-                    <td colspan=2 > largerRdfSide </td>
-                    <td> str </td>
-                    <td>success</td>
-                    <td> Larger RDF side among the devices. </td>
-                </tr>
-                                             <tr>
-                    <td class="elbow-placeholder">&nbsp;</td>
-                    <td class="elbow-placeholder">&nbsp;</td>
-                    <td colspan=2 > localRdfGroupNumber </td>
-                    <td> int </td>
-                    <td>success</td>
-                    <td> RDF group number at primary device. </td>
-                </tr>
-                                             <tr>
-                    <td class="elbow-placeholder">&nbsp;</td>
-                    <td class="elbow-placeholder">&nbsp;</td>
-                    <td colspan=2 > localSymmetrixId </td>
-                    <td> int </td>
-                    <td>success</td>
-                    <td> Primary device ID. </td>
-                </tr>
-                                             <tr>
-                    <td class="elbow-placeholder">&nbsp;</td>
-                    <td class="elbow-placeholder">&nbsp;</td>
-                    <td colspan=2 > localVolumeName </td>
-                    <td> str </td>
-                    <td>success</td>
-                    <td> Volume name at primary device. </td>
-                </tr>
-                                             <tr>
-                    <td class="elbow-placeholder">&nbsp;</td>
-                    <td class="elbow-placeholder">&nbsp;</td>
-                    <td colspan=2 > localVolumeState </td>
-                    <td> str </td>
-                    <td>success</td>
-                    <td> Volume state at primary device </td>
-                </tr>
-                                             <tr>
-                    <td class="elbow-placeholder">&nbsp;</td>
-                    <td class="elbow-placeholder">&nbsp;</td>
-                    <td colspan=2 > local_wwn_external </td>
-                    <td> int </td>
-                    <td>success</td>
-                    <td> External WWN of volume at primary device. </td>
-                </tr>
-                                             <tr>
-                    <td class="elbow-placeholder">&nbsp;</td>
-                    <td class="elbow-placeholder">&nbsp;</td>
-                    <td colspan=2 > rdfMode </td>
-                    <td> str </td>
-                    <td>success</td>
-                    <td> SRDF mode of pairing. </td>
-                </tr>
-                                             <tr>
-                    <td class="elbow-placeholder">&nbsp;</td>
-                    <td class="elbow-placeholder">&nbsp;</td>
-                    <td colspan=2 > rdfpairState </td>
-                    <td> str </td>
-                    <td>success</td>
-                    <td> SRDF state of pairing. </td>
-                </tr>
-                                             <tr>
-                    <td class="elbow-placeholder">&nbsp;</td>
-                    <td class="elbow-placeholder">&nbsp;</td>
-                    <td colspan=2 > remoteRdfGroupNumber </td>
-                    <td> int </td>
-                    <td>success</td>
-                    <td> RDF group number at remote device. </td>
-                </tr>
-                                             <tr>
-                    <td class="elbow-placeholder">&nbsp;</td>
-                    <td class="elbow-placeholder">&nbsp;</td>
-                    <td colspan=2 > remoteSymmetrixId </td>
-                    <td> int </td>
-                    <td>success</td>
-                    <td> Remote device ID. </td>
-                </tr>
-                                             <tr>
-                    <td class="elbow-placeholder">&nbsp;</td>
-                    <td class="elbow-placeholder">&nbsp;</td>
-                    <td colspan=2 > remoteVolumeName </td>
-                    <td> str </td>
-                    <td>success</td>
-                    <td> Volume name at remote device. </td>
-                </tr>
-                                             <tr>
-                    <td class="elbow-placeholder">&nbsp;</td>
-                    <td class="elbow-placeholder">&nbsp;</td>
-                    <td colspan=2 > remoteVolumeState </td>
-                    <td> str </td>
-                    <td>success</td>
-                    <td> Volume state at remote device. </td>
-                </tr>
-                                             <tr>
-                    <td class="elbow-placeholder">&nbsp;</td>
-                    <td class="elbow-placeholder">&nbsp;</td>
-                    <td colspan=2 > remote_wwn_external </td>
-                    <td> int </td>
-                    <td>success</td>
-                    <td> External WWN of volume at remote device. </td>
-                </tr>
-                                             <tr>
-                    <td class="elbow-placeholder">&nbsp;</td>
-                    <td class="elbow-placeholder">&nbsp;</td>
-                    <td colspan=2 > volumeConfig </td>
-                    <td> str </td>
-                    <td>success</td>
-                    <td> Type of volume. </td>
-                </tr>
-                                                            <tr>
-                <td class="elbow-placeholder">&nbsp;</td>
-                <td colspan=3 > async </td>
-                <td> bool </td>
-                <td>success</td>
-                <td> Flag sets to true when an SRDF pair is in async mode. </td>
-            </tr>
-                                <tr>
-                <td class="elbow-placeholder">&nbsp;</td>
-                <td colspan=3 > biasConfigured </td>
-                <td> bool </td>
-                <td>success</td>
-                <td> Flag for configured bias. </td>
-            </tr>
-                                <tr>
-                <td class="elbow-placeholder">&nbsp;</td>
-                <td colspan=3 > biasEffective </td>
-                <td> bool </td>
-                <td>success</td>
-                <td> Flag for effective bias. </td>
-            </tr>
-                                <tr>
-                <td class="elbow-placeholder">&nbsp;</td>
-                <td colspan=3 > device_polarity </td>
-                <td> str </td>
-                <td>success</td>
-                <td> Type of device polarity. </td>
-            </tr>
-                                <tr>
-                <td class="elbow-placeholder">&nbsp;</td>
-                <td colspan=3 > hardware_compression </td>
-                <td> bool </td>
-                <td>success</td>
-                <td> Flag for hardware compression. </td>
-            </tr>
-                                <tr>
-                <td class="elbow-placeholder">&nbsp;</td>
-                <td colspan=3 > label </td>
-                <td> str </td>
-                <td>success</td>
-                <td> RDF group label. </td>
-            </tr>
-                                <tr>
-                <td class="elbow-placeholder">&nbsp;</td>
-                <td colspan=3 > link_limbo </td>
-                <td> int </td>
-                <td>success</td>
-                <td> The amount of time that the array's operating environment waits after the SRDF link goes down before updating the link's status. The link limbo value can be set from 0 to 120 seconds. The default value is 10 seconds. </td>
-            </tr>
-                                <tr>
-                <td class="elbow-placeholder">&nbsp;</td>
-                <td colspan=3 > localOnlinePorts </td>
-                <td> list </td>
-                <td>success</td>
-                <td> List of local online ports. </td>
-            </tr>
-                                <tr>
-                <td class="elbow-placeholder">&nbsp;</td>
-                <td colspan=3 > localPorts </td>
-                <td> list </td>
-                <td>success</td>
-                <td> List of local ports. </td>
-            </tr>
-                                <tr>
-                <td class="elbow-placeholder">&nbsp;</td>
-                <td colspan=3 > metro </td>
-                <td> list </td>
-                <td>success</td>
-                <td> Flag for metro configuration. </td>
-            </tr>
-                                <tr>
-                <td class="elbow-placeholder">&nbsp;</td>
-                <td colspan=3 > modes </td>
-                <td> str </td>
-                <td>success</td>
-                <td> Mode of the SRDF link. </td>
-            </tr>
-                                <tr>
-                <td class="elbow-placeholder">&nbsp;</td>
-                <td colspan=3 > numDevices </td>
-                <td> int </td>
-                <td>success</td>
-                <td> Number of devices involved in the pairing. </td>
-            </tr>
-                                <tr>
-                <td class="elbow-placeholder">&nbsp;</td>
-                <td colspan=3 > offline </td>
-                <td> bool </td>
-                <td>success</td>
-                <td> Offline flag. </td>
-            </tr>
-                                <tr>
-                <td class="elbow-placeholder">&nbsp;</td>
-                <td colspan=3 > rdfa_properties </td>
-                <td> list </td>
-                <td>success</td>
-                <td> Properties associated with the RDF group. </td>
-            </tr>
-                                         <tr>
-                    <td class="elbow-placeholder">&nbsp;</td>
-                    <td class="elbow-placeholder">&nbsp;</td>
-                    <td colspan=2 > average_cycle_time </td>
-                    <td> int </td>
-                    <td>success</td>
-                    <td> Average cycle time (seconds) configured for this session in seconds. </td>
-                </tr>
-                                             <tr>
-                    <td class="elbow-placeholder">&nbsp;</td>
-                    <td class="elbow-placeholder">&nbsp;</td>
-                    <td colspan=2 > consistency_exempt_volumes </td>
-                    <td> bool </td>
-                    <td>success</td>
-                    <td> Flag that indicates if consistency is exempt. </td>
-                </tr>
-                                             <tr>
-                    <td class="elbow-placeholder">&nbsp;</td>
-                    <td class="elbow-placeholder">&nbsp;</td>
-                    <td colspan=2 > cycle_number </td>
-                    <td> int </td>
-                    <td>success</td>
-                    <td> Number of cycles in seconds. </td>
-                </tr>
-                                             <tr>
-                    <td class="elbow-placeholder">&nbsp;</td>
-                    <td class="elbow-placeholder">&nbsp;</td>
-                    <td colspan=2 > dse_active </td>
-                    <td> bool </td>
-                    <td>success</td>
-                    <td> Flag for active Delta Set Extension. </td>
-                </tr>
-                                             <tr>
-                    <td class="elbow-placeholder">&nbsp;</td>
-                    <td class="elbow-placeholder">&nbsp;</td>
-                    <td colspan=2 > dse_autostart </td>
-                    <td> str </td>
-                    <td>success</td>
-                    <td> Indicates DSE autostart state. </td>
-                </tr>
-                                             <tr>
-                    <td class="elbow-placeholder">&nbsp;</td>
-                    <td class="elbow-placeholder">&nbsp;</td>
-                    <td colspan=2 > dse_threshold </td>
-                    <td> int </td>
-                    <td>success</td>
-                    <td> Flag for DSE threshold. </td>
-                </tr>
-                                             <tr>
-                    <td class="elbow-placeholder">&nbsp;</td>
-                    <td class="elbow-placeholder">&nbsp;</td>
-                    <td colspan=2 > duration_of_last_cycle </td>
-                    <td> int </td>
-                    <td>success</td>
-                    <td> The cycle time (in secs) of the most recently completed cycle. </td>
-                </tr>
-                                             <tr>
-                    <td class="elbow-placeholder">&nbsp;</td>
-                    <td class="elbow-placeholder">&nbsp;</td>
-                    <td colspan=2 > duration_of_last_transmit_cycle </td>
-                    <td> int </td>
-                    <td>success</td>
-                    <td> Duration of last transmitted cycle in seconds. </td>
-                </tr>
-                                             <tr>
-                    <td class="elbow-placeholder">&nbsp;</td>
-                    <td class="elbow-placeholder">&nbsp;</td>
-                    <td colspan=2 > r1_to_r2_lag_time </td>
-                    <td> int </td>
-                    <td>success</td>
-                    <td> Time that R2 is behind R1 in seconds. </td>
-                </tr>
-                                             <tr>
-                    <td class="elbow-placeholder">&nbsp;</td>
-                    <td class="elbow-placeholder">&nbsp;</td>
-                    <td colspan=2 > session_priority </td>
-                    <td> int </td>
-                    <td>success</td>
-                    <td> Priority used to determine which RDFA sessions to drop if cache becomes full. Values range from 1 to 64, with 1 being the highest priority (last to be dropped). </td>
-                </tr>
-                                             <tr>
-                    <td class="elbow-placeholder">&nbsp;</td>
-                    <td class="elbow-placeholder">&nbsp;</td>
-                    <td colspan=2 > session_uncommitted_tracks </td>
-                    <td> int </td>
-                    <td>success</td>
-                    <td> Number of uncommitted session tracks. </td>
-                </tr>
-                                             <tr>
-                    <td class="elbow-placeholder">&nbsp;</td>
-                    <td class="elbow-placeholder">&nbsp;</td>
-                    <td colspan=2 > transmit_idle_state </td>
-                    <td> str </td>
-                    <td>success</td>
-                    <td> Indicates RDFA transmit idle state. </td>
-                </tr>
-                                             <tr>
-                    <td class="elbow-placeholder">&nbsp;</td>
-                    <td class="elbow-placeholder">&nbsp;</td>
-                    <td colspan=2 > transmit_idle_time </td>
-                    <td> int </td>
-                    <td>success</td>
-                    <td> Time the transmit cycle has been idle. </td>
-                </tr>
-                                             <tr>
-                    <td class="elbow-placeholder">&nbsp;</td>
-                    <td class="elbow-placeholder">&nbsp;</td>
-                    <td colspan=2 > transmit_queue_depth </td>
-                    <td> int </td>
-                    <td>success</td>
-                    <td> The transmitted queue depth of disks. </td>
-                </tr>
-                                                            <tr>
-                <td class="elbow-placeholder">&nbsp;</td>
-                <td colspan=3 > rdfgNumber </td>
-                <td> int </td>
-                <td>success</td>
-                <td> RDF group number on primary device. </td>
-            </tr>
-                                <tr>
-                <td class="elbow-placeholder">&nbsp;</td>
-                <td colspan=3 > remoteOnlinePorts </td>
-                <td> list </td>
-                <td>success</td>
-                <td> List of remote online ports. </td>
-            </tr>
-                                <tr>
-                <td class="elbow-placeholder">&nbsp;</td>
-                <td colspan=3 > remotePorts </td>
-                <td> list </td>
-                <td>success</td>
-                <td> List of remote ports. </td>
-            </tr>
-                                <tr>
-                <td class="elbow-placeholder">&nbsp;</td>
-                <td colspan=3 > remoteRdfgNumber </td>
-                <td> int </td>
-                <td>success</td>
-                <td> RDF group number at remote device. </td>
-            </tr>
-                                <tr>
-                <td class="elbow-placeholder">&nbsp;</td>
-                <td colspan=3 > remoteSymmetrix </td>
-                <td> int </td>
-                <td>success</td>
-                <td> Remote device ID. </td>
-            </tr>
-                                <tr>
-                <td class="elbow-placeholder">&nbsp;</td>
-                <td colspan=3 > software_compression </td>
-                <td> bool </td>
-                <td>success</td>
-                <td> Flag for software compression. </td>
-            </tr>
-                                <tr>
-                <td class="elbow-placeholder">&nbsp;</td>
-                <td colspan=3 > totalDeviceCapacity </td>
-                <td> int </td>
-                <td>success</td>
-                <td> Total capacity of RDF group in GB. </td>
-            </tr>
-                                <tr>
-                <td class="elbow-placeholder">&nbsp;</td>
-                <td colspan=3 > type </td>
-                <td> str </td>
-                <td>success</td>
-                <td> Type of RDF group. </td>
-            </tr>
-                                <tr>
-                <td class="elbow-placeholder">&nbsp;</td>
-                <td colspan=3 > vasa_group </td>
-                <td> bool </td>
-                <td>success</td>
-                <td> Flag for VASA group member. </td>
-            </tr>
-                                <tr>
-                <td class="elbow-placeholder">&nbsp;</td>
-                <td colspan=3 > witness </td>
-                <td> bool </td>
-                <td>success</td>
-                <td> Flag for witness. </td>
-            </tr>
-                                <tr>
-                <td class="elbow-placeholder">&nbsp;</td>
-                <td colspan=3 > witnessConfigured </td>
-                <td> bool </td>
-                <td>success</td>
-                <td> Flag for configured witness. </td>
-            </tr>
-                                <tr>
-                <td class="elbow-placeholder">&nbsp;</td>
-                <td colspan=3 > witnessDegraded </td>
-                <td> bool </td>
-                <td>success</td>
-                <td> Flag for degraded witness. </td>
-            </tr>
-                                <tr>
-                <td class="elbow-placeholder">&nbsp;</td>
-                <td colspan=3 > witnessEffective </td>
-                <td> bool </td>
-                <td>success</td>
-                <td> Flag for effective witness. </td>
-            </tr>
-                                <tr>
-                <td class="elbow-placeholder">&nbsp;</td>
-                <td colspan=3 > witnessProtectedPhysical </td>
-                <td> bool </td>
-                <td>success</td>
-                <td> Flag for physically protected witness. </td>
-            </tr>
-                                <tr>
-                <td class="elbow-placeholder">&nbsp;</td>
-                <td colspan=3 > witnessProtectedVirtual </td>
-                <td> bool </td>
-                <td>success</td>
-                <td> Flag for virtually protected witness. </td>
-            </tr>
-                                        <tr>
-            <td colspan=4 > changed </td>
-            <td>  bool </td>
-            <td> always </td>
-            <td> Whether or not the resource has changed. </td>
-        </tr>
-                    </table>
-
-### Authors
-* Arindam Datta (@dattaarindam) <ansible.team@dell.com>
-
---------------------------------
-# Port Module
-
-Manage ports on PowerMax/VMAX Storage System
-
-### Synopsis
- Managing ports on PowerMax storage system includes getting details of a port.
-
-### Parameters
-                                                                                                                                                                                            
-<table>
-    <tr>
-        <th colspan=1>Parameter</th>
-        <th width="20%">Type</th>
-        <th>Required</th>
-        <th>Default</th>
-        <th>Choices</th>
-        <th width="80%">Description</th>
-    </tr>
-                                                            <tr>
-            <td colspan=1 > ports</td>
-            <td> list   <br> elements: dict </td>
-            <td> True </td>
-            <td></td>
-            <td></td>
-            <td> <br> List of port director and port id </td>
-        </tr>
-                    <tr>
-            <td colspan=1 > unispherehost</td>
-            <td> str  </td>
-            <td> True </td>
-            <td></td>
-            <td></td>
-            <td> <br> IP or FQDN of the Unisphere host </td>
-        </tr>
-                    <tr>
-            <td colspan=1 > universion</td>
-            <td> int  </td>
-            <td></td>
-            <td></td>
-            <td> <ul> <li>91</li>  <li>92</li> </ul></td>
-            <td> <br> Unisphere version, currently '91' and '92' versions are supported. </td>
-        </tr>
-                    <tr>
-            <td colspan=1 > verifycert</td>
-            <td> bool  </td>
-            <td> True </td>
-            <td></td>
-            <td> <ul> <li>True</li>  <li>False</li> </ul></td>
-            <td> <br> Boolean variable to specify whether to validate SSL certificate or not.  <br> True - indicates that the SSL certificate should be verified.  <br> False - indicates that the SSL certificate should not be verified. </td>
-        </tr>
-                    <tr>
-            <td colspan=1 > user</td>
-            <td> str  </td>
-            <td> True </td>
-            <td></td>
-            <td></td>
-            <td> <br> The username of the Unisphere host. </td>
-        </tr>
-                    <tr>
-            <td colspan=1 > password</td>
-            <td> str  </td>
-            <td> True </td>
-            <td></td>
-            <td></td>
-            <td> <br> The password of the Unisphere host. </td>
-        </tr>
-                    <tr>
-            <td colspan=1 > serial_no</td>
-            <td> str  </td>
-            <td> True </td>
-            <td></td>
-            <td></td>
-            <td> <br> The serial number of the PowerMax/VMAX array. It is a required parameter for all array-specific operations except for getting a list of arrays in the Gatherfacts module. </td>
-        </tr>
-                                                    </table>
-
-### Notes
-* The modules present in this collection named as 'dellemc.powermax' are built to support the Dell PowerMax storage platform.
-
-### Examples
-```
-- name: Get details of single/multiple ports
-  dellemc.powermax.port:
-    unispherehost: "{{unispherehost}}"
-    verifycert: "{{verifycert}}"
-    user: "{{user}}"
-    password: "{{password}}"
-    serial_no: "{{array_id}}"
-    ports:
-    - director_id: "FA-1D"
-      port_id: "5"
-    - director_id: "SE-1F"
-      port_id: "29"
-```
-
-### Return Values
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            
-<table>
-    <tr>
-        <th colspan=4>Key</th>
-        <th>Type</th>
-        <th>Returned</th>
-        <th width="100%">Description</th>
-    </tr>
-                                                                                            <tr>
-            <td colspan=4 > changed </td>
-            <td>  bool </td>
-            <td> always </td>
-            <td> Whether or not the resource has changed. </td>
-        </tr>
-                    <tr>
-            <td colspan=4 > port_details </td>
-            <td>  list </td>
-            <td> When the port exist. </td>
-            <td> Details of the port. </td>
-        </tr>
-                            <tr>
-                <td class="elbow-placeholder">&nbsp;</td>
-                <td colspan=3 > symmetrixPort </td>
-                <td> list </td>
-                <td>success</td>
-                <td> Type of volume. </td>
-            </tr>
-                                         <tr>
-                    <td class="elbow-placeholder">&nbsp;</td>
-                    <td class="elbow-placeholder">&nbsp;</td>
-                    <td colspan=2 > aclx </td>
-                    <td> bool </td>
-                    <td>success</td>
-                    <td> Indicates whether access control logic is enabled or disabled. </td>
-                </tr>
-                                             <tr>
-                    <td class="elbow-placeholder">&nbsp;</td>
-                    <td class="elbow-placeholder">&nbsp;</td>
-                    <td colspan=2 > avoid_reset_broadcast </td>
-                    <td> bool </td>
-                    <td>success</td>
-                    <td> Indicates whether the Avoid Reset Broadcasting feature is enabled or disabled. </td>
-                </tr>
-                                             <tr>
-                    <td class="elbow-placeholder">&nbsp;</td>
-                    <td class="elbow-placeholder">&nbsp;</td>
-                    <td colspan=2 > common_serial_number </td>
-                    <td> bool </td>
-                    <td>success</td>
-                    <td> Indicates whether the Common Serial Number feature is enabled or disabled. </td>
-                </tr>
-                                             <tr>
-                    <td class="elbow-placeholder">&nbsp;</td>
-                    <td class="elbow-placeholder">&nbsp;</td>
-                    <td colspan=2 > director_status </td>
-                    <td> str </td>
-                    <td>success</td>
-                    <td> Director status. </td>
-                </tr>
-                                             <tr>
-                    <td class="elbow-placeholder">&nbsp;</td>
-                    <td class="elbow-placeholder">&nbsp;</td>
-                    <td colspan=2 > disable_q_reset_on_ua </td>
-                    <td> bool </td>
-                    <td>success</td>
-                    <td> Indicates whether the Disable Q Reset on UA (Unit Attention) is enabled or disabled. </td>
-                </tr>
-                                             <tr>
-                    <td class="elbow-placeholder">&nbsp;</td>
-                    <td class="elbow-placeholder">&nbsp;</td>
-                    <td colspan=2 > enable_auto_negotiate </td>
-                    <td> bool </td>
-                    <td>success</td>
-                    <td> Indicates whether the Enable Auto Negotiate feature is enabled or disabled. </td>
-                </tr>
-                                             <tr>
-                    <td class="elbow-placeholder">&nbsp;</td>
-                    <td class="elbow-placeholder">&nbsp;</td>
-                    <td colspan=2 > environ_set </td>
-                    <td> bool </td>
-                    <td>success</td>
-                    <td> Indicates whether the environmental error reporting feature is enabled or disabled. </td>
-                </tr>
-                                             <tr>
-                    <td class="elbow-placeholder">&nbsp;</td>
-                    <td class="elbow-placeholder">&nbsp;</td>
-                    <td colspan=2 > hp_3000_mode </td>
-                    <td> bool </td>
-                    <td>success</td>
-                    <td> Indicates whether HP 3000 Mode is enabled or disabled. </td>
-                </tr>
-                                             <tr>
-                    <td class="elbow-placeholder">&nbsp;</td>
-                    <td class="elbow-placeholder">&nbsp;</td>
-                    <td colspan=2 > identifier </td>
-                    <td> str </td>
-                    <td>success</td>
-                    <td> Unique identifier for port. </td>
-                </tr>
-                                             <tr>
-                    <td class="elbow-placeholder">&nbsp;</td>
-                    <td class="elbow-placeholder">&nbsp;</td>
-                    <td colspan=2 > init_point_to_point </td>
-                    <td> bool </td>
-                    <td>success</td>
-                    <td> Indicates whether Init Point to Point is enabled or disabled. </td>
-                </tr>
-                                             <tr>
-                    <td class="elbow-placeholder">&nbsp;</td>
-                    <td class="elbow-placeholder">&nbsp;</td>
-                    <td colspan=2 > iscsi_target </td>
-                    <td> bool </td>
-                    <td>success</td>
-                    <td> Indicates whether ISCSI target is enabled or disabled. </td>
-                </tr>
-                                             <tr>
-                    <td class="elbow-placeholder">&nbsp;</td>
-                    <td class="elbow-placeholder">&nbsp;</td>
-                    <td colspan=2 > maskingview </td>
-                    <td> list </td>
-                    <td>success</td>
-                    <td> List of Masking views that the port is a part of. </td>
-                </tr>
-                                             <tr>
-                    <td class="elbow-placeholder">&nbsp;</td>
-                    <td class="elbow-placeholder">&nbsp;</td>
-                    <td colspan=2 > max_speed </td>
-                    <td> str </td>
-                    <td>success</td>
-                    <td> Maximum port speed in GB/Second. </td>
-                </tr>
-                                             <tr>
-                    <td class="elbow-placeholder">&nbsp;</td>
-                    <td class="elbow-placeholder">&nbsp;</td>
-                    <td colspan=2 > negotiate_reset </td>
-                    <td> bool </td>
-                    <td>success</td>
-                    <td> Indicates whether the Negotiate Reset feature is enabled or disabled. </td>
-                </tr>
-                                             <tr>
-                    <td class="elbow-placeholder">&nbsp;</td>
-                    <td class="elbow-placeholder">&nbsp;</td>
-                    <td colspan=2 > negotiated_speed </td>
-                    <td> str </td>
-                    <td>success</td>
-                    <td> Negotiated speed in GB/Second. </td>
-                </tr>
-                                             <tr>
-                    <td class="elbow-placeholder">&nbsp;</td>
-                    <td class="elbow-placeholder">&nbsp;</td>
-                    <td colspan=2 > no_participating </td>
-                    <td> bool </td>
-                    <td>success</td>
-                    <td> Indicates whether the No Participate feature is enabled or disabled. </td>
-                </tr>
-                                             <tr>
-                    <td class="elbow-placeholder">&nbsp;</td>
-                    <td class="elbow-placeholder">&nbsp;</td>
-                    <td colspan=2 > num_of_cores </td>
-                    <td> int </td>
-                    <td>success</td>
-                    <td> Number of cores for the director. </td>
-                </tr>
-                                             <tr>
-                    <td class="elbow-placeholder">&nbsp;</td>
-                    <td class="elbow-placeholder">&nbsp;</td>
-                    <td colspan=2 > num_of_mapped_vols </td>
-                    <td> int </td>
-                    <td>success</td>
-                    <td> Number of volumes mapped with the port. </td>
-                </tr>
-                                             <tr>
-                    <td class="elbow-placeholder">&nbsp;</td>
-                    <td class="elbow-placeholder">&nbsp;</td>
-                    <td colspan=2 > num_of_masking_views </td>
-                    <td> int </td>
-                    <td>success</td>
-                    <td> Number of masking views associated with the port. </td>
-                </tr>
-                                             <tr>
-                    <td class="elbow-placeholder">&nbsp;</td>
-                    <td class="elbow-placeholder">&nbsp;</td>
-                    <td colspan=2 > num_of_port_groups </td>
-                    <td> int </td>
-                    <td>success</td>
-                    <td> Number of port groups associated with the port. </td>
-                </tr>
-                                             <tr>
-                    <td class="elbow-placeholder">&nbsp;</td>
-                    <td class="elbow-placeholder">&nbsp;</td>
-                    <td colspan=2 > port_status </td>
-                    <td> str </td>
-                    <td>success</td>
-                    <td> Port status, ON/OFF. </td>
-                </tr>
-                                             <tr>
-                    <td class="elbow-placeholder">&nbsp;</td>
-                    <td class="elbow-placeholder">&nbsp;</td>
-                    <td colspan=2 > portgroup </td>
-                    <td> list </td>
-                    <td>success</td>
-                    <td> List of masking views associated with the port. </td>
-                </tr>
-                                             <tr>
-                    <td class="elbow-placeholder">&nbsp;</td>
-                    <td class="elbow-placeholder">&nbsp;</td>
-                    <td colspan=2 > scsi_3 </td>
-                    <td> bool </td>
-                    <td>success</td>
-                    <td> Indicates whether the SCSI-3 protocol is enabled or disabled. </td>
-                </tr>
-                                             <tr>
-                    <td class="elbow-placeholder">&nbsp;</td>
-                    <td class="elbow-placeholder">&nbsp;</td>
-                    <td colspan=2 > scsi_support1 </td>
-                    <td> bool </td>
-                    <td>success</td>
-                    <td> Indicates whether the SCSI Support1 is enabled or disabled. </td>
-                </tr>
-                                             <tr>
-                    <td class="elbow-placeholder">&nbsp;</td>
-                    <td class="elbow-placeholder">&nbsp;</td>
-                    <td colspan=2 > siemens </td>
-                    <td> bool </td>
-                    <td>success</td>
-                    <td> Indicates whether the Siemens feature is enabled or disabled. </td>
-                </tr>
-                                             <tr>
-                    <td class="elbow-placeholder">&nbsp;</td>
-                    <td class="elbow-placeholder">&nbsp;</td>
-                    <td colspan=2 > soft_reset </td>
-                    <td> bool </td>
-                    <td>success</td>
-                    <td> Indicates whether the Soft Reset feature is enabled or disabled. </td>
-                </tr>
-                                             <tr>
-                    <td class="elbow-placeholder">&nbsp;</td>
-                    <td class="elbow-placeholder">&nbsp;</td>
-                    <td colspan=2 > spc2_protocol_version </td>
-                    <td> bool </td>
-                    <td>success</td>
-                    <td> Indicates whether the SPC2 Protocol Version feature is enabled or disabled. </td>
-                </tr>
-                                             <tr>
-                    <td class="elbow-placeholder">&nbsp;</td>
-                    <td class="elbow-placeholder">&nbsp;</td>
-                    <td colspan=2 > sunapee </td>
-                    <td> bool </td>
-                    <td>success</td>
-                    <td> Indicates whether the Sunapee feature is enabled or disabled. </td>
-                </tr>
-                                             <tr>
-                    <td class="elbow-placeholder">&nbsp;</td>
-                    <td class="elbow-placeholder">&nbsp;</td>
-                    <td colspan=2 > symmetrixPortKey </td>
-                    <td> list </td>
-                    <td>success</td>
-                    <td> Symmetrix system director and port in the port group. </td>
-                </tr>
-                                                    <tr>
-                        <td class="elbow-placeholder">&nbsp;</td>
-                        <td class="elbow-placeholder">&nbsp;</td>
-                        <td class="elbow-placeholder">&nbsp;</td>
-                        <td colspan=1 > drectorId </td>
-                        <td> str </td>
-                        <td>success</td>
-                        <td> Director ID of the port. </td>
-                    </tr>
-                                    <tr>
-                        <td class="elbow-placeholder">&nbsp;</td>
-                        <td class="elbow-placeholder">&nbsp;</td>
-                        <td class="elbow-placeholder">&nbsp;</td>
-                        <td colspan=1 > portId </td>
-                        <td> str </td>
-                        <td>success</td>
-                        <td> Port number of the port. </td>
-                    </tr>
-                                                             <tr>
-                    <td class="elbow-placeholder">&nbsp;</td>
-                    <td class="elbow-placeholder">&nbsp;</td>
-                    <td colspan=2 > type </td>
-                    <td> str </td>
-                    <td>success</td>
-                    <td> Type of port. </td>
-                </tr>
-                                             <tr>
-                    <td class="elbow-placeholder">&nbsp;</td>
-                    <td class="elbow-placeholder">&nbsp;</td>
-                    <td colspan=2 > unique_wwn </td>
-                    <td> bool </td>
-                    <td>success</td>
-                    <td> Indicates whether the Unique WWN feature is enabled or disabled. </td>
-                </tr>
-                                             <tr>
-                    <td class="elbow-placeholder">&nbsp;</td>
-                    <td class="elbow-placeholder">&nbsp;</td>
-                    <td colspan=2 > vnx_attached </td>
-                    <td> bool </td>
-                    <td>success</td>
-                    <td> Indicates whether the VNX attached feature is enabled or disabled. </td>
-                </tr>
-                                             <tr>
-                    <td class="elbow-placeholder">&nbsp;</td>
-                    <td class="elbow-placeholder">&nbsp;</td>
-                    <td colspan=2 > volume_set_addressing </td>
-                    <td> bool </td>
-                    <td>success</td>
-                    <td> Indicates whether Volume Vet Addressing is enabled or disabled. </td>
-                </tr>
-                                             <tr>
-                    <td class="elbow-placeholder">&nbsp;</td>
-                    <td class="elbow-placeholder">&nbsp;</td>
-                    <td colspan=2 > wwn_node </td>
-                    <td> str </td>
-                    <td>success</td>
-                    <td> WWN node of port. </td>
-                </tr>
-                                                                    </table>
-
-### Authors
-* Ashish Verma (@vermaa31) <ansible.team@dell.com>
-
---------------------------------
-# Port Group Module
-
-Manage port groups on PowerMax/VMAX Storage System
-
-### Synopsis
- Managing port groups on a PowerMax storage system includes creating a port group with a set of ports, adding or removing single or multiple ports to or from the port group, renaming the port group and deleting the port group.
-
-### Parameters
-                                                                                                                                                                                                                                                                            
-<table>
-    <tr>
-        <th colspan=1>Parameter</th>
-        <th width="20%">Type</th>
-        <th>Required</th>
-        <th>Default</th>
-        <th>Choices</th>
-        <th width="80%">Description</th>
-    </tr>
-                                                            <tr>
-            <td colspan=1 > portgroup_name</td>
-            <td> str  </td>
-            <td> True </td>
-            <td></td>
-            <td></td>
-            <td> <br> The name of the port group. No Special Character support except for _. Case sensitive for REST Calls. </td>
-        </tr>
-                    <tr>
-            <td colspan=1 > ports</td>
-            <td> list   <br> elements: dict </td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td> <br> List of directors and ports to be added or removed to or from the port group. </td>
-        </tr>
-                    <tr>
-            <td colspan=1 > new_name</td>
-            <td> str  </td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td> <br> New name of the port group while renaming. No Special Character support except for _. Case sensitive for REST Calls. </td>
-        </tr>
-                    <tr>
-            <td colspan=1 > state</td>
-            <td> str  </td>
-            <td> True </td>
-            <td></td>
-            <td> <ul> <li>absent</li>  <li>present</li> </ul></td>
-            <td> <br> Define whether the port group should exist or not.  <br> present - indicates that the port group should be present on the system.  <br> absent - indicates that the port group should not be present on the system. </td>
-        </tr>
-                    <tr>
-            <td colspan=1 > port_state</td>
-            <td> str  </td>
-            <td></td>
-            <td></td>
-            <td> <ul> <li>present-in-group</li>  <li>absent-in-group</li> </ul></td>
-            <td> <br> Define whether the port should be present or absent in the port group.  <br> present-in-group - indicates that the ports should be present on a port group object.  <br> absent-in-group - indicates that the ports should not be present on a port group object. </td>
-        </tr>
-                    <tr>
-            <td colspan=1 > unispherehost</td>
-            <td> str  </td>
-            <td> True </td>
-            <td></td>
-            <td></td>
-            <td> <br> IP or FQDN of the Unisphere host </td>
-        </tr>
-                    <tr>
-            <td colspan=1 > universion</td>
-            <td> int  </td>
-            <td></td>
-            <td></td>
-            <td> <ul> <li>91</li>  <li>92</li> </ul></td>
-            <td> <br> Unisphere version, currently '91' and '92' versions are supported. </td>
-        </tr>
-                    <tr>
-            <td colspan=1 > verifycert</td>
-            <td> bool  </td>
-            <td> True </td>
-            <td></td>
-            <td> <ul> <li>True</li>  <li>False</li> </ul></td>
-            <td> <br> Boolean variable to specify whether to validate SSL certificate or not.  <br> True - indicates that the SSL certificate should be verified.  <br> False - indicates that the SSL certificate should not be verified. </td>
-        </tr>
-                    <tr>
-            <td colspan=1 > user</td>
-            <td> str  </td>
-            <td> True </td>
-            <td></td>
-            <td></td>
-            <td> <br> The username of the Unisphere host. </td>
-        </tr>
-                    <tr>
-            <td colspan=1 > password</td>
-            <td> str  </td>
-            <td> True </td>
-            <td></td>
-            <td></td>
-            <td> <br> The password of the Unisphere host. </td>
-        </tr>
-                    <tr>
-            <td colspan=1 > serial_no</td>
-            <td> str  </td>
-            <td> True </td>
-            <td></td>
-            <td></td>
-            <td> <br> The serial number of the PowerMax/VMAX array. It is a required parameter for all array-specific operations except for getting a list of arrays in the Gatherfacts module. </td>
-        </tr>
-                                                    </table>
-
-### Notes
-* The modules present in this collection named as 'dellemc.powermax' are built to support the Dell PowerMax storage platform.
-
-### Examples
-```
-- name: Create port group without ports
-  dellemc.powermax.portgroup:
-    unispherehost: "{{unispherehost}}"
-    universion: "{{universion}}"
-    verifycert: "{{verifycert}}"
-    user: "{{user}}"
-    password: "{{password}}"
-    serial_no: "{{array_id}}"
-    portgroup_name: "{{portgroup_name}}"
+    sg_name: "ansible_sg"
     state: "present"
 
-- name: Create port group with ports
-  dellemc.powermax.portgroup:
+- name: Create empty storage group
+  dellemc.powermax.storagegroup:
     unispherehost: "{{unispherehost}}"
     universion: "{{universion}}"
     verifycert: "{{verifycert}}"
     user: "{{user}}"
     password: "{{password}}"
-    serial_no: "{{array_id}}"
-    portgroup_name: "{{portgroup_name}}"
+    serial_no: "{{serial_no}}"
+    sg_name: "foo"
+    service_level:  "Diamond"
+    srp: "SRP_1"
+    compression: True
     state: "present"
-    ports:
-    - director_id: "FA-1D"
-      port_id: "5"
-    - director_id: "FA-2D"
-      port_id: "5"
-    port_state: "present-in-group"
 
-- name: Add ports to port group
-  dellemc.powermax.portgroup:
+- name: Delete the storage group
+  dellemc.powermax.storagegroup:
     unispherehost: "{{unispherehost}}"
     universion: "{{universion}}"
     verifycert: "{{verifycert}}"
     user: "{{user}}"
     password: "{{password}}"
-    serial_no: "{{array_id}}"
-    portgroup_name: "{{portgroup_name}}"
-    state: "present"
-    ports:
-    - director_id: "FA-2D"
-      port_id: "8"
-    - director_id: "FA-2D"
-      port_id: "9"
-    port_state: "present-in-group"
-
-- name: Remove ports from port group
-  dellemc.powermax.portgroup:
-    unispherehost: "{{unispherehost}}"
-    universion: "{{universion}}"
-    verifycert: "{{verifycert}}"
-    user: "{{user}}"
-    password: "{{password}}"
-    serial_no: "{{array_id}}"
-    portgroup_name: "{{portgroup_name}}"
-    state: "present"
-    ports:
-    - director_id: "FA-2D"
-      port_id: "8"
-    - director_id: "FA-2D"
-      port_id: "9"
-    port_state: "absent-in-group"
-
-- name: Modify port group
-  dellemc.powermax.portgroup:
-    unispherehost: "{{unispherehost}}"
-    universion: "{{universion}}"
-    verifycert: "{{verifycert}}"
-    user: "{{user}}"
-    password: "{{password}}"
-    serial_no: "{{array_id}}"
-    portgroup_name: "{{portgroup_name}}"
-    state: "present"
-    new_name: "{{new_name}}"
-
-- name: Delete port group
-  dellemc.powermax.portgroup:
-    unispherehost: "{{unispherehost}}"
-    universion: "{{universion}}"
-    verifycert: "{{verifycert}}"
-    user: "{{user}}"
-    password: "{{password}}"
-    serial_no: "{{array_id}}"
-    portgroup_name: "{{portgroup_name}}"
+    serial_no: "{{serial_no}}"
+    sg_name: "foo"
     state: "absent"
+
+- name: Adding existing volumes to existing SG
+  dellemc.powermax.storagegroup:
+    unispherehost: "{{unispherehost}}"
+    universion: "{{universion}}"
+    verifycert: "{{verifycert}}"
+    user: "{{user}}"
+    password: "{{password}}"
+    serial_no: "{{serial_no}}"
+    sg_name: "foo"
+    state: "present"
+    volumes:
+    - vol_id: "00028"
+    - vol_id: "00018"
+    - vol_id: "00025"
+    vol_state: "present-in-group"
+
+- name: Create new volumes for existing SG
+  dellemc.powermax.storagegroup:
+    unispherehost: "{{unispherehost}}"
+    universion: "{{universion}}"
+    verifycert: "{{verifycert}}"
+    user: "{{user}}"
+    password: "{{password}}"
+    serial_no: "{{serial_no}}"
+    sg_name: "foo"
+    state: "present"
+    volumes:
+    - vol_name: "foo"
+      size: 1
+      cap_unit: "GB"
+    - vol_name: "bar"
+      size: 1
+      cap_unit: "GB"
+    vol_state: "present-in-group"
+
+- name: Remove volumes from existing SG
+  dellemc.powermax.storagegroup:
+    unispherehost: "{{unispherehost}}"
+    universion: "{{universion}}"
+    verifycert: "{{verifycert}}"
+    user: "{{user}}"
+    password: "{{password}}"
+    serial_no: "{{serial_no}}"
+    sg_name: "foo"
+    state: "present"
+    volumes:
+    - vol_id: "00028"
+    - vol_id: "00018"
+    - vol_name: "ansible-vol"
+    vol_state: "absent-in-group"
+
+- name: Move volumes to target SG
+  dellemc.powermax.storagegroup:
+    unispherehost: "{{unispherehost}}"
+    universion: "{{universion}}"
+    verifycert: "{{verifycert}}"
+    user: "{{user}}"
+    password: "{{password}}"
+    serial_no: "{{serial_no}}"
+    sg_name: "foo"
+    target_sg_name: "foo_sg"
+    force: True
+    state: "present"
+    volumes:
+    - vol_id: "00028"
+    - vol_id: "00018"
+    - vol_name: "ansible-vol"
+    vol_state: "absent-in-group"
+
+- name: Adding child SG to parent SG
+  dellemc.powermax.storagegroup:
+    unispherehost: "{{unispherehost}}"
+    universion: "{{universion}}"
+    verifycert: "{{verifycert}}"
+    user: "{{user}}"
+    password: "{{password}}"
+    serial_no: "{{serial_no}}"
+    sg_name: "parent_sg"
+    state: "present"
+    child_storage_groups:
+    - "pie"
+    - "bar"
+    child_sg_state: "present-in-group"
+
+- name: Removing child SG from parent SG
+  dellemc.powermax.storagegroup:
+    unispherehost: "{{unispherehost}}"
+    universion: "{{universion}}"
+    verifycert: "{{verifycert}}"
+    user: "{{user}}"
+    password: "{{password}}"
+    serial_no: "{{serial_no}}"
+    sg_name: "parent_sg"
+    state: "present"
+    child_storage_groups:
+    - "pie"
+    - "bar"
+    child_sg_state: "absent-in-group"
+
+- name: Rename storage group
+  dellemc.powermax.storagegroup:
+    unispherehost: "{{unispherehost}}"
+    universion: "{{universion}}"
+    verifycert: "{{verifycert}}"
+    user: "{{user}}"
+    password: "{{password}}"
+    serial_no: "{{serial_no}}"
+    sg_name: "ansible_sg"
+    new_sg_name: "ansible_sg_renamed"
+    state: "present"
+
+- name: Create a storage group with snapshot policies
+  dellemc.powermax.storagegroup:
+    unispherehost: "{{unispherehost}}"
+    universion: "{{universion}}"
+    verifycert: "{{verifycert}}"
+    user: "{{user}}"
+    password: "{{password}}"
+    serial_no: "{{serial_no}}"
+    sg_name: "ansible_test_sg"
+    service_level: "Diamond"
+    srp: "SRP_1"
+    compression: True
+    snapshot_policies:
+      - "10min_policy"
+      - "30min_policy"
+    snapshot_policy_state: "present-in-group"
+    state: "present"
+
+- name: Add snapshot policy to a storage group
+  dellemc.powermax.storagegroup:
+    unispherehost: "{{unispherehost}}"
+    universion: "{{universion}}"
+    verifycert: "{{verifycert}}"
+    user: "{{user}}"
+    password: "{{password}}"
+    serial_no: "{{serial_no}}"
+    sg_name: "ansible_test_sg"
+    snapshot_policies:
+      - "15min_policy"
+    snapshot_policy_state: "present-in-group"
+    state: "present"
+
+- name: Remove snapshot policy from a storage group
+  dellemc.powermax.storagegroup:
+    unispherehost: "{{unispherehost}}"
+    universion: "{{universion}}"
+    verifycert: "{{verifycert}}"
+    user: "{{user}}"
+    password: "{{password}}"
+    serial_no: "{{serial_no}}"
+    sg_name: "ansible_test_sg"
+    snapshot_policies:
+      - "15min_policy"
+    snapshot_policy_state: "absent-in-group"
+    state: "present"
+
+- name: Set host I/O limits on an existing storage group
+  dellemc.powermax.storagegroup:
+    unispherehost: "{{unispherehost}}"
+    universion: "{{universion}}"
+    verifycert: "{{verifycert}}"
+    user: "{{user}}"
+    password: "{{password}}"
+    serial_no: "{{serial_no}}"
+    sg_name: "Test"
+    host_io_limit:
+      dynamic_distribution: "Always"
+      host_io_limit_iops: 100
+      host_io_limit_mbps: 100
+    state: "present"
 ```
 
 ### Return Values
-                                                                                                                                                                                                                                                                                                                                                                                    
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    
 <table>
     <tr>
         <th colspan=3>Key</th>
@@ -5560,74 +6425,349 @@ Manage port groups on PowerMax/VMAX Storage System
         <th width="100%">Description</th>
     </tr>
                                                                                             <tr>
+            <td colspan=3 > add_child_sg </td>
+            <td>  bool </td>
+            <td> When value exists. </td>
+            <td> Sets to True when a child SG is added. </td>
+        </tr>
+                    <tr>
+            <td colspan=3 > add_new_vols_to_sg </td>
+            <td>  bool </td>
+            <td> When value exists. </td>
+            <td> Sets to True when new volumes are added to the SG. </td>
+        </tr>
+                    <tr>
+            <td colspan=3 > add_snapshot_policy_to_sg </td>
+            <td>  bool </td>
+            <td> When value exists. </td>
+            <td> Sets to True when snapshot policy is added to SG. </td>
+        </tr>
+                    <tr>
+            <td colspan=3 > add_vols_to_sg </td>
+            <td>  bool </td>
+            <td> When value exists. </td>
+            <td> Sets to True when existing volumes are added to the SG. </td>
+        </tr>
+                    <tr>
+            <td colspan=3 > added_vols_details </td>
+            <td>  list </td>
+            <td> When value exists. </td>
+            <td> Volume IDs of the volumes added. </td>
+        </tr>
+                    <tr>
             <td colspan=3 > changed </td>
             <td>  bool </td>
             <td> always </td>
             <td> Whether or not the resource has changed. </td>
         </tr>
                     <tr>
-            <td colspan=3 > portgroup_details </td>
+            <td colspan=3 > create_sg </td>
+            <td>  bool </td>
+            <td> When value exists. </td>
+            <td> Sets to True when a new SG is created. </td>
+        </tr>
+                    <tr>
+            <td colspan=3 > delete_sg </td>
+            <td>  bool </td>
+            <td> When value exists. </td>
+            <td> Sets to True when an SG is deleted. </td>
+        </tr>
+                    <tr>
+            <td colspan=3 > modify_sg </td>
+            <td>  bool </td>
+            <td> When value exists. </td>
+            <td> Sets to True when an SG is modified. </td>
+        </tr>
+                    <tr>
+            <td colspan=3 > remove_child_sg </td>
+            <td>  bool </td>
+            <td> When value exists. </td>
+            <td> Sets to True when a child SG is removed. </td>
+        </tr>
+                    <tr>
+            <td colspan=3 > remove_snapshot_policy_to_sg </td>
+            <td>  bool </td>
+            <td> When value exists. </td>
+            <td> Sets to false when snapshot policy is removed from SG. </td>
+        </tr>
+                    <tr>
+            <td colspan=3 > remove_vols_from_sg </td>
+            <td>  bool </td>
+            <td> When value exists. </td>
+            <td> Sets to True when volumes are removed. </td>
+        </tr>
+                    <tr>
+            <td colspan=3 > removed_vols_details </td>
             <td>  list </td>
-            <td> When the port group exist. </td>
-            <td> Details of the port group. </td>
+            <td> When value exists. </td>
+            <td> Volume IDs of the volumes removed. </td>
+        </tr>
+                    <tr>
+            <td colspan=3 > rename_sg </td>
+            <td>  bool </td>
+            <td> When value exists. </td>
+            <td> Sets to True when an SG is renamed. </td>
+        </tr>
+                    <tr>
+            <td colspan=3 > snapshot_policy_compliance_details </td>
+            <td>  complex </td>
+            <td> When a snapshot policy is associated. </td>
+            <td> The compliance status of this storage group. </td>
         </tr>
                             <tr>
                 <td class="elbow-placeholder">&nbsp;</td>
-                <td colspan=2 > num_of_masking_views </td>
-                <td> int </td>
-                <td>success</td>
-                <td> Number of masking views in where port group is associated. </td>
-            </tr>
-                                <tr>
-                <td class="elbow-placeholder">&nbsp;</td>
-                <td colspan=2 > num_of_ports </td>
-                <td> int </td>
-                <td>success</td>
-                <td> Number of ports in the port group. </td>
-            </tr>
-                                <tr>
-                <td class="elbow-placeholder">&nbsp;</td>
-                <td colspan=2 > portGroupId </td>
+                <td colspan=2 > compliance </td>
                 <td> str </td>
                 <td>success</td>
-                <td> Port group ID. </td>
+                <td> Compliance status. </td>
             </tr>
                                 <tr>
                 <td class="elbow-placeholder">&nbsp;</td>
-                <td colspan=2 > symmetrixPortKey </td>
-                <td> list </td>
+                <td colspan=2 > sl_compliance </td>
+                <td> complex </td>
                 <td>success</td>
-                <td> Symmetrix system director and port in the port group. </td>
+                <td> Compliance details. </td>
             </tr>
                                          <tr>
                     <td class="elbow-placeholder">&nbsp;</td>
                     <td class="elbow-placeholder">&nbsp;</td>
-                    <td colspan=1 > directorId </td>
+                    <td colspan=1 > compliance </td>
                     <td> str </td>
                     <td>success</td>
-                    <td> Director ID of the port. </td>
+                    <td> Compliance status. </td>
                 </tr>
                                              <tr>
                     <td class="elbow-placeholder">&nbsp;</td>
                     <td class="elbow-placeholder">&nbsp;</td>
-                    <td colspan=1 > portId </td>
+                    <td colspan=1 > sl_name </td>
                     <td> str </td>
                     <td>success</td>
-                    <td> Port number of the port. </td>
+                    <td> Name of the snapshot policy. </td>
                 </tr>
                                                             <tr>
+                <td class="elbow-placeholder">&nbsp;</td>
+                <td colspan=2 > sl_count </td>
+                <td> int </td>
+                <td>success</td>
+                <td> Number of snapshot policies associated with storage group. </td>
+            </tr>
+                                <tr>
+                <td class="elbow-placeholder">&nbsp;</td>
+                <td colspan=2 > storage_group_name </td>
+                <td> str </td>
+                <td>success</td>
+                <td> Name of the storage group. </td>
+            </tr>
+                                        <tr>
+            <td colspan=3 > storage_group_details </td>
+            <td>  complex </td>
+            <td> When a storage group exists. </td>
+            <td> Details of the storage group. </td>
+        </tr>
+                            <tr>
+                <td class="elbow-placeholder">&nbsp;</td>
+                <td colspan=2 > base_slo_name </td>
+                <td> str </td>
+                <td>success</td>
+                <td> Base Service Level Objective (SLO) of a storage group. </td>
+            </tr>
+                                <tr>
+                <td class="elbow-placeholder">&nbsp;</td>
+                <td colspan=2 > cap_gb </td>
+                <td> int </td>
+                <td>success</td>
+                <td> Storage group capacity in GB. </td>
+            </tr>
+                                <tr>
+                <td class="elbow-placeholder">&nbsp;</td>
+                <td colspan=2 > compression </td>
+                <td> bool </td>
+                <td>success</td>
+                <td> Compression flag. </td>
+            </tr>
+                                <tr>
+                <td class="elbow-placeholder">&nbsp;</td>
+                <td colspan=2 > device_emulation </td>
+                <td> str </td>
+                <td>success</td>
+                <td> Device emulation type. </td>
+            </tr>
+                                <tr>
+                <td class="elbow-placeholder">&nbsp;</td>
+                <td colspan=2 > hostIOLimit </td>
+                <td> complex </td>
+                <td>success</td>
+                <td> Host I/O limit of the storage group. </td>
+            </tr>
+                                         <tr>
+                    <td class="elbow-placeholder">&nbsp;</td>
+                    <td class="elbow-placeholder">&nbsp;</td>
+                    <td colspan=1 > dynamic_distribution </td>
+                    <td> str </td>
+                    <td>success</td>
+                    <td> The dynamic distribution of host I/O limit for the storage group. </td>
+                </tr>
+                                             <tr>
+                    <td class="elbow-placeholder">&nbsp;</td>
+                    <td class="elbow-placeholder">&nbsp;</td>
+                    <td colspan=1 > iops </td>
+                    <td> int </td>
+                    <td>success</td>
+                    <td> The I/Os per second host I/O limit for the storage group. </td>
+                </tr>
+                                             <tr>
+                    <td class="elbow-placeholder">&nbsp;</td>
+                    <td class="elbow-placeholder">&nbsp;</td>
+                    <td colspan=1 > mbps </td>
+                    <td> int </td>
+                    <td>success</td>
+                    <td> The MBs per second host I/O limit for the storage group. </td>
+                </tr>
+                                                            <tr>
+                <td class="elbow-placeholder">&nbsp;</td>
+                <td colspan=2 > num_of_child_sgs </td>
+                <td> int </td>
+                <td>success</td>
+                <td> Number of child storage groups. </td>
+            </tr>
+                                <tr>
+                <td class="elbow-placeholder">&nbsp;</td>
+                <td colspan=2 > num_of_masking_views </td>
+                <td> int </td>
+                <td>success</td>
+                <td> Number of masking views associated with the storage group. </td>
+            </tr>
+                                <tr>
+                <td class="elbow-placeholder">&nbsp;</td>
+                <td colspan=2 > num_of_parent_sgs </td>
+                <td> int </td>
+                <td>success</td>
+                <td> Number of parent storage groups. </td>
+            </tr>
+                                <tr>
+                <td class="elbow-placeholder">&nbsp;</td>
+                <td colspan=2 > num_of_snapshots </td>
+                <td> int </td>
+                <td>success</td>
+                <td> Number of snapshots for the storage group. </td>
+            </tr>
+                                <tr>
+                <td class="elbow-placeholder">&nbsp;</td>
+                <td colspan=2 > num_of_vols </td>
+                <td> int </td>
+                <td>success</td>
+                <td> Number of volumes in the storage group. </td>
+            </tr>
+                                <tr>
+                <td class="elbow-placeholder">&nbsp;</td>
+                <td colspan=2 > service_level </td>
+                <td> str </td>
+                <td>success</td>
+                <td> Type of service level. </td>
+            </tr>
+                                <tr>
+                <td class="elbow-placeholder">&nbsp;</td>
+                <td colspan=2 > slo </td>
+                <td> str </td>
+                <td>success</td>
+                <td> Service Level Objective type. </td>
+            </tr>
+                                <tr>
+                <td class="elbow-placeholder">&nbsp;</td>
+                <td colspan=2 > slo_compliance </td>
+                <td> str </td>
+                <td>success</td>
+                <td> Type of SLO compliance. </td>
+            </tr>
+                                <tr>
+                <td class="elbow-placeholder">&nbsp;</td>
+                <td colspan=2 > srp </td>
+                <td> str </td>
+                <td>success</td>
+                <td> Storage Resource Pool. </td>
+            </tr>
+                                <tr>
+                <td class="elbow-placeholder">&nbsp;</td>
+                <td colspan=2 > storageGroupId </td>
+                <td> str </td>
+                <td>success</td>
+                <td> ID for the storage group. </td>
+            </tr>
+                                <tr>
                 <td class="elbow-placeholder">&nbsp;</td>
                 <td colspan=2 > type </td>
                 <td> str </td>
                 <td>success</td>
-                <td> Type of ports in port group. </td>
+                <td> Type of storage group. </td>
+            </tr>
+                                <tr>
+                <td class="elbow-placeholder">&nbsp;</td>
+                <td colspan=2 > unprotected </td>
+                <td> bool </td>
+                <td>success</td>
+                <td> Flag for storage group protection. </td>
+            </tr>
+                                <tr>
+                <td class="elbow-placeholder">&nbsp;</td>
+                <td colspan=2 > vp_saved_percent </td>
+                <td> int </td>
+                <td>success</td>
+                <td> Percentage saved for virtual pools. </td>
+            </tr>
+                                        <tr>
+            <td colspan=3 > storage_group_volumes </td>
+            <td>  list </td>
+            <td> When value exists. </td>
+            <td> Volume IDs of storage group volumes. </td>
+        </tr>
+                    <tr>
+            <td colspan=3 > storage_group_volumes_details </td>
+            <td>  complex </td>
+            <td> When storage group volumes exist. </td>
+            <td> Details of the storage group volumes. </td>
+        </tr>
+                            <tr>
+                <td class="elbow-placeholder">&nbsp;</td>
+                <td colspan=2 > effective_wwn </td>
+                <td> str </td>
+                <td>success</td>
+                <td> Effective WWN of the volume. </td>
+            </tr>
+                                <tr>
+                <td class="elbow-placeholder">&nbsp;</td>
+                <td colspan=2 > type </td>
+                <td> str </td>
+                <td>success</td>
+                <td> Type of the volume. </td>
+            </tr>
+                                <tr>
+                <td class="elbow-placeholder">&nbsp;</td>
+                <td colspan=2 > volumeId </td>
+                <td> str </td>
+                <td>success</td>
+                <td> Unique ID of the volume. </td>
+            </tr>
+                                <tr>
+                <td class="elbow-placeholder">&nbsp;</td>
+                <td colspan=2 > volume_identifier </td>
+                <td> str </td>
+                <td>success</td>
+                <td> Name associated with the volume. </td>
+            </tr>
+                                <tr>
+                <td class="elbow-placeholder">&nbsp;</td>
+                <td colspan=2 > wwn </td>
+                <td> str </td>
+                <td>success</td>
+                <td> WWN of the volume. </td>
             </tr>
                                         </table>
 
 ### Authors
 * Vasudevu Lakhinana (@unknown) <ansible.team@dell.com>
-* Ashish Verma (@vermaa31) <ansible.team@dell.com>
-* Rajshree Khare (@khareRajshree) <ansible.team@dell.com>
+* Prashant Rakheja (@prashant-dell) <ansible.team@dell.com>
+* Ambuj Dubey (@AmbujDube) <ansible.team@dell.com>
+* Pavan Mudunuri (@Pavan-Mudunuri) <ansible.team@dell.com>
 
 --------------------------------
 # Storage Pool Module
@@ -5677,16 +6817,16 @@ Manage storage pools on PowerMax/VMAX storage system
             <td> int  </td>
             <td></td>
             <td></td>
-            <td> <ul> <li>91</li>  <li>92</li> </ul></td>
-            <td> <br> Unisphere version, currently '91' and '92' versions are supported. </td>
+            <td> <ul> <li>91</li>  <li>92</li>  <li>100</li> </ul></td>
+            <td> <br> Unisphere version, currently '91', '92' and '100' versions are supported. </td>
         </tr>
                     <tr>
             <td colspan=1 > verifycert</td>
-            <td> bool  </td>
+            <td> str  </td>
             <td> True </td>
             <td></td>
-            <td> <ul> <li>True</li>  <li>False</li> </ul></td>
-            <td> <br> Boolean variable to specify whether to validate SSL certificate or not.  <br> True - indicates that the SSL certificate should be verified.  <br> False - indicates that the SSL certificate should not be verified. </td>
+            <td></td>
+            <td> <br> Specifies system whether to validate SSL certificate or not, Values can be True or False or a custom file path for SSL certificate with .pem extension or .cer with base 64 encoding. </td>
         </tr>
                     <tr>
             <td colspan=1 > user</td>
@@ -5832,356 +6972,6 @@ Manage storage pools on PowerMax/VMAX storage system
 * Akash Shendge (@shenda1) <ansible.team@dell.com>
 
 --------------------------------
-# Job Module
-
-Gets the detail information about a Job of a PowerMax/VMAX storage system
-
-### Synopsis
- Gets details of a Job from a specified PowerMax/VMAX storage system.
- The details listed are of an asynchronous task.
-
-### Parameters
-                                                                                                                                                                        
-<table>
-    <tr>
-        <th colspan=1>Parameter</th>
-        <th width="20%">Type</th>
-        <th>Required</th>
-        <th>Default</th>
-        <th>Choices</th>
-        <th width="80%">Description</th>
-    </tr>
-                                                            <tr>
-            <td colspan=1 > job_id</td>
-            <td> str  </td>
-            <td> True </td>
-            <td></td>
-            <td></td>
-            <td> <br> Job ID of an asynchronous task, used for getting details of a job. </td>
-        </tr>
-                    <tr>
-            <td colspan=1 > unispherehost</td>
-            <td> str  </td>
-            <td> True </td>
-            <td></td>
-            <td></td>
-            <td> <br> IP or FQDN of the Unisphere host </td>
-        </tr>
-                    <tr>
-            <td colspan=1 > universion</td>
-            <td> int  </td>
-            <td></td>
-            <td></td>
-            <td> <ul> <li>91</li>  <li>92</li> </ul></td>
-            <td> <br> Unisphere version, currently '91' and '92' versions are supported. </td>
-        </tr>
-                    <tr>
-            <td colspan=1 > verifycert</td>
-            <td> bool  </td>
-            <td> True </td>
-            <td></td>
-            <td> <ul> <li>True</li>  <li>False</li> </ul></td>
-            <td> <br> Boolean variable to specify whether to validate SSL certificate or not.  <br> True - indicates that the SSL certificate should be verified.  <br> False - indicates that the SSL certificate should not be verified. </td>
-        </tr>
-                    <tr>
-            <td colspan=1 > user</td>
-            <td> str  </td>
-            <td> True </td>
-            <td></td>
-            <td></td>
-            <td> <br> The username of the Unisphere host. </td>
-        </tr>
-                    <tr>
-            <td colspan=1 > password</td>
-            <td> str  </td>
-            <td> True </td>
-            <td></td>
-            <td></td>
-            <td> <br> The password of the Unisphere host. </td>
-        </tr>
-                                                    </table>
-
-### Notes
-* The modules present in this collection named as 'dellemc.powermax' are built to support the Dell PowerMax storage platform.
-
-### Examples
-```
-- name: Get the details of a Job.
-  dellemc.powermax.job:
-    unispherehost: "{{unispherehost}}"
-    universion: "{{universion}}"
-    verifycert: "{{verifycert}}"
-    user: "{{user}}"
-    password: "{{password}}"
-    job_id: "1570622921504"
-```
-
-### Return Values
-                                                                                                                                                                                                                                                                                                                                                
-<table>
-    <tr>
-        <th colspan=2>Key</th>
-        <th>Type</th>
-        <th>Returned</th>
-        <th width="100%">Description</th>
-    </tr>
-                                                                                            <tr>
-            <td colspan=2 > Job_details </td>
-            <td>  dict </td>
-            <td> When job exist. </td>
-            <td> Details of the job. </td>
-        </tr>
-                            <tr>
-                <td class="elbow-placeholder">&nbsp;</td>
-                <td colspan=1 > completed_date_milliseconds </td>
-                <td> int </td>
-                <td>success</td>
-                <td> Date of job completion in milliseconds. </td>
-            </tr>
-                                <tr>
-                <td class="elbow-placeholder">&nbsp;</td>
-                <td colspan=1 > jobId </td>
-                <td> str </td>
-                <td>success</td>
-                <td> Unique identifier of the job. </td>
-            </tr>
-                                <tr>
-                <td class="elbow-placeholder">&nbsp;</td>
-                <td colspan=1 > last_modified_date </td>
-                <td> str </td>
-                <td>success</td>
-                <td> Last modified date of job. </td>
-            </tr>
-                                <tr>
-                <td class="elbow-placeholder">&nbsp;</td>
-                <td colspan=1 > last_modified_date_milliseconds </td>
-                <td> int </td>
-                <td>success</td>
-                <td> Last modified date of job in milliseconds. </td>
-            </tr>
-                                <tr>
-                <td class="elbow-placeholder">&nbsp;</td>
-                <td colspan=1 > name </td>
-                <td> str </td>
-                <td>success</td>
-                <td> Name of the job. </td>
-            </tr>
-                                <tr>
-                <td class="elbow-placeholder">&nbsp;</td>
-                <td colspan=1 > resourceLink </td>
-                <td> str </td>
-                <td>success</td>
-                <td> Resource link w.r.t Unisphere. </td>
-            </tr>
-                                <tr>
-                <td class="elbow-placeholder">&nbsp;</td>
-                <td colspan=1 > result </td>
-                <td> str </td>
-                <td>success</td>
-                <td> Job description </td>
-            </tr>
-                                <tr>
-                <td class="elbow-placeholder">&nbsp;</td>
-                <td colspan=1 > status </td>
-                <td> str </td>
-                <td>success</td>
-                <td> Status of the job. </td>
-            </tr>
-                                <tr>
-                <td class="elbow-placeholder">&nbsp;</td>
-                <td colspan=1 > task </td>
-                <td> list </td>
-                <td>success</td>
-                <td> Details about the job. </td>
-            </tr>
-                                <tr>
-                <td class="elbow-placeholder">&nbsp;</td>
-                <td colspan=1 > username </td>
-                <td> str </td>
-                <td>success</td>
-                <td> Unisphere username. </td>
-            </tr>
-                                        <tr>
-            <td colspan=2 > changed </td>
-            <td>  bool </td>
-            <td> always </td>
-            <td> Whether or not the resource has changed. </td>
-        </tr>
-                    </table>
-
-### Authors
-* Rajshree Khare (@khareRajshree) <ansible.team@dell.com>
-
---------------------------------
-# Storage Pool Dict Module
-
-Process storage pools on PowerMax/VMAX Storage System
-
-### Synopsis
- Process storage pools on PowerMax/VMAX storage system to find out the storage pool with maximum free storage.
-
-### Parameters
-                                                                                                                                                                                                                                    
-<table>
-    <tr>
-        <th colspan=1>Parameter</th>
-        <th width="20%">Type</th>
-        <th>Required</th>
-        <th>Default</th>
-        <th>Choices</th>
-        <th width="80%">Description</th>
-    </tr>
-                                                            <tr>
-            <td colspan=1 > pool_data</td>
-            <td> list   <br> elements: dict </td>
-            <td> True </td>
-            <td></td>
-            <td></td>
-            <td> <br> Storage pool details including service levels, usable total space, usable free space, total free space. </td>
-        </tr>
-                    <tr>
-            <td colspan=1 > size</td>
-            <td> float  </td>
-            <td> True </td>
-            <td></td>
-            <td></td>
-            <td> <br> Size of the storage group in GB. </td>
-        </tr>
-                    <tr>
-            <td colspan=1 > sg_name</td>
-            <td> str  </td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td> <br> Name of the storage group. </td>
-        </tr>
-                    <tr>
-            <td colspan=1 > service_level</td>
-            <td> str  </td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td> <br> Service level of the storage group. </td>
-        </tr>
-                    <tr>
-            <td colspan=1 > unispherehost</td>
-            <td> str  </td>
-            <td> True </td>
-            <td></td>
-            <td></td>
-            <td> <br> IP or FQDN of the Unisphere host </td>
-        </tr>
-                    <tr>
-            <td colspan=1 > universion</td>
-            <td> int  </td>
-            <td></td>
-            <td></td>
-            <td> <ul> <li>91</li>  <li>92</li> </ul></td>
-            <td> <br> Unisphere version, currently '91' and '92' versions are supported. </td>
-        </tr>
-                    <tr>
-            <td colspan=1 > verifycert</td>
-            <td> bool  </td>
-            <td> True </td>
-            <td></td>
-            <td> <ul> <li>True</li>  <li>False</li> </ul></td>
-            <td> <br> Boolean variable to specify whether to validate SSL certificate or not.  <br> True - indicates that the SSL certificate should be verified.  <br> False - indicates that the SSL certificate should not be verified. </td>
-        </tr>
-                    <tr>
-            <td colspan=1 > user</td>
-            <td> str  </td>
-            <td> True </td>
-            <td></td>
-            <td></td>
-            <td> <br> The username of the Unisphere host. </td>
-        </tr>
-                    <tr>
-            <td colspan=1 > password</td>
-            <td> str  </td>
-            <td> True </td>
-            <td></td>
-            <td></td>
-            <td> <br> The password of the Unisphere host. </td>
-        </tr>
-                                                    </table>
-
-### Notes
-* The modules present in this collection named as 'dellemc.powermax' are built to support the Dell PowerMax storage platform.
-
-### Examples
-```
-- name: Get best suitable Pool using our python sorting module
-  register: assigned_pool
-  dellemc.powermax.process_storage_pool_dict:
-    unispherehost: "{{unispherehost}}"
-    verifycert: "{{verifycert}}"
-    user: "{{user}}"
-    password: "{{password}}"
-    pool_data: "{{ pools_list }}"
-    size: 40
-    service_level: "Diamond"
-    sg_name: "intellgent_provisioning"
-```
-
-### Return Values
-                                                                                                                                                                                                                                            
-<table>
-    <tr>
-        <th colspan=2>Key</th>
-        <th>Type</th>
-        <th>Returned</th>
-        <th width="100%">Description</th>
-    </tr>
-                                                                                            <tr>
-            <td colspan=2 > all_pools </td>
-            <td>  list </td>
-            <td> when pool exists </td>
-            <td> List of all pools on unisphere </td>
-        </tr>
-                            <tr>
-                <td class="elbow-placeholder">&nbsp;</td>
-                <td colspan=1 > serial_no </td>
-                <td> str </td>
-                <td>success</td>
-                <td> The PowerMax array on which storage pool resides </td>
-            </tr>
-                                <tr>
-                <td class="elbow-placeholder">&nbsp;</td>
-                <td colspan=1 > storage_pool </td>
-                <td> str </td>
-                <td>success</td>
-                <td> The ID of the storage pool </td>
-            </tr>
-                                        <tr>
-            <td colspan=2 > changed </td>
-            <td>  bool </td>
-            <td> always </td>
-            <td> Whether or not the resource has changed. </td>
-        </tr>
-                    <tr>
-            <td colspan=2 > serial_no </td>
-            <td>  str </td>
-            <td> when array satisfies the given criteria </td>
-            <td> The PowerMax array on which storage pool resides </td>
-        </tr>
-                    <tr>
-            <td colspan=2 > storage_group </td>
-            <td>  str </td>
-            <td> when storage group exists satisfying the given criteria </td>
-            <td> Name of the storage group </td>
-        </tr>
-                    <tr>
-            <td colspan=2 > storage_pool </td>
-            <td>  str </td>
-            <td> when storage pool exists satisfying the given criteria </td>
-            <td> The ID of the storage pool </td>
-        </tr>
-                    </table>
-
-### Authors
-* Akash Shendge (@shenda1) <ansible.team@dell.com>
-
---------------------------------
 # Volume Module
 
 Manage volumes on PowerMax Storage System
@@ -6190,7 +6980,7 @@ Manage volumes on PowerMax Storage System
  Managing volumes on PowerMax storage system includes creating a volume, renaming a volume, expanding a volume, and deleting a volume.
 
 ### Parameters
-                                                                                                                                                                                                                                                                                                                                                            
+                                                                                                                                                                                                                                                                                                                                                                                
 <table>
     <tr>
         <th colspan=1>Parameter</th>
@@ -6245,7 +7035,7 @@ Manage volumes on PowerMax Storage System
             <td> str  </td>
             <td></td>
             <td></td>
-            <td> <ul> <li>MB</li>  <li>GB</li>  <li>TB</li> </ul></td>
+            <td> <ul> <li>MB</li>  <li>GB</li>  <li>TB</li>  <li>CYL</li> </ul></td>
             <td> <br> volume capacity units.  <br> If not specified, default value is GB. </td>
         </tr>
                     <tr>
@@ -6263,6 +7053,14 @@ Manage volumes on PowerMax Storage System
             <td></td>
             <td></td>
             <td> <br> The WWN of the volume. </td>
+        </tr>
+                    <tr>
+            <td colspan=1 > append_vol_id</td>
+            <td> bool  </td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td> <br> Appends volume id to the volume name, Applicable from V4 (Juniper). </td>
         </tr>
                     <tr>
             <td colspan=1 > state</td>
@@ -6285,16 +7083,16 @@ Manage volumes on PowerMax Storage System
             <td> int  </td>
             <td></td>
             <td></td>
-            <td> <ul> <li>91</li>  <li>92</li> </ul></td>
-            <td> <br> Unisphere version, currently '91' and '92' versions are supported. </td>
+            <td> <ul> <li>91</li>  <li>92</li>  <li>100</li> </ul></td>
+            <td> <br> Unisphere version, currently '91', '92' and '100' versions are supported. </td>
         </tr>
                     <tr>
             <td colspan=1 > verifycert</td>
-            <td> bool  </td>
+            <td> str  </td>
             <td> True </td>
             <td></td>
-            <td> <ul> <li>True</li>  <li>False</li> </ul></td>
-            <td> <br> Boolean variable to specify whether to validate SSL certificate or not.  <br> True - indicates that the SSL certificate should be verified.  <br> False - indicates that the SSL certificate should not be verified. </td>
+            <td></td>
+            <td> <br> Specifies system whether to validate SSL certificate or not, Values can be True or False or a custom file path for SSL certificate with .pem extension or .cer with base 64 encoding. </td>
         </tr>
                     <tr>
             <td colspan=1 > user</td>
@@ -6344,6 +7142,7 @@ Manage volumes on PowerMax Storage System
     sg_name: "{{sg_name}}"
     size: 1
     cap_unit: "{{cap_unit}}"
+    append_vol_id: True
     state: 'present'
 
 - name: Expanding volume size
@@ -6404,6 +7203,20 @@ Manage volumes on PowerMax Storage System
     vol_name: "{{vol_name}}"
     sg_name: "{{sg_name}}"
     new_sg_name: "{{new_sg_name}}"
+    state: 'present'
+
+- name: Create volume with capacity unit as cylinder
+  dellemc.powermax.volume:
+    unispherehost: "{{unispherehost}}"
+    universion: "{{universion}}"
+    verifycert: "{{verifycert}}"
+    user: "{{user}}"
+    password: "{{password}}"
+    serial_no: "{{serial_no}}"
+    vol_name: "{{vol_name}}"
+    sg_name: "{{sg_name}}"
+    size: 1
+    cap_unit: "CYL"
     state: 'present'
 ```
 
@@ -6602,17 +7415,18 @@ Manage volumes on PowerMax Storage System
 * Vasudevu Lakhinana (@unknown) <ansible.team@dell.com>
 * Akash Shendge (@shenda1) <ansible.team@dell.com>
 * Ambuj Dubey (@AmbujDube) <ansible.team@dell.com>
+* Pavan Mudunuri (@Pavan-Mudunuri) <ansible.team@dell.com>
 
 --------------------------------
-# Storage Group Module
+# Intelligent Volume Placement
 
-Manage storage groups on PowerMax or VMAX Storage System
+This role provides basic support for Intelligent volume placement for PowerMax.
 
 ### Synopsis
- Managing storage groups on a PowerMax storage system includes listing the volumes of a storage group, creating a new storage group, deleting an existing storage group, adding existing volumes to an existing storage group, removing existing volumes from an existing storage group, creating new volumes in an existing storage group, modifying existing storage group attributes, adding child storage groups inside an existing storage group (parent), moving volumes between storage groups and removing a child storage group from an existing parent storage group.
+ The role is intended for selecting the best suitable array and storage pool intelligently based on certain criteria accepted as user input. It scans through all available PowerMax arrays of the given Unisphere, to find available capacity, current load, service level etc. If the capacity is available in multiple arrays, it will prioritize the storage pool which is least used and returns the pool as 'assigned_pool'.
 
 ### Parameters
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                
+                                                                                                                                                                                                                                    
 <table>
     <tr>
         <th colspan=1>Parameter</th>
@@ -6623,12 +7437,20 @@ Manage storage groups on PowerMax or VMAX Storage System
         <th width="80%">Description</th>
     </tr>
                                                             <tr>
-            <td colspan=1 > sg_name</td>
-            <td> str  </td>
+            <td colspan=1 > size</td>
+            <td> float  </td>
             <td> True </td>
             <td></td>
             <td></td>
-            <td> <br> The name of the storage group. </td>
+            <td> <br> The size of the storage group. </td>
+        </tr>
+                    <tr>
+            <td colspan=1 > cap_unit</td>
+            <td> str  </td>
+            <td> True </td>
+            <td> GB </td>
+            <td> <ul> <li>GB</li>  <li>TB</li> </ul></td>
+            <td> <br> The capacity unit. </td>
         </tr>
                     <tr>
             <td colspan=1 > service_level</td>
@@ -6636,103 +7458,15 @@ Manage storage groups on PowerMax or VMAX Storage System
             <td></td>
             <td></td>
             <td></td>
-            <td> <br> The Name of SLO. </td>
+            <td> <br> The service level supported by storage pool. </td>
         </tr>
                     <tr>
-            <td colspan=1 > srp</td>
+            <td colspan=1 > sg_name</td>
             <td> str  </td>
             <td></td>
             <td></td>
             <td></td>
-            <td> <br> Name of the storage resource pool.  <br> This parameter is ignored if service_level is not specified.  <br> Default is to use whichever is the default SRP on the array. </td>
-        </tr>
-                    <tr>
-            <td colspan=1 > compression</td>
-            <td> bool  </td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td> <br> Compression on storage group.  <br> Compression parameter is ignored if service_level is not specified.  <br> Default is true. </td>
-        </tr>
-                    <tr>
-            <td colspan=1 > volumes</td>
-            <td> list   <br> elements: dict </td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td> <br> This is a list of volumes.  <br> Each volume has four attributes-  <br> vol_name.  <br> size.  <br> cap_unit.  <br> vol_id.  <br> Either the volume ID must be provided for existing volumes, or the name and size must be provided to add new volumes to SG. The unit is optional.  <br> vol_name - Represents the name of the volume.  <br> size - Represents the volume size.  <br> cap_unit - The unit in which size is represented. Default unit is GB. Choices are MB, GB, TB.  <br> vol_id - This is the volume ID. </td>
-        </tr>
-                    <tr>
-            <td colspan=1 > vol_state</td>
-            <td> str  </td>
-            <td></td>
-            <td></td>
-            <td> <ul> <li>present-in-group</li>  <li>absent-in-group</li> </ul></td>
-            <td> <br> Describes the state of volumes inside the SG. </td>
-        </tr>
-                    <tr>
-            <td colspan=1 > child_storage_groups</td>
-            <td> list   <br> elements: str </td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td> <br> This is a list of child storage groups. </td>
-        </tr>
-                    <tr>
-            <td colspan=1 > child_sg_state</td>
-            <td> str  </td>
-            <td></td>
-            <td></td>
-            <td> <ul> <li>present-in-group</li>  <li>absent-in-group</li> </ul></td>
-            <td> <br> Describes the state of CSG inside parent SG. </td>
-        </tr>
-                    <tr>
-            <td colspan=1 > new_sg_name</td>
-            <td> str  </td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td> <br> The new name of the storage group. </td>
-        </tr>
-                    <tr>
-            <td colspan=1 > target_sg_name</td>
-            <td> str  </td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td> <br> The destination SG name to move the volumes to. </td>
-        </tr>
-                    <tr>
-            <td colspan=1 > force</td>
-            <td> bool  </td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td> <br> This flag is to be set to True while moving volumes to target SG if volume is in a masking view. </td>
-        </tr>
-                    <tr>
-            <td colspan=1 > snapshot_policies</td>
-            <td> list   <br> elements: str </td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td> <br> List of snapshot policies. </td>
-        </tr>
-                    <tr>
-            <td colspan=1 > snapshot_policy_state</td>
-            <td> str  </td>
-            <td></td>
-            <td></td>
-            <td> <ul> <li>present-in-group</li>  <li>absent-in-group</li> </ul></td>
-            <td> <br> Describes the state of snapshot policy for an SG. </td>
-        </tr>
-                    <tr>
-            <td colspan=1 > state</td>
-            <td> str  </td>
-            <td> True </td>
-            <td></td>
-            <td> <ul> <li>absent</li>  <li>present</li> </ul></td>
-            <td> <br> Define whether the storage group should exist or not. </td>
+            <td> <br> The name of the storage group. </td>
         </tr>
                     <tr>
             <td colspan=1 > unispherehost</td>
@@ -6747,16 +7481,16 @@ Manage storage groups on PowerMax or VMAX Storage System
             <td> int  </td>
             <td></td>
             <td></td>
-            <td> <ul> <li>91</li>  <li>92</li> </ul></td>
-            <td> <br> Unisphere version, currently '91' and '92' versions are supported. </td>
+            <td> <ul> <li>91</li>  <li>92</li>  <li>100</li> </ul></td>
+            <td> <br> Unisphere version, currently '91', '92' and '100' versions are supported. </td>
         </tr>
                     <tr>
             <td colspan=1 > verifycert</td>
-            <td> bool  </td>
+            <td> str  </td>
             <td> True </td>
             <td></td>
-            <td> <ul> <li>True</li>  <li>False</li> </ul></td>
-            <td> <br> Boolean variable to specify whether to validate SSL certificate or not.  <br> True - indicates that the SSL certificate should be verified.  <br> False - indicates that the SSL certificate should not be verified. </td>
+            <td></td>
+            <td> <br> Specifies system whether to validate SSL certificate or not, Values can be True or False or a custom file path for SSL certificate with .pem extension or .cer with base 64 encoding. </td>
         </tr>
                     <tr>
             <td colspan=1 > user</td>
@@ -6774,14 +7508,6 @@ Manage storage groups on PowerMax or VMAX Storage System
             <td></td>
             <td> <br> The password of the Unisphere host. </td>
         </tr>
-                    <tr>
-            <td colspan=1 > serial_no</td>
-            <td> str  </td>
-            <td> True </td>
-            <td></td>
-            <td></td>
-            <td> <br> The serial number of the PowerMax/VMAX array. It is a required parameter for all array-specific operations except for getting a list of arrays in the Gatherfacts module. </td>
-        </tr>
                                                     </table>
 
 ### Notes
@@ -6789,520 +7515,86 @@ Manage storage groups on PowerMax or VMAX Storage System
 
 ### Examples
 ```
-- name: Get Storage Group details including volumes
-  dellemc.powermax.storagegroup:
-    unispherehost: "{{unispherehost}}"
-    universion: "{{universion}}"
-    verifycert: "{{verifycert}}"
-    user: "{{user}}"
-    password: "{{password}}"
-    serial_no: "{{serial_no}}"
-    sg_name: "ansible_sg"
-    state: "present"
+    - name: Include the PowerMax role to get the Serial Number and Assigned Pool
+      include_role:
+        name: capacity_role
 
-- name: Create empty Storage Group
-  dellemc.powermax.storagegroup:
-    unispherehost: "{{unispherehost}}"
-    universion: "{{universion}}"
-    verifycert: "{{verifycert}}"
-    user: "{{user}}"
-    password: "{{password}}"
-    serial_no: "{{serial_no}}"
-    sg_name: "foo"
-    service_level:  "Diamond"
-    srp: "SRP_1"
-    compression: True
-    state: "present"
+    - name: Create storage group on the assigned serial number and SRP
+      register: storage_group_details
+      dellemc_powermax_storagegroup:
+        unispherehost: "{{unispherehost}}"
+        universion: "{{universion}}"
+        verifycert: "{{verifycert}}"
+        user: "{{user}}"
+        password: "{{password}}"
+        serial_no: "{{assigned_pool.serial_no}}"
+        sg_name: "test_sg"
+        service_level: "Diamond"
+        srp: "{{assigned_pool.storage_pool}}"
+        compression: True
+        state: "present"
 
-- name: Delete the Storage Group
-  dellemc.powermax.storagegroup:
-    unispherehost: "{{unispherehost}}"
-    universion: "{{universion}}"
-    verifycert: "{{verifycert}}"
-    user: "{{user}}"
-    password: "{{password}}"
-    serial_no: "{{serial_no}}"
-    sg_name: "foo"
-    state: "absent"
-
-- name: Adding existing volumes to existing SG
-  dellemc.powermax.storagegroup:
-    unispherehost: "{{unispherehost}}"
-    universion: "{{universion}}"
-    verifycert: "{{verifycert}}"
-    user: "{{user}}"
-    password: "{{password}}"
-    serial_no: "{{serial_no}}"
-    sg_name: "foo"
-    state: "present"
-    volumes:
-    - vol_id: "00028"
-    - vol_id: "00018"
-    - vol_id: "00025"
-    vol_state: "present-in-group"
-
-- name: Create new volumes for existing SG
-  dellemc.powermax.storagegroup:
-    unispherehost: "{{unispherehost}}"
-    universion: "{{universion}}"
-    verifycert: "{{verifycert}}"
-    user: "{{user}}"
-    password: "{{password}}"
-    serial_no: "{{serial_no}}"
-    sg_name: "foo"
-    state: "present"
-    volumes:
-    - vol_name: "foo"
-      size: 1
-      cap_unit: "GB"
-    - vol_name: "bar"
-      size: 1
-      cap_unit: "GB"
-    vol_state: "present-in-group"
-
-- name: Remove volumes from existing SG
-  dellemc.powermax.storagegroup:
-    unispherehost: "{{unispherehost}}"
-    universion: "{{universion}}"
-    verifycert: "{{verifycert}}"
-    user: "{{user}}"
-    password: "{{password}}"
-    serial_no: "{{serial_no}}"
-    sg_name: "foo"
-    state: "present"
-    volumes:
-    - vol_id: "00028"
-    - vol_id: "00018"
-    - vol_name: "ansible-vol"
-    vol_state: "absent-in-group"
-
-- name: Move volumes to target SG
-  dellemc.powermax.storagegroup:
-    unispherehost: "{{unispherehost}}"
-    universion: "{{universion}}"
-    verifycert: "{{verifycert}}"
-    user: "{{user}}"
-    password: "{{password}}"
-    serial_no: "{{serial_no}}"
-    sg_name: "foo"
-    target_sg_name: "foo_sg"
-    force: True
-    state: "present"
-    volumes:
-    - vol_id: "00028"
-    - vol_id: "00018"
-    - vol_name: "ansible-vol"
-    vol_state: "absent-in-group"
-
-- name: Adding child SG to parent SG
-  dellemc.powermax.storagegroup:
-    unispherehost: "{{unispherehost}}"
-    universion: "{{universion}}"
-    verifycert: "{{verifycert}}"
-    user: "{{user}}"
-    password: "{{password}}"
-    serial_no: "{{serial_no}}"
-    sg_name: "parent_sg"
-    state: "present"
-    child_storage_groups:
-    - "pie"
-    - "bar"
-    child_sg_state: "present-in-group"
-
-- name: Removing child SG from parent SG
-  dellemc.powermax.storagegroup:
-    unispherehost: "{{unispherehost}}"
-    universion: "{{universion}}"
-    verifycert: "{{verifycert}}"
-    user: "{{user}}"
-    password: "{{password}}"
-    serial_no: "{{serial_no}}"
-    sg_name: "parent_sg"
-    state: "present"
-    child_storage_groups:
-    - "pie"
-    - "bar"
-    child_sg_state: "absent-in-group"
-
-- name: Rename Storage Group
-  dellemc.powermax.storagegroup:
-    unispherehost: "{{unispherehost}}"
-    universion: "{{universion}}"
-    verifycert: "{{verifycert}}"
-    user: "{{user}}"
-    password: "{{password}}"
-    serial_no: "{{serial_no}}"
-    sg_name: "ansible_sg"
-    new_sg_name: "ansible_sg_renamed"
-    state: "present"
-
-- name: Create a Storage Group with snapshot policies
-  dellemc.powermax.storagegroup:
-    unispherehost: "{{unispherehost}}"
-    universion: "{{universion}}"
-    verifycert: "{{verifycert}}"
-    user: "{{user}}"
-    password: "{{password}}"
-    serial_no: "{{serial_no}}"
-    sg_name: "ansible_test_sg"
-    service_level: "Diamond"
-    srp: "SRP_1"
-    compression: True
-    snapshot_policies:
-      - "10min_policy"
-      - "30min_policy"
-    snapshot_policy_state: "present-in-group"
-    state: "present"
-
-- name: Add snapshot policy to a Storage Group
-  dellemc.powermax.storagegroup:
-    unispherehost: "{{unispherehost}}"
-    universion: "{{universion}}"
-    verifycert: "{{verifycert}}"
-    user: "{{user}}"
-    password: "{{password}}"
-    serial_no: "{{serial_no}}"
-    sg_name: "ansible_test_sg"
-    snapshot_policies:
-      - "15min_policy"
-    snapshot_policy_state: "present-in-group"
-    state: "present"
-
-- name: Remove snapshot policy from a Storage Group
-  dellemc.powermax.storagegroup:
-    unispherehost: "{{unispherehost}}"
-    universion: "{{universion}}"
-    verifycert: "{{verifycert}}"
-    user: "{{user}}"
-    password: "{{password}}"
-    serial_no: "{{serial_no}}"
-    sg_name: "ansible_test_sg"
-    snapshot_policies:
-      - "15min_policy"
-    snapshot_policy_state: "absent-in-group"
-    state: "present"
+    - name: Create volume on the storage group
+      dellemc_powermax_volume:
+        unispherehost: "{{unispherehost}}"
+        universion: "{{universion}}"
+        verifycert: "{{verifycert}}"
+        user: "{{user}}"
+        password: "{{password}}"
+        serial_no: "{{assigned_pool.serial_no}}"
+        vol_name: "test_vol"
+        sg_name: "test_sg"
+        size: 10
+        cap_unit: "GB"
+        state: 'present'
 ```
 
 ### Return Values
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        
+                                                                                                                                                                                                    
 <table>
     <tr>
-        <th colspan=3>Key</th>
+        <th colspan=2>Key</th>
         <th>Type</th>
         <th>Returned</th>
         <th width="100%">Description</th>
     </tr>
                                                                                             <tr>
-            <td colspan=3 > add_child_sg </td>
-            <td>  bool </td>
-            <td> When value exists. </td>
-            <td> Sets to True when a child SG is added. </td>
-        </tr>
-                    <tr>
-            <td colspan=3 > add_new_vols_to_sg </td>
-            <td>  bool </td>
-            <td> When value exists. </td>
-            <td> Sets to True when new volumes are added to the SG. </td>
-        </tr>
-                    <tr>
-            <td colspan=3 > add_snapshot_policy_to_sg </td>
-            <td>  bool </td>
-            <td> When value exists. </td>
-            <td> Sets to True when snapshot policy is added to SG. </td>
-        </tr>
-                    <tr>
-            <td colspan=3 > add_vols_to_sg </td>
-            <td>  bool </td>
-            <td> When value exists. </td>
-            <td> Sets to True when existing volumes are added to the SG. </td>
-        </tr>
-                    <tr>
-            <td colspan=3 > added_vols_details </td>
-            <td>  list </td>
-            <td> When value exists. </td>
-            <td> Volume IDs of the volumes added. </td>
-        </tr>
-                    <tr>
-            <td colspan=3 > changed </td>
-            <td>  bool </td>
-            <td> always </td>
-            <td> Whether or not the resource has changed. </td>
-        </tr>
-                    <tr>
-            <td colspan=3 > create_sg </td>
-            <td>  bool </td>
-            <td> When value exists. </td>
-            <td> Sets to True when a new SG is created. </td>
-        </tr>
-                    <tr>
-            <td colspan=3 > delete_sg </td>
-            <td>  bool </td>
-            <td> When value exists. </td>
-            <td> Sets to True when an SG is deleted. </td>
-        </tr>
-                    <tr>
-            <td colspan=3 > modify_sg </td>
-            <td>  bool </td>
-            <td> When value exists. </td>
-            <td> Sets to True when an SG is modified. </td>
-        </tr>
-                    <tr>
-            <td colspan=3 > remove_child_sg </td>
-            <td>  bool </td>
-            <td> When value exists. </td>
-            <td> Sets to True when a child SG is removed. </td>
-        </tr>
-                    <tr>
-            <td colspan=3 > remove_snapshot_policy_to_sg </td>
-            <td>  bool </td>
-            <td> When value exists. </td>
-            <td> Sets to false when snapshot policy is removed from SG. </td>
-        </tr>
-                    <tr>
-            <td colspan=3 > remove_vols_from_sg </td>
-            <td>  bool </td>
-            <td> When value exists. </td>
-            <td> Sets to True when volumes are removed. </td>
-        </tr>
-                    <tr>
-            <td colspan=3 > removed_vols_details </td>
-            <td>  list </td>
-            <td> When value exists. </td>
-            <td> Volume IDs of the volumes removed. </td>
-        </tr>
-                    <tr>
-            <td colspan=3 > rename_sg </td>
-            <td>  bool </td>
-            <td> When value exists. </td>
-            <td> Sets to True when an SG is renamed. </td>
-        </tr>
-                    <tr>
-            <td colspan=3 > snapshot_policy_compliance_details </td>
+            <td colspan=2 > assigned_pool </td>
             <td>  complex </td>
-            <td> When snapshot policy associated. </td>
-            <td> The compliance status of this storage group. </td>
+            <td> When exists else returns "NOT_FOUND". </td>
+            <td> The role returns storage system (serial number) and pool (SRP name) with the lowest capacity utilization if the capacity provided by user is satisfied. </td>
         </tr>
                             <tr>
                 <td class="elbow-placeholder">&nbsp;</td>
-                <td colspan=2 > compliance </td>
-                <td> str </td>
-                <td>success</td>
-                <td> Compliance status. </td>
-            </tr>
-                                <tr>
-                <td class="elbow-placeholder">&nbsp;</td>
-                <td colspan=2 > sl_compliance </td>
-                <td> complex </td>
-                <td>success</td>
-                <td> Compliance details. </td>
-            </tr>
-                                         <tr>
-                    <td class="elbow-placeholder">&nbsp;</td>
-                    <td class="elbow-placeholder">&nbsp;</td>
-                    <td colspan=1 > compliance </td>
-                    <td> str </td>
-                    <td>success</td>
-                    <td> Compliance status. </td>
-                </tr>
-                                             <tr>
-                    <td class="elbow-placeholder">&nbsp;</td>
-                    <td class="elbow-placeholder">&nbsp;</td>
-                    <td colspan=1 > sl_name </td>
-                    <td> str </td>
-                    <td>success</td>
-                    <td> Name of the snapshot policy. </td>
-                </tr>
-                                                            <tr>
-                <td class="elbow-placeholder">&nbsp;</td>
-                <td colspan=2 > sl_count </td>
-                <td> int </td>
-                <td>success</td>
-                <td> Number of snapshot policies associated with storage group. </td>
-            </tr>
-                                <tr>
-                <td class="elbow-placeholder">&nbsp;</td>
-                <td colspan=2 > storage_group_name </td>
-                <td> str </td>
-                <td>success</td>
-                <td> Name of the storage group. </td>
-            </tr>
-                                        <tr>
-            <td colspan=3 > storage_group_details </td>
-            <td>  complex </td>
-            <td> When storage group exists. </td>
-            <td> Details of the storage group. </td>
-        </tr>
-                            <tr>
-                <td class="elbow-placeholder">&nbsp;</td>
-                <td colspan=2 > base_slo_name </td>
-                <td> str </td>
-                <td>success</td>
-                <td> Base Service Level Objective (SLO) of a storage group. </td>
-            </tr>
-                                <tr>
-                <td class="elbow-placeholder">&nbsp;</td>
-                <td colspan=2 > cap_gb </td>
-                <td> int </td>
-                <td>success</td>
-                <td> Storage group capacity in GB. </td>
-            </tr>
-                                <tr>
-                <td class="elbow-placeholder">&nbsp;</td>
-                <td colspan=2 > compression </td>
+                <td colspan=1 > changed </td>
                 <td> bool </td>
                 <td>success</td>
-                <td> Compression flag. </td>
+                <td> Whether or not the resource has changed. </td>
             </tr>
                                 <tr>
                 <td class="elbow-placeholder">&nbsp;</td>
-                <td colspan=2 > device_emulation </td>
+                <td colspan=1 > serial_no </td>
                 <td> str </td>
                 <td>success</td>
-                <td> Device emulation type. </td>
+                <td> The serial number of the PowerMax/VMAX array. </td>
             </tr>
                                 <tr>
                 <td class="elbow-placeholder">&nbsp;</td>
-                <td colspan=2 > num_of_child_sgs </td>
-                <td> int </td>
-                <td>success</td>
-                <td> Number of child storage groups. </td>
-            </tr>
-                                <tr>
-                <td class="elbow-placeholder">&nbsp;</td>
-                <td colspan=2 > num_of_masking_views </td>
-                <td> int </td>
-                <td>success</td>
-                <td> Number of masking views associated with the storage group. </td>
-            </tr>
-                                <tr>
-                <td class="elbow-placeholder">&nbsp;</td>
-                <td colspan=2 > num_of_parent_sgs </td>
-                <td> int </td>
-                <td>success</td>
-                <td> Number of parent storage groups. </td>
-            </tr>
-                                <tr>
-                <td class="elbow-placeholder">&nbsp;</td>
-                <td colspan=2 > num_of_snapshots </td>
-                <td> int </td>
-                <td>success</td>
-                <td> Number of snapshots for the storage group. </td>
-            </tr>
-                                <tr>
-                <td class="elbow-placeholder">&nbsp;</td>
-                <td colspan=2 > num_of_vols </td>
-                <td> int </td>
-                <td>success</td>
-                <td> Number of volumes in the storage group. </td>
-            </tr>
-                                <tr>
-                <td class="elbow-placeholder">&nbsp;</td>
-                <td colspan=2 > service_level </td>
+                <td colspan=1 > storage_group </td>
                 <td> str </td>
                 <td>success</td>
-                <td> Type of service level. </td>
+                <td> Storage group of the volume. </td>
             </tr>
                                 <tr>
                 <td class="elbow-placeholder">&nbsp;</td>
-                <td colspan=2 > slo </td>
+                <td colspan=1 > storage_pool </td>
                 <td> str </td>
                 <td>success</td>
-                <td> Service Level Objective type. </td>
-            </tr>
-                                <tr>
-                <td class="elbow-placeholder">&nbsp;</td>
-                <td colspan=2 > slo_compliance </td>
-                <td> str </td>
-                <td>success</td>
-                <td> Type of SLO compliance. </td>
-            </tr>
-                                <tr>
-                <td class="elbow-placeholder">&nbsp;</td>
-                <td colspan=2 > srp </td>
-                <td> str </td>
-                <td>success</td>
-                <td> Storage resource pool. </td>
-            </tr>
-                                <tr>
-                <td class="elbow-placeholder">&nbsp;</td>
-                <td colspan=2 > storageGroupId </td>
-                <td> str </td>
-                <td>success</td>
-                <td> ID for the storage group. </td>
-            </tr>
-                                <tr>
-                <td class="elbow-placeholder">&nbsp;</td>
-                <td colspan=2 > type </td>
-                <td> str </td>
-                <td>success</td>
-                <td> Type of storage group. </td>
-            </tr>
-                                <tr>
-                <td class="elbow-placeholder">&nbsp;</td>
-                <td colspan=2 > unprotected </td>
-                <td> bool </td>
-                <td>success</td>
-                <td> Flag for storage group protection. </td>
-            </tr>
-                                <tr>
-                <td class="elbow-placeholder">&nbsp;</td>
-                <td colspan=2 > vp_saved_percent </td>
-                <td> int </td>
-                <td>success</td>
-                <td> Percentage saved for virtual pools. </td>
-            </tr>
-                                        <tr>
-            <td colspan=3 > storage_group_volumes </td>
-            <td>  list </td>
-            <td> When value exists. </td>
-            <td> Volume IDs of storage group volumes. </td>
-        </tr>
-                    <tr>
-            <td colspan=3 > storage_group_volumes_details </td>
-            <td>  complex </td>
-            <td> When storage group volumes exist. </td>
-            <td> Details of the storage group volumes. </td>
-        </tr>
-                            <tr>
-                <td class="elbow-placeholder">&nbsp;</td>
-                <td colspan=2 > effective_wwn </td>
-                <td> str </td>
-                <td>success</td>
-                <td> Effective WWN of the volume. </td>
-            </tr>
-                                <tr>
-                <td class="elbow-placeholder">&nbsp;</td>
-                <td colspan=2 > type </td>
-                <td> str </td>
-                <td>success</td>
-                <td> Type of the volume. </td>
-            </tr>
-                                <tr>
-                <td class="elbow-placeholder">&nbsp;</td>
-                <td colspan=2 > volumeId </td>
-                <td> str </td>
-                <td>success</td>
-                <td> Unique ID of the volume. </td>
-            </tr>
-                                <tr>
-                <td class="elbow-placeholder">&nbsp;</td>
-                <td colspan=2 > volume_identifier </td>
-                <td> str </td>
-                <td>success</td>
-                <td> Name associated with the volume. </td>
-            </tr>
-                                <tr>
-                <td class="elbow-placeholder">&nbsp;</td>
-                <td colspan=2 > wwn </td>
-                <td> str </td>
-                <td>success</td>
-                <td> WWN of the volume. </td>
+                <td> The ID of the storage pool. </td>
             </tr>
                                         </table>
 
 ### Authors
-* Vasudevu Lakhinana (@unknown) <ansible.team@dell.com>
-* Prashant Rakheja (@prashant-dell) <ansible.team@dell.com>
-* Ambuj Dubey (@AmbujDube) <ansible.team@dell.com>
+* Akash Shendge (@shenda1) <ansible.team@dell.com>
 
 --------------------------------

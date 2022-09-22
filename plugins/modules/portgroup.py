@@ -37,6 +37,13 @@ options:
     required: false
     type: list
     elements: dict
+  port_group_protocol:
+    description:
+    - Port Group protocol.
+    - Required only for V4(Juniper).
+    required: false
+    choices: [SCSI_FC, iSCSI, NVMe_TCP]
+    type: str
   new_name:
     description:
     - New name of the port group while renaming. No Special Character support
@@ -74,6 +81,18 @@ EXAMPLES = r'''
     password: "{{password}}"
     serial_no: "{{array_id}}"
     portgroup_name: "{{portgroup_name}}"
+    state: "present"
+
+- name: Create port group in V4 without ports
+  dellemc.powermax.portgroup:
+    unispherehost: "{{unispherehost}}"
+    universion: "{{universion}}"
+    verifycert: "{{verifycert}}"
+    user: "{{user}}"
+    password: "{{password}}"
+    serial_no: "{{array_id}}"
+    portgroup_name: "new_PG"
+    port_group_protocol: "SCSI_FC"
     state: "present"
 
 - name: Create port group with ports
@@ -197,7 +216,7 @@ HAS_PYU4V = utils.has_pyu4v_sdk()
 PYU4V_VERSION_CHECK = utils.pyu4v_version_check()
 
 # Application Type
-APPLICATION_TYPE = 'ansible_v1.8.0'
+APPLICATION_TYPE = 'ansible_v2.0.0'
 
 
 class PortGroup(object):
@@ -242,6 +261,7 @@ class PortGroup(object):
         except Exception as e:
             self.show_error_exit(msg=str(e))
         self.provisioning = self.u4v_conn.provisioning
+        self.common = self.u4v_conn.common
         LOG.info('Check Mode flag is %s', self.module.check_mode)
         LOG.info('Got PyU4V instance for provisioning on PowerMax')
 
@@ -257,9 +277,9 @@ class PortGroup(object):
 
     def create_portgroup(self, portgroup_name):
         """Create port group with given ports"""
-
         ports = self.module.params['ports']
         port_state = self.module.params['port_state']
+        port_group_protocol = self.module.params['port_group_protocol']
         try:
             if port_state and port_state != 'present-in-group':
                 self.show_error_exit(msg="Invalid port_state: Ports can only "
@@ -271,8 +291,16 @@ class PortGroup(object):
             LOG.info('Creating port group %s with ports %s',
                      portgroup_name, ports)
             if not self.module.check_mode:
-                self.provisioning.\
-                    create_multiport_port_group(portgroup_name, ports)
+                if utils.is_array_v4():
+                    if ports:
+                        self.provisioning.\
+                            create_new_port_group(portgroup_name, ports, port_group_protocol)
+                    else:
+                        self.provisioning.\
+                            create_empty_port_group(portgroup_name, port_group_protocol)
+                else:
+                    self.provisioning.\
+                        create_multiport_port_group(portgroup_name, ports)
             return True
         except Exception as e:
             self.show_error_exit(msg="Create port group %s failed; error %s"
@@ -477,6 +505,8 @@ def get_portgroup_parameters():
         state=dict(required=True, type='str', choices=['present', 'absent']),
         port_state=dict(required=False, type='str',
                         choices=['present-in-group', 'absent-in-group']),
+        port_group_protocol=dict(required=False, type='str',
+                                 choices=['SCSI_FC', 'iSCSI', 'NVMe_TCP']),
         new_name=dict(required=False, type='str')
     )
 
