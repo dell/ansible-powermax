@@ -143,7 +143,7 @@ notes:
       portId, powerPathHostId.
     - For mv_connections - volume_id, host_lun_address, cap_gb, initiator_id,
       alias, dir_port, logged_in, on_fabric.
-    - The check_mode is not supported.
+    - The check_mode is supported.
 '''
 
 EXAMPLES = r'''
@@ -645,7 +645,7 @@ HAS_PYU4V = utils.has_pyu4v_sdk()
 PYU4V_VERSION_CHECK = utils.pyu4v_version_check()
 
 # Application Type
-APPLICATION_TYPE = 'ansible_v2.0.0'
+APPLICATION_TYPE = 'ansible_v2.1.0'
 
 
 class Info(object):
@@ -659,7 +659,7 @@ class Info(object):
         self.module_params = get_info_parameters()
         self.module = AnsibleModule(
             argument_spec=self.module_params,
-            supports_check_mode=False)
+            supports_check_mode=True)
         serial_no = self.module.params['serial_no']
         if HAS_PYU4V is False:
             self.show_error_exit(msg="Ansible modules for PowerMax require "
@@ -827,8 +827,22 @@ class Info(object):
                 vol_list = self.provisioning.get_volume_list()
             LOG.info('Successfully listed %d volumes from array %s',
                      len(vol_list), array_serial_no)
-            return vol_list
+            vol_details_list = self.get_volume_details(vol_list)
+            return vol_details_list
 
+        except Exception as e:
+            msg = 'Get Volumes for array %s failed with error %s '\
+                  % (self.module.params['serial_no'], str(e))
+            self.show_error_exit(msg=msg)
+
+    def get_volume_details(self, vol_list):
+        """Get volume details"""
+        try:
+            vol_details_list = []
+            for vol in vol_list:
+                vol_details = self.provisioning.get_volume(vol)
+                vol_details_list.append(vol_details)
+            return vol_details_list
         except Exception as e:
             msg = 'Get Volumes for array %s failed with error %s '\
                   % (self.module.params['serial_no'], str(e))

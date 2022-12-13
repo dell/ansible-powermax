@@ -11,19 +11,19 @@ DOCUMENTATION = r'''
 ---
 module: storagegroup
 version_added: '1.0.0'
-short_description:  Manage storage groups on PowerMax or VMAX Storage System
+short_description: Manage storage groups on PowerMax or VMAX Storage System
 description:
-- Managing storage groups on a PowerMax storage system includes-
-  listing the volumes of a storage group,
-  creating a new storage group,
-  deleting an existing storage group,
-  adding existing volumes to an existing storage group,
-  removing existing volumes from an existing storage group,
-  creating new volumes in an existing storage group,
-  modifying existing storage group attributes,
-  adding child storage groups inside an existing storage group (parent),
-  moving volumes between storage groups and
-  removing a child storage group from an existing parent storage group.
+- Managing storage groups on a PowerMax storage system includes the following.
+- Listing the volumes of a storage group.
+- Creating a new storage group.
+- Deleting an existing storage group.
+- Adding existing volumes to an existing storage group.
+- Removing existing volumes from an existing storage group.
+- Creating new volumes in an existing storage group.
+- Modifying existing storage group attributes.
+- Adding child storage groups inside an existing storage group (parent).
+- Moving volumes between storage groups.
+- Removing a child storage group from an existing parent storage group.
 extends_documentation_fragment:
   - dellemc.powermax.powermax
   - dellemc.powermax.powermax.powermax_serial_no
@@ -32,6 +32,7 @@ author:
 - Prashant Rakheja (@prashant-dell) <ansible.team@dell.com>
 - Ambuj Dubey (@AmbujDube) <ansible.team@dell.com>
 - Pavan Mudunuri (@Pavan-Mudunuri) <ansible.team@dell.com>
+- Trisha Datta (@Trisha-Datta) <ansible.team@dell.com>
 options:
   sg_name:
     description:
@@ -57,19 +58,11 @@ options:
   volumes:
     description:
     - This is a list of volumes.
-    - Each volume has four attributes-
-    - vol_name.
-    - size.
-    - cap_unit.
-    - vol_id.
-    - Either the volume ID must be provided for existing volumes,
-      or the name and size must be provided to add new volumes to SG.
-      The unit is optional.
-    - vol_name - Represents the name of the volume.
-    - size - Represents the volume size.
-    - cap_unit - The unit in which size is represented. Default unit is GB.
-                 Choices are MB, GB, TB.
-    - vol_id - This is the volume ID.
+    - Each volume has four attributes; vol_name, size, cap_unit, vol_id.
+    - Volume ID must be provided for existing volumes.
+    - The size must be provided to add new volumes to SG.
+    - The cap_unit is optional.
+    - Default value of cap_unit is GB, choices are MB, GB, TB.
     type: list
     elements: dict
   vol_state:
@@ -137,6 +130,7 @@ options:
     required: true
 notes:
 - To set host_io_limit_mbps to NOLIMIT, value can be provided as 0.
+- The check_mode is not supported.
 '''
 
 EXAMPLES = r'''
@@ -355,58 +349,72 @@ changed:
     description: Whether or not the resource has changed.
     returned: always
     type: bool
+    sample: "false"
 add_child_sg:
     description: Sets to True when a child SG is added.
     returned: When value exists.
     type: bool
+    sample: "true"
 add_new_vols_to_sg:
     description: Sets to True when new volumes are added to the SG.
     returned: When value exists.
     type: bool
+    sample: "true"
 add_vols_to_sg:
     description: Sets to True when existing volumes are added to the SG.
     returned: When value exists.
     type: bool
+    sample: "false"
 added_vols_details:
     description: Volume IDs of the volumes added.
     returned: When value exists.
     type: list
+    sample:  ["0081A"]
 create_sg:
     description: Sets to True when a new SG is created.
     returned: When value exists.
     type: bool
+    sample: "true"
 delete_sg:
     description: Sets to True when an SG is deleted.
     returned: When value exists.
     type: bool
+    sample: "true"
 modify_sg:
     description: Sets to True when an SG is modified.
     returned: When value exists.
     type: bool
+    sample: "true"
 remove_child_sg:
     description: Sets to True when a child SG is removed.
     returned: When value exists.
     type: bool
+    sample: "true"
 remove_vols_from_sg:
     description: Sets to True when volumes are removed.
     returned: When value exists.
     type: bool
+    sample: "true"
 removed_vols_details:
     description: Volume IDs of the volumes removed.
     returned: When value exists.
     type: list
+    sample: ["0081A"]
 rename_sg:
     description: Sets to True when an SG is renamed.
     returned: When value exists.
     type: bool
+    sample: "true"
 add_snapshot_policy_to_sg:
     description: Sets to True when snapshot policy is added to SG.
     returned: When value exists.
     type: bool
+    sample: "true"
 remove_snapshot_policy_to_sg:
     description: Sets to false when snapshot policy is removed from SG.
     returned: When value exists.
     type: bool
+    sample: "true"
 storage_group_details:
     description: Details of the storage group.
     returned: When a storage group exists.
@@ -478,10 +486,30 @@ storage_group_details:
                 mbps:
                     description: The MBs per second host I/O limit for the storage group.
                     type: int
+    sample: {
+        "cap_gb": 6.01,
+        "compression": false,
+        "compression_ratio_to_one": 0.0,
+        "device_emulation": "FBA",
+        "num_of_child_sgs": 0,
+        "num_of_masking_views": 0,
+        "num_of_parent_sgs": 0,
+        "num_of_snapshots": 0,
+        "num_of_vols": 6,
+        "slo": "NONE",
+        "slo_compliance": "NONE",
+        "srp": "SRP_1",
+        "storageGroupId": "sample_sg_name",
+        "type": "Standalone",
+        "unprotected": true,
+        "unreducible_data_gb": 0.0,
+        "vp_saved_percent": 100.0
+    }
 storage_group_volumes:
     description: Volume IDs of storage group volumes.
     returned: When value exists.
     type: list
+    sample: ["00773","0081A"]
 storage_group_volumes_details:
     description: Details of the storage group volumes.
     returned: When storage group volumes exist.
@@ -502,6 +530,14 @@ storage_group_volumes_details:
         wwn:
             description: WWN of the volume.
             type: str
+    sample:  [
+        {
+            "effective_wwn": "60000970000197902573533030373733",
+            "type": "TDEV",
+            "volumeId": "00773",
+            "volume_identifier": "sample_sg_name",
+            "wwn": "60000970000197902573533030373733"
+        }]
 snapshot_policy_compliance_details:
     description: The compliance status of this storage group.
     returned: When a snapshot policy is associated.
@@ -526,6 +562,18 @@ snapshot_policy_compliance_details:
         storage_group_name:
             description: Name of the storage group.
             type: str
+    sample: {
+        "compliance": "NONE",
+        "sl_compliance": [
+            {
+                "calculation_time": "2022-10-25T12:05",
+                "compliance": "NONE",
+                "sl_name": "ansible_SP4"
+            }
+        ],
+        "sl_count": 1,
+        "storage_group_name": "sample_sg_name"
+    }
 '''
 
 import logging
@@ -539,7 +587,7 @@ HAS_PYU4V = utils.has_pyu4v_sdk()
 PYU4V_VERSION_CHECK = utils.pyu4v_version_check()
 
 # Application Type
-APPLICATION_TYPE = 'ansible_v2.0.0'
+APPLICATION_TYPE = 'ansible_v2.1.0'
 
 
 class StorageGroup(object):
@@ -703,7 +751,6 @@ class StorageGroup(object):
 
     def create_storage_group(self, sg_name):
         """Create a storage group"""
-
         slo = self.module.params['service_level']
         srp = self.module.params['srp']
         compression = self.module.params['compression']
@@ -826,12 +873,9 @@ class StorageGroup(object):
                     unit = vol['cap_unit']
                 else:
                     unit = 'GB'
+                name = None
                 if 'vol_name' in vol:
                     name = vol['vol_name']
-                else:
-                    self.show_error_exit(
-                        msg='No valid name was specified for the volume {0}'
-                            .format(vol))
                 if 'size' in vol:
                     size = vol['size']
                 else:
@@ -842,7 +886,7 @@ class StorageGroup(object):
                     params = {"storageGroupId": sg_name,
                               "volume_identifier": name}
                     volume_list = self.provisioning.get_volume_list(params)
-                    if not volume_list or len(volume_list) == 0:
+                    if not volume_list or len(volume_list) == 0 or name is None:
                         LOG.info(
                             'No volume found with volume identifier %s '
                             'in storage group %s', name, sg_name)
@@ -854,7 +898,8 @@ class StorageGroup(object):
                             array_id = self.module.params['serial_no']
                             array_details = self.common.get_array(
                                 array_id=array_id)
-                            if utils.parse_version(array_details['ucode']) \
+                            if 'ucode' in array_details and \
+                                utils.parse_version(array_details['ucode']) \
                                 < utils.parse_version(
                                     self.foxtail_version):
                                 msg = ("Add new volumes on SRDF protected"

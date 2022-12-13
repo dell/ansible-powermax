@@ -10,6 +10,27 @@ from __future__ import (absolute_import, division, print_function)
 __metaclass__ = type
 
 
+SG_DETAILS = {
+    "cap_gb": 5.01,
+    "compression": False,
+    "compression_ratio_to_one": 0.0,
+    "device_emulation": "FBA",
+    "num_of_child_sgs": 0,
+    "num_of_masking_views": 0,
+    "num_of_parent_sgs": 0,
+    "num_of_snapshots": 0,
+    "num_of_vols": 5,
+    "slo": "NONE",
+    "slo_compliance": "NONE",
+    "srp": "SRP_1",
+    "storageGroupId": "sample_sg",
+    "type": "Standalone",
+    "unprotected": True,
+    "unreducible_data_gb": 0.0,
+    "vp_saved_percent": 100.0
+}
+
+
 def get_storagegroup_details():
     return {'storageGroupId': 'Test',
             'slo': 'Diamond',

@@ -267,7 +267,7 @@ HAS_PYU4V = utils.has_pyu4v_sdk()
 PYU4V_VERSION_CHECK = utils.pyu4v_version_check()
 
 # Application Type
-APPLICATION_TYPE = 'ansible_v2.0.0'
+APPLICATION_TYPE = 'ansible_v2.1.0'
 
 
 class Volume(object):
@@ -491,7 +491,8 @@ class Volume(object):
                 hop2_vol_rdf_details['rdfMode'] == 'Active'):
             array_details = self.common.get_array(
                 hop1_vol_rdf_details['localSymmetrixId'])
-            if utils.parse_version(array_details['ucode']) \
+            if 'ucode' in array_details and \
+                    utils.parse_version(array_details['ucode']) \
                     < utils.parse_version(self.foxtail_version):
                 msg = ("Expansion of SRDF/Metro protected volumes is "
                        "supported from v5978.444.444 onward. Please upgrade "
@@ -566,7 +567,8 @@ class Volume(object):
                 if vol_rdf_details['rdfMode'] == 'Active':
                     array_details = self.common.get_array(
                         vol_rdf_details['localSymmetrixId'])
-                    if utils.parse_version(array_details['ucode']) \
+                    if 'ucode' in array_details and \
+                            utils.parse_version(array_details['ucode']) \
                             < utils.parse_version(self.foxtail_version):
                         msg = ("Expansion of SRDF/Metro protected volumes is"
                                " supported from v5978.444.444 onward. Please "
@@ -615,7 +617,8 @@ class Volume(object):
                 if 'rdfGroupId' in vol:
                     array_id = self.module.params['serial_no']
                     array_details = self.common.get_array(array_id=array_id)
-                    if utils.parse_version(array_details['ucode'])\
+                    if 'ucode' in array_details and \
+                            utils.parse_version(array_details['ucode'])\
                             < utils.parse_version(self.foxtail_version):
                         msg = ("Expansion of SRDF protected volume is"
                                " supported from v5978.444.444 onward. Please"
@@ -656,7 +659,8 @@ class Volume(object):
                         self.if_srdf_protected(storage_group)):
                     array_id = self.module.params['serial_no']
                     array_details = self.common.get_array(array_id=array_id)
-                    if utils.parse_version(array_details['ucode']) \
+                    if 'ucode' in array_details and \
+                            utils.parse_version(array_details['ucode']) \
                             < utils.parse_version(self.foxtail_version):
                         msg = ("Creating new volumes on SRDF protected"
                                " storage groups is supported from"
@@ -708,7 +712,7 @@ class Volume(object):
                                                                        remote_array_2=remote_array_2,
                                                                        remote_array_2_sg=remote_array_2_sg)
                             job = self.provisioning.add_new_volume_to_storage_group(**vol_params)
-                            vol_id = self.get_created_vol_id(job, vol_name)
+                            vol_id = self.get_created_vol_id(job, vol_name, sg_name)
                         LOG.info('Created volume native ID: %s', vol_id)
                         return vol_id
 
@@ -745,7 +749,7 @@ class Volume(object):
                                                            remote_array=remote_array,
                                                            remote_array_1_sg=remote_array_sg)
                 job = self.provisioning.add_new_volume_to_storage_group(**vol_params)
-                vol_id = self.get_created_vol_id(job, vol_name)
+                vol_id = self.get_created_vol_id(job, vol_name, sg_name)
             LOG.info('Created volume native ID: %s', vol_id)
             return vol_id
         except Exception as e:
@@ -753,7 +757,7 @@ class Volume(object):
                             % (vol_name, str(e))
             self.show_error_exit(msg=error_message)
 
-    def get_created_vol_id(self, job, vol_name):
+    def get_created_vol_id(self, job, vol_name, sg_name):
         """Get created volume ID"""
         try:
             append_vol_id = self.module.params['append_vol_id'] or False
@@ -770,8 +774,21 @@ class Volume(object):
                             vol_id = vol_id[1:-1]
                             break
             else:
-                vol_id = self.provisioning.find_volume_device_id(
-                    volume_name=vol_name)
+                vol_id = self.get_vol_id(vol_name, sg_name)
+            return vol_id
+        except Exception as e:
+            LOG.info('Failed to retrieve volume id. Exception '
+                     'received was %s.', e)
+
+    def get_vol_id(self, vol_name, sg_name):
+        """Get volume ID"""
+        try:
+            vol_id = self.provisioning.find_volume_device_id(
+                volume_name=vol_name)
+            if len(vol_id) > 1:
+                for vol in vol_id:
+                    if self.provisioning.is_volume_in_storage_group(device_id=vol, storage_group_id=sg_name):
+                        return vol
             return vol_id
         except Exception as e:
             LOG.info('Failed to retrieve volume id. Exception '

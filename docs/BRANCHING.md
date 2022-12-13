@@ -14,19 +14,19 @@ Ansible modules for Dell PowerMax follows a scaled trunk branching strategy wher
 
 ## Branch naming convention
 
-|  Branch Type |  Example                          |  Comment                                  |
-|--------------|-----------------------------------|-------------------------------------------|
-|  master      |  master                           |                                           |
-|  Release     |  release-1.0                      |  hotfix: release-1.1 patch: release-1.0.1 |
-|  Feature     |  feature-9-vol-support            |  "9" referring to GitHub issue ID         |
-|  Bug Fix     |  bugfix-110-fix-duplicates-issue  |  "110" referring to GitHub issue ID       |
+| Branch Type | Example                         |  Comment                                  |
+|-------------|---------------------------------|-------------------------------------------|
+| main        | main                            |                                           |
+| Release     | release-1.0                     |  hotfix: release-1.1 patch: release-1.0.1 |
+| Feature     | feature-9-vol-support           |  "9" referring to GitHub issue ID         |
+| Bug Fix     | bugfix-110-fix-duplicates-issue |  "110" referring to GitHub issue ID       |
 
 
 ## Steps for working on a release branch
 
 1. Fork the repository.
-2. Create a branch from the master branch. The branch name should follow [branch naming convention](#branch-naming-convention).
+2. Create a branch from the main branch. The branch name should follow [branch naming convention](#branch-naming-convention).
 3. Make your changes and commit them to your branch.
-4. If other code changes have merged into the upstream master branch, perform a rebase of those changes into your branch.
-5. Open a [pull request](https://github.com/dell/ansible-powermax/pulls) between your branch and the upstream master branch.
+4. If other code changes have merged into the upstream main branch, perform a rebase of those changes into your branch.
+5. Open a [pull request](https://github.com/dell/ansible-powermax/pulls) between your branch and the upstream main branch.
 6. Once your pull request has merged, can delete your branch.

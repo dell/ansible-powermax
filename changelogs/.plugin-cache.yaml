@@ -1,0 +1,105 @@
+objects:
+  role: {}
+plugins:
+  become: {}
+  cache: {}
+  callback: {}
+  cliconf: {}
+  connection: {}
+  httpapi: {}
+  inventory: {}
+  lookup: {}
+  module:
+    host:
+      description: Manage host (initiator group) on PowerMax/VMAX Storage System
+      name: host
+      namespace: ''
+      version_added: 1.0.0
+    hostgroup:
+      description: Manage a host group (cascaded initiator group) on a PowerMax/VMAX
+        storage system
+      name: hostgroup
+      namespace: ''
+      version_added: 1.0.0
+    info:
+      description: Gathers information about PowerMax or VMAX storage entities
+      name: info
+      namespace: ''
+      version_added: 1.0.0
+    initiator:
+      description: Manage initiators on PowerMax/VMAX Storage System
+      name: initiator
+      namespace: ''
+      version_added: 1.7.0
+    job:
+      description: Gets the detail information about a Job of a PowerMax/VMAX storage
+        system
+      name: job
+      namespace: ''
+      version_added: 1.4.0
+    maskingview:
+      description: Managing masking views on PowerMax/VMAX Storage System.
+      name: maskingview
+      namespace: ''
+      version_added: 1.0.0
+    metrodr:
+      description: Manage metro DR environment on PowerMax/VMAX Storage System
+      name: metrodr
+      namespace: ''
+      version_added: 1.4.0
+    port:
+      description: Manage ports on PowerMax/VMAX Storage System
+      name: port
+      namespace: ''
+      version_added: 1.0.0
+    portgroup:
+      description: Manage port groups on PowerMax/VMAX Storage System
+      name: portgroup
+      namespace: ''
+      version_added: 1.0.0
+    process_storage_pool_dict:
+      description: Process storage pools on PowerMax/VMAX Storage System
+      name: process_storage_pool_dict
+      namespace: ''
+      version_added: 1.5.0
+    rdfgroup:
+      description: Gets the detail information about RDF Groups of a PowerMax or VMAX
+        storage system
+      name: rdfgroup
+      namespace: ''
+      version_added: 1.3.0
+    snapshot:
+      description: Manage Snapshots on PowerMax/VMAX Storage System
+      name: snapshot
+      namespace: ''
+      version_added: 1.0.0
+    snapshotpolicy:
+      description: Manage snapshot policy on PowerMax/VMAX Storage System
+      name: snapshotpolicy
+      namespace: ''
+      version_added: 1.5.0
+    srdf:
+      description: Manage SRDF pair on PowerMax/VMAX Storage System
+      name: srdf
+      namespace: ''
+      version_added: 1.3.0
+    storagegroup:
+      description: Manage storage groups on PowerMax or VMAX Storage System
+      name: storagegroup
+      namespace: ''
+      version_added: 1.0.0
+    storagepool:
+      description: Manage storage pools on PowerMax/VMAX storage system
+      name: storagepool
+      namespace: ''
+      version_added: 1.5.0
+    volume:
+      description: Manage volumes on PowerMax Storage System
+      name: volume
+      namespace: ''
+      version_added: 1.0.0
+  netconf: {}
+  shell: {}
+  strategy: {}
+  vars: {}
+version: 2.1.0

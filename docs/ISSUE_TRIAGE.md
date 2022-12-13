@@ -43,7 +43,7 @@ Bug reports should explain what happened, what was expected and how to reproduce
 
  - Ansible Version: [e.g. 2.13]
  - Python Version [e.g. 3.10]
- - Ansible modules for Dell PowerMax Version: [e.g. 2.0.0]
+ - Ansible modules for Dell PowerMax Version: [e.g. 2.1.0]
  - PowerMax SDK version: [e.g. PyU4V 10.0.0.16]
  - Any other additional information...
 
@@ -118,11 +118,9 @@ If it is not perfectly clear that it is an actual bug, try to reproduce it.
 
 In general bugs and feature request issues should be labelled with a priority.
 
-This is a difficult task when triaging issues since it requires the knowledge, context, and experience before being able add a priority label.
+Adding priority levels can be difficult. Ensure you have the knowledge, context, and the experience before prioritizing any issue.
 
-When prioritizing issues, ask for help and discuss issues to understand how the experienced members of this project think and reason. By doing this you can learn more and eventually be prioritize issues.
-
-In case there is an uncertainty around the prioritization of an issue, ask the Maintainers for support.
+If you have any uncertainty as to which priority level to assign, please ask the maintainers for help.
 
 | Label                             | Description                                                                                                              |
 | --------------------------------- | ------------------------------------------------------------------------------------------------------------------------ |
@@ -163,9 +161,9 @@ Depending on the issue or priority, it is a good idea to consider signalling to 
 
 In many cases, the issue author or community as a whole is more suitable to contribute changes since they are experts in their domain. It is also quite common that someone has tried to get something to work using the documentation without success and made an effort to get it to work and reached out to the community to get the missing information.
 
-1. Kindly and politely add a comment to signal to users subscribed to updates of the issue.
-   - Explain that the issue should be resolved, but it is not prioritized to work on by Maintainers.
-   - If possible, try to help contributors to get started by highlighting what code or files they should investigate. This is a good starting point to solve the issue. .
+1. Kindly and politely add a comment to alert update subscribers.
+   - Explain the issue and need for resolution. Be sure and detail that the issue has not been prioritized and that the issue has not been scheduled for work by the maintainers.
+   - If possible or applicable, add pointers and references to the code/files that need to be revised. Provide any idea as to the solution. This will help the maintainers get started on resolving the issue.
 2. Label the issue with `help wanted`.
 3. If applicable, label the issue with `beginner friendly` to denote that the issue is suitable for a beginner to work on.
 

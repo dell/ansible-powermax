@@ -300,7 +300,7 @@ HAS_PYU4V = utils.has_pyu4v_sdk()
 PYU4V_VERSION_CHECK = utils.pyu4v_version_check()
 
 # Application Type
-APPLICATION_TYPE = 'ansible_v2.0.0'
+APPLICATION_TYPE = 'ansible_v2.1.0'
 
 BASE_FLAGS = {'volume_set_addressing': {'enabled': False, 'override': False},
               'disable_q_reset_on_ua': {'enabled': False, 'override': False},
@@ -546,8 +546,7 @@ class Host(object):
                                                   )
                 return True
             except Exception as e:
-                errorMsg = ("Removing initiators %s from host %s failed"
-                            " with error %s", remove_list, host_name, str(e))
+                errorMsg = ("Removing initiators %s from host %s failed with error %s" % (remove_list, host_name, str(e)))
                 self.show_error_exit(msg=errorMsg)
         else:
             LOG.info('No initiators to remove from host %s', host_name)
@@ -702,6 +701,7 @@ class Host(object):
         '''
         initiator_ids = []
         for initiator in initiators:
+            initiator = initiator.lower()
             if "/" in initiator:
                 initiator_ids.append(self.get_initiator_id(initiator))
             else:

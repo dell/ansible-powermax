@@ -346,7 +346,7 @@ HAS_PYU4V = utils.has_pyu4v_sdk()
 PYU4V_VERSION_CHECK = utils.pyu4v_version_check()
 
 # Application Type
-APPLICATION_TYPE = 'ansible_v2.0.0'
+APPLICATION_TYPE = 'ansible_v2.1.0'
 
 
 class Snapshot(object):
@@ -406,13 +406,10 @@ class Snapshot(object):
             curr_version = utils.PyU4V.__version__
             array_details = self.common.get_array(self.module.params
                                                   ['serial_no'])
-            if ((utils.pkg_resources.parse_version(
-                curr_version) >= utils.pkg_resources.parse_version(
-                supported_sdk_version))
-                    and
-                    (utils.parse_version(
-                        array_details['ucode']) >= utils.parse_version(
-                        supported_array_version))):
+            if (utils.pkg_resources.parse_version(curr_version)
+                    >= utils.pkg_resources.parse_version(supported_sdk_version)) and \
+                    ('ucode' not in array_details or (utils.parse_version(array_details['ucode'])
+                                                      >= utils.parse_version(supported_array_version))):
                 return True
             return False
         except Exception as e:
@@ -566,7 +563,6 @@ class Snapshot(object):
         try:
             snapshot = self.get_snapshot(sg_id, snap_name, generation,
                                          snap_id)
-
             # 'isLinked' key is returned in snapshot details w.r.t. generation
             if 'isLinked' in snapshot:
                 if snapshot['isLinked'] is True and link_status == 'linked':

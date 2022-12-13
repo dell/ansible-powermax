@@ -30,15 +30,18 @@ options:
     - Alias of initiator.
     type: str
   new_alias:
-    description: Rename alias for specified initiator.
+    description:
+    - Rename alias for specified initiator.
     type: dict
     suboptions:
-        new_node_name:
-            description: The new node name to rename the initiator alias.
-            type: str
-        new_port_name:
-            description: The new port name to rename the initiator alias.
-            type: str
+      new_node_name:
+        description:
+        - The new node name to rename the initiator alias.
+        type: str
+      new_port_name:
+        description:
+        - The new port name to rename the initiator alias.
+        type: str
   state:
     description:
     - The state of the initiator after the task is performed.
@@ -146,7 +149,7 @@ HAS_PYU4V = utils.has_pyu4v_sdk()
 PYU4V_VERSION_CHECK = utils.pyu4v_version_check()
 
 # Application Type
-APPLICATION_TYPE = 'ansible_v2.0.0'
+APPLICATION_TYPE = 'ansible_v2.1.0'
 
 
 class Initiator(object):

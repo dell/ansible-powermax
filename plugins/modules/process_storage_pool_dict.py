@@ -112,7 +112,7 @@ from ansible.module_utils.basic import AnsibleModule
 LOG = utils.get_logger('process_storage_pool_dict')
 
 # Application Type
-APPLICATION_TYPE = 'ansible_v2.0.0'
+APPLICATION_TYPE = 'ansible_v2.1.0'
 
 
 class ProcessPoolDict(object):
@@ -333,7 +333,9 @@ def get_process_dict_parameters():
 
 
 def sort_capacity(e):
-    return e['srp_capacity']['effective_used_capacity_percent']
+    if 'srp_capacity' in e:
+        return e['srp_capacity']['effective_used_capacity_percent']
+    return e['fba_srp_capacity']['effective']['effective_used_percent']
 
 
 def main():
