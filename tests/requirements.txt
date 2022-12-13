@@ -2,5 +2,6 @@ pytest
 pytest-xdist
 pytest-mock
 pytest-cov
+pytest-forked
 coverage==4.5.4
 mock
