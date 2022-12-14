@@ -89,3 +89,41 @@ class TestInfo():
         )
         info_module_mock.perform_module_operation()
         assert MockInfoApi.get_exception_response('get_details_mv_connections') in info_module_mock.module.fail_json.call_args[1]['msg']
+
+    def test_get_volume_details(self, info_module_mock):
+        self.get_module_args.update({
+            "filters": [
+                {
+                    "filter_key": "cap_gb",
+                    "filter_operator": "equal",
+                    "filter_value": "10"
+                }
+            ],
+            'gather_subset': ['vol']
+        })
+        info_module_mock.module.params = self.get_module_args
+        info_module_mock.get_volume_list = MagicMock(
+            return_value=MockInfoApi.VOLUME_LIST
+        )
+        info_module_mock.provisioning.get_volume = MagicMock(return_value=MockInfoApi.VOLUME_DETAILS_LIST)
+        info_module_mock.perform_module_operation()
+        info_module_mock.get_volume_list.assert_called()
+
+    def test_get_volume_details_with_exception(self, info_module_mock):
+        self.get_module_args.update({
+            "filters": [
+                {
+                    "filter_key": "cap_gb",
+                    "filter_operator": "equal",
+                    "filter_value": "10"
+                }
+            ],
+            'gather_subset': ['vol']
+        })
+        info_module_mock.module.params = self.get_module_args
+        info_module_mock.provisioning.get_volume_list = MagicMock(
+            side_effect=Exception
+        )
+        info_module_mock.provisioning.get_volume = MagicMock(return_value=MockInfoApi.VOLUME_DETAILS_LIST)
+        info_module_mock.perform_module_operation()
+        assert MockInfoApi.get_exception_response('get_volume_details') in info_module_mock.module.fail_json.call_args[1]['msg']

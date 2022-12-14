@@ -41,7 +41,31 @@ class TestStorageGroup():
         sg_module_mock = StorageGroup()
         sg_module_mock.module = MagicMock()
         sg_module_mock.provisioning = MagicMock()
+        sg_module_mock.module.check_mode = False
         return sg_module_mock
+
+    def test_get_storagegroup_details(self, sg_module_mock):
+        self.sg_args.update({'state': 'present', 'sg_name': 'sample_sg'})
+        sg_module_mock.module.params = self.sg_args
+        sg_module_mock.provisioning.get_storage_group = MagicMock(return_value=MockStorageGroupApi.SG_DETAILS)
+        sg_module_mock.perform_module_operation()
+        sg_module_mock.provisioning.get_storage_group.assert_called()
+
+    def test_create_storagegroup_response(self, sg_module_mock):
+        self.sg_args.update({'state': 'present', 'sg_name': 'sample_sg'})
+        sg_module_mock.module.params = self.sg_args
+        sg_module_mock.provisioning.get_storage_group = MagicMock(return_value=None)
+        sg_module_mock.perform_module_operation()
+        sg_module_mock.provisioning.create_empty_storage_group.assert_called()
+
+    def test_add_vol_wo_vol_name_details(self, sg_module_mock):
+        self.sg_args.update({'state': 'present', 'sg_name': 'sample_sg', 'volumes': [{'size': 2, 'cap_unit': 'GB'}],
+                             'vol_state': 'present-in-group'})
+        sg_module_mock.module.params = self.sg_args
+        sg_module_mock.provisioning.get_storage_group = MagicMock(return_value=MockStorageGroupApi.SG_DETAILS)
+        sg_module_mock.provisioning.get_volume_list = MagicMock(return_value=[])
+        sg_module_mock.perform_module_operation()
+        sg_module_mock.provisioning.add_new_volume_to_storage_group.assert_called()
 
     def test_move_volumes_between_sgs(self, sg_module_mock):
         self.sg_args.update({'state': 'present', 'target_sg_name': 'target_sg', 'volumes': [{'vol_id': '123'}],
@@ -95,3 +119,18 @@ class TestStorageGroup():
                                                                                              'dynamicDistribution': 'Always'})
         sg_module_mock.perform_module_operation()
         sg_module_mock.provisioning.set_host_io_limit_iops_or_mbps.assert_called
+
+    def test_delete_storagegroup(self, sg_module_mock):
+        self.sg_args.update({'state': 'absent', 'sg_name': 'sample_sg'})
+        sg_module_mock.module.params = self.sg_args
+        sg_module_mock.provisioning.get_storage_group = MagicMock(return_value=MockStorageGroupApi.SG_DETAILS)
+        sg_module_mock.perform_module_operation()
+        sg_module_mock.provisioning.delete_storage_group.assert_called()
+
+    def test_delete_storagegroup_exception(self, sg_module_mock):
+        self.sg_args.update({'state': 'absent', 'sg_name': 'sample_sg'})
+        sg_module_mock.module.params = self.sg_args
+        sg_module_mock.provisioning.get_storage_group = MagicMock(return_value=MockStorageGroupApi.SG_DETAILS)
+        sg_module_mock.provisioning.delete_storage_group = MagicMock(side_effect=Exception)
+        sg_module_mock.perform_module_operation()
+        sg_module_mock.provisioning.delete_storage_group.assert_called()

@@ -1,7 +1,7 @@
 
 **Ansible modules for Dell Technologies PowerMax** 
 =========================================
-### Release Notes 2.0.0
+### Release Notes 2.1.0
 
 >   © 2022 Dell Inc. or its subsidiaries. All rights reserved. Dell
 >   and other trademarks are trademarks of Dell Inc. or its
@@ -24,9 +24,9 @@ modules for Dell Technologies (Dell) PowerMax.
 Revision History
 ----------------
 
-| **Date** | **Document revision** | **Description of changes** |
-|----------|-----------------------|----------------------------|
-| Sep 2022 | 01 | Ansible modules for Dell PowerMax release 2.0.0 |
+| **Date**      | **Document revision** | **Description of changes** |
+|---------------|-----------------------|----------------------------|
+| Dec 2022 | 01 | Ansible modules for Dell PowerMax release 2.1.0 |
 
 Product Description
 -------------------
@@ -56,11 +56,9 @@ New Features and Enhancements
 
 The Ansible modules for Dell PowerMax release has the following
 changes:
-- Enhanced RDF group module to get volume pair information for an SRDF group.
-- Enhanced storage group module to support for setting host I/O limits for existing storage groups and added ability to force move devices between storage groups with SRDF protection.
-- Enhanced volume module to support cylinders option to specify size while creating LUN and added ability to create volumes with identifier_name and volume_id.
-- Enhanced verifycert parameter in all modules to support file path for custom certificate location.
-- Enhanced info module to get masking view connection information.
+- Added support of case insensitivity of host WWN to the host, and masking view module.
+- Enhanced storage group module to support making volume name as an optional parameter while adding a new volume to storage group.
+- Enhanced info module to get detail of volumes.
 
 > **NOTE:** Unisphere Version 9.1 is compatible with PowerMax Python
 > library version 9.1.x.x and similarly Unisphere versions later than 9.1 will
@@ -77,7 +75,7 @@ There are no known limitations.
 Distribution
 ------------
 The software package is available for download from the [Ansible modules
-for PowerMax GitHub](https://github.com/dell/ansible-powermax/tree/2.0.0) page.
+for PowerMax GitHub](https://github.com/dell/ansible-powermax/tree/2.1.0) page.
 
 Documentation
 -------------

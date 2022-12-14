@@ -169,7 +169,7 @@ HAS_PYU4V = utils.has_pyu4v_sdk()
 PYU4V_VERSION_CHECK = utils.pyu4v_version_check()
 
 # Application Type
-APPLICATION_TYPE = 'ansible_v2.0.0'
+APPLICATION_TYPE = 'ansible_v2.1.0'
 
 
 class MaskingView(object):
@@ -245,12 +245,12 @@ class MaskingView(object):
                 != self.module.params['sg_name']:
             is_mv_changed = True
         elif 'hostId' in mv and self.module.params['host_name'] is not None \
-                and mv['hostId'] != self.module.params['host_name']:
+                and mv['hostId'].lower() != self.module.params['host_name'].lower():
             is_mv_changed = True
         elif 'hostGroupId' in mv and self.module.params['hostgroup_name'] \
                 is not \
-                None and mv['hostGroupId'] != \
-                self.module.params['hostgroup_name']:
+                None and mv['hostGroupId'].lower() != \
+                self.module.params['hostgroup_name'].lower():
             is_mv_changed = True
         elif 'hostId' in mv and self.module.params['hostgroup_name'] \
                 is not None:
@@ -325,18 +325,33 @@ class MaskingView(object):
         return changed
 
     def validate_host(self, host_name):
+        """
+        Validate host
+        :param host_name: Host name
+        :return: Boolean value for validation result
+        """
         try:
             hosts = self.provisioning.get_host_list()
-            return True if hosts and host_name in hosts else False
+            for host in hosts:
+                if host.lower() == host_name.lower():
+                    return True
+            return False
         except Exception as e:
             self.show_error_exit(msg='Getting list of hosts failed '
                                  'with error %s' % str(e))
 
     def validate_hostgroup(self, hostgroup_name):
+        """
+        Validate host group
+        :param hostgroup_name: Host group name
+        :return: Boolean value for validation result
+        """
         try:
-            hostGroups = self.provisioning.get_host_group_list()
-            return True if hostGroups and hostgroup_name in hostGroups \
-                else False
+            host_groups = self.provisioning.get_host_group_list()
+            for host_group in host_groups:
+                if host_group.lower() == hostgroup_name.lower():
+                    return True
+            return False
         except Exception as e:
             self.show_error_exit(msg='Getting list of host groups '
                                  'failed with error %s' % str(e))
@@ -355,13 +370,14 @@ class MaskingView(object):
         self.module.fail_json(msg=msg)
 
     def validate_host_params(self):
-        host_name = self.module.params['host_name']
-        hostgroup_name = self.module.params['hostgroup_name']
-        if host_name and not self.validate_host(host_name):
-            self.show_error_exit('Host %s does not exist' % host_name)
-        if hostgroup_name and not self.validate_hostgroup(hostgroup_name):
-            self.show_error_exit('Host Group %s does not exist'
-                                 % hostgroup_name)
+        if not self.module.check_mode:
+            host_name = self.module.params['host_name']
+            hostgroup_name = self.module.params['hostgroup_name']
+            if host_name and not self.validate_host(host_name):
+                self.show_error_exit('Host %s does not exist' % host_name)
+            if hostgroup_name and not self.validate_hostgroup(hostgroup_name):
+                self.show_error_exit('Host Group %s does not exist'
+                                     % hostgroup_name)
 
     def perform_module_operation(self):
         """

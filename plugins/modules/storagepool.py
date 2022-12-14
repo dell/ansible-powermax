@@ -110,7 +110,7 @@ HAS_PYU4V = utils.has_pyu4v_sdk()
 PYU4V_VERSION_CHECK = utils.pyu4v_version_check()
 
 # Application Type
-APPLICATION_TYPE = 'ansible_v2.0.0'
+APPLICATION_TYPE = 'ansible_v2.1.0'
 
 
 class Pool(object):
@@ -160,14 +160,16 @@ class Pool(object):
                         "error {1}"
         try:
             pool_details = self.provisioning.get_srp(srp=pool_id)
-
             if 'serial_no' in self.module.params:
                 pool_details['serial_no'] = self.module.params['serial_no']
-            if 'usable_total_tb' in pool_details['srp_capacity'] and \
+            if 'srp_capacity' in pool_details and \
+                    'usable_total_tb' in pool_details['srp_capacity'] and \
                     'usable_used_tb' in pool_details['srp_capacity']:
                 pool_details['total_free_tb'] = \
                     pool_details['srp_capacity']['usable_total_tb'] - \
                     pool_details['srp_capacity']['usable_used_tb']
+            else:
+                pool_details['total_free_tb'] = pool_details['fba_srp_capacity']['effective']['free_tb']
 
             LOG.debug("Pool details: %s", pool_details)
             return pool_details

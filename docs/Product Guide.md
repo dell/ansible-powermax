@@ -1,6 +1,6 @@
 # Ansible Modules for Dell Technologies PowerMax
-## Product Guide 2.0.0
-© 2022 Dell Inc. or its subsidiaries. All rights reserved. Dell and other trademarks are trademarks of Dell Inc. or its subsidiaries. Other trademarks may be trademarks of their respective owners.
+## Product Guide 2.1.0
+© 2022 Dell Inc. or its subsidiaries. All rights reserved. Dell, and other trademarks are trademarks of Dell Inc. or its subsidiaries. Other trademarks may be trademarks of their respective owners.
 
 --------------
 ## Contents
@@ -1056,7 +1056,7 @@ Gathers information about PowerMax or VMAX storage entities
 * For alert - acknowledged, array, created_date, created_date_milliseconds, description, object, object_type, severity, state, type.
 * For initiators - alias, directorId, initiator_hba, in_a_host, iscsi, logged_in, num_of_host_groups, num_of_masking_views, num_of_powerpath_hosts, num_of_vols, on_fabric, port_flag_overrides, portId, powerPathHostId.
 * For mv_connections - volume_id, host_lun_address, cap_gb, initiator_id, alias, dir_port, logged_in, on_fabric.
-* The check_mode is not supported.
+* The check_mode is supported.
 * The modules present in this collection named as 'dellemc.powermax' are built to support the Dell PowerMax storage platform.
 
 ### Examples
@@ -1826,7 +1826,7 @@ Manage initiators on PowerMax/VMAX Storage System
                 <td></td>
                 <td></td>
                 <td></td>
-                <td>  <br> The new node name to rename the initiator alias. </td>
+                <td>  <br> The new node name to rename the initiator alias.  </td>
             </tr>
                                 <tr>
                 <td class="elbow-placeholder">&nbsp;</td>
@@ -1835,7 +1835,7 @@ Manage initiators on PowerMax/VMAX Storage System
                 <td></td>
                 <td></td>
                 <td></td>
-                <td>  <br> The new port name to rename the initiator alias. </td>
+                <td>  <br> The new port name to rename the initiator alias.  </td>
             </tr>
                                         <tr>
             <td colspan=2 > state</td>
@@ -5990,7 +5990,17 @@ Manage SRDF pair on PowerMax/VMAX Storage System
 Manage storage groups on PowerMax or VMAX Storage System
 
 ### Synopsis
- Managing storage groups on a PowerMax storage system includes- listing the volumes of a storage group, creating a new storage group, deleting an existing storage group, adding existing volumes to an existing storage group, removing existing volumes from an existing storage group, creating new volumes in an existing storage group, modifying existing storage group attributes, adding child storage groups inside an existing storage group (parent), moving volumes between storage groups and removing a child storage group from an existing parent storage group.
+ Managing storage groups on a PowerMax storage system includes the following.
+ Listing the volumes of a storage group.
+ Creating a new storage group.
+ Deleting an existing storage group.
+ Adding existing volumes to an existing storage group.
+ Removing existing volumes from an existing storage group.
+ Creating new volumes in an existing storage group.
+ Modifying existing storage group attributes.
+ Adding child storage groups inside an existing storage group (parent).
+ Moving volumes between storage groups.
+ Removing a child storage group from an existing parent storage group.
 
 ### Parameters
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 
@@ -6041,7 +6051,7 @@ Manage storage groups on PowerMax or VMAX Storage System
             <td></td>
             <td></td>
             <td></td>
-            <td> <br> This is a list of volumes.  <br> Each volume has four attributes-  <br> vol_name.  <br> size.  <br> cap_unit.  <br> vol_id.  <br> Either the volume ID must be provided for existing volumes, or the name and size must be provided to add new volumes to SG. The unit is optional.  <br> vol_name - Represents the name of the volume.  <br> size - Represents the volume size.  <br> cap_unit - The unit in which size is represented. Default unit is GB. Choices are MB, GB, TB.  <br> vol_id - This is the volume ID. </td>
+            <td> <br> This is a list of volumes.  <br> Each volume has four attributes; vol_name, size, cap_unit, vol_id.  <br> Volume ID must be provided for existing volumes.  <br> The size must be provided to add new volumes to SG.  <br> The cap_unit is optional.  <br> Default value of cap_unit is GB, choices are MB, GB, TB. </td>
         </tr>
                     <tr>
             <td colspan=2 > vol_state</td>
@@ -6202,6 +6212,7 @@ Manage storage groups on PowerMax or VMAX Storage System
 
 ### Notes
 * To set host_io_limit_mbps to NOLIMIT, value can be provided as 0.
+* The check_mode is not supported.
 * The modules present in this collection named as 'dellemc.powermax' are built to support the Dell PowerMax storage platform.
 
 ### Examples
@@ -6768,6 +6779,7 @@ Manage storage groups on PowerMax or VMAX Storage System
 * Prashant Rakheja (@prashant-dell) <ansible.team@dell.com>
 * Ambuj Dubey (@AmbujDube) <ansible.team@dell.com>
 * Pavan Mudunuri (@Pavan-Mudunuri) <ansible.team@dell.com>
+* Trisha Datta (@Trisha-Datta) <ansible.team@dell.com>
 
 --------------------------------
 # Storage Pool Module

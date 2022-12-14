@@ -1,84 +1,84 @@
 ---
-requires_ansible: ">2.9"
+requires_ansible: ">=2.12"
 plugin_routing:
     modules:
         dellemc_powermax_host:
-            redirect: host
+            redirect: dellemc.powermax.host
             deprecation:
                 removal_date: "2024-03-31"
-                warning_text: Use dellemc.powermax.host instead.
+                warning_text: Use host instead.
         dellemc_powermax_hostgroup:
-            redirect: hostgroup
+            redirect: dellemc.powermax.hostgroup
             deprecation:
                 removal_date: "2024-03-31"
-                warning_text: Use dellemc.powermax.hostgroup instead.
+                warning_text: Use hostgroup instead.
         dellemc_powermax_gatherfacts:
-            redirect: info
+            redirect: dellemc.powermax.info
             deprecation:
                 removal_date: "2024-03-31"
-                warning_text: Use dellemc.powermax.info instead.
+                warning_text: Use info instead.
         dellemc_powermax_initiator:
-            redirect: initiator
+            redirect: dellemc.powermax.initiator
             deprecation:
                 removal_date: "2024-03-31"
-                warning_text: Use dellemc.powermax.initiator instead.
+                warning_text: Use initiator instead.
         dellemc_powermax_job:
-            redirect: job
+            redirect: dellemc.powermax.job
             deprecation:
                 removal_date: "2024-03-31"
-                warning_text: Use dellemc.powermax.job instead.
+                warning_text: Use job instead.
         dellemc_powermax_maskingview:
-            redirect: maskingview
+            redirect: dellemc.powermax.maskingview
             deprecation:
                 removal_date: "2024-03-31"
-                warning_text: Use dellemc.powermax.maskingview instead.
+                warning_text: Use maskingview instead.
         dellemc_powermax_metrodr:
-            redirect: metrodr
+            redirect: dellemc.powermax.metrodr
             deprecation:
                 removal_date: "2024-03-31"
-                warning_text: Use dellemc.powermax.metrodr instead.
+                warning_text: Use metrodr instead.
         dellemc_powermax_port:
-            redirect: port
+            redirect: dellemc.powermax.port
             deprecation:
                 removal_date: "2024-03-31"
-                warning_text: Use dellemc.powermax.port instead.
+                warning_text: Use port instead.
         dellemc_powermax_portgroup:
-            redirect: portgroup
+            redirect: dellemc.powermax.portgroup
             deprecation:
                 removal_date: "2024-03-31"
-                warning_text: Use dellemc.powermax.portgroup instead.
+                warning_text: Use portgroup instead.
         dellemc_powermax_rdfgroup:
-            redirect: rdfgroup
+            redirect: dellemc.powermax.rdfgroup
             deprecation:
                 removal_date: "2024-03-31"
-                warning_text: Use dellemc.powermax.rdfgroup instead.
+                warning_text: Use rdfgroup instead.
         dellemc_powermax_snapshot:
-            redirect: snapshot
+            redirect: dellemc.powermax.snapshot
             deprecation:
                 removal_date: "2024-03-31"
-                warning_text: Use dellemc.powermax.snapshot instead.
+                warning_text: Use snapshot instead.
         dellemc_powermax_snapshotpolicy:
-            redirect: snapshotpolicy
+            redirect: dellemc.powermax.snapshotpolicy
             deprecation:
                 removal_date: "2024-03-31"
-                warning_text: Use dellemc.powermax.snaphotpolicy instead.
+                warning_text: Use snaphotpolicy instead.
         dellemc_powermax_srdf:
-            redirect: srdf
+            redirect: dellemc.powermax.srdf
             deprecation:
                 removal_date: "2024-03-31"
-                warning_text: Use dellemc.powermax.srdf instead.
+                warning_text: Use srdf instead.
         dellemc_powermax_storagegroup:
-            redirect: storagegroup
+            redirect: dellemc.powermax.storagegroup
             deprecation:
                 removal_date: "2024-03-31"
-                warning_text: Use dellemc.powermax.storagegroup instead.
+                warning_text: Use storagegroup instead.
         dellemc_powermax_storagepool:
-            redirect: storagepool
+            redirect: dellemc.powermax.storagepool
             deprecation:
                 removal_date: "2024-03-31"
-                warning_text: Use dellemc.powermax.storagepool instead.
+                warning_text: Use storagepool instead.
         dellemc_powermax_volume:
-            redirect: volume
+            redirect: dellemc.powermax.volume
             deprecation:
                 removal_date: "2024-03-31"
-                warning_text: Use dellemc.powermax.volume instead.
+                warning_text: Use volume instead.
