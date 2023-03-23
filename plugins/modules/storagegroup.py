@@ -130,6 +130,8 @@ options:
     required: true
 notes:
 - To set host_io_limit_mbps to NOLIMIT, value can be provided as 0.
+- Idempotency is not supported when creating a new volume in the storage group
+  without providing volume name.
 - The check_mode is not supported.
 '''
 
@@ -587,7 +589,7 @@ HAS_PYU4V = utils.has_pyu4v_sdk()
 PYU4V_VERSION_CHECK = utils.pyu4v_version_check()
 
 # Application Type
-APPLICATION_TYPE = 'ansible_v2.1.0'
+APPLICATION_TYPE = 'ansible_v2.1.1'
 
 
 class StorageGroup(object):
