@@ -56,7 +56,7 @@ New Features and Enhancements
 
 The Ansible modules for Dell PowerMax release has the following
 changes:
-- Added an note on idempotency for storage group module.
+- Added a note on idempotency for the storage group module.
 
 > **NOTE:** Unisphere Version 9.1 is compatible with PowerMax Python
 > library version 9.1.x.x and similarly Unisphere versions later than 9.1 will

@@ -11,7 +11,7 @@ v2.1.1
 Minor Changes
 -------------
 
-- Added an note on idempotency for storage group module.
+- Added a note on idempotency for the storage group module.
 
 v2.1.0
 ======

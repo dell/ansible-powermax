@@ -162,5 +162,5 @@ releases:
   2.1.1:
     changes:
       minor_changes:
-      - Added an note on idempotency for storage group module.
+      - Added a note on idempotency for the storage group module.
     release_date: '2023-03-31'
