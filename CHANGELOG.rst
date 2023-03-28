@@ -5,6 +5,14 @@ Dellemc.Powermax Change Logs
 .. contents:: Topics
 
 
+v2.1.1
+======
+
+Minor Changes
+-------------
+
+- Added a note on idempotency for the storage group module.
+
 v2.1.0
 ======
 

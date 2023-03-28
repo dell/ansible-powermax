@@ -159,3 +159,8 @@ releases:
       - Enhanced storage group module to support for making volume name as an optional
         parameter while adding a new volume to storage group.
     release_date: '2022-12-20'
+  2.1.1:
+    changes:
+      minor_changes:
+      - Added a note on idempotency for the storage group module.
+    release_date: '2023-03-31'
