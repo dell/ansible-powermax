@@ -1,0 +1,17 @@
+plugins/modules/info.py validate-modules:missing-gplv3-license
+plugins/modules/host.py validate-modules:missing-gplv3-license
+plugins/modules/hostgroup.py validate-modules:missing-gplv3-license
+plugins/modules/job.py validate-modules:missing-gplv3-license
+plugins/modules/maskingview.py validate-modules:missing-gplv3-license
+plugins/modules/metrodr.py validate-modules:missing-gplv3-license
+plugins/modules/port.py validate-modules:missing-gplv3-license
+plugins/modules/portgroup.py validate-modules:missing-gplv3-license
+plugins/modules/rdfgroup.py validate-modules:missing-gplv3-license
+plugins/modules/snapshot.py validate-modules:missing-gplv3-license
+plugins/modules/snapshotpolicy.py validate-modules:missing-gplv3-license
+plugins/modules/srdf.py validate-modules:missing-gplv3-license
+plugins/modules/storagegroup.py validate-modules:missing-gplv3-license
+plugins/modules/storagepool.py validate-modules:missing-gplv3-license
+plugins/modules/volume.py validate-modules:missing-gplv3-license
+plugins/modules/process_storage_pool_dict.py validate-modules:missing-gplv3-license
+plugins/modules/initiator.py validate-modules:missing-gplv3-license

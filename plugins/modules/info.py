@@ -24,6 +24,7 @@ author:
 - Arindam Datta (@dattaarindam) <ansible.team@dell.com>
 - Rajshree Khare (@khareRajshree) <ansible.team@dell.com>
 - Pavan Mudunuri (@Pavan-Mudunuri) <ansible.team@dell.com>
+- Trisha Datta (@trisha-dell) <ansible.team@dell.com>
 options:
   serial_no:
     description:
@@ -31,6 +32,7 @@ options:
      getting the list of arrays.
     type: str
     required: False
+    default: ""
   tdev_volumes:
      description:
      - Boolean variable to filter the volume list.
@@ -96,6 +98,10 @@ options:
         - Value of the filter key.
         type: str
         required: True
+  masking_view_name:
+    description:
+    - The name of the masking view to fetch the masking view connections.
+    type: str
 notes:
     - Filter functionality is supported only for the following
       'filter_key' against specific 'gather_subset'.
@@ -645,7 +651,7 @@ HAS_PYU4V = utils.has_pyu4v_sdk()
 PYU4V_VERSION_CHECK = utils.pyu4v_version_check()
 
 # Application Type
-APPLICATION_TYPE = 'ansible_v2.1.1'
+APPLICATION_TYPE = 'ansible_v2.2.0'
 
 
 class Info(object):
@@ -1016,7 +1022,18 @@ class Info(object):
                   % (self.module.params['serial_no'], str(e))
             self.show_error_exit(msg=msg)
 
-    def get_mv_connections_list(self, filters_dict=None):
+    def prepare_mv_connections_list(self, mv_connections_list, masking_view_id, filters_dict=None):
+        connections = self.provisioning.get_masking_view_connections(masking_view_id=masking_view_id, filters=filters_dict)
+        if connections:
+            mv_connections_list.append(
+                {
+                    'masking_view_id': masking_view_id,
+                    'masking_view_connections': connections
+                }
+            )
+        return mv_connections_list
+
+    def get_mv_connections_list(self, masking_view_name=None, filters_dict=None):
         """Get the list of masking view connections of a given PowerMax or VMAX storage
         system"""
 
@@ -1025,15 +1042,24 @@ class Info(object):
             array_serial_no = self.module.params['serial_no']
             masking_view_list = self.get_masking_view_list()
             mv_connections_list = []
-            for masking_view_id in masking_view_list:
-                connections = self.provisioning.get_masking_view_connections(masking_view_id, filters=filters_dict)
-                if connections:
-                    mv_connections_list.append(
-                        {
-                            'masking_view_id': masking_view_id,
-                            'masking_view_connections': connections
-                        }
-                    )
+
+            if masking_view_name is None:
+                for masking_view_id in masking_view_list:
+                    mv_connections_list = self.prepare_mv_connections_list(mv_connections_list=mv_connections_list,
+                                                                           masking_view_id=masking_view_id,
+                                                                           filters_dict=filters_dict)
+            else:
+                mv_list = self.provisioning.get_masking_view_list()
+                if masking_view_name not in mv_list:
+                    LOG.info('Masking view %s is not present in system',
+                             masking_view_name)
+                    return None
+                LOG.info('Getting masking view %s details', masking_view_name)
+                masking_view_id = self.provisioning.get_masking_view(masking_view_name)["maskingViewId"]
+                mv_connections_list = self.prepare_mv_connections_list(mv_connections_list=mv_connections_list,
+                                                                       masking_view_id=masking_view_id,
+                                                                       filters_dict=filters_dict)
+
             LOG.info('Got %d Getting Masking Views Connections from array %s',
                      len(mv_connections_list), array_serial_no)
             return mv_connections_list
@@ -1144,6 +1170,7 @@ class Info(object):
         else:
             subset = self.module.params['gather_subset']
             tdev_volumes = self.module.params['tdev_volumes']
+            masking_view_name = self.module.params['masking_view_name']
             filters = []
             filters = self.module.params['filters']
             if len(subset) == 0:
@@ -1202,7 +1229,8 @@ class Info(object):
                     self.get_initiators_list(filters_dict=filters_dict)
             if 'mv_connections' in subset:
                 mv_connections = \
-                    self.get_mv_connections_list(filters_dict=filters_dict)
+                    self.get_mv_connections_list(masking_view_name=masking_view_name,
+                                                 filters_dict=filters_dict)
 
             LOG.info("Closing Unisphere connection %s", self.u4v_conn)
             utils.close_connection(self.u4v_conn)
@@ -1239,6 +1267,7 @@ def get_info_parameters():
         serial_no=dict(type='str', required=False, default=''),
         tdev_volumes=dict(type='bool', required=False,
                           default=True, choices=[True, False]),
+        masking_view_name=dict(type='str'),
         gather_subset=dict(type='list', required=False, elements='str',
                            choices=['alert',
                                     'health',

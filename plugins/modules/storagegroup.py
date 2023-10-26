@@ -578,7 +578,6 @@ snapshot_policy_compliance_details:
     }
 '''
 
-import logging
 from ansible_collections.dellemc.powermax.plugins.module_utils.storage.dell \
     import utils
 from ansible.module_utils.basic import AnsibleModule
@@ -589,7 +588,7 @@ HAS_PYU4V = utils.has_pyu4v_sdk()
 PYU4V_VERSION_CHECK = utils.pyu4v_version_check()
 
 # Application Type
-APPLICATION_TYPE = 'ansible_v2.1.1'
+APPLICATION_TYPE = 'ansible_v2.2.0'
 
 
 class StorageGroup(object):
@@ -1434,7 +1433,7 @@ class StorageGroup(object):
             for snap in snap_list:
                 gen_list = self.replication.\
                     get_storage_group_snapshot_generation_list(
-                        storagegroup_id=sg_name,
+                        storage_group_id=sg_name,
                         snap_name=snap)
                 for gen in gen_list:
                     gen_details = \

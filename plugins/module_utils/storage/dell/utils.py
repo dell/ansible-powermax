@@ -14,7 +14,7 @@ __metaclass__ = type
 
 try:
     import PyU4V
-    from PyU4V.utils.exception import ResourceNotFoundException
+    from PyU4V.utils.exception import ResourceNotFoundException  # noqa # pylint: disable=unused-import
     HAS_PYU4V = True
 except ImportError:
     HAS_PYU4V = False
@@ -22,7 +22,7 @@ except ImportError:
 '''import pkg_resources'''
 try:
     from pkg_resources import parse_version
-    import pkg_resources
+    import pkg_resources  # noqa # pylint: disable=unused-import
     PKG_RSRC_IMPORTED = True
 except ImportError:
     PKG_RSRC_IMPORTED = False

@@ -33,7 +33,8 @@ Requirements
 The below requirements are needed on the host that executes this module.
 
 - A Dell PowerMax storage system.
-- Ansible 2.12, 2.13 or 2.14.
+- Ansible-core 2.13 or later.
+- Python 3.9, 3.10 or 3.11.
 
 
 
