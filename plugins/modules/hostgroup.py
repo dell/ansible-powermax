@@ -289,7 +289,6 @@ hostgroup_details:
 
 import re
 import copy
-import logging
 from ansible.module_utils.basic import AnsibleModule
 from ansible_collections.dellemc.powermax.plugins.module_utils.storage.dell \
     import utils
@@ -301,7 +300,7 @@ HAS_PYU4V = utils.has_pyu4v_sdk()
 PYU4V_VERSION_CHECK = utils.pyu4v_version_check()
 
 # Application Type
-APPLICATION_TYPE = 'ansible_v2.1.1'
+APPLICATION_TYPE = 'ansible_v2.2.0'
 
 BASE_FLAGS = {'volume_set_addressing': {'enabled': False, 'override': False},
               'disable_q_reset_on_ua': {'enabled': False, 'override': False},

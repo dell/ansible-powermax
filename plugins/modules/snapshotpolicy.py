@@ -324,7 +324,7 @@ HAS_PYU4V = utils.has_pyu4v_sdk()
 PYU4V_VERSION_CHECK = utils.pyu4v_version_check()
 
 # Application Type
-APPLICATION_TYPE = 'ansible_v2.1.1'
+APPLICATION_TYPE = 'ansible_v2.2.0'
 
 INTERVAL = ['10 Minutes', '12 Minutes', '15 Minutes', '20 Minutes',
             '30 Minutes', '1 Hour', '2 Hours', '3 Hours', '4 Hours',

@@ -4,6 +4,14 @@ Dellemc.Powermax Change Logs
 
 .. contents:: Topics
 
+v2.2.0
+======
+
+Minor Changes
+-------------
+
+- Added fix for storagegroup_id keyword in storage group module.
+- Added support for masking_view_name for listing masking view connections through info module.
 
 v2.1.1
 ======

@@ -383,7 +383,6 @@ RDFGroupVolumeDetails:
         }
 '''
 
-import logging
 from ansible_collections.dellemc.powermax.plugins.module_utils.storage.dell \
     import utils
 from ansible.module_utils.basic import AnsibleModule
@@ -395,7 +394,7 @@ HAS_PYU4V = utils.has_pyu4v_sdk()
 PYU4V_VERSION_CHECK = utils.pyu4v_version_check()
 
 # Application Type
-APPLICATION_TYPE = 'ansible_v2.1.1'
+APPLICATION_TYPE = 'ansible_v2.2.0'
 
 
 class RDFGroup(object):

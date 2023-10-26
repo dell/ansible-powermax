@@ -17,7 +17,8 @@ class MockInfoApi:
         "serial_no": None,
         "tdev_volumes": None,
         "gather_subset": [],
-        "filters": None
+        "filters": None,
+        "masking_view_name": None
     }
 
     MASKING_VIEW_LIST = [
