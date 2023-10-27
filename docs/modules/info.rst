@@ -21,7 +21,7 @@ Requirements
 The below requirements are needed on the host that executes this module.
 
 - A Dell PowerMax storage system.
-- Ansible 2.12, 2.13 or 2.14.
+- Ansible 2.13, 2.14 or 2.15.
 
 
 
@@ -99,6 +99,8 @@ Parameters
     filter_value (True, str, None)
       Value of the filter key.
 
+  masking_view_name(False, str, None)
+    The name of the masking view to fetch the masking view connections.
 
 
   unispherehost (True, str, None)

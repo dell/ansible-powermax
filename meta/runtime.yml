@@ -1,5 +1,5 @@
 ---
-requires_ansible: ">=2.12"
+requires_ansible: ">=2.13"
 plugin_routing:
     modules:
         dellemc_powermax_host:

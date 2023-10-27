@@ -1,7 +1,7 @@
 
 **Ansible modules for Dell Technologies PowerMax** 
 =========================================
-### Release Notes 2.1.1
+### Release Notes 2.2.0
 
 >   © 2022 Dell Inc. or its subsidiaries. All rights reserved. Dell
 >   and other trademarks are trademarks of Dell Inc. or its
@@ -24,9 +24,9 @@ modules for Dell Technologies (Dell) PowerMax.
 Revision History
 ----------------
 
-| **Date**   | **Document revision** | **Description of changes** |
-|------------|-----------------------|----------------------------|
-| March 2023 | 01 | Ansible modules for Dell PowerMax release 2.1.1 |
+| **Date**     | **Document revision** | **Description of changes**                      |
+|------------  |-----------------------|-------------------------------------------------|
+| October 2023 | 01                    | Ansible modules for Dell PowerMax release 2.2.0 |
 
 Product Description
 -------------------
@@ -56,7 +56,9 @@ New Features and Enhancements
 
 The Ansible modules for Dell PowerMax release has the following
 changes:
-- Added a note on idempotency for the storage group module.
+- Added fix for storagegroup_id keyword in storage group module.
+- Added support for masking_view_name for listing masking view
+  connections through info module.
 
 > **NOTE:** Unisphere Version 9.1 is compatible with PowerMax Python
 > library version 9.1.x.x and similarly Unisphere versions later than 9.1 will
@@ -73,7 +75,7 @@ There are no known limitations.
 Distribution
 ------------
 The software package is available for download from the [Ansible modules
-for PowerMax GitHub](https://github.com/dell/ansible-powermax/tree/2.1.1) page.
+for PowerMax GitHub](https://github.com/dell/ansible-powermax/tree/2.2.0) page.
 
 Documentation
 -------------

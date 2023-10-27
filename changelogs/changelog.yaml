@@ -164,3 +164,10 @@ releases:
       minor_changes:
       - Added a note on idempotency for the storage group module.
     release_date: '2023-03-31'
+  2.2.0:
+    changes:
+      minor_changes:
+      - Added fix for storagegroup_id keyword in storage group module.
+      - Added support for masking_view_name for listing masking view connections
+        through info module.
+    release_date: '2023-10-31'
