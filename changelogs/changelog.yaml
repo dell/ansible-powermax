@@ -164,7 +164,7 @@ releases:
       minor_changes:
         - Added a note on idempotency for the storage group module.
     release_date: '2023-03-31'
-  2.2.0:
+  2.2.1:
     changes:
       minor_changes:
         - Added fix for storagegroup_id keyword in storage group module.

@@ -4,7 +4,7 @@ Dellemc.Powermax Change Logs
 
 .. contents:: Topics
 
-v2.2.0
+v2.2.1
 ======
 
 Minor Changes

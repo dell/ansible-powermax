@@ -112,7 +112,7 @@ from ansible.module_utils.basic import AnsibleModule
 LOG = utils.get_logger('process_storage_pool_dict')
 
 # Application Type
-APPLICATION_TYPE = 'ansible_v2.2.0'
+APPLICATION_TYPE = 'ansible_v2.2.1'
 
 
 class ProcessPoolDict(object):
