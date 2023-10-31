@@ -2,9 +2,9 @@ name: CI
 
 on:
   push:
-    branches: [ main ]
+    branches: [main]
   pull_request:
-    branches: [ main ]
+    branches: [main]
   schedule:
     - cron: '0 3 * * *'
 
@@ -39,7 +39,7 @@ jobs:
 
   ###
   # Unit tests (OPTIONAL)
-  # 
+  #
   # https://docs.ansible.com/ansible/latest/dev_guide/testing_units.html
 
   unit:
@@ -53,8 +53,8 @@ jobs:
         ansible-version: [stable-2.13, stable-2.14, stable-2.15]
         exclude:
         # Python 3.11 is supported only from ansible-core 2.14 onwards
-        - python-version: "3.11"
-          ansible-version: stable-2.13
+          - python-version: "3.11"
+            ansible-version: stable-2.13
 
     steps:
       - name: Set up Python ${{ matrix.python-version }}
@@ -156,7 +156,7 @@ jobs:
           path: .cache/collection-tarballs
 
       - name: Install collection build
-        run: ansible-galaxy collection install .cache/collection-tarballs/*.tar.gz 
+        run: ansible-galaxy collection install .cache/collection-tarballs/*.tar.gz
 
       - name: Run Ansible lint
         run: ansible-lint --show-relpath
