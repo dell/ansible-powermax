@@ -55,14 +55,13 @@ EXAMPLES = r'''
 - name: Get specific volume details of an RDF Group
   dellemc.powermax.rdfgroup:
     unispherehost: "{{unispherehost}}"
-    serial_no:  "{{serial_no}}"
+    serial_no: "{{serial_no}}"
     universion: "{{universion}}"
     verifycert: "{{verifycert}}"
     user: "{{user}}"
     password: "{{password}}"
     rdfgroup_number: "1"
     vol_name: "0001"
-
 '''
 
 RETURN = r'''

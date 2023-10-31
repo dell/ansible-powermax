@@ -174,7 +174,7 @@ EXAMPLES = r"""
     metro_r2_array_id: "{{metro_r2_array_id}}"
     dr_array_id: "{{dr_array_id}}"
     replication_mode: "Asynchronous"
-    wait_for_completion: False
+    wait_for_completion: false
     state: "present"
 
 - name: Create metro DR environment
@@ -190,9 +190,9 @@ EXAMPLES = r"""
     metro_r2_array_id: "{{metro_r2_array_id}}"
     dr_array_id: "{{dr_array_id}}"
     replication_mode: "Asynchronous"
-    new_rdf_group_r1: True
-    new_rdf_group_r2: True
-    wait_for_completion: False
+    new_rdf_group_r1: true
+    new_rdf_group_r2: true
+    wait_for_completion: false
     state: "present"
 
 - name: Modify metro DR environment
@@ -206,10 +206,10 @@ EXAMPLES = r"""
     env_name: "ansible_metrodr_env"
     srdf_param:
       srdf_state: "Suspend"
-      metro: True
-      dr: True
-      keep_r2: True
-    wait_for_completion: True
+      metro: true
+      dr: true
+      keep_r2: true
+    wait_for_completion: true
     state: "present"
 
 - name: Delete metro DR environment
@@ -221,7 +221,7 @@ EXAMPLES = r"""
     password: "{{password}}"
     metro_r1_array_id: "{{metro_r1_array_id}}"
     env_name: "ansible_metrodr_env"
-    remove_r1_dr_rdfg: True
+    remove_r1_dr_rdfg: true
     state: 'absent'
 """
 
