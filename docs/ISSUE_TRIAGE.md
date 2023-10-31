@@ -43,7 +43,7 @@ Bug reports should explain what happened, what was expected and how to reproduce
 
  - Ansible Version: [e.g. 2.13]
  - Python Version [e.g. 3.10]
- - Ansible modules for Dell PowerMax Version: [e.g. 2.2.0]
+ - Ansible modules for Dell PowerMax Version: [e.g. 2.2.1]
  - PowerMax SDK version: [e.g. PyU4V 10.0.0.16]
  - Any other additional information...
 

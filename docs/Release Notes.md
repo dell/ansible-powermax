@@ -1,7 +1,7 @@
 
 **Ansible modules for Dell Technologies PowerMax** 
 =========================================
-### Release Notes 2.2.0
+### Release Notes 2.2.1
 
 >   © 2022 Dell Inc. or its subsidiaries. All rights reserved. Dell
 >   and other trademarks are trademarks of Dell Inc. or its
@@ -26,7 +26,7 @@ Revision History
 
 | **Date**     | **Document revision** | **Description of changes**                      |
 |------------  |-----------------------|-------------------------------------------------|
-| October 2023 | 01                    | Ansible modules for Dell PowerMax release 2.2.0 |
+| October 2023 | 01                    | Ansible modules for Dell PowerMax release 2.2.1 |
 
 Product Description
 -------------------
@@ -75,7 +75,7 @@ There are no known limitations.
 Distribution
 ------------
 The software package is available for download from the [Ansible modules
-for PowerMax GitHub](https://github.com/dell/ansible-powermax/tree/2.2.0) page.
+for PowerMax GitHub](https://github.com/dell/ansible-powermax/tree/2.2.1) page.
 
 Documentation
 -------------
@@ -84,4 +84,3 @@ page. It includes the following:
 
    - README
    - Release Notes (this document)
-   - Product Guide
