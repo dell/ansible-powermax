@@ -4,3 +4,4 @@ exclude_paths:
   - meta/
   - roles/capacity_role/defaults/
   - roles/capacity_role/vars/
+  - roles/capacity_role/tasks/
