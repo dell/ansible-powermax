@@ -34,31 +34,31 @@
   when: cap_unit == 'TB'
 
 - name: Get the list of PowerMax arrays from Unisphere
-  dellemc_powermax_gatherfacts:
-    unispherehost: "{{unispherehost}}"
-    verifycert: "{{verifycert}}"
-    user: "{{user}}"
-    password: "{{password}}"
+  dellemc.powermax.gatherfacts:
+    unispherehost: "{{ unispherehost }}"
+    verifycert: "{{ verifycert }}"
+    user: "{{ user }}"
+    password: "{{ password }}"
   register: arrays
 
 - name: Get the list of PowerMax arrays from Unisphere
-  dellemc_powermax_gatherfacts:
-    unispherehost: "{{unispherehost}}"
-    verifycert: "{{verifycert}}"
-    user: "{{user}}"
-    password: "{{password}}"
+  dellemc.powermax.gatherfacts:
+    unispherehost: "{{ unispherehost }}"
+    verifycert: "{{ verifycert }}"
+    user: "{{ user }}"
+    password: "{{ password }}"
     serial_no: "{{ item }}"
     gather_subset:
       - "srp"
-  loop: "{{arrays.Arrays | list}}"
+  loop: "{{ arrays.Arrays | list }}"
   register: pool_list
 
 - name: Get the list of pools across all discovered arrays
-  dellemc_powermax_storagepool:
-    unispherehost: "{{unispherehost}}"
-    verifycert: "{{verifycert}}"
-    user: "{{user}}"
-    password: "{{password}}"
+  dellemc.powermax.storagepool:
+    unispherehost: "{{ unispherehost }}"
+    verifycert: "{{ verifycert }}"
+    user: "{{ user }}"
+    password: "{{ password }}"
     serial_no: "{{ item.0.item }}"
     pool: "{{ item.1.srpId }}"
     state: 'present'
@@ -70,14 +70,14 @@
 - name: Get best suitable Pool using our python sorting module
   register: assigned_pool
   process_storage_pool_dict:
-    unispherehost: "{{unispherehost}}"
-    verifycert: "{{verifycert}}"
-    user: "{{user}}"
-    password: "{{password}}"
+    unispherehost: "{{ unispherehost }}"
+    verifycert: "{{ verifycert }}"
+    user: "{{ user }}"
+    password: "{{ password }}"
     pool_data: "{{ pools.results | map(attribute='pool_details') | list }}"
     size: "{{ size_gb }}"
     service_level: "{{ service_level | default(omit) }}"
-    sg_name: "{{sg_name | default(omit) }}"
+    sg_name: "{{ sg_name | default(omit) }}"
 
 - name: Debug print assigned pool
   debug:
