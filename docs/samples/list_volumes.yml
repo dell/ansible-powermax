@@ -9,27 +9,24 @@
   vars:
     unispherehost: "your_unisphere_host_url"
     universion: "version_of_the_unisphere"
-    verifycert: False
+    verifycert: false
     user: "your_username"
     password: "your_password"
     serial_no: "your_serial_no"
     threshold_cap: <enter the size in GB>
 
-  collections:
-    - dellemc.powermax
-
   tasks:
     - name: List of all the volume IDs whose size is greater than the threshold capacity
-      info:
-        unispherehost: "{{unispherehost}}"
-        serial_no:  "{{serial_no}}"
-        universion: "{{universion}}"
-        verifycert: "{{verifycert}}"
-        user: "{{user}}"
-        password: "{{password}}"
+      dellemc.powermax.info:
+        unispherehost: "{{ unispherehost }}"
+        serial_no: "{{ serial_no }}"
+        universion: "{{ universion }}"
+        verifycert: "{{ verifycert }}"
+        user: "{{ user }}"
+        password: "{{ password }}"
         gather_subset:
           - vol
         filters:
           - filter_key: "cap_gb"
             filter_operator: "greater"
-            filter_value: "{{threshold_cap}}"
+            filter_value: "{{ threshold_cap }}"

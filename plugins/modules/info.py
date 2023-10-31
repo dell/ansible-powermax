@@ -226,7 +226,7 @@ EXAMPLES = r'''
     user: "{{user}}"
     password: "{{password}}"
     serial_no: "{{serial_no}}"
-    tdev_volumes: True
+    tdev_volumes: true
     gather_subset:
       - vol
 
@@ -247,7 +247,7 @@ EXAMPLES = r'''
     password: "{{password}}"
     serial_no: "{{serial_no}}"
     gather_subset:
-       - health
+      - health
 
 - name: Get array alerts summary
   dellemc.powermax.info:
@@ -258,7 +258,7 @@ EXAMPLES = r'''
     password: "{{password}}"
     serial_no: "{{serial_no}}"
     gather_subset:
-       - alert
+      - alert
 
 - name: Get the list of Metro DR environments for a given Unisphere host
   dellemc.powermax.info:
@@ -269,7 +269,7 @@ EXAMPLES = r'''
     password: "{{password}}"
     serial_no: "{{serial_no}}"
     gather_subset:
-       - metro_dr_env
+      - metro_dr_env
 
 - name: Get list of storage groups
   dellemc.powermax.info:
@@ -280,7 +280,7 @@ EXAMPLES = r'''
     password: "{{password}}"
     serial_no: "{{serial_no}}"
     gather_subset:
-       - sg
+      - sg
 
 - name: Get list of Storage Resource Pools
   dellemc.powermax.info:
@@ -291,7 +291,7 @@ EXAMPLES = r'''
     password: "{{password}}"
     serial_no: "{{serial_no}}"
     gather_subset:
-       - srp
+      - srp
 
 - name: Get list of ports
   dellemc.powermax.info:
@@ -302,7 +302,7 @@ EXAMPLES = r'''
     password: "{{password}}"
     serial_no: "{{serial_no}}"
     gather_subset:
-       - port
+      - port
 
 - name: Get list of Port Groups
   dellemc.powermax.info:
@@ -313,7 +313,7 @@ EXAMPLES = r'''
     password: "{{password}}"
     serial_no: "{{serial_no}}"
     gather_subset:
-       - pg
+      - pg
 
 - name: Get list of hosts
   dellemc.powermax.info:
@@ -324,7 +324,7 @@ EXAMPLES = r'''
     password: "{{password}}"
     serial_no: "{{serial_no}}"
     gather_subset:
-       - host
+      - host
 
 - name: Get list of Host Groups
   dellemc.powermax.info:
@@ -335,7 +335,7 @@ EXAMPLES = r'''
     password: "{{password}}"
     serial_no: "{{serial_no}}"
     gather_subset:
-       - hg
+      - hg
 
 - name: Get list of Masking Views
   dellemc.powermax.info:
@@ -346,7 +346,7 @@ EXAMPLES = r'''
     password: "{{password}}"
     serial_no: "{{serial_no}}"
     gather_subset:
-       - mv
+      - mv
 
 - name: Get list of RDF Groups
   dellemc.powermax.info:
@@ -357,7 +357,7 @@ EXAMPLES = r'''
     password: "{{password}}"
     serial_no: "{{serial_no}}"
     gather_subset:
-       - rdf
+      - rdf
 
 - name: Get list of snapshot policies
   dellemc.powermax.info:
@@ -368,7 +368,7 @@ EXAMPLES = r'''
     password: "{{password}}"
     serial_no: "{{serial_no}}"
     gather_subset:
-     - snapshot_policies
+      - snapshot_policies
 
 - name: Get list of initiators
   dellemc.powermax.info:
@@ -379,25 +379,25 @@ EXAMPLES = r'''
     password: "{{password}}"
     serial_no: "{{serial_no}}"
     gather_subset:
-     - initiators
+      - initiators
 
 - name: Get list of masking view connections with filter
   dellemc.powermax.info:
-      unispherehost: "{{unispherehost}}"
-      universion: "{{universion}}"
-      verifycert: "{{verifycert}}"
-      user: "{{user}}"
-      password: "{{password}}"
-      serial_no: "{{serial_no}}"
-      gather_subset:
-       - mv_connections
-      filters:
-       - filter_key: "logged_in"
-         filter_operator: "equal"
-         filter_value: "True"
-       - filter_key: "cap_gb"
-         filter_operator: "equal"
-         filter_value: "10"
+    unispherehost: "{{unispherehost}}"
+    universion: "{{universion}}"
+    verifycert: "{{verifycert}}"
+    user: "{{user}}"
+    password: "{{password}}"
+    serial_no: "{{serial_no}}"
+    gather_subset:
+      - mv_connections
+    filters:
+      - filter_key: "logged_in"
+        filter_operator: "equal"
+        filter_value: "true"
+      - filter_key: "cap_gb"
+        filter_operator: "equal"
+        filter_value: "10"
 '''
 
 RETURN = r'''

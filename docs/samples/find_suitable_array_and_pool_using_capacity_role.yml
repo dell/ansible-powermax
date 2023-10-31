@@ -1,20 +1,18 @@
 - name: Testing capacity role operations
   hosts: localhost
-  gather_facts: False
+  gather_facts: false
   connection: local
-  collections:
-    - dellemc.powermax
 
   vars:
     unispherehost: 'your_unisphere_host_url'
     universion: 'version_of_the_unisphere'
-    verifycert: False
+    verifycert: false
     user: 'your_username'
     password: 'your_password'
     size: 10
     cap_unit: 'GB'
 
   tasks:
-  - name: Get the Serial Number and Assigned Pool with no value for service_level
-    include_role:
-      name: capacity_role
+    - name: Get the Serial Number and Assigned Pool with no value for service_level
+      ansible.builtin.include_role:
+        name: dellemc.powermax.capacity_role

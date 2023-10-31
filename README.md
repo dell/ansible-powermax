@@ -6,15 +6,15 @@ The capabilities of Ansible modules are managing volumes, storage groups, ports,
 
 ## Table of contents
 
-* [Code of conduct](https://github.com/dell/ansible-powermax/blob/2.2.0/docs/CODE_OF_CONDUCT.md)
-* [Maintainer guide](https://github.com/dell/ansible-powermax/blob/2.2.0/docs/MAINTAINER_GUIDE.md)
-* [Committer guide](https://github.com/dell/ansible-powermax/blob/2.2.0/docs/COMMITTER_GUIDE.md)
-* [Contributing guide](https://github.com/dell/ansible-powermax/blob/2.2.0/docs/CONTRIBUTING.md)
-* [Branching strategy](https://github.com/dell/ansible-powermax/blob/2.2.0/docs/BRANCHING.md)
-* [List of adopters](https://github.com/dell/ansible-powermax/blob/2.2.0/docs/ADOPTERS.md)
-* [Maintainers](https://github.com/dell/ansible-powermax/blob/2.2.0/docs/MAINTAINERS.md)
-* [Support](https://github.com/dell/ansible-powermax/blob/2.2.0/docs/SUPPORT.md)
-* [Security](https://github.com/dell/ansible-powermax/blob/2.2.0/docs/SECURITY.md)
+* [Code of conduct](https://github.com/dell/ansible-powermax/blob/2.2.1/docs/CODE_OF_CONDUCT.md)
+* [Maintainer guide](https://github.com/dell/ansible-powermax/blob/2.2.1/docs/MAINTAINER_GUIDE.md)
+* [Committer guide](https://github.com/dell/ansible-powermax/blob/2.2.1/docs/COMMITTER_GUIDE.md)
+* [Contributing guide](https://github.com/dell/ansible-powermax/blob/2.2.1/docs/CONTRIBUTING.md)
+* [Branching strategy](https://github.com/dell/ansible-powermax/blob/2.2.1/docs/BRANCHING.md)
+* [List of adopters](https://github.com/dell/ansible-powermax/blob/2.2.1/docs/ADOPTERS.md)
+* [Maintainers](https://github.com/dell/ansible-powermax/blob/2.2.1/docs/MAINTAINERS.md)
+* [Support](https://github.com/dell/ansible-powermax/blob/2.2.1/docs/SUPPORT.md)
+* [Security](https://github.com/dell/ansible-powermax/blob/2.2.1/docs/SECURITY.md)
 * [License](#license)
 * [Supported platforms](#supported-platforms)
 * [Prerequisites](#prerequisites)
@@ -23,7 +23,7 @@ The capabilities of Ansible modules are managing volumes, storage groups, ports,
 * [Maintanence](#maintanence)
 
 ## License
-Ansible collection for PowerMax is released and licensed under the GPL-3.0 license. See [LICENSE](https://github.com/dell/ansible-powermax/blob/2.2.0/LICENSE) for the full terms. Ansible modules and modules utilities that are part of the Ansible collection for PowerMax are released and licensed under the Apache 2.0 license. See [MODULE-LICENSE](https://github.com/dell/ansible-powermax/blob/2.2.0/MODULE-LICENSE) for the full terms.
+Ansible collection for PowerMax is released and licensed under the GPL-3.0 license. See [LICENSE](https://github.com/dell/ansible-powermax/blob/2.2.1/LICENSE) for the full terms. Ansible modules and modules utilities that are part of the Ansible collection for PowerMax are released and licensed under the Apache 2.0 license. See [MODULE-LICENSE](https://github.com/dell/ansible-powermax/blob/2.2.1/MODULE-LICENSE) for the full terms.
 
 ## Supported platforms
 Dell PowerMax and VMAX All Flash arrays support Unisphere version 9.1 and later.
@@ -33,7 +33,7 @@ This table provides information about the software prerequisites for the Ansible
 
 | **Ansible modules** | **Unisphere version** | **PowerMaxOS** | **Python version**            | **Python library version** | **Ansible**              |
 |---------------------|-----------------------|----------------|-------------------------------|----------------------------|--------------------------|
-| v2.2.0 | 9.1 <br> 9.2 <br> 10.0 | 5978.444.444 <br> 5978.669.669 <br> 5978.711.711 <br> 6079.xxx.xxx | 3.9.x <br> 3.10.x <br> 3.11.x | 9.1.x.x <br> 9.2.x.x <br> 10.0.x.x | 2.13 <br> 2.1 4<br> 2.15 |
+| v2.2.1 | 9.1 <br> 9.2 <br> 10.0 | 5978.444.444 <br> 5978.669.669 <br> 5978.711.711 <br> 6079.xxx.xxx | 3.9.x <br> 3.10.x <br> 3.11.x | 9.1.x.x <br> 9.2.x.x <br> 10.0.x.x | 2.13 <br> 2.1 4<br> 2.15 |
 
   * Follow PyU4V installation instructions on [PyU4V Documentation](https://pyu4v.readthedocs.io/)
 
@@ -41,27 +41,27 @@ This table provides information about the software prerequisites for the Ansible
 The modules are written in such a way that all requests are idempotent and hence fault-tolerant. This means that the result of a successfully performed request is independent of the number of times it is performed.
 
 ## List of Ansible modules for Dell PowerMax
-  * [Volume module](https://github.com/dell/ansible-powermax/blob/2.2.0/docs/modules/volume.rst)
-  * [Host module](https://github.com/dell/ansible-powermax/blob/2.2.0/docs/modules/host.rst)
-  * [Host Group module](https://github.com/dell/ansible-powermax/blob/2.2.0/docs/modules/hostgroup.rst)
-  * [Snapshot module](https://github.com/dell/ansible-powermax/blob/2.2.0/docs/modules/snapshot.rst)
-  * [Masking View module](https://github.com/dell/ansible-powermax/blob/2.2.0/docs/modules/maskingview.rst)
-  * [Port module](https://github.com/dell/ansible-powermax/blob/2.2.0/docs/modules/port.rst)
-  * [Port Group module](https://github.com/dell/ansible-powermax/blob/2.2.0/docs/modules/portgroup.rst)
-  * [Storage Group module](https://github.com/dell/ansible-powermax/blob/2.2.0/docs/modules/storagegroup.rst)
-  * [Info module](https://github.com/dell/ansible-powermax/blob/2.2.0/docs/modules/info.rst)
-  * [SRDF module](https://github.com/dell/ansible-powermax/blob/2.2.0/docs/modules/srdf.rst)
-  * [RDF Group module](https://github.com/dell/ansible-powermax/blob/2.2.0/docs/modules/rdfgroup.rst)
-  * [Metro DR module](https://github.com/dell/ansible-powermax/blob/2.2.0/docs/modules/metrodr.rst)
-  * [Job module](https://github.com/dell/ansible-powermax/blob/2.2.0/docs/modules/job.rst)
-  * [Snapshot Policy module](https://github.com/dell/ansible-powermax/blob/2.2.0/docs/modules/snapshotpolicy.rst)
-  * [Storage Pool module](https://github.com/dell/ansible-powermax/blob/2.2.0/docs/modules/storagepool.rst)
-  * [Process Storage Pool module](https://github.com/dell/ansible-powermax/blob/2.2.0/docs/modules/process_storage_pool_dict.rst)
-  * [Initiator module](https://github.com/dell/ansible-powermax/blob/2.2.0/docs/modules/initiator.rst)
-  * [Intelligent Volume Placement](https://github.com/dell/ansible-powermax/blob/2.2.0/docs/modules/capacity_role.rst)
+  * [Volume module](https://github.com/dell/ansible-powermax/blob/2.2.1/docs/modules/volume.rst)
+  * [Host module](https://github.com/dell/ansible-powermax/blob/2.2.1/docs/modules/host.rst)
+  * [Host Group module](https://github.com/dell/ansible-powermax/blob/2.2.1/docs/modules/hostgroup.rst)
+  * [Snapshot module](https://github.com/dell/ansible-powermax/blob/2.2.1/docs/modules/snapshot.rst)
+  * [Masking View module](https://github.com/dell/ansible-powermax/blob/2.2.1/docs/modules/maskingview.rst)
+  * [Port module](https://github.com/dell/ansible-powermax/blob/2.2.1/docs/modules/port.rst)
+  * [Port Group module](https://github.com/dell/ansible-powermax/blob/2.2.1/docs/modules/portgroup.rst)
+  * [Storage Group module](https://github.com/dell/ansible-powermax/blob/2.2.1/docs/modules/storagegroup.rst)
+  * [Info module](https://github.com/dell/ansible-powermax/blob/2.2.1/docs/modules/info.rst)
+  * [SRDF module](https://github.com/dell/ansible-powermax/blob/2.2.1/docs/modules/srdf.rst)
+  * [RDF Group module](https://github.com/dell/ansible-powermax/blob/2.2.1/docs/modules/rdfgroup.rst)
+  * [Metro DR module](https://github.com/dell/ansible-powermax/blob/2.2.1/docs/modules/metrodr.rst)
+  * [Job module](https://github.com/dell/ansible-powermax/blob/2.2.1/docs/modules/job.rst)
+  * [Snapshot Policy module](https://github.com/dell/ansible-powermax/blob/2.2.1/docs/modules/snapshotpolicy.rst)
+  * [Storage Pool module](https://github.com/dell/ansible-powermax/blob/2.2.1/docs/modules/storagepool.rst)
+  * [Process Storage Pool module](https://github.com/dell/ansible-powermax/blob/2.2.1/docs/modules/process_storage_pool_dict.rst)
+  * [Initiator module](https://github.com/dell/ansible-powermax/blob/2.2.1/docs/modules/initiator.rst)
+  * [Intelligent Volume Placement](https://github.com/dell/ansible-powermax/blob/2.2.1/docs/modules/capacity_role.rst)
 
 ## Installation and execution of Ansible modules for Dell PowerMax
-The installation and execution steps of Ansible modules for Dell PowerMax can be found [here](https://github.com/dell/ansible-powermax/blob/2.2.0/docs/INSTALLATION.md).
+The installation and execution steps of Ansible modules for Dell PowerMax can be found [here](https://github.com/dell/ansible-powermax/blob/2.2.1/docs/INSTALLATION.md).
 
 ## Maintenance
 Ansible modules for Dell Technologies PowerMax deprecation cycle is aligned with [Ansible](https://docs.ansible.com/ansible/latest/dev_guide/module_lifecycle.html).
