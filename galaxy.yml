@@ -10,7 +10,7 @@ namespace: dellemc
 name: powermax
 
 # The version of the collection. Must be compatible with semantic versioning
-version: 2.2.0
+version: 2.2.1
 
 # The path to the Markdown (.md) readme file. This path is relative to the root of the collection
 readme: README.md
@@ -18,19 +18,19 @@ readme: README.md
 # A list of the collection's content authors. Can be just the name or in the format 'Full Name <email> (url)
 # @nicks:irc/im.site#channel'
 authors:
-- Akash Shendge <ansible.team@dell.com>
-- Ambuj Dubey <ansible.team@dell.com>
-- Arindam Datta <ansible.team@dell.com>
-- Ashish Verma <ansible.team@dell.com>
-- Manisha Agrawal <ansible.team@dell.com>
-- Prashant Rakheja <ansible.team@dell.com>
-- Rajshree Khare <ansible.team@dell.com>
-- Vasudevu Lakhinana <ansible.team@dell.com>
-- Rajendra Indukuri <ansible.team@dell.com>
-- Spandita Panigrahi <ansible.team@dell.com>
-- Meenakshi Dembi <ansible.team@dell.com>
-- Pavan Mudunuri <ansible.team@dell.com>
-- Trisha Datta <ansible.team@dell.com>
+  - Akash Shendge <ansible.team@dell.com>
+  - Ambuj Dubey <ansible.team@dell.com>
+  - Arindam Datta <ansible.team@dell.com>
+  - Ashish Verma <ansible.team@dell.com>
+  - Manisha Agrawal <ansible.team@dell.com>
+  - Prashant Rakheja <ansible.team@dell.com>
+  - Rajshree Khare <ansible.team@dell.com>
+  - Vasudevu Lakhinana <ansible.team@dell.com>
+  - Rajendra Indukuri <ansible.team@dell.com>
+  - Spandita Panigrahi <ansible.team@dell.com>
+  - Meenakshi Dembi <ansible.team@dell.com>
+  - Pavan Mudunuri <ansible.team@dell.com>
+  - Trisha Datta <ansible.team@dell.com>
 
 
 ### OPTIONAL but strongly recommended
