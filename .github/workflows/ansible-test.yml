@@ -54,8 +54,6 @@ jobs:
         exclude:
         # Python 3.11 is supported only from ansible-core 2.14 onwards
         - python-version: "3.11"
-          ansible-version: stable-2.12
-        - python-version: "3.11"
           ansible-version: stable-2.13
 
     steps:
