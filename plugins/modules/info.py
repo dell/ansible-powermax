@@ -383,21 +383,21 @@ EXAMPLES = r'''
 
 - name: Get list of masking view connections with filter
   dellemc.powermax.info:
-      unispherehost: "{{unispherehost}}"
-      universion: "{{universion}}"
-      verifycert: "{{verifycert}}"
-      user: "{{user}}"
-      password: "{{password}}"
-      serial_no: "{{serial_no}}"
-      gather_subset:
-        - mv_connections
-      filters:
-        - filter_key: "logged_in"
-          filter_operator: "equal"
-          filter_value: "true"
-        - filter_key: "cap_gb"
-          filter_operator: "equal"
-          filter_value: "10"
+    unispherehost: "{{unispherehost}}"
+    universion: "{{universion}}"
+    verifycert: "{{verifycert}}"
+    user: "{{user}}"
+    password: "{{password}}"
+    serial_no: "{{serial_no}}"
+    gather_subset:
+      - mv_connections
+    filters:
+      - filter_key: "logged_in"
+        filter_operator: "equal"
+        filter_value: "true"
+      - filter_key: "cap_gb"
+        filter_operator: "equal"
+        filter_value: "10"
 '''
 
 RETURN = r'''
