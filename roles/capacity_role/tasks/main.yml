@@ -34,7 +34,7 @@
   when: cap_unit == 'TB'
 
 - name: Get the list of PowerMax arrays from Unisphere
-  dellemc.powermax.gatherfacts:
+  dellemc.powermax.info:
     unispherehost: "{{ unispherehost }}"
     verifycert: "{{ verifycert }}"
     user: "{{ user }}"
@@ -42,7 +42,7 @@
   register: arrays
 
 - name: Get the list of PowerMax arrays from Unisphere
-  dellemc.powermax.gatherfacts:
+  dellemc.powermax.info:
     unispherehost: "{{ unispherehost }}"
     verifycert: "{{ verifycert }}"
     user: "{{ user }}"
