@@ -1,0 +1,261 @@
+---
+- name: Testing MetroDR Operations
+  hosts: localhost
+  connection: local
+  vars:
+    unispherehost: '10.XX.XX.XX'
+    universion: "101"
+    verifycert: false
+    user: "user"
+    password: "password"
+    mv_name: "ansible_testing_mv_2"
+    metro_r1_array_id: "000123456789"
+    metro_r2_array_id: "000123456788"
+    dr_array_id: "000123456787"
+    sg_name: "ansible_sg"
+    env_name: "metrodr_env"
+    vol_name: "ansible_vol"
+
+  tasks:
+    - name: Create a new Storage group - prereq
+      dellemc.powermax.storagegroup:
+        unispherehost: "{{ unispherehost }}"
+        universion: "{{ universion }}"
+        verifycert: "{{ verifycert }}"
+        user: "{{ user }}"
+        password: "{{ password }}"
+        serial_no: "{{ metro_r1_array_id }}"
+        sg_name: "{{ sg_name }}"
+        service_level: "Diamond"
+        srp: "SRP_1"
+        compression: true
+        state: "present"
+
+    - name: Create a volume - prereq
+      register: volume_details
+      dellemc.powermax.volume:
+        unispherehost: "{{ unispherehost }}"
+        universion: "{{ universion }}"
+        verifycert: "{{ verifycert }}"
+        user: "{{ user }}"
+        password: "{{ password }}"
+        serial_no: "{{ metro_r1_array_id }}"
+        vol_name: "{{ vol_name }}"
+        sg_name: "{{ sg_name }}"
+        size: 1
+        cap_unit: 'GB'
+        state: 'present'
+
+    - name: Create metrodr env
+      dellemc.powermax.metrodr:
+        unispherehost: "{{ unispherehost }}"
+        universion: "{{ universion }}"
+        verifycert: "{{ verifycert }}"
+        user: "{{ user }}"
+        password: "{{ password }}"
+        metro_r1_array_id: "{{ metro_r1_array_id }}"
+        metro_r2_array_id: "{{ metro_r2_array_id }}"
+        dr_array_id: "{{ dr_array_id }}"
+        sg_name: "{{ sg_name }}"
+        env_name: "{{ env_name }}"
+        replication_mode: "Asynchronous"
+        wait_for_completion: true
+        state: "present"
+
+    - name: Modify metrodr env
+      dellemc.powermax.metrodr:
+        unispherehost: "{{ unispherehost }}"
+        universion: "{{ universion }}"
+        verifycert: "{{ verifycert }}"
+        user: "{{ user }}"
+        password: "{{ password }}"
+        metro_r1_array_id: "{{ metro_r1_array_id }}"
+        env_name: "{{ env_name }}"
+        srdf_param:
+          srdf_state: "Suspend"
+          metro: true
+          dr: true
+        replication_mode: "Adaptive Copy"
+        wait_for_completion: true
+        state: "present"
+
+    - name: Delete metrodr env
+      dellemc.powermax.metrodr:
+        unispherehost: "{{ unispherehost }}"
+        universion: "{{ universion }}"
+        verifycert: "{{ verifycert }}"
+        user: "{{ user }}"
+        password: "{{ password }}"
+        metro_r1_array_id: "{{ metro_r1_array_id }}"
+        env_name: "{{ env_name }}"
+        state: "absent"
+
+    - name: Convert sg to metrodr env
+      dellemc.powermax.metrodr:
+        unispherehost: "{{ unispherehost }}"
+        universion: "{{ universion }}"
+        verifycert: "{{ verifycert }}"
+        user: "{{ user }}"
+        password: "{{ password }}"
+        metro_r1_array_id: "{{ metro_r1_array_id }}"
+        metro_r2_array_id: "{{ metro_r2_array_id }}"
+        dr_array_id: "{{ dr_array_id }}"
+        sg_name: "{{ sg_name }}"
+        env_name: "{{ env_name }}"
+        wait_for_completion: true
+        state: "present"
+
+    - name: Delete metrodr env
+      dellemc.powermax.metrodr:
+        unispherehost: "{{ unispherehost }}"
+        universion: "{{ universion }}"
+        verifycert: "{{ verifycert }}"
+        user: "{{ user }}"
+        password: "{{ password }}"
+        metro_r1_array_id: "{{ metro_r1_array_id }}"
+        env_name: "{{ env_name }}"
+        state: "absent"
+
+    - name: Delete SRDF link from m1 - cleanup
+      dellemc.powermax.srdf:
+        unispherehost: "{{ unispherehost }}"
+        universion: "{{ universion }}"
+        verifycert: "{{ verifycert }}"
+        user: "{{ user }}"
+        password: "{{ password }}"
+        serial_no: "{{ metro_r1_array_id }}"
+        sg_name: "{{ sg_name }}"
+        state: 'absent'
+
+    - name: Delete SRDF link from m2 - cleanup
+      dellemc.powermax.srdf:
+        unispherehost: "{{ unispherehost }}"
+        universion: "{{ universion }}"
+        verifycert: "{{ verifycert }}"
+        user: "{{ user }}"
+        password: "{{ password }}"
+        serial_no: "{{ metro_r2_array_id }}"
+        sg_name: "{{ sg_name }}"
+        state: 'absent'
+
+    - name: Delete SRDF link from dr - cleanup
+      dellemc.powermax.srdf:
+        unispherehost: "{{ unispherehost }}"
+        universion: "{{ universion }}"
+        verifycert: "{{ verifycert }}"
+        user: "{{ user }}"
+        password: "{{ password }}"
+        serial_no: "{{ dr_array_id }}"
+        sg_name: "{{ sg_name }}"
+        state: 'absent'
+
+    - name: Remove volumes from SG - m1 - cleanup
+      dellemc.powermax.storagegroup:
+        unispherehost: "{{ unispherehost }}"
+        universion: "{{ universion }}"
+        verifycert: "{{ verifycert }}"
+        user: "{{ user }}"
+        password: "{{ password }}"
+        serial_no: "{{ metro_r1_array_id }}"
+        sg_name: "{{ sg_name }}"
+        state: "present"
+        volumes:
+          - vol_id: "{{ volume_details.volume_details.volumeId }}"
+        vol_state: "absent-in-group"
+
+    - name: Remove volumes from SG - m2 - cleanup
+      dellemc.powermax.storagegroup:
+        unispherehost: "{{ unispherehost }}"
+        universion: "{{ universion }}"
+        verifycert: "{{ verifycert }}"
+        user: "{{ user }}"
+        password: "{{ password }}"
+        serial_no: "{{ metro_r2_array_id }}"
+        sg_name: "{{ sg_name }}"
+        state: "present"
+        volumes:
+          - vol_id: "{{ volume_details.volume_details.volumeId }}"
+        vol_state: "absent-in-group"
+
+    - name: Remove volumes from SG - dr - cleanup
+      dellemc.powermax.storagegroup:
+        unispherehost: "{{ unispherehost }}"
+        universion: "{{ universion }}"
+        verifycert: "{{ verifycert }}"
+        user: "{{ user }}"
+        password: "{{ password }}"
+        serial_no: "{{ dr_array_id }}"
+        sg_name: "{{ sg_name }}"
+        state: "present"
+        volumes:
+          - vol_id: "{{ volume_details.volume_details.volumeId }}"
+        vol_state: "absent-in-group"
+
+    - name: Delete volume - m1 - cleanup
+      dellemc.powermax.volume:
+        unispherehost: "{{ unispherehost }}"
+        universion: "{{ universion }}"
+        verifycert: "{{ verifycert }}"
+        user: "{{ user }}"
+        password: "{{ password }}"
+        serial_no: "{{ metro_r1_array_id }}"
+        sg_name: "{{ sg_name }}"
+        vol_id: "{{ volume_details.volume_details.volumeId }}"
+        state: 'absent'
+
+    - name: Delete volume - m2 - cleanup
+      dellemc.powermax.volume:
+        unispherehost: "{{ unispherehost }}"
+        universion: "{{ universion }}"
+        verifycert: "{{ verifycert }}"
+        user: "{{ user }}"
+        password: "{{ password }}"
+        serial_no: "{{ metro_r2_array_id }}"
+        sg_name: "{{ sg_name }}"
+        vol_id: "{{ volume_details.volume_details.volumeId }}"
+        state: 'absent'
+
+    - name: Delete volume - dr - cleanup
+      dellemc.powermax.volume:
+        unispherehost: "{{ unispherehost }}"
+        universion: "{{ universion }}"
+        verifycert: "{{ verifycert }}"
+        user: "{{ user }}"
+        password: "{{ password }}"
+        serial_no: "{{ dr_array_id }}"
+        sg_name: "{{ sg_name }}"
+        vol_id: "{{ volume_details.volume_details.volumeId }}"
+        state: 'absent'
+
+    - name: Delete SG from m1 array - cleanup
+      dellemc.powermax.storagegroup:
+        unispherehost: "{{ unispherehost }}"
+        universion: "{{ universion }}"
+        verifycert: "{{ verifycert }}"
+        user: "{{ user }}"
+        password: "{{ password }}"
+        serial_no: "{{ metro_r1_array_id }}"
+        sg_name: "{{ sg_name }}"
+        state: 'absent'
+
+    - name: Delete SG from m2 array - cleanup
+      dellemc.powermax.storagegroup:
+        unispherehost: "{{ unispherehost }}"
+        universion: "{{ universion }}"
+        verifycert: "{{ verifycert }}"
+        user: "{{ user }}"
+        password: "{{ password }}"
+        serial_no: "{{ metro_r2_array_id }}"
+        sg_name: "{{ sg_name }}"
+        state: 'absent'
+
+    - name: Delete SG from dr array - cleanup
+      dellemc.powermax.storagegroup:
+        unispherehost: "{{ unispherehost }}"
+        universion: "{{ universion }}"
+        verifycert: "{{ verifycert }}"
+        user: "{{ user }}"
+        password: "{{ password }}"
+        serial_no: "{{ dr_array_id }}"
+        sg_name: "{{ sg_name }}"
+        state: 'absent'

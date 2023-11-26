@@ -346,7 +346,7 @@ HAS_PYU4V = utils.has_pyu4v_sdk()
 PYU4V_VERSION_CHECK = utils.pyu4v_version_check()
 
 # Application Type
-APPLICATION_TYPE = 'ansible_v2.2.1'
+APPLICATION_TYPE = 'ansible_v3.0.0'
 
 
 class Snapshot(object):

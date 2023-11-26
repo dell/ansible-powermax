@@ -27,10 +27,10 @@ author:
 options:
   universion:
     description:
-    - Unisphere version, currently '92', '100' version is supported.
+    - Unisphere version, currently '92', '100' and '101' version is supported.
     type: int
     required: False
-    choices: [92, 100]
+    choices: [92, 100, 101]
   snapshot_policy_name:
     description:
     - Name of the snapshot policy.
@@ -324,7 +324,7 @@ HAS_PYU4V = utils.has_pyu4v_sdk()
 PYU4V_VERSION_CHECK = utils.pyu4v_version_check()
 
 # Application Type
-APPLICATION_TYPE = 'ansible_v2.2.1'
+APPLICATION_TYPE = 'ansible_v3.0.0'
 
 INTERVAL = ['10 Minutes', '12 Minutes', '15 Minutes', '20 Minutes',
             '30 Minutes', '1 Hour', '2 Hours', '3 Hours', '4 Hours',
@@ -839,7 +839,7 @@ def convert_interval_minute(interval):
 
 def get_snapshotpolicy_parameters():
     return dict(
-        universion=dict(type='int', required=False, choices=[92, 100]),
+        universion=dict(type='int', required=False, choices=[92, 100, 101]),
         snapshot_policy_name=dict(required=True, type='str'),
         interval=dict(required=False, type='str', choices=INTERVAL),
         secure=dict(required=False, type='bool', choices=[True, False]),

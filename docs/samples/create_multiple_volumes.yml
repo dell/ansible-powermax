@@ -15,7 +15,7 @@
     cap_unit: 'GB'
 
   tasks:
-# This task creates multiple volumes using the loop.
+  # This task creates multiple volumes using the loop.
     - name: Create volumes
       register: result
       dellemc.powermax.volume:
@@ -30,5 +30,5 @@
         size: 1
         cap_unit: "{{ cap_unit }}"
         state: 'present'
-# The loop will be executed for the number of elements in the list(created by the range) .
+  # The loop will be executed for the number of elements in the list(created by the range) .
       loop: "{{ range(1, 10 + 1, 1) | list }}"

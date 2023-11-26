@@ -2,7 +2,6 @@
   hosts: localhost
   gather_facts: false
   connection: local
-
   vars:
     unispherehost: 'your_unisphere_host_url'
     universion: 'version_of_the_unisphere'
@@ -15,4 +14,4 @@
   tasks:
     - name: Get the Serial Number and Assigned Pool with no value for service_level
       ansible.builtin.include_role:
-        name: dellemc.powermax.capacity_role
+        name: capacity_role

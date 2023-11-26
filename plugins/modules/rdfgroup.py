@@ -55,13 +55,14 @@ EXAMPLES = r'''
 - name: Get specific volume details of an RDF Group
   dellemc.powermax.rdfgroup:
     unispherehost: "{{unispherehost}}"
-    serial_no: "{{serial_no}}"
+    serial_no:  "{{serial_no}}"
     universion: "{{universion}}"
     verifycert: "{{verifycert}}"
     user: "{{user}}"
     password: "{{password}}"
     rdfgroup_number: "1"
     vol_name: "0001"
+
 '''
 
 RETURN = r'''
@@ -393,7 +394,7 @@ HAS_PYU4V = utils.has_pyu4v_sdk()
 PYU4V_VERSION_CHECK = utils.pyu4v_version_check()
 
 # Application Type
-APPLICATION_TYPE = 'ansible_v2.2.1'
+APPLICATION_TYPE = 'ansible_v3.0.0'
 
 
 class RDFGroup(object):

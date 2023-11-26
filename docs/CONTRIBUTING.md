@@ -10,7 +10,7 @@ You may obtain a copy of the License at
 
 # How to contribute
 
-Become one of the contributors to this project! We thrive to build a welcoming and open community for anyone who wants to use the project or contribute to it. There are just a few small guidelines you need to follow. To help us create a safe and positive community experience for all, we require all participants to adhere to the [Code of Conduct](https://github.com/dell/ansible-powermax/blob/2.2.1/docs/CODE_OF_CONDUCT.md).
+Become one of the contributors to this project! We thrive to build a welcoming and open community for anyone who wants to use the project or contribute to it. There are just a few small guidelines you need to follow. To help us create a safe and positive community experience for all, we require all participants to adhere to the [Code of Conduct](https://github.com/dell/ansible-powermax/blob/3.0.0/docs/CODE_OF_CONDUCT.md).
 
 ## Table of contents
 
@@ -76,7 +76,7 @@ Triage helps resolve issues quickly by:
 
 If you do not have the knowledge or time to code, consider helping with _issue triage_. The Ansible modules for Dell PowerMax community thanks you for saving them time by spending some of yours.
 
-Read more about the ways you can [Triage issues](https://github.com/dell/ansible-powermax/blob/2.2.1/docs/ISSUE_TRIAGE.md).
+Read more about the ways you can [Triage issues](https://github.com/dell/ansible-powermax/blob/3.0.0/docs/ISSUE_TRIAGE.md).
 
 ## Your first contribution
 
@@ -90,7 +90,7 @@ When you are ready to contribute, it is time to create a pull request.
 For information about branching, see 
 ## Branching
 
-* [Branching Strategy for Ansible modules for Dell PowerMax](https://github.com/dell/ansible-powermax/blob/2.2.1/docs/BRANCHING.md)
+* [Branching Strategy for Ansible modules for Dell PowerMax](https://github.com/dell/ansible-powermax/blob/3.0.0/docs/BRANCHING.md)
 
 ## Signing your commits
 
@@ -145,7 +145,7 @@ Ensure that the title for your pull request uses the same format as the subject 
 
 ### Quality gates for pull requests
 
-GitHub Actions are used to enforce quality gates when a pull request is created or when any commit is made to the pull request. These GitHub Actions enforce our minimum code quality requirement for any code that get checked into the repository. If any of the quality gates fail, it is expected that the contributor will investigate the check log, understand the problem, and resolve the issue. If help is needed, reach out to the maintainers of the project for [support](https://github.com/dell/ansible-powermax/blob/2.2.1/docs/SUPPORT.md).
+GitHub Actions are used to enforce quality gates when a pull request is created or when any commit is made to the pull request. These GitHub Actions enforce our minimum code quality requirement for any code that get checked into the repository. If any of the quality gates fail, it is expected that the contributor will investigate the check log, understand the problem, and resolve the issue. If help is needed, reach out to the maintainers of the project for [support](https://github.com/dell/ansible-powermax/blob/3.0.0/docs/SUPPORT.md).
 
 #### Code sanitization
 

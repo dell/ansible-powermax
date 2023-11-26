@@ -106,10 +106,10 @@ EXAMPLES = r'''
     portgroup_name: "{{portgroup_name}}"
     state: "present"
     ports:
-      - director_id: "FA-1D"
-        port_id: "5"
-      - director_id: "FA-2D"
-        port_id: "5"
+    - director_id: "FA-1D"
+      port_id: "5"
+    - director_id: "FA-2D"
+      port_id: "5"
     port_state: "present-in-group"
 
 - name: Add ports to port group
@@ -123,10 +123,10 @@ EXAMPLES = r'''
     portgroup_name: "{{portgroup_name}}"
     state: "present"
     ports:
-      - director_id: "FA-2D"
-        port_id: "8"
-      - director_id: "FA-2D"
-        port_id: "9"
+    - director_id: "FA-2D"
+      port_id: "8"
+    - director_id: "FA-2D"
+      port_id: "9"
     port_state: "present-in-group"
 
 - name: Remove ports from port group
@@ -140,10 +140,10 @@ EXAMPLES = r'''
     portgroup_name: "{{portgroup_name}}"
     state: "present"
     ports:
-      - director_id: "FA-2D"
-        port_id: "8"
-      - director_id: "FA-2D"
-        port_id: "9"
+    - director_id: "FA-2D"
+      port_id: "8"
+    - director_id: "FA-2D"
+      port_id: "9"
     port_state: "absent-in-group"
 
 - name: Modify port group
@@ -216,7 +216,7 @@ HAS_PYU4V = utils.has_pyu4v_sdk()
 PYU4V_VERSION_CHECK = utils.pyu4v_version_check()
 
 # Application Type
-APPLICATION_TYPE = 'ansible_v2.2.1'
+APPLICATION_TYPE = 'ansible_v3.0.0'
 
 
 class PortGroup(object):

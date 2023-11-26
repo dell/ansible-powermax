@@ -26,7 +26,7 @@
       register: subset_result
 
   # The set_fact generates the list of all the storage groups in an array.
-    - name: Setting all storage group names
+    - name: Assign a variable to the list of storage group names
       ansible.builtin.set_fact:
         all_storage_groups_names: "{{ subset_result['StorageGroups'] | list }}"
 
@@ -34,18 +34,18 @@
     - name: Get details of all the Storage Groups
       dellemc.powermax.storagegroup:
         unispherehost: "{{ unispherehost }}"
-        serial_no: "{{ serial_no }}"
         universion: "{{ universion }}"
         verifycert: "{{ verifycert }}"
         user: "{{ user }}"
         password: "{{ password }}"
+        serial_no: "{{ serial_no }}"
         sg_name: "{{ item }}"
         state: "present"
       loop: "{{ all_storage_groups_names }}"
       register: all_storage_groups_details
 
   # The set_fact generates a list of the number of volumes in each storage group.
-    - name: Setting number of volumes in storage group
+    - name: Assign a variable to the number of volumes in storage group
       ansible.builtin.set_fact:
         no_of_vols_in_sg: "{{ all_storage_groups_details.results | map(attribute='storage_group_details.num_of_vols') | list }}"
 
@@ -54,4 +54,4 @@
       ansible.builtin.debug:
         msg: "{{ item.1 }}"
       loop: "{{ no_of_vols_in_sg | zip(all_storage_groups_names) | list }}"
-      when: item.0|int == 0
+      when: item.0 | int == 0

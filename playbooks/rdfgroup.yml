@@ -1,0 +1,34 @@
+---
+- name: RDF Group Operations
+  hosts: localhost
+  connection: local
+  vars:
+    unispherehost: '10.XX.XX.XX'
+    universion: "101"
+    verifycert: false
+    user: "user"
+    password: "password"
+    serial_no: "000123456789"
+    rdfgroup_number: "63"
+
+  tasks:
+    - name: Get RDF Group detail and Volumes
+      dellemc.powermax.rdfgroup:
+        unispherehost: "{{ unispherehost }}"
+        serial_no: "{{ serial_no }}"
+        universion: "{{ universion }}"
+        verifycert: "{{ verifycert }}"
+        user: "{{ user }}"
+        password: "{{ password }}"
+        rdfgroup_number: "{{ rdfgroup_number }}"
+
+    - name: Get specific volume details of an RDF Group
+      dellemc.powermax.rdfgroup:
+        unispherehost: "{{ unispherehost }}"
+        serial_no: "{{ serial_no }}"
+        universion: "{{ universion }}"
+        verifycert: "{{ verifycert }}"
+        user: "{{ user }}"
+        password: "{{ password }}"
+        rdfgroup_number: "{{ rdfgroup_number }}"
+        vol_name: "00039"

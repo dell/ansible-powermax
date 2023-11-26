@@ -5,7 +5,6 @@
 - name: List of all the volume IDs whose size is greater than the threshold capacity
   hosts: localhost
   connection: local
-
   vars:
     unispherehost: "your_unisphere_host_url"
     universion: "version_of_the_unisphere"

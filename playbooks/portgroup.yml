@@ -1,0 +1,110 @@
+---
+- name: Testing port group operations
+  hosts: localhost
+  connection: local
+  vars:
+    unispherehost: '10.XX.XX.XX'
+    universion: "101"
+    verifycert: false
+    user: "user"
+    password: "password"
+    portgroup_name: "01_C_pgtest_1"
+    new_name: "01_C_pgtest_2"
+    array_id: "000123456789"
+
+  tasks:
+    - name: Create port group
+      dellemc.powermax.portgroup:
+        unispherehost: "{{ unispherehost }}"
+        universion: "{{ universion }}"
+        verifycert: "{{ verifycert }}"
+        user: "{{ user }}"
+        password: "{{ password }}"
+        serial_no: "{{ array_id }}"
+        portgroup_name: "{{ portgroup_name }}"
+        state: "present"
+
+    - name: Add port to port group
+      dellemc.powermax.portgroup:
+        unispherehost: "{{ unispherehost }}"
+        universion: "{{ universion }}"
+        verifycert: "{{ verifycert }}"
+        user: "{{ user }}"
+        password: "{{ password }}"
+        serial_no: "{{ array_id }}"
+        portgroup_name: "{{ portgroup_name }}"
+        state: "present"
+        ports:
+          - director_id: "FA-1D"
+            port_id: "9"
+          - director_id: "FA-2D"
+            port_id: "9"
+        port_state: "present-in-group"
+
+    - name: Remove port from port group
+      dellemc.powermax.portgroup:
+        unispherehost: "{{ unispherehost }}"
+        universion: "{{ universion }}"
+        verifycert: "{{ verifycert }}"
+        user: "{{ user }}"
+        password: "{{ password }}"
+        serial_no: "{{ array_id }}"
+        portgroup_name: "{{ portgroup_name }}"
+        state: "present"
+        ports:
+          - director_id: "FA-1D"
+            port_id: "9"
+          - director_id: "FA-2D"
+            port_id: "9"
+        port_state: "absent-in-group"
+
+    - name: Modify port group
+      dellemc.powermax.portgroup:
+        unispherehost: "{{ unispherehost }}"
+        universion: "{{ universion }}"
+        verifycert: "{{ verifycert }}"
+        user: "{{ user }}"
+        password: "{{ password }}"
+        serial_no: "{{ array_id }}"
+        portgroup_name: "{{ portgroup_name }}"
+        new_name: "{{ new_name }}"
+        state: "present"
+
+    - name: Delete port group
+      dellemc.powermax.portgroup:
+        unispherehost: "{{ unispherehost }}"
+        universion: "{{ universion }}"
+        verifycert: "{{ verifycert }}"
+        user: "{{ user }}"
+        password: "{{ password }}"
+        serial_no: "{{ array_id }}"
+        portgroup_name: "{{ new_name }}"
+        state: "absent"
+
+    - name: Create PG with ports
+      dellemc.powermax.portgroup:
+        unispherehost: "{{ unispherehost }}"
+        universion: "{{ universion }}"
+        verifycert: "{{ verifycert }}"
+        user: "{{ user }}"
+        password: "{{ password }}"
+        serial_no: "{{ array_id }}"
+        portgroup_name: "{{ portgroup_name }}"
+        state: "present"
+        ports:
+          - director_id: "FA-1D"
+            port_id: "9"
+          - director_id: "FA-2D"
+            port_id: "10"
+        port_state: "present-in-group"
+
+    - name: Delete port group
+      dellemc.powermax.portgroup:
+        unispherehost: "{{ unispherehost }}"
+        universion: "{{ universion }}"
+        verifycert: "{{ verifycert }}"
+        user: "{{ user }}"
+        password: "{{ password }}"
+        serial_no: "{{ array_id }}"
+        portgroup_name: "{{ portgroup_name }}"
+        state: "absent"

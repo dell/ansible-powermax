@@ -174,7 +174,7 @@ EXAMPLES = r"""
     metro_r2_array_id: "{{metro_r2_array_id}}"
     dr_array_id: "{{dr_array_id}}"
     replication_mode: "Asynchronous"
-    wait_for_completion: false
+    wait_for_completion: False
     state: "present"
 
 - name: Create metro DR environment
@@ -190,9 +190,9 @@ EXAMPLES = r"""
     metro_r2_array_id: "{{metro_r2_array_id}}"
     dr_array_id: "{{dr_array_id}}"
     replication_mode: "Asynchronous"
-    new_rdf_group_r1: true
-    new_rdf_group_r2: true
-    wait_for_completion: false
+    new_rdf_group_r1: True
+    new_rdf_group_r2: True
+    wait_for_completion: False
     state: "present"
 
 - name: Modify metro DR environment
@@ -206,10 +206,10 @@ EXAMPLES = r"""
     env_name: "ansible_metrodr_env"
     srdf_param:
       srdf_state: "Suspend"
-      metro: true
-      dr: true
-      keep_r2: true
-    wait_for_completion: true
+      metro: True
+      dr: True
+      keep_r2: True
+    wait_for_completion: True
     state: "present"
 
 - name: Delete metro DR environment
@@ -221,7 +221,7 @@ EXAMPLES = r"""
     password: "{{password}}"
     metro_r1_array_id: "{{metro_r1_array_id}}"
     env_name: "ansible_metrodr_env"
-    remove_r1_dr_rdfg: true
+    remove_r1_dr_rdfg: True
     state: 'absent'
 """
 
@@ -342,7 +342,7 @@ HAS_PYU4V = utils.has_pyu4v_sdk()
 PYU4V_VERSION_CHECK = utils.pyu4v_version_check()
 
 # Application Type
-APPLICATION_TYPE = 'ansible_v2.2.1'
+APPLICATION_TYPE = 'ansible_v3.0.0'
 
 # DO NOT CHANGE BELOW REPLICATION_MODES SEQUENCE AS ITS USED IN SCRIPT
 # USING INDEX

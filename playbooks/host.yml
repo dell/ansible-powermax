@@ -1,0 +1,154 @@
+---
+- name: Testing host operations
+  hosts: localhost
+  connection: local
+  vars:
+    unispherehost: '10.XX.XX.XX'
+    universion: "101"
+    verifycert: false
+    user: 'user'
+    password: 'password'
+    host_name: 'HG4_ansible_test_hostgroup'
+    host_name_1: 'Ansible_Testing_host_1'
+    host_name_2: 'Ansible_Testing_host_2'
+    serial_no: '0123456789'
+    new_host_name: 'Ansible_Testing_host2'
+  tasks:
+    - name: Create host with host_type 'default'
+      dellemc.powermax.host:
+        unispherehost: "{{ unispherehost }}"
+        universion: "{{ universion }}"
+        verifycert: "{{ verifycert }}"
+        user: "{{ user }}"
+        password: "{{ password }}"
+        serial_no: "{{ serial_no }}"
+        host_name: "{{ host_name_1 }}"
+        host_type: "default"
+        state: 'present'
+
+    - name: Create host with host_type 'hpux'
+      dellemc.powermax.host:
+        unispherehost: "{{ unispherehost }}"
+        universion: "{{ universion }}"
+        verifycert: "{{ verifycert }}"
+        user: "{{ user }}"
+        password: "{{ password }}"
+        serial_no: "{{ serial_no }}"
+        host_name: "{{ host_name_2 }}"
+        host_type: "hpux"
+        state: 'present'
+
+    - name: Create host with host_flags
+      dellemc.powermax.host:
+        unispherehost: "{{ unispherehost }}"
+        universion: "{{ universion }}"
+        verifycert: "{{ verifycert }}"
+        user: "{{ user }}"
+        password: "{{ password }}"
+        serial_no: "{{ serial_no }}"
+        host_name: "{{ host_name }}"
+        initiators:
+          - id: 10000090fa6622a5
+          - alias: 'test/host'
+        host_flags:
+          spc2_protocol_version: true
+          consistent_lun: true
+          volume_set_addressing: unset
+          disable_q_reset_on_ua: false
+          openvms: unset
+        state: 'present'
+        initiator_state: 'present-in-host'
+
+    - name: Get host details
+      dellemc.powermax.host:
+        unispherehost: "{{ unispherehost }}"
+        universion: "{{ universion }}"
+        verifycert: "{{ verifycert }}"
+        user: "{{ user }}"
+        password: "{{ password }}"
+        serial_no: "{{ serial_no }}"
+        host_name: "{{ host_name }}"
+        state: 'present'
+
+    - name: Adding initiator to host
+      dellemc.powermax.host:
+        unispherehost: "{{ unispherehost }}"
+        universion: "{{ universion }}"
+        verifycert: "{{ verifycert }}"
+        user: "{{ user }}"
+        password: "{{ password }}"
+        serial_no: "{{ serial_no }}"
+        host_name: "{{ host_name }}"
+        initiators:
+          - 10000000c9dbdf9f
+          - a/b
+        initiator_state: 'present-in-host'
+        state: 'present'
+
+    - name: Removing initiator from host
+      dellemc.powermax.host:
+        unispherehost: "{{ unispherehost }}"
+        universion: "{{ universion }}"
+        verifycert: "{{ verifycert }}"
+        user: "{{ user }}"
+        password: "{{ password }}"
+        serial_no: "{{ serial_no }}"
+        host_name: "{{ host_name }}"
+        initiators:
+          - 20000025b551ff2b
+          - a/b
+        initiator_state: 'absent-in-host'
+        state: 'present'
+
+    - name: Modify flags of host using host_type
+      dellemc.powermax.host:
+        unispherehost: "{{ unispherehost }}"
+        universion: "{{ universion }}"
+        verifycert: "{{ verifycert }}"
+        user: "{{ user }}"
+        password: "{{ password }}"
+        serial_no: "{{ serial_no }}"
+        host_name: "{{ host_name }}"
+        host_type: "hpux"
+        state: 'present'
+
+    - name: Modify flags of host using host_flag
+      dellemc.powermax.host:
+        unispherehost: "{{ unispherehost }}"
+        universion: "{{ universion }}"
+        verifycert: "{{ verifycert }}"
+        user: "{{ user }}"
+        password: "{{ password }}"
+        serial_no: "{{ serial_no }}"
+        host_name: "{{ host_name }}"
+        host_flags:
+          spc2_protocol_version: unset
+          consistent_lun: unset
+          volume_set_addressing: true
+          disable_q_reset_on_ua: false
+          openvms: false
+          avoid_reset_broadcast: true
+        state: 'present'
+
+    - name: Rename host
+      dellemc.powermax.host:
+        unispherehost: "{{ unispherehost }}"
+        universion: "{{ universion }}"
+        verifycert: "{{ verifycert }}"
+        user: "{{ user }}"
+        password: "{{ password }}"
+        serial_no: "{{ serial_no }}"
+        host_name: "{{ host_name }}"
+        new_name: "{{ new_host_name }}"
+        state: 'present'
+
+    - name: Delete host
+      dellemc.powermax.host:
+        unispherehost: "{{ unispherehost }}"
+        universion: "{{ universion }}"
+        verifycert: "{{ verifycert }}"
+        user: "{{ user }}"
+        password: "{{ password }}"
+        serial_no: "{{ serial_no }}"
+        host_name: "{{ new_host_name }}"
+        state: 'absent'

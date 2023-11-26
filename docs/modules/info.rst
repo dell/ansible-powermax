@@ -21,14 +21,15 @@ Requirements
 The below requirements are needed on the host that executes this module.
 
 - A Dell PowerMax storage system.
-- Ansible 2.13, 2.14 or 2.15.
+- Ansible-core 2.14 or later.
+- Python 3.9, 3.10 or 3.11.
 
 
 
 Parameters
 ----------
 
-  serial_no (False, str, None)
+  serial_no (False, str, )
     The serial number of the PowerMax or VMAX array. It is not required for getting the list of arrays.
 
 
@@ -99,7 +100,9 @@ Parameters
     filter_value (True, str, None)
       Value of the filter key.
 
-  masking_view_name(False, str, None)
+
+
+  masking_view_name (optional, str, None)
     The name of the masking view to fetch the masking view connections.
 
 
@@ -108,7 +111,7 @@ Parameters
 
 
   universion (False, int, None)
-    Unisphere version, currently '91', '92' and '100' versions are supported.
+    Unisphere version, currently '91', '92', '100' and '101' versions are supported.
 
 
   verifycert (True, str, None)
@@ -121,6 +124,12 @@ Parameters
 
   password (True, str, None)
     The password of the Unisphere host.
+
+
+  timeout (optional, int, 120)
+    Time after which the connection will get terminated.
+
+    It is to be mentioned in seconds.
 
 
 
@@ -687,4 +696,5 @@ Authors
 - Arindam Datta (@dattaarindam) <ansible.team@dell.com>
 - Rajshree Khare (@khareRajshree) <ansible.team@dell.com>
 - Pavan Mudunuri (@Pavan-Mudunuri) <ansible.team@dell.com>
+- Trisha Datta (@trisha-dell) <ansible.team@dell.com>
 

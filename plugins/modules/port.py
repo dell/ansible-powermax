@@ -38,10 +38,10 @@ EXAMPLES = r"""
     password: "{{password}}"
     serial_no: "{{array_id}}"
     ports:
-      - director_id: "FA-1D"
-        port_id: "5"
-      - director_id: "SE-1F"
-        port_id: "29"
+    - director_id: "FA-1D"
+      port_id: "5"
+    - director_id: "SE-1F"
+      port_id: "29"
 """
 
 RETURN = r'''
@@ -204,7 +204,7 @@ HAS_PYU4V = utils.has_pyu4v_sdk()
 PYU4V_VERSION_CHECK = utils.pyu4v_version_check()
 
 # Application Type
-APPLICATION_TYPE = 'ansible_v2.2.1'
+APPLICATION_TYPE = 'ansible_v3.0.0'
 
 
 class Port(object):

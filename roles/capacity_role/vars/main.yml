@@ -1,4 +1,4 @@
 ---
 # vars file for capacity_role
-pools: ""
-size_gb: ""
+capacity_role_pools: ""
+capacity_role_size_gb: ""

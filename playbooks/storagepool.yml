@@ -1,0 +1,23 @@
+---
+- name: Collect set of facts
+  hosts: localhost
+  connection: local
+  vars:
+    unispherehost: '10.XX.XX.XX'
+    universion: "101"
+    verifycert: false
+    user: 'user'
+    password: 'password'
+    serial_no: "000123456789"
+
+  tasks:
+    - name: Get storage pool details
+      dellemc.powermax.storagepool:
+        unispherehost: "{{ unispherehost }}"
+        universion: "{{ universion }}"
+        verifycert: "{{ verifycert }}"
+        user: "{{ user }}"
+        password: "{{ password }}"
+        serial_no: "{{ serial_no }}"
+        pool: "SRP_1"
+        state: "present"

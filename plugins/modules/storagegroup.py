@@ -156,9 +156,9 @@ EXAMPLES = r'''
     password: "{{password}}"
     serial_no: "{{serial_no}}"
     sg_name: "foo"
-    service_level: "Diamond"
+    service_level:  "Diamond"
     srp: "SRP_1"
-    compression: true
+    compression: True
     state: "present"
 
 - name: Delete the storage group
@@ -183,9 +183,9 @@ EXAMPLES = r'''
     sg_name: "foo"
     state: "present"
     volumes:
-      - vol_id: "00028"
-      - vol_id: "00018"
-      - vol_id: "00025"
+    - vol_id: "00028"
+    - vol_id: "00018"
+    - vol_id: "00025"
     vol_state: "present-in-group"
 
 - name: Create new volumes for existing SG
@@ -199,12 +199,12 @@ EXAMPLES = r'''
     sg_name: "foo"
     state: "present"
     volumes:
-      - vol_name: "foo"
-        size: 1
-        cap_unit: "GB"
-      - vol_name: "bar"
-        size: 1
-        cap_unit: "GB"
+    - vol_name: "foo"
+      size: 1
+      cap_unit: "GB"
+    - vol_name: "bar"
+      size: 1
+      cap_unit: "GB"
     vol_state: "present-in-group"
 
 - name: Remove volumes from existing SG
@@ -218,9 +218,9 @@ EXAMPLES = r'''
     sg_name: "foo"
     state: "present"
     volumes:
-      - vol_id: "00028"
-      - vol_id: "00018"
-      - vol_name: "ansible-vol"
+    - vol_id: "00028"
+    - vol_id: "00018"
+    - vol_name: "ansible-vol"
     vol_state: "absent-in-group"
 
 - name: Move volumes to target SG
@@ -233,12 +233,12 @@ EXAMPLES = r'''
     serial_no: "{{serial_no}}"
     sg_name: "foo"
     target_sg_name: "foo_sg"
-    force: true
+    force: True
     state: "present"
     volumes:
-      - vol_id: "00028"
-      - vol_id: "00018"
-      - vol_name: "ansible-vol"
+    - vol_id: "00028"
+    - vol_id: "00018"
+    - vol_name: "ansible-vol"
     vol_state: "absent-in-group"
 
 - name: Adding child SG to parent SG
@@ -252,8 +252,8 @@ EXAMPLES = r'''
     sg_name: "parent_sg"
     state: "present"
     child_storage_groups:
-      - "pie"
-      - "bar"
+    - "pie"
+    - "bar"
     child_sg_state: "present-in-group"
 
 - name: Removing child SG from parent SG
@@ -267,8 +267,8 @@ EXAMPLES = r'''
     sg_name: "parent_sg"
     state: "present"
     child_storage_groups:
-      - "pie"
-      - "bar"
+    - "pie"
+    - "bar"
     child_sg_state: "absent-in-group"
 
 - name: Rename storage group
@@ -294,7 +294,7 @@ EXAMPLES = r'''
     sg_name: "ansible_test_sg"
     service_level: "Diamond"
     srp: "SRP_1"
-    compression: true
+    compression: True
     snapshot_policies:
       - "10min_policy"
       - "30min_policy"
@@ -588,7 +588,7 @@ HAS_PYU4V = utils.has_pyu4v_sdk()
 PYU4V_VERSION_CHECK = utils.pyu4v_version_check()
 
 # Application Type
-APPLICATION_TYPE = 'ansible_v2.2.1'
+APPLICATION_TYPE = 'ansible_v3.0.0'
 
 
 class StorageGroup(object):
@@ -1716,7 +1716,7 @@ class StorageGroup(object):
         if state == 'present' and vol_state == 'present-in-group'\
                 and storage_group and volumes and not target_sg_name:
             LOG.info('Create new volumes for storage group %s', sg_name)
-            result['add_new_vols_to_sg'],\
+            result['add_new_vols_to_sg'], \
                 result['storage_group_volumes_details'] = self.\
                 add_volume_storage_group(sg_name)
             LOG.info('Add existing volumes to storage group %s', sg_name)

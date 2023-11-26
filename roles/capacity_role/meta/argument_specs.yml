@@ -1,0 +1,44 @@
+---
+argument_specs:
+  main:
+    short_description: Role provides basic support for capacity optimized placement for PowerMax.
+    description:
+      - Role provides basic support for capacity optimized placement for PowerMax.
+    options:
+      unispherehost:
+        required: true
+        type: str
+        description: IP or FQDN of the PowerMax host.
+      user:
+        required: true
+        type: str
+        description: The username of the PowerMax host.
+      password:
+        required: true
+        type: str
+        description: The password of the PowerMax host.
+      verifycert:
+        description:
+          - If C(false), the SSL certificates will not be validated.
+          - Configure C(false) only on personally controlled sites where self-signed certificates are used.
+        type: bool
+        default: false
+      capacity_role_size:
+        description:
+          - The size of the storage group.
+        type: float
+        required: true
+      capacity_role_cap_unit:
+        description:
+          - The capacity unit.
+        choices: [ MB, GB, TB, CYL ]
+        type: str
+        required: true
+      service_level:
+        description:
+          - The service level supported by storage pool.
+        type: str
+      sg_name:
+        description:
+          - The name of the storage group.
+        type: str

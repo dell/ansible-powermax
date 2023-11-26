@@ -93,7 +93,7 @@ EXAMPLES = r'''
     sg_name: "{{sg_name}}"
     size: 1
     cap_unit: "{{cap_unit}}"
-    append_vol_id: true
+    append_vol_id: True
     state: 'present'
 
 - name: Expanding volume size
@@ -104,7 +104,7 @@ EXAMPLES = r'''
     user: "{{user}}"
     password: "{{password}}"
     serial_no: "{{serial_no}}"
-    size: 3
+    size:  3
     cap_unit: "{{cap_unit}}"
     vol_id: "0059B"
     state: 'present'
@@ -117,7 +117,7 @@ EXAMPLES = r'''
     user: "{{user}}"
     password: "{{password}}"
     serial_no: "{{serial_no}}"
-    new_name: "Test_GOLD_vol_Renamed"
+    new_name:  "Test_GOLD_vol_Renamed"
     vol_id: "0059B"
     state: 'present'
 
@@ -266,7 +266,7 @@ HAS_PYU4V = utils.has_pyu4v_sdk()
 PYU4V_VERSION_CHECK = utils.pyu4v_version_check()
 
 # Application Type
-APPLICATION_TYPE = 'ansible_v2.2.1'
+APPLICATION_TYPE = 'ansible_v3.0.0'
 
 
 class Volume(object):

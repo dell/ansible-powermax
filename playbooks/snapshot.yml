@@ -1,0 +1,194 @@
+---
+- name: Running tests for PowerMax Snapshot module
+  hosts: localhost
+  connection: local
+  vars:
+    unispherehost: "10.XX.XX.XX"
+    universion: "101"
+    verifycert: false
+    user: "user"
+    password: "password"
+    sg_name: "ansible-snap-sg-source"
+    serial_no: "000123456789"
+    snapshot_name: "ansible_snap_test_x2"
+    ttl: "1"
+    ttl_none: "None"
+    ttl_unit_hours: "hours"
+    ttl_unit_days: "days"
+    generation: 0
+    snapshot_id: 135023964929
+    generation_1: 1
+    snapshot_id_1: 135023964515
+    new_snapshot_name: "ansible_snap_rename_test"
+    target_sg_name: "ansible-snap-sg-target"
+    link_status_linked: "linked"
+    link_status_unlinked: "unlinked"
+    state_present: "present"
+    state_absent: "absent"
+
+  tasks:
+    - name: Create a storage group Snapshot with TTL
+      dellemc.powermax.snapshot:
+        unispherehost: "{{ unispherehost }}"
+        universion: "{{ universion }}"
+        verifycert: "{{ verifycert }}"
+        user: "{{ user }}"
+        password: "{{ password }}"
+        serial_no: "{{ serial_no }}"
+        sg_name: "{{ sg_name }}"
+        ttl: "{{ ttl }}"
+        ttl_unit: "{{ ttl_unit_days }}"
+        snapshot_name: "{{ snapshot_name }}"
+        state: "{{ state_present }}"
+
+    - name: Get Storage Group Snapshot details
+      dellemc.powermax.snapshot:
+        unispherehost: "{{ unispherehost }}"
+        universion: "{{ universion }}"
+        verifycert: "{{ verifycert }}"
+        user: "{{ user }}"
+        password: "{{ password }}"
+        serial_no: "{{ serial_no }}"
+        sg_name: "{{ sg_name }}"
+        snapshot_name: "{{ snapshot_name }}"
+        state: "{{ state_present }}"
+
+    - name: Get Storage Group Snapshot details using generation
+      dellemc.powermax.snapshot:
+        unispherehost: "{{ unispherehost }}"
+        universion: "{{ universion }}"
+        verifycert: "{{ verifycert }}"
+        user: "{{ user }}"
+        password: "{{ password }}"
+        serial_no: "{{ serial_no }}"
+        sg_name: "{{ sg_name }}"
+        snapshot_name: "{{ snapshot_name }}"
+        generation: "{{ generation_1 }}"
+        state: "{{ state_present }}"
+
+    - name: Get Storage Group Snapshot details using snapshot_id
+      dellemc.powermax.snapshot:
+        unispherehost: "{{ unispherehost }}"
+        universion: "{{ universion }}"
+        verifycert: "{{ verifycert }}"
+        user: "{{ user }}"
+        password: "{{ password }}"
+        serial_no: "{{ serial_no }}"
+        sg_name: "{{ sg_name }}"
+        snapshot_name: "{{ snapshot_name }}"
+        snapshot_id: "{{ snapshot_id_1 }}"
+        state: "{{ state_present }}"
+
+    - name: Change SG Snapshot Link Status to Linked using generation
+      dellemc.powermax.snapshot:
+        unispherehost: "{{ unispherehost }}"
+        universion: "{{ universion }}"
+        verifycert: "{{ verifycert }}"
+        user: "{{ user }}"
+        password: "{{ password }}"
+        serial_no: "{{ serial_no }}"
+        sg_name: "{{ sg_name }}"
+        snapshot_name: "{{ snapshot_name }}"
+        target_sg_name: "{{ target_sg_name }}"
+        link_status: "{{ link_status_linked }}"
+        generation: "{{ generation }}"
+        state: "{{ state_present }}"
+
+    - name: Change SG Snapshot Link Status to UnLinked using generation
+      dellemc.powermax.snapshot:
+        unispherehost: "{{ unispherehost }}"
+        universion: "{{ universion }}"
+        verifycert: "{{ verifycert }}"
+        user: "{{ user }}"
+        password: "{{ password }}"
+        serial_no: "{{ serial_no }}"
+        sg_name: "{{ sg_name }}"
+        snapshot_name: "{{ snapshot_name }}"
+        target_sg_name: "{{ target_sg_name }}"
+        link_status: "{{ link_status_unlinked }}"
+        generation: "{{ generation }}"
+        state: "{{ state_present }}"
+
+    - name: Change SG Snapshot Link Status to Linked using snapshot_id
+      dellemc.powermax.snapshot:
+        unispherehost: "{{ unispherehost }}"
+        universion: "{{ universion }}"
+        verifycert: "{{ verifycert }}"
+        user: "{{ user }}"
+        password: "{{ password }}"
+        serial_no: "{{ serial_no }}"
+        sg_name: "{{ sg_name }}"
+        snapshot_name: "{{ snapshot_name }}"
+        target_sg_name: "{{ target_sg_name }}"
+        link_status: "{{ link_status_linked }}"
+        snapshot_id: "{{ snapshot_id }}"
+        state: "{{ state_present }}"
+
+    - name: Change SG Snapshot Link Status to UnLinked using snapshot_id
+      dellemc.powermax.snapshot:
+        unispherehost: "{{ unispherehost }}"
+        universion: "{{ universion }}"
+        verifycert: "{{ verifycert }}"
+        user: "{{ user }}"
+        password: "{{ password }}"
+        serial_no: "{{ serial_no }}"
+        sg_name: "{{ sg_name }}"
+        snapshot_name: "{{ snapshot_name }}"
+        target_sg_name: "{{ target_sg_name }}"
+        link_status: "{{ link_status_unlinked }}"
+        snapshot_id: "{{ snapshot_id }}"
+        state: "{{ state_present }}"
+
+    - name: Rename Storage Group Snapshot using generation
+      dellemc.powermax.snapshot:
+        unispherehost: "{{ unispherehost }}"
+        universion: "{{ universion }}"
+        verifycert: "{{ verifycert }}"
+        user: "{{ user }}"
+        password: "{{ password }}"
+        serial_no: "{{ serial_no }}"
+        sg_name: "{{ sg_name }}"
+        snapshot_name: "{{ snapshot_name }}"
+        new_snapshot_name: "{{ new_snapshot_name }}"
+        generation: "{{ generation }}"
+        state: "{{ state_present }}"
+
+    - name: Rename Storage Group Snapshot using snapshot_id
+      dellemc.powermax.snapshot:
+        unispherehost: "{{ unispherehost }}"
+        universion: "{{ universion }}"
+        verifycert: "{{ verifycert }}"
+        user: "{{ user }}"
+        password: "{{ password }}"
+        serial_no: "{{ serial_no }}"
+        sg_name: "{{ sg_name }}"
+        snapshot_name: "{{ snapshot_name }}"
+        new_snapshot_name: "{{ new_snapshot_name }}"
+        snapshot_id: "{{ snapshot_id }}"
+        state: "{{ state_present }}"
+
+    - name: Delete Storage Group Snapshot using generation
+      dellemc.powermax.snapshot:
+        unispherehost: "{{ unispherehost }}"
+        universion: "{{ universion }}"
+        verifycert: "{{ verifycert }}"
+        user: "{{ user }}"
+        password: "{{ password }}"
+        serial_no: "{{ serial_no }}"
+        sg_name: "{{ sg_name }}"
+        snapshot_name: "{{ snapshot_name }}"
+        generation: "{{ generation_1 }}"
+        state: "{{ state_absent }}"
+
+    - name: Delete Storage Group Snapshot using snapshot_id
+      dellemc.powermax.snapshot:
+        unispherehost: "{{ unispherehost }}"
+        universion: "{{ universion }}"
+        verifycert: "{{ verifycert }}"
+        user: "{{ user }}"
+        password: "{{ password }}"
+        serial_no: "{{ serial_no }}"
+        sg_name: "{{ sg_name }}"
+        snapshot_name: "{{ snapshot_name }}"
+        snapshot_id: "{{ snapshot_id_1 }}"
+        state: "{{ state_absent }}"

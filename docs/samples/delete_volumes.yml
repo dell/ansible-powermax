@@ -3,7 +3,6 @@
 - name: Deletion of the multiple volumes
   hosts: localhost
   connection: local
-
   vars:
     unispherehost: 'your_unisphere_host_url'
     universion: "version_of_the_unisphere"
@@ -14,7 +13,7 @@
     sg_name: 'sample_storage_group'
 
   tasks:
-# This task collects the details of the storage group.
+  # This task collects the details of the storage group.
     - name: Get details of the Storage Group
       dellemc.powermax.storagegroup:
         unispherehost: "{{ unispherehost }}"
@@ -27,12 +26,12 @@
         state: "present"
       register: storage_details
 
-# The set_fact fetches the Id's of all the volumes from the storage group details and creates the list.
-    - name: Setting volume IDs
+  # The set_fact fetches the Id's of all the volumes from the storage group details and creates the list.
+    - name: Assign a variable to the list of volume IDs
       ansible.builtin.set_fact:
         all_volumes_id: "{{ storage_details.storage_group_volumes | list }}"
 
-#  This task removes all the volumes from the storage group. vol_state attribute defines the state of the volume in a storage group.
+  #  This task removes all the volumes from the storage group. vol_state attribute defines the state of the volume in a storage group.
     - name: Remove all volumes from the Storage Group
       dellemc.powermax.storagegroup:
         unispherehost: "{{ unispherehost }}"
@@ -46,9 +45,9 @@
         volumes:
           - vol_id: "{{ item }}"
         vol_state: "absent-in-group"
-      loop: "{{ all_volumes_id }}"
+      loop: "{{ all_volumes_Id }}"
 
-#  This task deletes the volumes which were removed from the storage group in the previous task.
+  #  This task deletes the volumes which were removed from the storage group in the previous task.
     - name: Delete all the volumes
       dellemc.powermax.volume:
         unispherehost: "{{ unispherehost }}"
@@ -59,4 +58,4 @@
         serial_no: "{{ serial_no }}"
         vol_id: "{{ item }}"
         state: 'absent'
-      loop: "{{ all_volumes_id }}"
+      loop: "{{ all_volumes_Id }}"

@@ -1,0 +1,27 @@
+---
+galaxy_info:
+  author: "Akash Shendge, Pavan Mudunuri"
+  description: Role provides basic support for capacity optimized placement for PowerMax.
+  company: Dell Technologies
+  role_name: capacity_role
+  namespace: dellemc
+
+  license: GPL-3.0-only
+
+  min_ansible_version: "2.14.0"
+
+  platforms:
+    - name: EL
+      versions:
+        - "9"
+        - "8"
+    - name: Ubuntu
+      versions:
+        - jammy
+
+    - name: SLES
+      versions:
+        - "15SP3"
+        - "15SP4"
+
+  galaxy_tags: []

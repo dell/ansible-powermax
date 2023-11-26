@@ -1,0 +1,20 @@
+---
+- name: Job Operations on PowerMax Array
+  hosts: localhost
+  connection: local
+  vars:
+    unispherehost: "10.XX.XX.XX"
+    universion: "101"
+    verifycert: false
+    user: "user"
+    password: "password"
+
+  tasks:
+    - name: Get job details
+      dellemc.powermax.job:
+        unispherehost: "{{ unispherehost }}"
+        universion: "{{ universion }}"
+        verifycert: "{{ verifycert }}"
+        user: "{{ user }}"
+        password: "{{ password }}"
+        job_id: "1609765491463"

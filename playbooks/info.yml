@@ -1,0 +1,267 @@
+---
+- name: Collect set of facts
+  hosts: localhost
+  connection: local
+  vars:
+    unispherehost: '10.XX.XX.XX'
+    universion: "101"
+    verifycert: false
+    user: 'user'
+    password: 'password'
+    serial_no: "0123456789"
+    tdev_volumes: true
+
+  tasks:
+    - name: Get subset facts for a given PowerMax/Vmax Storage System
+      dellemc.powermax.info:
+        unispherehost: "{{ unispherehost }}"
+        serial_no: "{{ serial_no }}"
+        universion: "{{ universion }}"
+        verifycert: "{{ verifycert }}"
+        user: "{{ user }}"
+        password: "{{ password }}"
+        gather_subset:
+          - alert
+          - health
+          - vol
+          - sg
+          - pg
+          - srp
+          - host
+          - hg
+          - port
+          - mv
+          - mv_connections
+          - rdf
+          - metro_dr_env
+          - snapshot_policies
+      register: subset_result
+
+    - name: Get list of volumes with filter -- all TDEV volumes of size equal to 5GB
+      dellemc.powermax.info:
+        unispherehost: "{{ unispherehost }}"
+        universion: "{{ universion }}"
+        verifycert: "{{ verifycert }}"
+        user: "{{ user }}"
+        password: "{{ password }}"
+        serial_no: "{{ serial_no }}"
+        gather_subset:
+          - vol
+        filters:
+          - filter_key: "tdev"
+            filter_operator: "equal"
+            filter_value: "True"
+          - filter_key: "cap_gb"
+            filter_operator: "equal"
+            filter_value: "5"
+
+    - name: Get list of volumes and storage group with filter
+      dellemc.powermax.info:
+        unispherehost: "{{ unispherehost }}"
+        universion: "{{ universion }}"
+        verifycert: "{{ verifycert }}"
+        user: "{{ user }}"
+        password: "{{ password }}"
+        serial_no: "{{ serial_no }}"
+        gather_subset:
+          - vol
+          - sg
+        filters:
+          - filter_key: "tdev"
+            filter_operator: "equal"
+            filter_value: "True"
+          - filter_key: "cap_gb"
+            filter_operator: "equal"
+            filter_value: "5"
+
+    - name: Get list of storage group with capacity between 2GB to 10GB
+      dellemc.powermax.info:
+        unispherehost: "{{ unispherehost }}"
+        verifycert: "{{ verifycert }}"
+        user: "{{ user }}"
+        password: "{{ password }}"
+        serial_no: "{{ serial_no }}"
+        gather_subset:
+          - sg
+        filters:
+          - filter_key: "cap_gb"
+            filter_operator: "greater"
+            filter_value: "2"
+          - filter_key: "cap_gb"
+            filter_operator: "lesser"
+            filter_value: "10"
+
+    - name: Get the list of arrays for a given Unisphere host
+      dellemc.powermax.info:
+        unispherehost: "{{ unispherehost }}"
+        verifycert: "{{ verifycert }}"
+        user: "{{ user }}"
+        password: "{{ password }}"
+      register: array_list
+
+    - name: Get the list of metro DR environments for a given Unisphere host
+      dellemc.powermax.info:
+        unispherehost: "{{ unispherehost }}"
+        verifycert: "{{ verifycert }}"
+        user: "{{ user }}"
+        password: "{{ password }}"
+        serial_no: "{{ serial_no }}"
+        gather_subset:
+          - metro_dr_env
+
+    - name: Get list of tdev-volumes
+      dellemc.powermax.info:
+        unispherehost: "{{ unispherehost }}"
+        verifycert: "{{ verifycert }}"
+        user: "{{ user }}"
+        password: "{{ password }}"
+        serial_no: "{{ serial_no }}"
+        tdev_volumes: "{{ tdev_volumes }}"
+        gather_subset:
+          - vol
+
+    - name: Get the list of arrays for a given Unisphere host
+      dellemc.powermax.info:
+        unispherehost: "{{ unispherehost }}"
+        verifycert: "{{ verifycert }}"
+        user: "{{ user }}"
+        password: "{{ password }}"
+
+    - name: Get array health status
+      dellemc.powermax.info:
+        unispherehost: "{{ unispherehost }}"
+        verifycert: "{{ verifycert }}"
+        user: "{{ user }}"
+        password: "{{ password }}"
+        serial_no: "{{ serial_no }}"
+        gather_subset:
+          - health
+
+    - name: Get array alert summary
+      dellemc.powermax.info:
+        unispherehost: "{{ unispherehost }}"
+        verifycert: "{{ verifycert }}"
+        user: "{{ user }}"
+        password: "{{ password }}"
+        serial_no: "{{ serial_no }}"
+        gather_subset:
+          - alert
+
+    - name: Get list of Storage groups
+      dellemc.powermax.info:
+        unispherehost: "{{ unispherehost }}"
+        verifycert: "{{ verifycert }}"
+        user: "{{ user }}"
+        password: "{{ password }}"
+        serial_no: "{{ serial_no }}"
+        gather_subset:
+          - sg
+
+    - name: Get list of Storage Resource Pools
+      dellemc.powermax.info:
+        unispherehost: "{{ unispherehost }}"
+        verifycert: "{{ verifycert }}"
+        user: "{{ user }}"
+        password: "{{ password }}"
+        serial_no: "{{ serial_no }}"
+        gather_subset:
+          - srp
+
+    - name: Get list of Ports
+      dellemc.powermax.info:
+        unispherehost: "{{ unispherehost }}"
+        verifycert: "{{ verifycert }}"
+        user: "{{ user }}"
+        password: "{{ password }}"
+        serial_no: "{{ serial_no }}"
+        gather_subset:
+          - port
+
+    - name: Get list of Port Groups
+      dellemc.powermax.info:
+        unispherehost: "{{ unispherehost }}"
+        verifycert: "{{ verifycert }}"
+        user: "{{ user }}"
+        password: "{{ password }}"
+        serial_no: "{{ serial_no }}"
+        gather_subset:
+          - pg
+
+    - name: Get list of Hosts
+      dellemc.powermax.info:
+        unispherehost: "{{ unispherehost }}"
+        verifycert: "{{ verifycert }}"
+        user: "{{ user }}"
+        password: "{{ password }}"
+        serial_no: "{{ serial_no }}"
+        gather_subset:
+          - host
+
+    - name: Get list of Host Groups
+      dellemc.powermax.info:
+        unispherehost: "{{ unispherehost }}"
+        verifycert: "{{ verifycert }}"
+        user: "{{ user }}"
+        password: "{{ password }}"
+        serial_no: "{{ serial_no }}"
+        gather_subset:
+          - hg
+
+    - name: Get list of Masking Views
+      dellemc.powermax.info:
+        unispherehost: "{{ unispherehost }}"
+        verifycert: "{{ verifycert }}"
+        user: "{{ user }}"
+        password: "{{ password }}"
+        serial_no: "{{ serial_no }}"
+        gather_subset:
+          - mv
+
+    - name: Get list of RDF Groups
+      dellemc.powermax.info:
+        unispherehost: "{{ unispherehost }}"
+        verifycert: "{{ verifycert }}"
+        user: "{{ user }}"
+        password: "{{ password }}"
+        serial_no: "{{ serial_no }}"
+        gather_subset:
+          - rdf
+
+    - name: Get list of snapshot policies
+      dellemc.powermax.info:
+        unispherehost: "{{ unispherehost }}"
+        universion: "{{ universion }}"
+        verifycert: "{{ verifycert }}"
+        user: "{{ user }}"
+        password: "{{ password }}"
+        serial_no: "{{ serial_no }}"
+        gather_subset:
+          - snapshot_policies
+
+    - name: Get list of Initiators
+      dellemc.powermax.info:
+        unispherehost: "{{ unispherehost }}"
+        verifycert: "{{ verifycert }}"
+        user: "{{ user }}"
+        password: "{{ password }}"
+        serial_no: "{{ serial_no }}"
+        gather_subset:
+          - initiators
+
+    - name: Get list of masking view connections with filter
+      dellemc.powermax.info:
+        unispherehost: "{{ unispherehost }}"
+        universion: "{{ universion }}"
+        verifycert: "{{ verifycert }}"
+        user: "{{ user }}"
+        password: "{{ password }}"
+        serial_no: "{{ serial_no }}"
+        gather_subset:
+          - mv_connections
+        filters:
+          - filter_key: "logged_in"
+            filter_operator: "equal"
+            filter_value: "True"
+          - filter_key: "cap_gb"
+            filter_operator: "equal"
+            filter_value: "10"
