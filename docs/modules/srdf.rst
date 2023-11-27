@@ -167,7 +167,7 @@ Examples
         remote_serial_no: "{{remote_serial_no}}"
         state: 'present'
         srdf_mode: 'Synchronous'
-        wait_for_completion: True
+        wait_for_completion: true
 
     - name: Create storagegroup Metro SRDF pair with Witness for resiliency
       dellemc.powermax.srdf:
@@ -181,7 +181,7 @@ Examples
         remote_serial_no: "{{remote_serial_no}}"
         state: 'present'
         srdf_mode: 'Active'
-        wait_for_completion: True
+        wait_for_completion: true
         srdf_state: 'Establish'
 
     - name: Suspend storagegroup Metro SRDF pair
@@ -209,9 +209,9 @@ Examples
         sg_name: "{{sg_name}}"
         remote_serial_no: "{{remote_serial_no}}"
         state: 'present'
-        wait_for_completion: False
+        wait_for_completion: false
         srdf_state: 'Establish'
-        witness: False
+        witness: false
 
     - name: Get SRDF details
       dellemc.powermax.srdf:

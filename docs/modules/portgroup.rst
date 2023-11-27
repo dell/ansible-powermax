@@ -145,10 +145,10 @@ Examples
         portgroup_name: "{{portgroup_name}}"
         state: "present"
         ports:
-        - director_id: "FA-1D"
-          port_id: "5"
-        - director_id: "FA-2D"
-          port_id: "5"
+          - director_id: "FA-1D"
+            port_id: "5"
+          - director_id: "FA-2D"
+            port_id: "5"
         port_state: "present-in-group"
 
     - name: Add ports to port group
@@ -162,10 +162,10 @@ Examples
         portgroup_name: "{{portgroup_name}}"
         state: "present"
         ports:
-        - director_id: "FA-2D"
-          port_id: "8"
-        - director_id: "FA-2D"
-          port_id: "9"
+          - director_id: "FA-2D"
+            port_id: "8"
+          - director_id: "FA-2D"
+            port_id: "9"
         port_state: "present-in-group"
 
     - name: Remove ports from port group
@@ -179,10 +179,10 @@ Examples
         portgroup_name: "{{portgroup_name}}"
         state: "present"
         ports:
-        - director_id: "FA-2D"
-          port_id: "8"
-        - director_id: "FA-2D"
-          port_id: "9"
+          - director_id: "FA-2D"
+            port_id: "8"
+          - director_id: "FA-2D"
+            port_id: "9"
         port_state: "absent-in-group"
 
     - name: Modify port group

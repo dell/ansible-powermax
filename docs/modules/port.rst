@@ -89,10 +89,10 @@ Examples
         password: "{{password}}"
         serial_no: "{{array_id}}"
         ports:
-        - director_id: "FA-1D"
-          port_id: "5"
-        - director_id: "SE-1F"
-          port_id: "29"
+          - director_id: "FA-1D"
+            port_id: "5"
+          - director_id: "SE-1F"
+            port_id: "29"
 
 
 

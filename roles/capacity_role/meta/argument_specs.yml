@@ -31,7 +31,7 @@ argument_specs:
       capacity_role_cap_unit:
         description:
           - The capacity unit.
-        choices: [ MB, GB, TB, CYL ]
+        choices: [MB, GB, TB, CYL]
         type: str
         required: true
       service_level:

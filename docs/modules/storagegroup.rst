@@ -213,7 +213,7 @@ Examples
         sg_name: "foo"
         service_level:  "Diamond"
         srp: "SRP_1"
-        compression: True
+        compression: true
         state: "present"
 
     - name: Delete the storage group
@@ -238,9 +238,9 @@ Examples
         sg_name: "foo"
         state: "present"
         volumes:
-        - vol_id: "00028"
-        - vol_id: "00018"
-        - vol_id: "00025"
+          - vol_id: "00028"
+          - vol_id: "00018"
+          - vol_id: "00025"
         vol_state: "present-in-group"
 
     - name: Create new volumes for existing SG
@@ -254,12 +254,12 @@ Examples
         sg_name: "foo"
         state: "present"
         volumes:
-        - vol_name: "foo"
-          size: 1
-          cap_unit: "GB"
-        - vol_name: "bar"
-          size: 1
-          cap_unit: "GB"
+          - vol_name: "foo"
+            size: 1
+            cap_unit: "GB"
+          - vol_name: "bar"
+            size: 1
+            cap_unit: "GB"
         vol_state: "present-in-group"
 
     - name: Remove volumes from existing SG
@@ -273,9 +273,9 @@ Examples
         sg_name: "foo"
         state: "present"
         volumes:
-        - vol_id: "00028"
-        - vol_id: "00018"
-        - vol_name: "ansible-vol"
+          - vol_id: "00028"
+          - vol_id: "00018"
+          - vol_name: "ansible-vol"
         vol_state: "absent-in-group"
 
     - name: Move volumes to target SG
@@ -288,12 +288,12 @@ Examples
         serial_no: "{{serial_no}}"
         sg_name: "foo"
         target_sg_name: "foo_sg"
-        force: True
+        force: true
         state: "present"
         volumes:
-        - vol_id: "00028"
-        - vol_id: "00018"
-        - vol_name: "ansible-vol"
+          - vol_id: "00028"
+          - vol_id: "00018"
+          - vol_name: "ansible-vol"
         vol_state: "absent-in-group"
 
     - name: Adding child SG to parent SG
@@ -307,8 +307,8 @@ Examples
         sg_name: "parent_sg"
         state: "present"
         child_storage_groups:
-        - "pie"
-        - "bar"
+          - "pie"
+          - "bar"
         child_sg_state: "present-in-group"
 
     - name: Removing child SG from parent SG
@@ -322,8 +322,8 @@ Examples
         sg_name: "parent_sg"
         state: "present"
         child_storage_groups:
-        - "pie"
-        - "bar"
+          - "pie"
+          - "bar"
         child_sg_state: "absent-in-group"
 
     - name: Rename storage group
@@ -349,7 +349,7 @@ Examples
         sg_name: "ansible_test_sg"
         service_level: "Diamond"
         srp: "SRP_1"
-        compression: True
+        compression: true
         snapshot_policies:
           - "10min_policy"
           - "30min_policy"

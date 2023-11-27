@@ -140,7 +140,7 @@ Examples
         sg_name: "{{sg_name}}"
         size: 1
         cap_unit: "{{cap_unit}}"
-        append_vol_id: True
+        append_vol_id: true
         state: 'present'
 
     - name: Expanding volume size
@@ -151,7 +151,7 @@ Examples
         user: "{{user}}"
         password: "{{password}}"
         serial_no: "{{serial_no}}"
-        size:  3
+        size: 3
         cap_unit: "{{cap_unit}}"
         vol_id: "0059B"
         state: 'present'
@@ -164,7 +164,7 @@ Examples
         user: "{{user}}"
         password: "{{password}}"
         serial_no: "{{serial_no}}"
-        new_name:  "Test_GOLD_vol_Renamed"
+        new_name: "Test_GOLD_vol_Renamed"
         vol_id: "0059B"
         state: 'present'
 
