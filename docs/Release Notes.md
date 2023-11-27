@@ -84,4 +84,3 @@ page. It includes the following:
 
    - README
    - Release Notes (this document)
-   - Product Guide

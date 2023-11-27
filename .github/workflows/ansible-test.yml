@@ -39,7 +39,7 @@ jobs:
 
   ###
   # Unit tests (OPTIONAL)
-  # 
+  #
   # https://docs.ansible.com/ansible/latest/dev_guide/testing_units.html
 
   unit:
@@ -166,7 +166,7 @@ jobs:
           path: .cache/collection-tarballs
 
       - name: Install collection build
-        run: ansible-galaxy collection install .cache/collection-tarballs/*.tar.gz 
+        run: ansible-galaxy collection install .cache/collection-tarballs/*.tar.gz
 
       - name: Run Ansible lint
         run: ansible-lint --show-relpath
