@@ -1,0 +1,75 @@
+---
+- name: Intelligent Volume Placement operation on PowerMax
+  hosts: localhost
+  connection: local
+  vars:
+    # PowerMax connection parameters
+    unispherehost: '10.XX.XX.XX'
+    universion: '101'
+    verifycert: false
+    user: 'user'
+    password: 'password'
+
+    # Parameters for placement logic -- note that size is total size for all volumes
+    size: 40
+    cap_unit: 'GB'
+    service_level: "Diamond"
+
+    # Return parameters by the placement role
+    assigned_pool: ''
+
+    # Local variables used by this playbook
+    serial_no: ""
+    sg_name: 'intelligent_provisioning'
+    vol_name: 'demo_role'
+    vol_count: 4
+
+  tasks:
+    - name: Include the PowerMax role to get the Serial Number and Assigned Pool
+      ansible.builtin.include_role:
+        name: capacity_role
+
+    - name: Debug assigned pool
+      ansible.builtin.debug:
+        var: assigned_pool
+
+    - name: Show error message on unsuccessful search
+      ansible.builtin.fail:
+        msg: "failed to find suitable pool with specified size and service level. Available pools are {{ assigned_pool.all_pools }} "
+      when: assigned_pool.serial_no == 'NOT_FOUND'
+
+    - name: Show best suitable system on successful search
+      ansible.builtin.debug:
+        msg: "serial no is {{ assigned_pool.serial_no }} # srp_id is {{ assigned_pool.storage_pool }} # storage group is {{ assigned_pool.storage_group }}"
+
+    # Create storage group on the assigned serial number and SRP (if it does not exist already)
+    - name: Create storage group
+      register: storage_group_details
+      dellemc.powermax.storagegroup:
+        unispherehost: "{{ unispherehost }}"
+        universion: "{{ universion }}"
+        verifycert: "{{ verifycert }}"
+        user: "{{ user }}"
+        password: "{{ password }}"
+        serial_no: "{{ assigned_pool.serial_no }}"
+        sg_name: "{{ sg_name }}"
+        service_level: "{{ service_level }}"
+        srp: "{{ assigned_pool.storage_pool }}"
+        compression: true
+        state: "present"
+
+    # Once the storage group is provisioned, multiple volumes can be created within the same storage group
+    - name: Create volumes
+      dellemc.powermax.volume:
+        unispherehost: "{{ unispherehost }}"
+        universion: "{{ universion }}"
+        verifycert: "{{ verifycert }}"
+        user: "{{ user }}"
+        password: "{{ password }}"
+        serial_no: "{{ assigned_pool.serial_no }}"
+        vol_name: "{{ vol_name + '_' }}{{ item }}"
+        sg_name: "{{ sg_name }}"
+        size: "{{ (size / vol_count) | int | abs }}"
+        cap_unit: "{{ cap_unit }}"
+        state: 'present'
+      loop: "{{ range(0, vol_count, 1) | list }}"

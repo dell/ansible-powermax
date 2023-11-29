@@ -54,7 +54,7 @@ def pyu4v_version_check():
                                       "is : {1} and less than {2} ".format(
                                           curr_version, min_ver, max_ver)
         supported_version = (parse_version(
-            min_ver) <= parse_version(curr_version) < parse_version(max_ver)
+            min_ver) <= parse_version(curr_version) <= parse_version(max_ver)
         )
         if supported_version is False:
             return unsupported_version_message
@@ -79,6 +79,8 @@ def universion_check(universion):
         elif curr_version.startswith("9.2") and universion == 92:
             is_valid_universion = True
         elif curr_version.startswith("10.0") and universion == 100:
+            is_valid_universion = True
+        elif curr_version.startswith("10.1") and universion == 101:
             is_valid_universion = True
         else:
             user_message = "Unsupported unisphere version for current PyU4V"
@@ -129,18 +131,20 @@ def get_powermax_management_host_parameters(metro_dr=False):
     if metro_dr:
         return dict(
             unispherehost=dict(type='str', required=True, no_log=True),
-            universion=dict(type='int', required=False, choices=[91, 92, 100]),
+            universion=dict(type='int', required=False, choices=[91, 92, 100, 101]),
             verifycert=dict(type='str', required=True),
             user=dict(type='str', required=True),
-            password=dict(type='str', required=True, no_log=True))
+            password=dict(type='str', required=True, no_log=True),
+            timeout=dict(type='int', required=False, default=120))
 
     return dict(
         unispherehost=dict(type='str', required=True, no_log=True),
-        universion=dict(type='int', required=False, choices=[91, 92, 100]),
+        universion=dict(type='int', required=False, choices=[91, 92, 100, 101]),
         verifycert=dict(type='str', required=True),
         user=dict(type='str', required=True),
         password=dict(type='str', required=True, no_log=True),
-        serial_no=dict(type='str', required=True))
+        serial_no=dict(type='str', required=True),
+        timeout=dict(type='int', required=False, default=120))
 
 
 '''
@@ -170,10 +174,11 @@ options:
 def get_u4v_unisphere_connection_parameters():
     return dict(
         unispherehost=dict(type='str', required=True, no_log=True),
-        universion=dict(type='int', required=False, choices=[91, 92, 100]),
+        universion=dict(type='int', required=False, choices=[91, 92, 100, 101]),
         verifycert=dict(type='str', required=True),
         user=dict(type='str', required=True),
-        password=dict(type='str', required=True, no_log=True)
+        password=dict(type='str', required=True, no_log=True),
+        timeout=dict(type='int', required=False, default=120)
     )
 
 
@@ -208,6 +213,7 @@ def get_U4V_connection(module_params, application_type=None, metro_dr=False):
                              username=module_params['user'],
                              password=module_params['password'],
                              application_type=application_type)
+        conn.set_requests_timeout(timeout_value=module_params['timeout'])
         return conn
 
 
@@ -236,6 +242,7 @@ def get_u4v_unisphere_connection(module_params, application_type=None):
                              username=module_params['user'],
                              password=module_params['password'],
                              application_type=application_type)
+        conn.set_requests_timeout(timeout_value=module_params['timeout'])
         return conn
 
 
@@ -352,5 +359,5 @@ def validate_verifycert(module_params):
 
 def is_array_v4():
     curr_version = PyU4V.__version__
-    if curr_version.startswith("10.0"):
+    if curr_version.startswith("10"):
         return True

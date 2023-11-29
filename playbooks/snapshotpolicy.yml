@@ -1,0 +1,169 @@
+---
+- name: Snapshot Policy operations on PowerMax
+  hosts: localhost
+  connection: local
+  vars:
+    unispherehost: '10.XX.XX.XX'
+    universion: '101'
+    verifycert: false
+    user: 'user'
+    password: 'password'
+    serial_no: '000123456789'
+
+  tasks:
+    - name: Create a snapshot policy
+      dellemc.powermax.snapshotpolicy:
+        unispherehost: "{{ unispherehost }}"
+        universion: "{{ universion }}"
+        verifycert: "{{ verifycert }}"
+        user: "{{ user }}"
+        password: "{{ password }}"
+        serial_no: "{{ serial_no }}"
+        snapshot_policy_name: "10min_policy_1"
+        interval: "10 Minutes"
+        secure: false
+        snapshot_count: 10
+        offset_mins: 2
+        compliance_count_warning: 6
+        compliance_count_critical: 4
+        state: "present"
+
+    - name: Create a snapshot policy and associate storgae groups to it
+      dellemc.powermax.snapshotpolicy:
+        unispherehost: "{{ unispherehost }}"
+        universion: "{{ universion }}"
+        verifycert: "{{ verifycert }}"
+        user: "{{ user }}"
+        password: "{{ password }}"
+        serial_no: "{{ serial_no }}"
+        snapshot_policy_name: "10min_policy_2"
+        interval: "10 Minutes"
+        secure: false
+        snapshot_count: 12
+        offset_mins: 5
+        compliance_count_warning: 8
+        compliance_count_critical: 4
+        storage_groups:
+          - "11_ansible_test_1"
+          - "11_ansible_test_2"
+        storage_group_state: "present-in-policy"
+        state: "present"
+
+    - name: Get snapshot policy details
+      dellemc.powermax.snapshotpolicy:
+        unispherehost: "{{ unispherehost }}"
+        universion: "{{ universion }}"
+        verifycert: "{{ verifycert }}"
+        user: "{{ user }}"
+        password: "{{ password }}"
+        serial_no: "{{ serial_no }}"
+        snapshot_policy_name: "10min_policy_2"
+        state: "present"
+
+    - name: Modify snapshot policy attributes
+      dellemc.powermax.snapshotpolicy:
+        unispherehost: "{{ unispherehost }}"
+        universion: "{{ universion }}"
+        verifycert: "{{ verifycert }}"
+        user: "{{ user }}"
+        password: "{{ password }}"
+        serial_no: "{{ serial_no }}"
+        snapshot_policy_name: "10min_policy_2"
+        new_snapshot_policy_name: "10min_policy_2_new"
+        interval: "10 Minutes"
+        snapshot_count: 16
+        offset_mins: 8
+        compliance_count_warning: 9
+        compliance_count_critical: 7
+        state: "present"
+
+    - name: Modify snapshot policy, associate to storage groups
+      dellemc.powermax.snapshotpolicy:
+        unispherehost: "{{ unispherehost }}"
+        universion: "{{ universion }}"
+        verifycert: "{{ verifycert }}"
+        user: "{{ user }}"
+        password: "{{ password }}"
+        serial_no: "{{ serial_no }}"
+        snapshot_policy_name: "10min_policy_1"
+        storage_groups:
+          - "11_ansible_test_1"
+          - "11_ansible_test_2"
+        storage_group_state: "present-in-policy"
+        state: "present"
+
+    - name: Modify snapshot policy, disassociate from storage groups
+      dellemc.powermax.snapshotpolicy:
+        unispherehost: "{{ unispherehost }}"
+        universion: "{{ universion }}"
+        verifycert: "{{ verifycert }}"
+        user: "{{ user }}"
+        password: "{{ password }}"
+        serial_no: "{{ serial_no }}"
+        snapshot_policy_name: "10min_policy_1"
+        storage_groups:
+          - "11_ansible_test_1"
+          - "11_ansible_test_2"
+        storage_group_state: "absent-in-policy"
+        state: "present"
+
+    - name: Modify snapshot policy state to suspend
+      dellemc.powermax.snapshotpolicy:
+        unispherehost: "{{ unispherehost }}"
+        universion: "{{ universion }}"
+        verifycert: "{{ verifycert }}"
+        user: "{{ user }}"
+        password: "{{ password }}"
+        serial_no: "{{ serial_no }}"
+        snapshot_policy_name: "10min_policy_1"
+        suspend: true
+        state: "present"
+
+    - name: Modify snapshot policy state to resume
+      dellemc.powermax.snapshotpolicy:
+        unispherehost: "{{ unispherehost }}"
+        universion: "{{ universion }}"
+        verifycert: "{{ verifycert }}"
+        user: "{{ user }}"
+        password: "{{ password }}"
+        serial_no: "{{ serial_no }}"
+        snapshot_policy_name: "10min_policy_1"
+        suspend: false
+        state: "present"
+
+    - name: Delete a snapshot policy
+      dellemc.powermax.snapshotpolicy:
+        unispherehost: "{{ unispherehost }}"
+        universion: "{{ universion }}"
+        verifycert: "{{ verifycert }}"
+        user: "{{ user }}"
+        password: "{{ password }}"
+        serial_no: "{{ serial_no }}"
+        snapshot_policy_name: "10min_policy_1"
+        state: "absent"
+
+    - name: Modify snapshot policy, disassociate from storage groups
+      dellemc.powermax.snapshotpolicy:
+        unispherehost: "{{ unispherehost }}"
+        universion: "{{ universion }}"
+        verifycert: "{{ verifycert }}"
+        user: "{{ user }}"
+        password: "{{ password }}"
+        serial_no: "{{ serial_no }}"
+        snapshot_policy_name: "10min_policy_2_new"
+        storage_groups:
+          - "11_ansible_test_1"
+          - "11_ansible_test_2"
+        storage_group_state: "absent-in-policy"
+        state: "present"
+
+    - name: Delete a snapshot policy
+      dellemc.powermax.snapshotpolicy:
+        unispherehost: "{{ unispherehost }}"
+        universion: "{{ universion }}"
+        verifycert: "{{ verifycert }}"
+        user: "{{ user }}"
+        password: "{{ password }}"
+        serial_no: "{{ serial_no }}"
+        snapshot_policy_name: "10min_policy_2_new"
+        state: "absent"

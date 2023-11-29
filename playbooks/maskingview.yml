@@ -1,0 +1,75 @@
+---
+- name: Test masking view operations
+  hosts: localhost
+  connection: local
+  vars:
+    unispherehost: '10.XX.XX.XX'
+    universion: "101"
+    verifycert: false
+    user: "user"
+    password: "password"
+    mv_name: "ansible_testing_mv_2"
+    serial_no: "000123456789"
+
+  tasks:
+    - name: Create MV with hostgroup
+      dellemc.powermax.maskingview:
+        unispherehost: "{{ unispherehost }}"
+        universion: "{{ unispherehost }}"
+        verifycert: "{{ verifycert }}"
+        user: "{{ user }}"
+        password: "{{ password }}"
+        serial_no: "{{ serial_no }}"
+        mv_name: "{{ mv_name }}"
+        portgroup_name: "1024739167_415_PG"
+        hostgroup_name: "102473945_415_IG"
+        sg_name: "fakehostlssemccom_415_CSG"
+        state: "present"
+
+    - name: Rename hostgroup masking view
+      dellemc.powermax.maskingview:
+        unispherehost: "{{ unispherehost }}"
+        universion: "{{ unispherehost }}"
+        verifycert: "{{ verifycert }}"
+        user: "{{ user }}"
+        password: "{{ password }}"
+        serial_no: "{{ serial_no }}"
+        mv_name: "{{ mv_name }}"
+        new_mv_name: "Ansible_Testing_mv_renamed"
+        state: "present"
+
+    - name: Delete hostgroup masking view
+      dellemc.powermax.maskingview:
+        unispherehost: "{{ unispherehost }}"
+        universion: "{{ unispherehost }}"
+        verifycert: "{{ verifycert }}"
+        user: "{{ user }}"
+        password: "{{ password }}"
+        serial_no: "{{ serial_no }}"
+        mv_name: "Ansible_Testing_mv_renamed"
+        state: "absent"
+
+    - name: Create MV with host
+      dellemc.powermax.maskingview:
+        unispherehost: "{{ unispherehost }}"
+        universion: "{{ unispherehost }}"
+        verifycert: "{{ verifycert }}"
+        user: "{{ user }}"
+        password: "{{ password }}"
+        serial_no: "{{ serial_no }}"
+        mv_name: "ansible_testing_host_mv"
+        portgroup_name: "portgroup-31933"
+        host_name: "fake_host"
+        sg_name: "1024739118_415_CSG"
+        state: "present"
+
+    - name: Delete host masking view
+      dellemc.powermax.maskingview:
+        unispherehost: "{{ unispherehost }}"
+        universion: "{{ unispherehost }}"
+        verifycert: "{{ verifycert }}"
+        user: "{{ user }}"
+        password: "{{ password }}"
+        serial_no: "{{ serial_no }}"
+        mv_name: "ansible_testing_host_mv"
+        state: "absent"

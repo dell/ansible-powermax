@@ -4,6 +4,20 @@ Dellemc.Powermax Change Logs
 
 .. contents:: Topics
 
+v3.0.0
+======
+
+Major Changes
+-------------
+
+- Added support for PowerMax Laurel.
+
+Minor Changes
+-------------
+
+- Added bug fix for SRDF module.
+- Added support for connection timeout for all modules.
+
 v2.2.1
 ======
 

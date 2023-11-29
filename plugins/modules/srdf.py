@@ -382,7 +382,7 @@ HAS_PYU4V = utils.has_pyu4v_sdk()
 PYU4V_VERSION_CHECK = utils.pyu4v_version_check()
 
 # Application Type
-APPLICATION_TYPE = 'ansible_v2.2.1'
+APPLICATION_TYPE = 'ansible_v3.0.0'
 
 
 class SRDF(object):
@@ -395,6 +395,7 @@ class SRDF(object):
         ''' Define all parameters required by this module'''
         self.module_params = utils.get_powermax_management_host_parameters()
         self.module_params.update(self.get_srdf_pair_parameters())
+
         # initialize the ansible module
         self.module = AnsibleModule(
             argument_spec=self.module_params,
@@ -426,9 +427,11 @@ class SRDF(object):
         try:
             self.u4v_conn = utils.get_U4V_connection(
                 self.module.params, application_type=APPLICATION_TYPE)
+
         except Exception as e:
             self.show_error_exit(msg=str(e))
         self.replication = self.u4v_conn.replication
+        self.common = self.u4v_conn.common
         LOG.info('Check Mode flag is %s', self.module.check_mode)
         LOG.info('Got PyU4V instance for replication on PowerMax ')
         self.idempotency_dict = {
@@ -564,15 +567,30 @@ class SRDF(object):
             LOG.info(msg)
             resp = {}
             if not self.module.check_mode:
-                resp = self.replication.create_storage_group_srdf_pairings(
-                    storage_group_id=sg_name,
-                    remote_sid=remote_serial_no,
-                    srdf_mode=srdf_mode,
-                    establish=establish_flag,
-                    force_new_rdf_group=forceNewRdfGroup,
-                    rdfg_number=rdfg_number,
-                    _async=async_flag)
-            LOG.debug('Response from create SRDF link call %s', resp)
+                if self.module.params['wait_for_completion'] is False:
+                    resp = self.replication.create_storage_group_srdf_pairings(
+                        storage_group_id=sg_name,
+                        remote_sid=remote_serial_no,
+                        srdf_mode=srdf_mode,
+                        establish=establish_flag,
+                        force_new_rdf_group=forceNewRdfGroup,
+                        rdfg_number=rdfg_number,
+                        _async=async_flag)
+                elif self.module.params['wait_for_completion'] is True:
+                    job = self.replication.create_storage_group_srdf_pairings(
+                        storage_group_id=sg_name,
+                        remote_sid=remote_serial_no,
+                        srdf_mode=srdf_mode,
+                        establish=establish_flag,
+                        force_new_rdf_group=forceNewRdfGroup,
+                        rdfg_number=rdfg_number,
+                        _async=True)
+                    link_status = self.get_created_srdf_link_status(job)
+                    LOG.info("The SRDF link status is: %s", link_status)
+                    resp = self.get_srdf_link(sg_name)[0]
+
+            LOG.info('Response from create SRDF link call %s', resp)
+
             if async_flag:
                 self.result['Job_details'] = resp
                 self.result['SRDF_link_details'] = None
@@ -587,6 +605,21 @@ class SRDF(object):
             errorMsg = ("Create srdf_link for sg %s failed with error %s"
                         % (sg_name, str(e)))
             self.show_error_exit(msg=errorMsg)
+
+    def get_created_srdf_link_status(self, job):
+        """Get created SRDF link status"""
+        try:
+            task = self.common.wait_for_job('Create storage group SRDF link',
+                                            202, job)
+            if task:
+                for job in task:
+                    desc = job['description']
+                    if 'SRDF protect Storage Group' in desc:
+                        break
+            return True
+        except Exception as e:
+            LOG.info('Failed to retrieve SRDF link status. Exception '
+                     'received was %s.', e)
 
     def _compute_required_establish_flag(self, srdf_state):
         if (srdf_state is None or srdf_state == 'Suspend'):
@@ -808,6 +841,11 @@ class SRDF(object):
         job_id = self.module.params['job_id']
         changed = False
         remoteSymmetrixIDs = []
+
+        self.result = dict(
+            SRDF_link_details=None,
+            changed=False
+        )
 
         if (job_id and sg_name) or (not job_id and not sg_name):
             errorMsg = 'Please specify either job ID or SG name in one ' \

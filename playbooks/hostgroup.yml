@@ -1,0 +1,154 @@
+---
+- name: Testing host group operations
+  hosts: localhost
+  connection: local
+  vars:
+    unispherehost: '10.XX.XX.XX'
+    universion: "101"
+    verifycert: false
+    user: 'user'
+    password: 'password'
+    hostgroup_name: 'Ansible_Testing_hostgroup'
+    hostgroup_name_1: 'Ansible_Testing_hostgroup_1'
+    hostgroup_name_2: 'Ansible_Testing_hostgroup_2'
+    serial_no: '0123456789'
+
+  tasks:
+    - name: Create host group with host_type 'default'
+      dellemc.powermax.hostgroup:
+        unispherehost: "{{ unispherehost }}"
+        universion: "{{ universion }}"
+        verifycert: "{{ verifycert }}"
+        user: "{{ user }}"
+        password: "{{ password }}"
+        serial_no: "{{ serial_no }}"
+        hostgroup_name: "{{ hostgroup_name_1 }}"
+        hosts:
+          - Ansible_Test_host_1
+        state: 'present'
+        host_state: 'present-in-group'
+        host_type: "default"
+
+    - name: Create host group with host_type 'hpux'
+      dellemc.powermax.hostgroup:
+        unispherehost: "{{ unispherehost }}"
+        universion: "{{ universion }}"
+        verifycert: "{{ verifycert }}"
+        user: "{{ user }}"
+        password: "{{ password }}"
+        serial_no: "{{ serial_no }}"
+        hostgroup_name: "{{ hostgroup_name_2 }}"
+        hosts:
+          - Ansible_Test_host_2
+        state: 'present'
+        host_state: 'present-in-group'
+        host_type: "hpux"
+
+    - name: Create host group with host_flags
+      dellemc.powermax.hostgroup:
+        unispherehost: "{{ unispherehost }}"
+        universion: "{{ universion }}"
+        verifycert: "{{ verifycert }}"
+        user: "{{ user }}"
+        password: "{{ password }}"
+        serial_no: "{{ serial_no }}"
+        hostgroup_name: "{{ hostgroup_name }}"
+        hosts:
+          - Ansible_Test_host
+        state: 'present'
+        host_state: 'present-in-group'
+        host_flags:
+          spc2_protocol_version: 'true'
+          consistent_lun: false
+          disable_q_reset_on_ua: 'false'
+          openvms: 'unset'
+
+    - name: Get host group details
+      dellemc.powermax.hostgroup:
+        unispherehost: "{{ unispherehost }}"
+        universion: "{{ universion }}"
+        verifycert: "{{ verifycert }}"
+        user: "{{ user }}"
+        password: "{{ password }}"
+        serial_no: "{{ serial_no }}"
+        hostgroup_name: "{{ hostgroup_name }}"
+        state: 'present'
+
+    - name: Adding host to host group
+      dellemc.powermax.hostgroup:
+        unispherehost: "{{ unispherehost }}"
+        universion: "{{ universion }}"
+        verifycert: "{{ verifycert }}"
+        user: "{{ user }}"
+        password: "{{ password }}"
+        serial_no: "{{ serial_no }}"
+        hostgroup_name: "{{ hostgroup_name }}"
+        hosts:
+          - Ansible_Test_host2
+        state: 'present'
+        host_state: 'present-in-group'
+
+    - name: Removing host from host group
+      dellemc.powermax.hostgroup:
+        unispherehost: "{{ unispherehost }}"
+        universion: "{{ universion }}"
+        verifycert: "{{ verifycert }}"
+        user: "{{ user }}"
+        password: "{{ password }}"
+        serial_no: "{{ serial_no }}"
+        hostgroup_name: "{{ hostgroup_name }}"
+        hosts:
+          - Ansible_Test_host2
+        state: 'present'
+        host_state: 'absent-in-group'
+
+    - name: Modify flags of host group using host_type
+      dellemc.powermax.hostgroup:
+        unispherehost: "{{ unispherehost }}"
+        universion: "{{ universion }}"
+        verifycert: "{{ verifycert }}"
+        user: "{{ user }}"
+        password: "{{ password }}"
+        serial_no: "{{ serial_no }}"
+        hostgroup_name: "{{ hostgroup_name }}"
+        host_type: "default"
+        state: 'present'
+
+    - name: Modify flags of host group using host_flags
+      dellemc.powermax.hostgroup:
+        unispherehost: "{{ unispherehost }}"
+        universion: "{{ universion }}"
+        verifycert: "{{ verifycert }}"
+        user: "{{ user }}"
+        password: "{{ password }}"
+        serial_no: "{{ serial_no }}"
+        hostgroup_name: "{{ hostgroup_name }}"
+        host_flags:
+          spc2_protocol_version: 'Unset'
+          disable_q_reset_on_ua: 'False'
+          openvms: false
+          avoid_reset_broadcast: 'True'
+        state: 'present'
+
+    - name: Rename host group
+      dellemc.powermax.hostgroup:
+        unispherehost: "{{ unispherehost }}"
+        universion: "{{ universion }}"
+        verifycert: "{{ verifycert }}"
+        user: "{{ user }}"
+        password: "{{ password }}"
+        serial_no: "{{ serial_no }}"
+        hostgroup_name: "{{ hostgroup_name }}"
+        new_name: "Ansible_Testing_hostgroup2"
+        state: 'present'
+
+    - name: Delete host group
+      dellemc.powermax.hostgroup:
+        unispherehost: "{{ unispherehost }}"
+        universion: "{{ universion }}"
+        verifycert: "{{ verifycert }}"
+        user: "{{ user }}"
+        password: "{{ password }}"
+        serial_no: "{{ serial_no }}"
+        hostgroup_name: "Ansible_Testing_hostgroup2"
+        state: 'absent'

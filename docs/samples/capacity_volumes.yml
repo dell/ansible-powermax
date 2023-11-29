@@ -4,7 +4,6 @@
 - name: Capacity of  volumes in a storage group above a threshold capacity
   hosts: localhost
   connection: local
-
   vars:
     unispherehost: 'your_unisphere_host_url'
     universion: "version_of_the_unisphere"
@@ -16,8 +15,7 @@
     threshold_cap: enter the size in GB
 
   tasks:
-
-#  This task gets the details of the storage group which contains the attribute storage_group_volumes(a list of all the volumes Id)
+  #  This task gets the details of the storage group which contains the attribute storage_group_volumes(a list of all the volumes Id)
     - name: Get details of the Storage Group
       dellemc.powermax.storagegroup:
         unispherehost: "{{ unispherehost }}"
@@ -30,12 +28,12 @@
         state: "present"
       register: storage_details
 
-#  The set_fact assigns a variable to the list of volume id's fetched from the storage_details
-    - name: Setting volume IDs
+  #  The set_fact assigns a variable to the list of volume id's fetched from the storage_details
+    - name: Assign a variable to the list of volume IDs
       ansible.builtin.set_fact:
         all_volumes_id: "{{ storage_details.storage_group_volumes | list }}"
 
-#  This task uses the volume id's assigned to variable all_volume_Id to get the volume details.
+  #  This task uses the volume id's assigned to variable all_volume_Id to get the volume details.
     - name: Get the details of all volume in the storage group
       register: temp_result
       dellemc.powermax.volume:
@@ -50,18 +48,18 @@
         state: 'present'
       loop: "{{ all_volumes_id }}"
 
-#  The set_fact fetches the list of the volume names from the volume details(the output of the previous task).
-    - name: Setting volume names
+  #  The set_fact fetches the list of the volume names from the volume details(the output of the previous task).
+    - name: Assign a variable to the list of volume names
       ansible.builtin.set_fact:
         all_volumes_names: "{{ temp_result['results'] | map(attribute='volume_details.volume_identifier') | list }}"
 
-#  The set_fact fetches the list of the volume size from the volume details(the output of the previous task).
-    - name: Setiing volume sizes
+  #  The set_fact fetches the list of the volume size from the volume details(the output of the previous task).
+    - name: Assign a variable to the list of volume sizes
       ansible.builtin.set_fact:
         all_volumes_size: "{{ temp_result['results'] | map(attribute='volume_details.cap_gb') | list }}"
 
-# This prints the list of all the volumes which satisfies the condition mentioned in the when statement.
-    - name: List of all the Volumes Which have capacity more than the threshold
+  # This prints the list of all the volumes which satisfies the condition mentioned in the when statement.
+    - name: List of all the volumes which have capacity more than the threshold
       ansible.builtin.debug:
         msg: "{{ item.1 }}"
       loop: "{{ all_volumes_size | zip(all_volumes_names) | list }}"

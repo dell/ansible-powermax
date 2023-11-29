@@ -21,7 +21,7 @@ Requirements
 The below requirements are needed on the host that executes this module.
 
 - A Dell PowerMax storage system.
-- Ansible-core 2.13 or later.
+- Ansible-core 2.14 or later.
 - Python 3.9, 3.10 or 3.11.
 
 
@@ -30,7 +30,7 @@ Parameters
 ----------
 
   universion (False, int, None)
-    Unisphere version, currently '92', '100' version is supported.
+    Unisphere version, currently '92', '100' and '101' version is supported.
 
 
   snapshot_policy_name (True, str, None)
@@ -113,6 +113,12 @@ Parameters
 
   password (True, str, None)
     The password of the Unisphere host.
+
+
+  timeout (optional, int, 120)
+    Time after which the connection will get terminated.
+
+    It is to be mentioned in seconds.
 
 
   serial_no (True, str, None)

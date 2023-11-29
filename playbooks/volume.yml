@@ -1,0 +1,145 @@
+---
+- name: Volume operations on VMAX
+  hosts: localhost
+  connection: local
+  vars:
+      unispherehost: '10.XX.XX.XX'
+      universion: '101'
+      verifycert: false
+      user: 'user'
+      password: 'password'
+      serial_no: '000123456789'
+      sg_name: 'Test'
+      new_sg_name: 'Ansible_Move_Volume_Testing'
+      vol_name: 'Volume'
+      cap_unit: 'GB'
+      append_vol_id: true
+
+  tasks:
+      - name: Create volume
+        register: result
+        dellemc.powermax.volume:
+            unispherehost: "{{ unispherehost }}"
+            universion: "{{ universion }}"
+            verifycert: "{{ verifycert }}"
+            user: "{{ user }}"
+            password: "{{ password }}"
+            serial_no: "{{ serial_no }}"
+            vol_name: "{{ vol_name }}"
+            sg_name: "{{ sg_name }}"
+            size: 1
+            cap_unit: "{{ cap_unit }}"
+            append_vol_id: "{{ append_vol_id }}"
+            state: 'present'
+
+      - name: Expand volume using native id
+        dellemc.powermax.volume:
+            unispherehost: "{{ unispherehost }}"
+            universion: "{{ universion }}"
+            verifycert: "{{ verifycert }}"
+            user: "{{ user }}"
+            password: "{{ password }}"
+            serial_no: "{{ serial_no }}"
+            size: 2
+            cap_unit: "{{ cap_unit }}"
+            vol_id: "{{ result.volume_details.volumeId }}"
+            state: 'present'
+
+      - name: Expand volume using volume identifier and storage group
+        dellemc.powermax.volume:
+            unispherehost: "{{ unispherehost }}"
+            universion: "{{ universion }}"
+            verifycert: "{{ verifycert }}"
+            user: "{{ user }}"
+            password: "{{ password }}"
+            serial_no: "{{ serial_no }}"
+            vol_name: "{{ vol_name }}"
+            sg_name: "{{ sg_name }}"
+            size: 3
+            cap_unit: "{{ cap_unit }}"
+            state: 'present'
+
+      - name: Move volume between storage group when current storage group is part of masking view
+        dellemc.powermax.volume:
+            unispherehost: "{{ unispherehost }}"
+            universion: "{{ universion }}"
+            verifycert: "{{ verifycert }}"
+            user: "{{ user }}"
+            password: "{{ password }}"
+            serial_no: "{{ serial_no }}"
+            vol_name: "{{ vol_name }}"
+            sg_name: "{{ sg_name }}"
+            new_sg_name: "{{ new_sg_name }}"
+            state: 'present'
+
+      - name: Move volume between storage group when current storage group is not part of masking view
+        dellemc.powermax.volume:
+            unispherehost: "{{ unispherehost }}"
+            universion: "{{ universion }}"
+            verifycert: "{{ verifycert }}"
+            user: "{{ user }}"
+            password: "{{ password }}"
+            serial_no: "{{ serial_no }}"
+            vol_name: "{{ vol_name }}"
+            sg_name: "{{ new_sg_name }}"
+            new_sg_name: "{{ sg_name }}"
+            state: 'present'
+
+      - name: Rename volume
+        dellemc.powermax.volume:
+            unispherehost: "{{ unispherehost }}"
+            universion: "{{ universion }}"
+            verifycert: "{{ verifycert }}"
+            user: "{{ user }}"
+            password: "{{ password }}"
+            serial_no: "{{ serial_no }}"
+            new_name: "Ansible_Volume_Module_Playbook_Testing_Renamed"
+            vol_id: "{{ result.volume_details.volumeId }}"
+            state: "present"
+
+      - name: Get volume details
+        dellemc.powermax.volume:
+            unispherehost: "{{ unispherehost }}"
+            universion: "{{ universion }}"
+            verifycert: "{{ verifycert }}"
+            user: "{{ user }}"
+            password: "{{ password }}"
+            serial_no: "{{ serial_no }}"
+            vol_id: "{{ result.volume_details.volumeId }}"
+            state: "present"
+
+      - name: Get volume details using WWN
+        dellemc.powermax.volume:
+            unispherehost: "{{ unispherehost }}"
+            universion: "{{ universion }}"
+            verifycert: "{{ verifycert }}"
+            user: "{{ user }}"
+            password: "{{ password }}"
+            serial_no: "{{ serial_no }}"
+            vol_wwn: "{{ result.volume_details.wwn }}"
+            state: "present"
+
+      - name: Remove existing volume from existing storage group
+        dellemc.powermax.storagegroup:
+            unispherehost: "{{ unispherehost }}"
+            universion: "{{ universion }}"
+            verifycert: "{{ verifycert }}"
+            user: "{{ user }}"
+            password: "{{ password }}"
+            serial_no: "{{ serial_no }}"
+            sg_name: "{{ sg_name }}"
+            state: "present"
+            volumes:
+                - vol_id: "{{ result.volume_details.volumeId }}"
+            vol_state: "absent-in-group"
+
+      - name: Delete volume
+        dellemc.powermax.volume:
+            unispherehost: "{{ unispherehost }}"
+            universion: "{{ universion }}"
+            verifycert: "{{ verifycert }}"
+            user: "{{ user }}"
+            password: "{{ password }}"
+            serial_no: "{{ serial_no }}"
+            vol_id: "{{ result.volume_details.volumeId }}"
+            state: "absent"

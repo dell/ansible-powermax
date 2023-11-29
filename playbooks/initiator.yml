@@ -1,0 +1,48 @@
+---
+- name: Testing host operations
+  hosts: localhost
+  connection: local
+  vars:
+    unispherehost: '10.XX.XX.XX'
+    universion: "101"
+    verifycert: false
+    user: 'user'
+    password: 'password'
+    serial_no: "0123456789"
+
+  tasks:
+    - name: Get initiator details
+      dellemc.powermax.initiator:
+        unispherehost: "{{ unispherehost }}"
+        universion: "{{ universion }}"
+        verifycert: "{{ verifycert }}"
+        user: "{{ user }}"
+        password: "{{ password }}"
+        serial_no: "{{ serial_no }}"
+        initiator_id: 10000000c9959b8e
+        state: 'present'
+
+    - name: Get initiator details using alias
+      dellemc.powermax.initiator:
+        unispherehost: "{{ unispherehost }}"
+        universion: "{{ universion }}"
+        verifycert: "{{ verifycert }}"
+        user: "{{ user }}"
+        password: "{{ password }}"
+        serial_no: "{{ serial_no }}"
+        alias: 'test/host'
+        state: 'present'
+
+    - name: Rename initiator alias
+      dellemc.powermax.initiator:
+        unispherehost: "{{ unispherehost }}"
+        universion: "{{ universion }}"
+        verifycert: "{{ verifycert }}"
+        user: "{{ user }}"
+        password: "{{ password }}"
+        serial_no: "{{ serial_no }}"
+        initiator_id: 10000000c9959b8e
+        new_alias:
+          new_node_name: 'test'
+          new_port_name: 'host_new'
+        state: 'present'

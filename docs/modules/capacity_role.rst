@@ -21,7 +21,7 @@ Requirements
 The below requirements are needed on the host that executes this module.
 
 - A Dell PowerMax storage system.
-- Ansible-core 2.13 or later.
+- Ansible-core 2.14 or later.
 - Python 3.9, 3.10 or 3.11.
 
 
@@ -29,11 +29,11 @@ The below requirements are needed on the host that executes this module.
 Parameters
 ----------
 
-  size (True, float, None)
+  capacity_role_size (True, float, None)
     The size of the storage group.
 
 
-  cap_unit (True, str, GB)
+  capacity_role_cap_unit (True, str, GB)
     The capacity unit.
 
 
@@ -50,7 +50,7 @@ Parameters
 
 
   universion (False, int, None)
-    Unisphere version, currently '91', '92' and '100' versions are supported.
+    Unisphere version, currently '91', '92', '100' and '101' versions are supported.
 
 
   verifycert (True, str, None)
@@ -89,27 +89,27 @@ Examples
 
         - name: Create storage group on the assigned serial number and SRP
           register: storage_group_details
-          dellemc_powermax_storagegroup:
+          dellemc.powermax.storagegroup:
             unispherehost: "{{unispherehost}}"
             universion: "{{universion}}"
             verifycert: "{{verifycert}}"
             user: "{{user}}"
             password: "{{password}}"
-            serial_no: "{{assigned_pool.serial_no}}"
+            serial_no: "{{capacity_role_assigned_pool.serial_no}}"
             sg_name: "test_sg"
             service_level: "Diamond"
-            srp: "{{assigned_pool.storage_pool}}"
+            srp: "{{capacity_role_assigned_pool.storage_pool}}"
             compression: True
             state: "present"
 
         - name: Create volume on the storage group
-          dellemc_powermax_volume:
+          dellemc.powermax.volume:
             unispherehost: "{{unispherehost}}"
             universion: "{{universion}}"
             verifycert: "{{verifycert}}"
             user: "{{user}}"
             password: "{{password}}"
-            serial_no: "{{assigned_pool.serial_no}}"
+            serial_no: "{{capacity_role_assigned_pool.serial_no}}"
             vol_name: "test_vol"
             sg_name: "test_sg"
             size: 10
@@ -156,4 +156,4 @@ Authors
 ~~~~~~~
 
 - Akash Shendge (@shenda1) <ansible.team@dell.com>
-
+- Pavan Mudunuri (@Pavan-Mudunuri) <ansible.team@dell.com>

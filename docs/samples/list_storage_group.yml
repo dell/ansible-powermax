@@ -4,7 +4,6 @@
 - name: List of all the Storage Groups names those name contains the search_string
   hosts: localhost
   connection: local
-
   vars:
     unispherehost: "your_unisphere_host_url"
     universion: "version_of_the_unisphere"

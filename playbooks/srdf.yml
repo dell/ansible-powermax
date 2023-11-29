@@ -1,0 +1,342 @@
+---
+- name: Testing Storage Group SRDF operations
+  hosts: localhost
+  connection: local
+  vars:
+    unispherehost: '10.XX.XX.XX'
+    universion: "101"
+    verifycert: false
+    user: 'user'
+    password: 'password'
+    sg_name: 'Ansible_Test_SRDF1'
+    sg_name2: 'Ansible_Test_SRDF2'
+    sg_name3: 'Ansible_Test_SRDF3'
+    vol_name: "Ansible_Test_SRDF_volume"
+    vol_name1: "Ansible_Test_SRDF_volume1"
+    vol_name2: "Ansible_Test_SRDF_volume2"
+    vol_name3: "Ansible_Test_SRDF_volume3"
+    vol_name4: "Ansible_Test_SRDF_volume4"
+    serial_no: '000123456789'
+    remote_serial_no_1: '000123456788'
+
+  tasks:
+    - name: Create a new Storage group
+      dellemc.powermax.storagegroup:
+        unispherehost: "{{ unispherehost }}"
+        universion: "{{ universion }}"
+        verifycert: "{{ verifycert }}"
+        user: "{{ user }}"
+        password: "{{ password }}"
+        serial_no: "{{ serial_no }}"
+        sg_name: "{{ sg_name }}"
+        service_level: "Diamond"
+        srp: "SRP_1"
+        compression: true
+        state: "present"
+      register: sg_result
+
+    - name: Create new volumes for existing Storage Group
+      dellemc.powermax.storagegroup:
+        unispherehost: "{{ unispherehost }}"
+        universion: "{{ universion }}"
+        verifycert: "{{ verifycert }}"
+        user: "{{ user }}"
+        password: "{{ password }}"
+        serial_no: "{{ serial_no }}"
+        sg_name: "{{ sg_name }}"
+        state: "present"
+        volumes:
+          - vol_name: "ansible-test-x1"
+            size: 1
+            cap_unit: "GB"
+          - vol_name: "ansible-test-x2"
+            size: 1
+            cap_unit: "GB"
+        vol_state: "present-in-group"
+      register: sg_result
+
+    - name: Add existing volumes to existing Storage Group
+      dellemc.powermax.storagegroup:
+        unispherehost: "{{ unispherehost }}"
+        universion: "{{ universion }}"
+        verifycert: "{{ verifycert }}"
+        user: "{{ user }}"
+        password: "{{ password }}"
+        serial_no: "{{ serial_no }}"
+        sg_name: "{{ sg_name }}"
+        state: "present"
+        volumes:
+          - vol_id: "{{ vol1 }}"
+          - vol_id: "{{ vol2 }}"
+        vol_state: "present-in-group"
+      register: sg_result
+
+    - name: List volumes of a Storage Group
+      dellemc.powermax.storagegroup:
+        unispherehost: "{{ unispherehost }}"
+        universion: "{{ universion }}"
+        verifycert: "{{ verifycert }}"
+        user: "{{ user }}"
+        password: "{{ password }}"
+        serial_no: "{{ serial_no }}"
+        sg_name: "{{ sg_name }}"
+        state: "present"
+      register: sg_result
+
+    - name: Remove existing volumes from existing Storage Group
+      dellemc.powermax.storagegroup:
+        unispherehost: "{{ unispherehost }}"
+        universion: "{{ universion }}"
+        verifycert: "{{ verifycert }}"
+        user: "{{ user }}"
+        password: "{{ password }}"
+        serial_no: "{{ serial_no }}"
+        sg_name: "{{ sg_name }}"
+        state: "present"
+        volumes:
+          - vol_id: "{{ vol1 }}"
+          - vol_id: "{{ vol2 }}"
+          - vol_name: "ansible-test-x1"
+        vol_state: "absent-in-group"
+      register: sg_result
+
+    - name: Modify the Storage Group
+      dellemc.powermax.storagegroup:
+        unispherehost: "{{ unispherehost }}"
+        universion: "{{ universion }}"
+        verifycert: "{{ verifycert }}"
+        user: "{{ user }}"
+        password: "{{ password }}"
+        serial_no: "{{ serial_no }}"
+        sg_name: "{{ sg_name }}"
+        state: "present"
+        service_level: "Platinum"
+        compression: false
+      register: sg_result
+
+    - name: Add snapshot policy to storage group
+      dellemc.powermax.storagegroup:
+        unispherehost: "{{ unispherehost }}"
+        universion: "{{ universion }}"
+        verifycert: "{{ verifycert }}"
+        user: "{{ user }}"
+        password: "{{ password }}"
+        serial_no: "{{ serial_no }}"
+        sg_name: "ansible_test_sg"
+        snapshot_policies:
+          - "ansible_SP1"
+        snapshot_policy_state: "present-in-group"
+        state: "present"
+
+    - name: Remove snapshot policy from storage group
+      dellemc.powermax.storagegroup:
+        unispherehost: "{{ unispherehost }}"
+        universion: "{{ universion }}"
+        verifycert: "{{ verifycert }}"
+        user: "{{ user }}"
+        password: "{{ password }}"
+        serial_no: "{{ serial_no }}"
+        sg_name: "ansible_test_sg"
+        snapshot_policies:
+          - "ansible_SP1"
+        snapshot_policy_state: "absent-in-group"
+        state: "present"
+
+    - name: Delete the Storage Group
+      dellemc.powermax.storagegroup:
+        unispherehost: "{{ unispherehost }}"
+        universion: "{{ universion }}"
+        verifycert: "{{ verifycert }}"
+        user: "{{ user }}"
+        password: "{{ password }}"
+        serial_no: "{{ serial_no }}"
+        sg_name: "{{ sg_name }}"
+        state: "absent"
+
+    - name: Create a new Parent Storage Group with FAST policy
+      dellemc.powermax.storagegroup:
+        unispherehost: "{{ unispherehost }}"
+        universion: "{{ universion }}"
+        verifycert: "{{ verifycert }}"
+        user: "{{ user }}"
+        password: "{{ password }}"
+        serial_no: "{{ serial_no }}"
+        sg_name: "prashant_parent_SG_xx1"
+        srp: "SRP_1"
+        service_level: "Diamond"
+        compression: false
+        state: "present"
+
+    - name: Create a new child Storage Group - prashant_child_SG_xx1
+      dellemc.powermax.storagegroup:
+        unispherehost: "{{ unispherehost }}"
+        universion: "{{ universion }}"
+        verifycert: "{{ verifycert }}"
+        user: "{{ user }}"
+        password: "{{ password }}"
+        serial_no: "{{ serial_no }}"
+        sg_name: "prashant_child_SG_xx1"
+        srp: "SRP_1"
+        service_level: "Diamond"
+        compression: false
+        state: "present"
+      register: sg_result
+
+    - name: Create a volume for child SG
+      dellemc.powermax.storagegroup:
+        unispherehost: "{{ unispherehost }}"
+        universion: "{{ universion }}"
+        verifycert: "{{ verifycert }}"
+        user: "{{ user }}"
+        password: "{{ password }}"
+        serial_no: "{{ serial_no }}"
+        sg_name: "prashant_child_SG_xx1"
+        state: "present"
+        volumes:
+          - vol_name: "prashant-child-vol"
+            size: 1
+            cap_unit: "GB"
+        vol_state: "present-in-group"
+      register: sg_result
+
+    - name: Create a new child Storage Group - prashant_child_SG_xx2
+      dellemc.powermax.storagegroup:
+        unispherehost: "{{ unispherehost }}"
+        universion: "{{ universion }}"
+        verifycert: "{{ verifycert }}"
+        user: "{{ user }}"
+        password: "{{ password }}"
+        serial_no: "{{ serial_no }}"
+        sg_name: "prashant_child_SG_xx2"
+        srp: "SRP_1"
+        service_level: "Diamond"
+        compression: false
+        state: "present"
+      register: sg_result
+
+    - name: Create a volume for child SG
+      dellemc.powermax.storagegroup:
+        unispherehost: "{{ unispherehost }}"
+        universion: "{{ universion }}"
+        verifycert: "{{ verifycert }}"
+        user: "{{ user }}"
+        password: "{{ password }}"
+        serial_no: "{{ serial_no }}"
+        sg_name: "prashant_child_SG_xx2"
+        state: "present"
+        volumes:
+          - vol_name: "prashant-child-vol-xx2"
+            size: 1
+            cap_unit: "GB"
+        vol_state: "present-in-group"
+      register: sg_result
+
+    - name: Modify the parent SG and add child SGs
+      dellemc.powermax.storagegroup:
+        unispherehost: "{{ unispherehost }}"
+        universion: "{{ universion }}"
+        verifycert: "{{ verifycert }}"
+        user: "{{ user }}"
+        password: "{{ password }}"
+        serial_no: "{{ serial_no }}"
+        sg_name: "prashant_parent_SG_xx1"
+        srp: "SRP_1"
+        state: "present"
+        child_storage_groups:
+          - "prashant_child_SG_xx1"
+          - "prashant_child_SG_xx2"
+        child_sg_state: "present-in-group"
+      register: sg_result
+
+    - name: Remove Child Storage Groups from Parent Storage Group
+      dellemc.powermax.storagegroup:
+        unispherehost: "{{ unispherehost }}"
+        universion: "{{ universion }}"
+        verifycert: "{{ verifycert }}"
+        user: "{{ user }}"
+        password: "{{ password }}"
+        serial_no: "{{ serial_no }}"
+        sg_name: "prashant_parent_SG_xx1"
+        state: "present"
+        child_storage_groups:
+          - "prashant_child_SG_xx1"
+          - "prashant_child_SG_xx2"
+        child_sg_state: "absent-in-group"
+      register: sg_result
+
+    - name: Test rename SG functionality
+      dellemc.powermax.storagegroup:
+        unispherehost: "{{ unispherehost }}"
+        universion: "{{ universion }}"
+        verifycert: "{{ verifycert }}"
+        user: "{{ user }}"
+        password: "{{ password }}"
+        serial_no: "{{ serial_no }}"
+        sg_name: "prashant_parent_SG_xx1"
+        new_sg_name: "ansible_sg_renamed_successful"
+        state: "present"
+      register: sg_result
+
+    - name: Delete the storage group - prashant_child_SG_xx1
+      dellemc.powermax.storagegroup:
+        unispherehost: "{{ unispherehost }}"
+        universion: "{{ universion }}"
+        verifycert: "{{ verifycert }}"
+        user: "{{ user }}"
+        password: "{{ password }}"
+        serial_no: "{{ serial_no }}"
+        sg_name: "prashant_child_SG_xx1"
+        state: "absent"
+
+    - name: Delete the storage group - prashant_child_SG_xx2
+      dellemc.powermax.storagegroup:
+        unispherehost: "{{ unispherehost }}"
+        universion: "{{ universion }}"
+        verifycert: "{{ verifycert }}"
+        user: "{{ user }}"
+        password: "{{ password }}"
+        serial_no: "{{ serial_no }}"
+        sg_name: "prashant_child_SG_xx2"
+        state: "absent"
+
+    - name: Delete the storage group - ansible_sg_renamed_successful
+      dellemc.powermax.storagegroup:
+        unispherehost: "{{ unispherehost }}"
+        universion: "{{ universion }}"
+        verifycert: "{{ verifycert }}"
+        user: "{{ user }}"
+        password: "{{ password }}"
+        serial_no: "{{ serial_no }}"
+        sg_name: "ansible_sg_renamed_successful"
+        state: "absent"
+
+    - name: Move volumes between Storage groups
+      dellemc.powermax.storagegroup:
+        unispherehost: "{{ unispherehost }}"
+        universion: "{{ universion }}"
+        verifycert: "{{ verifycert }}"
+        user: "{{ user }}"
+        password: "{{ password }}"
+        serial_no: "{{ serial_no }}"
+        sg_name: "Ansible_Remote_Testing"
+        target_sg_name: "ansible_neo_sg"
+        volumes:
+          - vol_id: "0007a"
+        force: true
+        vol_state: 'absent-in-group'
+        state: "present"
+
+    - name: Set host IO limits on an existing storage group
+      dellemc.powermax.storagegroup:
+        unispherehost: "{{ unispherehost }}"
+        universion: "{{ universion }}"
+        verifycert: "{{ verifycert }}"
+        user: "{{ user }}"
+        password: "{{ password }}"
+        serial_no: "{{ serial_no }}"
+        sg_name: "{{ sg_name }}"
+        host_io_limit:
+          dynamic_distribution: "Always"
+          host_io_limit_mbps: 100
+          host_io_limit_iops: 100
+        state: "present"

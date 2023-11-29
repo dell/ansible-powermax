@@ -27,7 +27,7 @@
       register: storage_details
 
   # The set_fact fetches the Id's of all the volumes from the storage group details and creates a list.
-    - name: Setting volume IDs
+    - name: Assign a variable to the list of volume id's
       ansible.builtin.set_fact:
         all_volumes_id: "{{ storage_details.storage_group_volumes | list }}"
 
@@ -47,7 +47,7 @@
       loop: "{{ all_volumes_id }}"
 
   # The set_fact generates a list of the volume names using the details of volumes(the output of the previous task).
-    - name: Setting all volume names
+    - name: Assign a variable to the list of volume names
       ansible.builtin.set_fact:
         all_volumes_names: "{{ temp_result['results'] | map(attribute='volume_details.volume_identifier') | list }}"
 

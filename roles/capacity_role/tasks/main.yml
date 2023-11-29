@@ -16,21 +16,21 @@
 
 - name: Set fact for type of size
   ansible.builtin.set_fact:
-    size_type: "{{ size | type_debug }}"
+    capacity_role_size_type: "{{ capacity_role_size | type_debug }}"
 
 - name: Show error message on invalid type of size
   ansible.builtin.fail:
     msg: "Please provide valid value of size."
-  when: size_type != 'float' and size_type != 'int'
+  when: capacity_role_size_type != 'float' and capacity_role_size_type != 'int'
 
 - name: Take size with no change if the cap_unit is GB
   ansible.builtin.set_fact:
-    size_gb: "{{ size | float }}"
+    capacity_role_size_gb: "{{ capacity_role_size | float }}"
   when: cap_unit == 'GB'
 
 - name: Convert size to GB if the cap_unit is TB
   ansible.builtin.set_fact:
-    size_gb: "{{ size * 1024 | float }}"
+    capacity_role_size_gb: "{{ capacity_role_size * 1024 | float }}"
   when: cap_unit == 'TB'
 
 - name: Get the list of PowerMax arrays from Unisphere
@@ -39,7 +39,7 @@
     verifycert: "{{ verifycert }}"
     user: "{{ user }}"
     password: "{{ password }}"
-  register: arrays
+  register: capacity_role_arrays
 
 - name: Get the list of PowerMax arrays from Unisphere
   dellemc.powermax.info:
@@ -50,8 +50,8 @@
     serial_no: "{{ item }}"
     gather_subset:
       - "srp"
-  loop: "{{ arrays.Arrays | list }}"
-  register: pool_list
+  loop: "{{ capacity_role_arrays.Arrays | list }}"
+  register: capacity_role_pool_list
 
 - name: Get the list of pools across all discovered arrays
   dellemc.powermax.storagepool:
@@ -62,23 +62,23 @@
     serial_no: "{{ item.0.item }}"
     pool: "{{ item.1.srpId }}"
     state: 'present'
-  register: pools
+  register: capacity_role_pools
   with_subelements:
-    - "{{ pool_list.results }}"
+    - "{{ capacity_role_pool_list.results }}"
     - StorageResourcePools
 
 - name: Get best suitable Pool using our python sorting module
-  register: assigned_pool
+  register: capacity_role_assigned_pool
   dellemc.powermax.process_storage_pool_dict:
     unispherehost: "{{ unispherehost }}"
     verifycert: "{{ verifycert }}"
     user: "{{ user }}"
     password: "{{ password }}"
-    pool_data: "{{ pools.results | map(attribute='pool_details') | list }}"
-    size: "{{ size_gb }}"
+    pool_data: "{{ capacity_role_pools.results | map(attribute='pool_details') | list }}"
+    size: "{{ capacity_role_size_gb }}"
     service_level: "{{ service_level | default(omit) }}"
     sg_name: "{{ sg_name | default(omit) }}"
 
 - name: Debug print assigned pool
   ansible.builtin.debug:
-    var: assigned_pool
+    var: capacity_role_assigned_pool

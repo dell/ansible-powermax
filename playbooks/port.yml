@@ -1,0 +1,26 @@
+---
+- name: Testing port operations
+  hosts: localhost
+  connection: local
+  vars:
+    unispherehost: '10.XX.XX.XX'
+    universion: "101"
+    verifycert: false
+    user: "user"
+    password: "password"
+    array_id: "000123456789"
+
+  tasks:
+    - name: Get details of single/multiple ports
+      dellemc.powermax.port:
+        unispherehost: "{{ unispherehost }}"
+        universion: "{{ universion }}"
+        verifycert: "{{ verifycert }}"
+        user: "{{ user }}"
+        password: "{{ password }}"
+        serial_no: "{{ array_id }}"
+        ports:
+          - director_id: "FA-1D"
+            port_id: "35"
+          - director_id: "FA-2D"
+            port_id: "10"

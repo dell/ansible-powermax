@@ -21,7 +21,7 @@ Requirements
 The below requirements are needed on the host that executes this module.
 
 - A Dell PowerMax storage system.
-- Ansible-core 2.13 or later.
+- Ansible-core 2.14 or later.
 - Python 3.9, 3.10 or 3.11.
 
 
@@ -80,7 +80,7 @@ Parameters
 
 
   universion (False, int, None)
-    Unisphere version, currently '91', '92' and '100' versions are supported.
+    Unisphere version, currently '91', '92', '100' and '101' versions are supported.
 
 
   verifycert (True, str, None)
@@ -93,6 +93,12 @@ Parameters
 
   password (True, str, None)
     The password of the Unisphere host.
+
+
+  timeout (optional, int, 120)
+    Time after which the connection will get terminated.
+
+    It is to be mentioned in seconds.
 
 
   serial_no (True, str, None)
@@ -134,7 +140,7 @@ Examples
         sg_name: "{{sg_name}}"
         size: 1
         cap_unit: "{{cap_unit}}"
-        append_vol_id: True
+        append_vol_id: true
         state: 'present'
 
     - name: Expanding volume size
@@ -145,7 +151,7 @@ Examples
         user: "{{user}}"
         password: "{{password}}"
         serial_no: "{{serial_no}}"
-        size:  3
+        size: 3
         cap_unit: "{{cap_unit}}"
         vol_id: "0059B"
         state: 'present'
@@ -158,7 +164,7 @@ Examples
         user: "{{user}}"
         password: "{{password}}"
         serial_no: "{{serial_no}}"
-        new_name:  "Test_GOLD_vol_Renamed"
+        new_name: "Test_GOLD_vol_Renamed"
         vol_id: "0059B"
         state: 'present'
 

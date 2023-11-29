@@ -394,7 +394,7 @@ EXAMPLES = r'''
     filters:
       - filter_key: "logged_in"
         filter_operator: "equal"
-        filter_value: "true"
+        filter_value: "True"
       - filter_key: "cap_gb"
         filter_operator: "equal"
         filter_value: "10"
@@ -651,7 +651,7 @@ HAS_PYU4V = utils.has_pyu4v_sdk()
 PYU4V_VERSION_CHECK = utils.pyu4v_version_check()
 
 # Application Type
-APPLICATION_TYPE = 'ansible_v2.2.1'
+APPLICATION_TYPE = 'ansible_v3.0.0'
 
 
 class Info(object):
@@ -1260,11 +1260,12 @@ def get_info_parameters():
 
     return dict(
         unispherehost=dict(type='str', required=True, no_log=True),
-        universion=dict(type='int', required=False, choices=[91, 92, 100]),
+        universion=dict(type='int', required=False, choices=[91, 92, 100, 101]),
         verifycert=dict(type='str', required=True),
         user=dict(type='str', required=True),
         password=dict(type='str', required=True, no_log=True),
         serial_no=dict(type='str', required=False, default=''),
+        timeout=dict(type='int', required=False, default=120),
         tdev_volumes=dict(type='bool', required=False,
                           default=True, choices=[True, False]),
         masking_view_name=dict(type='str'),

@@ -588,7 +588,7 @@ HAS_PYU4V = utils.has_pyu4v_sdk()
 PYU4V_VERSION_CHECK = utils.pyu4v_version_check()
 
 # Application Type
-APPLICATION_TYPE = 'ansible_v2.2.1'
+APPLICATION_TYPE = 'ansible_v3.0.0'
 
 
 class StorageGroup(object):
@@ -1716,7 +1716,7 @@ class StorageGroup(object):
         if state == 'present' and vol_state == 'present-in-group'\
                 and storage_group and volumes and not target_sg_name:
             LOG.info('Create new volumes for storage group %s', sg_name)
-            result['add_new_vols_to_sg'],\
+            result['add_new_vols_to_sg'], \
                 result['storage_group_volumes_details'] = self.\
                 add_volume_storage_group(sg_name)
             LOG.info('Add existing volumes to storage group %s', sg_name)

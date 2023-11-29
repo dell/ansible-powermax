@@ -21,7 +21,7 @@ Requirements
 The below requirements are needed on the host that executes this module.
 
 - A Dell PowerMax storage system.
-- Ansible-core 2.13 or later.
+- Ansible-core 2.14 or later.
 - Python 3.9, 3.10 or 3.11.
 
 
@@ -68,7 +68,7 @@ Parameters
 
 
   universion (False, int, None)
-    Unisphere version, currently '91', '92' and '100' versions are supported.
+    Unisphere version, currently '91', '92', '100' and '101' versions are supported.
 
 
   verifycert (True, str, None)
@@ -81,6 +81,12 @@ Parameters
 
   password (True, str, None)
     The password of the Unisphere host.
+
+
+  timeout (optional, int, 120)
+    Time after which the connection will get terminated.
+
+    It is to be mentioned in seconds.
 
 
   serial_no (True, str, None)
@@ -139,10 +145,10 @@ Examples
         portgroup_name: "{{portgroup_name}}"
         state: "present"
         ports:
-        - director_id: "FA-1D"
-          port_id: "5"
-        - director_id: "FA-2D"
-          port_id: "5"
+          - director_id: "FA-1D"
+            port_id: "5"
+          - director_id: "FA-2D"
+            port_id: "5"
         port_state: "present-in-group"
 
     - name: Add ports to port group
@@ -156,10 +162,10 @@ Examples
         portgroup_name: "{{portgroup_name}}"
         state: "present"
         ports:
-        - director_id: "FA-2D"
-          port_id: "8"
-        - director_id: "FA-2D"
-          port_id: "9"
+          - director_id: "FA-2D"
+            port_id: "8"
+          - director_id: "FA-2D"
+            port_id: "9"
         port_state: "present-in-group"
 
     - name: Remove ports from port group
@@ -173,10 +179,10 @@ Examples
         portgroup_name: "{{portgroup_name}}"
         state: "present"
         ports:
-        - director_id: "FA-2D"
-          port_id: "8"
-        - director_id: "FA-2D"
-          port_id: "9"
+          - director_id: "FA-2D"
+            port_id: "8"
+          - director_id: "FA-2D"
+            port_id: "9"
         port_state: "absent-in-group"
 
     - name: Modify port group

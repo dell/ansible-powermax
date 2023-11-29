@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright: (c) 2019-2021, Dell Technologies.
+# Copyright: (c) 2019-2023, Dell Technologies.
 
 from __future__ import absolute_import, division, print_function
 __metaclass__ = type
@@ -16,11 +16,11 @@ options:
         required: True
     universion:
         description:
-            - Unisphere version, currently '91', '92' and '100' versions are
+            - Unisphere version, currently '91', '92', '100' and '101' versions are
               supported.
         type: int
         required: False
-        choices: [91, 92, 100]
+        choices: [91, 92, 100, 101]
     verifycert:
         description:
             - Specifies system whether to validate SSL certificate or not, Values can be True or
@@ -37,10 +37,16 @@ options:
             - The password of the Unisphere host.
         type: str
         required: True
+    timeout:
+        description:
+            - Time after which the connection will get terminated.
+            - It is to be mentioned in seconds.
+        type: int
+        default: 120
 
 requirements:
   - A Dell PowerMax storage system.
-  - Ansible-core 2.13 or later.
+  - Ansible-core 2.14 or later.
   - Python 3.9, 3.10 or 3.11.
 notes:
   - The modules present in this collection named as 'dellemc.powermax'

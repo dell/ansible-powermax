@@ -21,7 +21,7 @@ Requirements
 The below requirements are needed on the host that executes this module.
 
 - A Dell PowerMax storage system.
-- Ansible-core 2.13 or later.
+- Ansible-core 2.14 or later.
 - Python 3.9, 3.10 or 3.11.
 
 
@@ -127,7 +127,7 @@ Parameters
 
 
   universion (False, int, None)
-    Unisphere version, currently '91', '92' and '100' versions are supported.
+    Unisphere version, currently '91', '92', '100' and '101' versions are supported.
 
 
   verifycert (True, str, None)
@@ -140,6 +140,12 @@ Parameters
 
   password (True, str, None)
     The password of the Unisphere host.
+
+
+  timeout (optional, int, 120)
+    Time after which the connection will get terminated.
+
+    It is to be mentioned in seconds.
 
 
 
@@ -184,7 +190,7 @@ Examples
         metro_r2_array_id: "{{metro_r2_array_id}}"
         dr_array_id: "{{dr_array_id}}"
         replication_mode: "Asynchronous"
-        wait_for_completion: False
+        wait_for_completion: false
         state: "present"
 
     - name: Create metro DR environment
@@ -200,8 +206,8 @@ Examples
         metro_r2_array_id: "{{metro_r2_array_id}}"
         dr_array_id: "{{dr_array_id}}"
         replication_mode: "Asynchronous"
-        new_rdf_group_r1: True
-        new_rdf_group_r2: True
+        new_rdf_group_r1: true
+        new_rdf_group_r2: true
         wait_for_completion: False
         state: "present"
 
@@ -216,10 +222,10 @@ Examples
         env_name: "ansible_metrodr_env"
         srdf_param:
           srdf_state: "Suspend"
-          metro: True
-          dr: True
-          keep_r2: True
-        wait_for_completion: True
+          metro: true
+          dr: true
+          keep_r2: true
+        wait_for_completion: true
         state: "present"
 
     - name: Delete metro DR environment
@@ -231,7 +237,7 @@ Examples
         password: "{{password}}"
         metro_r1_array_id: "{{metro_r1_array_id}}"
         env_name: "ansible_metrodr_env"
-        remove_r1_dr_rdfg: True
+        remove_r1_dr_rdfg: true
         state: 'absent'
 
 
