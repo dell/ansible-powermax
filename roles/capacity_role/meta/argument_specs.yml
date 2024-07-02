@@ -23,6 +23,11 @@ argument_specs:
           - Configure C(false) only on personally controlled sites where self-signed certificates are used.
         type: bool
         default: false
+      port:
+        description:
+          - Port of the unispherehost.
+        type: int
+        default: 8443
       capacity_role_size:
         description:
           - The size of the storage group.

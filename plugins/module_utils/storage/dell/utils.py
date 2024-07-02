@@ -1,4 +1,4 @@
-# Copyright: (c) 2021, Dell Technologies
+# Copyright: (c) 2021-2024, Dell Technologies
 
 # Apache License version 2.0 (see MODULE-LICENSE or http://www.apache.org/licenses/LICENSE-2.0.txt)
 
@@ -47,7 +47,7 @@ def pyu4v_version_check():
                                           " the required package"
             return unsupported_version_message
         min_ver = '9.1.2.0'
-        max_ver = '10.1.0.0'
+        max_ver = '10.1.0.2'
         curr_version = PyU4V.__version__
         unsupported_version_message = "PyU4V {0} is not supported by this " \
                                       "module.Minimum supported version " \
@@ -116,14 +116,19 @@ options:
     False or a custom file path for SSL certificate with .pem extension or .cer with base 64 encoding.
   user:
     description:
-    - User name to access on to unispherehost
+    - User name to access on to unispherehost.
   password:
     description:
-    - password to access on to unispherehost
+    - password to access on to unispherehost.
   serial_no:
     description:
-    - Serial number of Powermax system
-
+    - Serial number of Powermax system.
+  port:
+    description:
+    - Port number of unispherehost.
+  timeout:
+    description:
+    - Timeout in seconds to access the unispherehost.
 '''
 
 
@@ -135,7 +140,8 @@ def get_powermax_management_host_parameters(metro_dr=False):
             verifycert=dict(type='str', required=True),
             user=dict(type='str', required=True),
             password=dict(type='str', required=True, no_log=True),
-            timeout=dict(type='int', required=False, default=120))
+            timeout=dict(type='int', required=False, default=120),
+            port=dict(type='int', required=False, default=8443))
 
     return dict(
         unispherehost=dict(type='str', required=True, no_log=True),
@@ -144,7 +150,8 @@ def get_powermax_management_host_parameters(metro_dr=False):
         user=dict(type='str', required=True),
         password=dict(type='str', required=True, no_log=True),
         serial_no=dict(type='str', required=True),
-        timeout=dict(type='int', required=False, default=120))
+        timeout=dict(type='int', required=False, default=120),
+        port=dict(type='int', required=False, default=8443))
 
 
 '''
@@ -164,10 +171,16 @@ options:
     False or a custom file path for SSL certificate with .pem extension or .cer with base 64 encoding.
   user:
     description:
-    - User name to access on to unispherehost
+    - User name to access on to unispherehost.
   password:
     description:
-    - password to access on to unispherehost
+    - password to access on to unispherehost.
+  timeout:
+    description:
+    - Timeout in seconds to access the unispherehost.
+  port:
+    description:
+    - Port number of unispherehost.
 '''
 
 
@@ -178,7 +191,8 @@ def get_u4v_unisphere_connection_parameters():
         verifycert=dict(type='str', required=True),
         user=dict(type='str', required=True),
         password=dict(type='str', required=True, no_log=True),
-        timeout=dict(type='int', required=False, default=120)
+        timeout=dict(type='int', required=False, default=120),
+        port=dict(type='int', required=False, default=8443)
     )
 
 
@@ -192,9 +206,10 @@ parameters:
      - universion:Version of univmax SDK.
      - verifycert: Specifies system whether to validate SSL certificate or not, Values can be True or
     False or a custom file path for SSL certificate with .pem extension or .cer with base 64 encoding.
-     - user:  User name to access on to unispherehost
-     - password: Password to access on to unispherehost
-     - serial_no: Serial number of Powermax system
+     - user:  User name to access on to unispherehost.
+     - password: Password to access on to unispherehost.
+     - serial_no: Serial number of Powermax system.
+     - port: Port number of unispherehost.
 returns connection object to access provisioning and protection sdks
 '''
 
@@ -207,7 +222,7 @@ def get_U4V_connection(module_params, application_type=None, metro_dr=False):
     verify = validate_verifycert(module_params)
     if HAS_PYU4V:
         conn = PyU4V.U4VConn(server_ip=module_params['unispherehost'],
-                             port=8443,
+                             port=module_params['port'],
                              array_id=array_id,
                              verify=verify,
                              username=module_params['user'],
@@ -227,8 +242,9 @@ parameters:
      - universion:Version of univmax SDK.
      - verifycert: Specifies system whether to validate SSL certificate or not, Values can be True or
     False or a custom file path for SSL certificate with .pem extension or .cer with base 64 encoding.
-     - user:  User name to access on to unispherehost
-     - password: Password to access on to unispherehost
+     - user:  User name to access on to unispherehost.
+     - password: Password to access on to unispherehost.
+     - port: Port number of unispherehost.
 returns connection object to access U4V Unisphere Common sdks
 '''
 
@@ -237,7 +253,7 @@ def get_u4v_unisphere_connection(module_params, application_type=None):
     verify = validate_verifycert(module_params)
     if HAS_PYU4V:
         conn = PyU4V.U4VConn(server_ip=module_params['unispherehost'],
-                             port=8443,
+                             port=module_params['port'],
                              verify=verify,
                              username=module_params['user'],
                              password=module_params['password'],

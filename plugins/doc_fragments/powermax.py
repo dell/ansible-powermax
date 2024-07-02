@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright: (c) 2019-2023, Dell Technologies.
+# Copyright: (c) 2019-2024, Dell Technologies.
 
 from __future__ import absolute_import, division, print_function
 __metaclass__ = type
@@ -43,11 +43,16 @@ options:
             - It is to be mentioned in seconds.
         type: int
         default: 120
+    port:
+        description:
+            - The port of the Unisphere host.
+        type: int
+        default: 8443
 
 requirements:
   - A Dell PowerMax storage system.
-  - Ansible-core 2.14 or later.
-  - Python 3.9, 3.10 or 3.11.
+  - Ansible-core 2.15 or later.
+  - Python 3.10, 3.11 or 3.12.
 notes:
   - The modules present in this collection named as 'dellemc.powermax'
     are built to support the Dell PowerMax storage platform.
