@@ -15,7 +15,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        ansible-version: [stable-2.14]
+        ansible-version: [stable-2.15, stable-2.16, stable-2.17, devel]
     steps:
       - name: Check out code
         uses: actions/checkout@v3
@@ -49,12 +49,12 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        python-version: ["3.9", "3.10", "3.11"]
-        ansible-version: [stable-2.14, stable-2.15, stable-2.16]
+        python-version: ["3.10", "3.11"]
+        ansible-version: [stable-2.15, stable-2.16, stable-2.17, devel]
         exclude:
         # Ansible-core 2.16 is supported only from Python 3.10 onwards
-        - python-version: "3.9"
-          ansible-version: stable-2.16
+        - python-version: "3.10"
+          ansible-version: devel
 
 
     steps:
@@ -93,12 +93,12 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        python-version: ["3.9", "3.10", "3.11"]
-        ansible-version: [stable-2.14, stable-2.15, stable-2.16]
+        python-version: ["3.10", "3.11"]
+        ansible-version: [stable-2.15, stable-2.16, stable-2.17, devel]
         exclude:
         # Ansible-core 2.16 is supported only from Python 3.10 onwards
-        - python-version: "3.9"
-          ansible-version: stable-2.16
+        - python-version: "3.10"
+          ansible-version: devel
 
     steps:
       - name: Set up Python 3.11
@@ -134,12 +134,12 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        python-version: ["3.9", "3.10", "3.11"]
-        ansible-version: [stable-2.14, stable-2.15, stable-2.16]
+        python-version: ["3.10", "3.11"]
+        ansible-version: [stable-2.15, stable-2.16, stable-2.17, devel]
         exclude:
         # Ansible-core 2.16 is supported only from Python 3.10 onwards
-        - python-version: "3.9"
-          ansible-version: stable-2.16
+        - python-version: "3.10"
+          ansible-version: devel
 
     steps:
       # Important: This sets up your GITHUB_WORKSPACE environment variable
