@@ -21,8 +21,8 @@ Requirements
 The below requirements are needed on the host that executes this module.
 
 - A Dell PowerMax storage system.
-- Ansible-core 2.14 or later.
-- Python 3.9, 3.10 or 3.11.
+- Ansible-core 2.15 or later.
+- Python 3.10, 3.11 or 3.12.
 
 
 
@@ -101,6 +101,10 @@ Parameters
     It is to be mentioned in seconds.
 
 
+  port (optional, int, 8443)
+    The port of the Unisphere host.
+
+
   serial_no (True, str, None)
     The serial number of the PowerMax/VMAX array. It is a required parameter for all array-specific operations except for getting a list of arrays in the Gatherfacts module.
 
@@ -112,10 +116,10 @@ Notes
 -----
 
 .. note::
-   - To expand a volume, either provide vol_id or vol_name or vol_wwn and sg_name.
+   - To expand a volume, either provide vol\_id or vol\_name or vol\_wwn and sg\_name.
    - size is required to create/expand a volume.
-   - vol_id is required to rename/delete a volume.
-   - vol_name, sg_name and new_sg_name is required to move volumes between storage groups.
+   - vol\_id is required to rename/delete a volume.
+   - vol\_name, sg\_name and new\_sg\_name is required to move volumes between storage groups.
    - Deletion of volume will fail if the storage group is part of a masking view.
    - The modules present in this collection named as 'dellemc.powermax' are built to support the Dell PowerMax storage platform.
 

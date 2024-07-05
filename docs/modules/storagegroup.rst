@@ -41,8 +41,8 @@ Requirements
 The below requirements are needed on the host that executes this module.
 
 - A Dell PowerMax storage system.
-- Ansible-core 2.14 or later.
-- Python 3.9, 3.10 or 3.11.
+- Ansible-core 2.15 or later.
+- Python 3.10, 3.11 or 3.12.
 
 
 
@@ -60,7 +60,7 @@ Parameters
   srp (optional, str, None)
     The name of the storage resource pool.
 
-    This parameter is ignored if service_level is not specified.
+    This parameter is ignored if service\_level is not specified.
 
     Default is to use whichever is the default SRP on the array.
 
@@ -68,7 +68,7 @@ Parameters
   compression (optional, bool, None)
     Compression on storage group.
 
-    Compression parameter is ignored if service_level is not specified.
+    Compression parameter is ignored if service\_level is not specified.
 
     Default is true.
 
@@ -76,15 +76,15 @@ Parameters
   volumes (optional, list, None)
     This is a list of volumes.
 
-    Each volume has four attributes; vol_name, size, cap_unit, vol_id.
+    Each volume has four attributes; vol\_name, size, cap\_unit, vol\_id.
 
     Volume ID must be provided for existing volumes.
 
     The size must be provided to add new volumes to SG.
 
-    The cap_unit is optional.
+    The cap\_unit is optional.
 
-    Default value of cap_unit is GB, choices are MB, GB, TB.
+    Default value of cap\_unit is GB, choices are MB, GB, TB.
 
 
   vol_state (optional, str, None)
@@ -166,6 +166,10 @@ Parameters
     It is to be mentioned in seconds.
 
 
+  port (optional, int, 8443)
+    The port of the Unisphere host.
+
+
   serial_no (True, str, None)
     The serial number of the PowerMax/VMAX array. It is a required parameter for all array-specific operations except for getting a list of arrays in the Gatherfacts module.
 
@@ -177,9 +181,9 @@ Notes
 -----
 
 .. note::
-   - To set host_io_limit_mbps to NOLIMIT, value can be provided as 0.
+   - To set host\_io\_limit\_mbps to NOLIMIT, value can be provided as 0.
    - Idempotency is not supported when creating a new volume in the storage group without providing volume name.
-   - The check_mode is not supported.
+   - The check\_mode is not supported.
    - The modules present in this collection named as 'dellemc.powermax' are built to support the Dell PowerMax storage platform.
 
 
@@ -211,7 +215,7 @@ Examples
         password: "{{password}}"
         serial_no: "{{serial_no}}"
         sg_name: "foo"
-        service_level:  "Diamond"
+        service_level: "Diamond"
         srp: "SRP_1"
         compression: true
         state: "present"

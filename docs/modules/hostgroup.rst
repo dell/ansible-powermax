@@ -21,8 +21,8 @@ Requirements
 The below requirements are needed on the host that executes this module.
 
 - A Dell PowerMax storage system.
-- Ansible-core 2.14 or later.
-- Python 3.9, 3.10 or 3.11.
+- Ansible-core 2.15 or later.
+- Python 3.10, 3.11 or 3.12.
 
 
 
@@ -30,7 +30,7 @@ Parameters
 ----------
 
   hostgroup_name (True, str, None)
-    The name of the host group. No Special Character support except for _. Case sensitive for REST Calls.
+    The name of the host group. No Special Character support except for \_. Case sensitive for REST Calls.
 
 
   hosts (optional, list, None)
@@ -58,25 +58,25 @@ Parameters
   host_flags (False, dict, None)
     input as an yaml dictionary.
 
-    List of all host_flags -
+    List of all host\_flags -
 
-    1. volume_set_addressing.
+    1. volume\_set\_addressing.
 
-    2. disable_q_reset_on_ua.
+    2. disable\_q\_reset\_on\_ua.
 
-    3. environ_set.
+    3. environ\_set.
 
-    4. avoid_reset_broadcast.
+    4. avoid\_reset\_broadcast.
 
     5. openvms.
 
-    6. scsi_3.
+    6. scsi\_3.
 
-    7. spc2_protocol_version.
+    7. spc2\_protocol\_version.
 
-    8. scsi_support1.
+    8. scsi\_support1.
 
-    9. consistent_lun.
+    9. consistent\_lun.
 
     Possible values are true, false, unset(default state).
 
@@ -86,7 +86,7 @@ Parameters
 
 
   new_name (optional, str, None)
-    The new name for the host group for the renaming function. No Special Character support except for _. Case sensitive for REST Calls.
+    The new name for the host group for the renaming function. No Special Character support except for \_. Case sensitive for REST Calls.
 
 
   unispherehost (True, str, None)
@@ -115,8 +115,8 @@ Parameters
     It is to be mentioned in seconds.
 
 
-  serial_no (True, str, None)
-    The serial number of the PowerMax/VMAX array. It is a required parameter for all array-specific operations except for getting a list of arrays in the Gatherfacts module.
+  port (optional, int, 8443)
+    The port of the Unisphere host.
 
 
 
@@ -127,9 +127,9 @@ Notes
 
 .. note::
    - In the gather facts module, empty host groups will be listed as hosts.
-   - host_flags and host_type are mutually exclusive parameters.
-   - Hostgroups with 'default' host_type will have 'default' hosts.
-   - Hostgroups with 'hpux' host_type will have 'hpux' hosts.
+   - host\_flags and host\_type are mutually exclusive parameters.
+   - Hostgroups with 'default' host\_type will have 'default' hosts.
+   - Hostgroups with 'hpux' host\_type will have 'hpux' hosts.
    - The modules present in this collection named as 'dellemc.powermax' are built to support the Dell PowerMax storage platform.
 
 

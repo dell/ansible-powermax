@@ -16,15 +16,15 @@ Managing masking views on PowerMax storage system includes, creating masking vie
 
 For creating a masking view -
 
-(i) portgroup_name,
+(i) portgroup\_name,
 
-(ii) sg_name and
+(ii) sg\_name and
 
-(iii) any one of host_name or hostgroup_name is required.
+(iii) any one of host\_name or hostgroup\_name is required.
 
 All three entities must be present on the array.
 
-For renaming a masking view, the 'new_mv_name' is required. After a masking view is created, only its name can be changed. No underlying entity (portgroup, storagegroup, host or hostgroup) can be changed on the masking view.
+For renaming a masking view, the 'new\_mv\_name' is required. After a masking view is created, only its name can be changed. No underlying entity (portgroup, storagegroup, host or hostgroup) can be changed on the masking view.
 
 
 
@@ -33,8 +33,8 @@ Requirements
 The below requirements are needed on the host that executes this module.
 
 - A Dell PowerMax storage system.
-- Ansible-core 2.14 or later.
-- Python 3.9, 3.10 or 3.11.
+- Ansible-core 2.15 or later.
+- Python 3.10, 3.11 or 3.12.
 
 
 
@@ -42,7 +42,7 @@ Parameters
 ----------
 
   mv_name (True, str, None)
-    The name of the masking view. No Special Character support except for _. Case sensitive for REST Calls.
+    The name of the masking view. No Special Character support except for \_. Case sensitive for REST Calls.
 
 
   portgroup_name (optional, str, None)
@@ -62,7 +62,7 @@ Parameters
 
 
   new_mv_name (optional, str, None)
-    The new name for the renaming function. No Special Character support except for _. Case sensitive for REST Calls.
+    The new name for the renaming function. No Special Character support except for \_. Case sensitive for REST Calls.
 
 
   state (True, str, None)
@@ -93,6 +93,10 @@ Parameters
     Time after which the connection will get terminated.
 
     It is to be mentioned in seconds.
+
+
+  port (optional, int, 8443)
+    The port of the Unisphere host.
 
 
   serial_no (True, str, None)

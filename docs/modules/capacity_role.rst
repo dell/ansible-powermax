@@ -21,8 +21,8 @@ Requirements
 The below requirements are needed on the host that executes this module.
 
 - A Dell PowerMax storage system.
-- Ansible-core 2.14 or later.
-- Python 3.9, 3.10 or 3.11.
+- Ansible-core 2.15 or later.
+- Python 3.10, 3.11 or 3.12.
 
 
 
@@ -64,7 +64,8 @@ Parameters
   password (True, str, None)
     The password of the Unisphere host.
 
-
+  port (optional, int, 8443)
+    The port of the Unisphere host.
 
 
 

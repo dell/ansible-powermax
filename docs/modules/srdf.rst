@@ -21,8 +21,8 @@ Requirements
 The below requirements are needed on the host that executes this module.
 
 - A Dell PowerMax storage system.
-- Ansible-core 2.14 or later.
-- Python 3.9, 3.10 or 3.11.
+- Ansible-core 2.15 or later.
+- Python 3.10, 3.11 or 3.12.
 
 
 
@@ -36,7 +36,7 @@ Parameters
 
 
   serial_no (True, str, None)
-    The serial number will refer to the source PowerMax/VMAX array when protecting a storage group. However srdf_state operations may be issued from primary or remote array.
+    The serial number will refer to the source PowerMax/VMAX array when protecting a storage group. However srdf\_state operations may be issued from primary or remote array.
 
 
   remote_serial_no (False, str, None)
@@ -90,7 +90,7 @@ Parameters
   witness (False, bool, None)
     Flag to specify use of Witness for a Metro configuration. Setting to True signifies to use Witness, setting it to False signifies to use Bias. It is recommended to configure a witness for SRDF Metro in a production environment, this is configured via Unisphere for PowerMax UI or REST.
 
-    The flag can be set only for modifying srdf_state to either Establish, Suspend, or Restore.
+    The flag can be set only for modifying srdf\_state to either Establish, Suspend, or Restore.
 
     While creating a Metro configuration, the witness flag must be set to True.
 
@@ -119,6 +119,10 @@ Parameters
     Time after which the connection will get terminated.
 
     It is to be mentioned in seconds.
+
+
+  port (optional, int, 8443)
+    The port of the Unisphere host.
 
 
 

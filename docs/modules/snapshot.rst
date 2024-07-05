@@ -21,8 +21,8 @@ Requirements
 The below requirements are needed on the host that executes this module.
 
 - A Dell PowerMax storage system.
-- Ansible-core 2.14 or later.
-- Python 3.9, 3.10 or 3.11.
+- Ansible-core 2.15 or later.
+- Python 3.10, 3.11 or 3.12.
 
 
 
@@ -50,7 +50,7 @@ Parameters
   ttl_unit (optional, str, days)
     The unit for the ttl.
 
-    If no ttl_unit is specified, 'days' is taken as default ttl_unit.
+    If no ttl\_unit is specified, 'days' is taken as default ttl\_unit.
 
 
   generation (optional, int, None)
@@ -68,7 +68,7 @@ Parameters
   snapshot_id (optional, int, None)
     Unique ID of the snapshot.
 
-    snapshot_id is required for link, unlink, rename and delete operations.
+    snapshot\_id is required for link, unlink, rename and delete operations.
 
     Optional for Get snapshot details.
 
@@ -83,6 +83,10 @@ Parameters
 
   link_status (optional, str, None)
     Describes the link status of the snapshot.
+
+
+  restore (optional, bool, None)
+    Whether to restore a storage group to its snapshot.
 
 
   state (True, str, None)
@@ -115,6 +119,10 @@ Parameters
     It is to be mentioned in seconds.
 
 
+  port (optional, int, 8443)
+    The port of the Unisphere host.
+
+
   serial_no (True, str, None)
     The serial number of the PowerMax/VMAX array. It is a required parameter for all array-specific operations except for getting a list of arrays in the Gatherfacts module.
 
@@ -126,9 +134,9 @@ Notes
 -----
 
 .. note::
-   - Paramters 'generation' and 'snapshot_id' are mutually exclusive.
-   - If 'generation' or 'snapshot_id' is not provided then a list of generation versus snapshot_id is returned.
-   - Use of 'snapshot_id' over 'generation' is preferably recommended for PowerMax microcode version 5978.669.669 and onwards.
+   - Paramters 'generation' and 'snapshot\_id' are mutually exclusive.
+   - If 'generation' or 'snapshot\_id' is not provided then a list of generation versus snapshot\_id is returned.
+   - Use of 'snapshot\_id' over 'generation' is preferably recommended for PowerMax microcode version 5978.669.669 and onwards.
    - The modules present in this collection named as 'dellemc.powermax' are built to support the Dell PowerMax storage platform.
 
 

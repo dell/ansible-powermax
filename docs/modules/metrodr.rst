@@ -21,8 +21,8 @@ Requirements
 The below requirements are needed on the host that executes this module.
 
 - A Dell PowerMax storage system.
-- Ansible-core 2.14 or later.
-- Python 3.9, 3.10 or 3.11.
+- Ansible-core 2.15 or later.
+- Python 3.10, 3.11 or 3.12.
 
 
 
@@ -106,11 +106,11 @@ Parameters
 
 
     metro (False, bool, False)
-      The flag indicates whether or not to direct srdf_state change towards the R1--R2 Metro Device leg of the metro DR environment.
+      The flag indicates whether or not to direct srdf\_state change towards the R1--R2 Metro Device leg of the metro DR environment.
 
 
     dr (False, bool, False)
-      The flag indicates whether or not to direct srdf_state change towards device pairs on the disaster recovery leg of the metro DR environment.
+      The flag indicates whether or not to direct srdf\_state change towards device pairs on the disaster recovery leg of the metro DR environment.
 
 
     keep_r2 (False, bool, False)
@@ -146,6 +146,10 @@ Parameters
     Time after which the connection will get terminated.
 
     It is to be mentioned in seconds.
+
+
+  port (optional, int, 8443)
+    The port of the Unisphere host.
 
 
 
@@ -208,7 +212,7 @@ Examples
         replication_mode: "Asynchronous"
         new_rdf_group_r1: true
         new_rdf_group_r2: true
-        wait_for_completion: False
+        wait_for_completion: false
         state: "present"
 
     - name: Modify metro DR environment
