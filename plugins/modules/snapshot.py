@@ -503,8 +503,8 @@ class Snapshot(object):
                     snap_name=snap_name,
                     snap_id=snap_id)
         except Exception as e:
-            LOG.info(f"snapshot_id or generation not found,"
-                     f" got error: {str(e)}")
+            LOG.info("snapshot_id or generation not found,"
+                     " got error: %s", str(e))
             return False
         try:
             if snapshot:
@@ -639,13 +639,6 @@ class Snapshot(object):
     def restore_snapshot(self, sg_id, snap_name, snap_id=None, generation=None):
         """Restore Snapshot"""
         try:
-            # snapshot = self.get_snapshot(sg_id, snap_name, generation,
-            #                              snap_id)
-            # if snap_name == new_snap_name:
-            #     return False, snapshot
-
-            # resp = snapshot
-            # if snapshot:
             if generation is not None and not self.module.check_mode:
                 resp = self.replication. \
                     modify_storage_group_snapshot(
@@ -654,7 +647,7 @@ class Snapshot(object):
                         snap_name=snap_name,
                         gen_num=generation,
                         restore=True
-                        )
+                    )
             if snap_id is not None and not self.module.check_mode:
                 resp = self.replication. \
                     modify_storage_group_snapshot_by_snap_id(
@@ -662,13 +655,9 @@ class Snapshot(object):
                         tgt_storage_grp_id=None,
                         snap_name=snap_name,
                         snap_id=snap_id,
-                        restore=True)
+                        restore=True
+                    )
             return True
-            # if not self.module.check_mode:
-            #     self.replication.restore_snapshot_by_snap_id(sg_id=sg_id,
-            #                                                  snap_name=snap_name,
-            #                                                  snap_id=snap_id)
-            # return True
         except Exception as e:
             error_message = (f'Restore SG {sg_id} Snapshot {snap_name} failed with '
                              f'error {str(e)}')
@@ -731,8 +720,8 @@ class SnapshotExitHandler:
     def handle(self, snapshot_obj, snapshot_params):
         if snapshot_params["state"] == 'present' and not snapshot_params["ttl"] and not \
                 snapshot_params["link_status"] and not snapshot_params["new_snapshot_name"]:
-            LOG.info(f'Returning storage group {snapshot_params["sg_name"]}'
-                     f'snapshot {snapshot_params["snapshot_name"]} details ')
+            LOG.info("Returning storage group %s snapshot %s details",
+                     snapshot_params["sg_name"], snapshot_params["snapshot_name"])
             snapshot_obj.result["sg_snap_details"] = snapshot_obj.get_snapshot(
                 sg_id=snapshot_params['sg_name'],
                 snapshot_name=snapshot_params['snapshot_name'],
@@ -766,8 +755,8 @@ class SnapshotLinkHandler:
     def handle(self, snapshot_obj, snapshot_params):
         if snapshot_params["state"] == 'present' and snapshot_params["snapshot_name"] is not None and \
                 snapshot_params["link_status"] is not None and snapshot_params["target_sg_name"] is not None:
-            LOG.info(f'Change storage group {snapshot_params["sg_name"]}'
-                     f'snapshot {snapshot_params["snapshot_name"]} link status. ')
+            LOG.info("Change storage group %s snapshot %s link status ",
+                     snapshot_params["sg_name"], snapshot_params["snapshot_name"])
             snapshot_obj.result['change_snap_link_status'], snapshot_obj.result['sg_snap_link_details'] = \
                 snapshot_obj.change_snapshot_link_status(
                     sg_id=snapshot_params["sg_name"],
@@ -806,8 +795,8 @@ class SnapshotRenameHandler:
         if snapshot_params["state"] == "present" and snapshot_params["sg_name"] is not None and \
                 snapshot_params["snapshot_name"] is not None and snapshot_params["new_snapshot_name"] is not None:
             if snapshot_params["snapshot_id"] is not None or snapshot_params["generation"] == 0:
-                LOG.info(f'Rename storage group {snapshot_params["sg_name"]}'
-                         f'snapshot {snapshot_params["snapshot_name"]} ')
+                LOG.info("Rename storage group %s snapshot %s",
+                         snapshot_params["sg_name"], snapshot_params["snapshot_name"])
                 snapshot_obj.result['rename_sg_snap'], snapshot_obj.result['sg_snap_rename_details'] = \
                     snapshot_obj.rename_sg_snapshot(
                         sg_id=snapshot_params['sg_name'],
@@ -823,8 +812,8 @@ class SnapshotCreateHandler:
     def handle(self, snapshot_obj, snapshot_params):
         if snapshot_params["state"] == "present" and snapshot_params["ttl"] and not \
                 (snapshot_params["new_snapshot_name"] or snapshot_params["link_status"]):
-            LOG.info(f'Creating snapshot {snapshot_params["snapshot_name"]}'
-                     f' for storage group {snapshot_params["sg_name"]} ')
+            LOG.info("Creating snapshot %s for storage group %s",
+                     snapshot_params["snapshot_name"], snapshot_params["sg_name"])
             snapshot_obj.result["create_sg_snap"], snapshot_obj.result["sg_snap_details"] = \
                 snapshot_obj.create_sg_snapshot(
                     sg_id=snapshot_params['sg_name'],
