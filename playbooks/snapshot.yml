@@ -167,6 +167,34 @@
         snapshot_id: "{{ snapshot_id }}"
         state: "{{ state_present }}"
 
+    - name: Restore Storage Group Snapshot using generation
+      dellemc.powermax.snapshot:
+        unispherehost: "{{ unispherehost }}"
+        universion: "{{ universion }}"
+        verifycert: "{{ verifycert }}"
+        user: "{{ user }}"
+        password: "{{ password }}"
+        serial_no: "{{ serial_no }}"
+        sg_name: "{{ sg_name }}"
+        snapshot_name: "{{ snapshot_name }}"
+        restore: true
+        generation: "{{ generation }}"
+        state: "{{ state_present }}"
+
+    - name: Restore Storage Group Snapshot using snapshot_id
+      dellemc.powermax.snapshot:
+        unispherehost: "{{ unispherehost }}"
+        universion: "{{ universion }}"
+        verifycert: "{{ verifycert }}"
+        user: "{{ user }}"
+        password: "{{ password }}"
+        serial_no: "{{ serial_no }}"
+        sg_name: "{{ sg_name }}"
+        snapshot_name: "{{ snapshot_name }}"
+        restore: true
+        snapshot_id: "{{ snapshot_id }}"
+        state: "{{ state_present }}"
+
     - name: Delete Storage Group Snapshot using generation
       dellemc.powermax.snapshot:
         unispherehost: "{{ unispherehost }}"
