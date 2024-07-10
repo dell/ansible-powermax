@@ -370,6 +370,40 @@ sg_snap_details:
         tracks:
             description: Number of tracks.
             type: int
+    sample: {
+        "change_snap_link_status": "",
+        "changed": false,
+        "create_sg_snap": "",
+        "delete_sg_snap": "",
+        "rename_sg_snap": "",
+        "restore_sg_snap": "",
+        "sg_snap_details": {
+            "generation": 0,
+            "isExpired": false,
+            "isLinked": false,
+            "isRestored": false,
+            "name": "ansible_sample_snapshot",
+            "nonSharedTracks": 0,
+            "numSharedTracks": 0,
+            "numSourceVolumes": 1,
+            "numStorageGroupVolumes": 1,
+            "numUniqueTracks": 0,
+            "sourceVolume": [
+                {
+                    "capacity": 547,
+                    "capacity_gb": 1.0015869,
+                    "name": "00205"
+                }
+            ],
+            "state": [
+                "Established"
+            ],
+            "timeToLiveExpiryDate": "09:55:28 Thu, 11 Jul 2024 +0000",
+            "timestamp": "09:55:28 Wed, 10 Jul 2024 +0000",
+            "timestamp_utc": 1720605328000,
+            "tracks": 0
+        }
+    }
 '''
 
 from ansible.module_utils.basic import AnsibleModule
@@ -711,7 +745,7 @@ class Snapshot(object):
             generation = snapshot_params.get('generation')
             snap_id = snapshot_params.get('snapshot_id')
             if not (isinstance(generation, int) or isinstance(snap_id, int)):
-                self.show_error_exit("Please specify a valid generation " \
+                self.show_error_exit("Please specify a valid generation "
                                      "or a snapshot_id.")
 
         if snapshot_params.get('state') == 'present' and snapshot_params.get("sg_name") and \
