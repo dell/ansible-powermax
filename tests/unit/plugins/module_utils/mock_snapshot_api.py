@@ -192,6 +192,3 @@ class MockSnapshotApi:
             return 'Change SG ansible_sg_test Snapshot ansible_snap_test link status failed with error SDK Error message'
         elif response_type == 'no_id_exception':
             return 'Please specify a valid generation or a snapshot_id'
-        elif response_type == 'no_sdk_exception':
-            return "Ansible modules for PowerMax require the PyU4V python library to be " \
-                "installed. Please install the library before using these modules."

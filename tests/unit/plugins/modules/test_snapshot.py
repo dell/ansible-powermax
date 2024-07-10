@@ -27,7 +27,7 @@ from ansible_collections.dellemc.powermax.tests.unit.plugins.module_utils.mock_s
 from ansible_collections.dellemc.powermax.tests.unit.plugins.module_utils.mock_api_exception \
     import MockApiException
 from ansible_collections.dellemc.powermax.tests.unit.plugins.module_utils.shared_library.fail_json \
-    import FailJsonException, fail_json
+    import FailJsonException
 
 
 class TestSnapshot():

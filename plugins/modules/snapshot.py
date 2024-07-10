@@ -81,6 +81,7 @@ options:
     description:
     - Whether to restore a storage group to its snapshot.
     type: bool
+    version_added: '3.1.0'
   state:
     description:
     - Define whether the snapshot should exist or not.
@@ -234,6 +235,34 @@ EXAMPLES = r'''
     snapshot_id: 135023964515
     target_sg_name: "ansible_sg_target"
     link_status: "unlinked"
+    state: "present"
+
+- name: Restore storage group snapshot using generation
+  dellemc.powermax.snapshot:
+    unispherehost: "{{unispherehost}}"
+    universion: "{{universion}}"
+    verifycert: "{{verifycert}}"
+    user: "{{user}}"
+    password: "{{password}}"
+    serial_no: "{{serial_no}}"
+    sg_name: "ansible_sg"
+    snapshot_name: "ansible_sg_snap"
+    generation: 1
+    restore: true
+    state: "present"
+
+- name: Restore Storage Group Snapshot using snapshot_id
+  dellemc.powermax.snapshot:
+    unispherehost: "{{unispherehost}}"
+    universion: "{{universion}}"
+    verifycert: "{{verifycert}}"
+    user: "{{user}}"
+    password: "{{password}}"
+    serial_no: "{{serial_no}}"
+    sg_name: "ansible_sg"
+    snapshot_name: "ansible_sg_snap"
+    snapshot_id: 135023964929
+    restore: true
     state: "present"
 
 - name: Delete Storage Group Snapshot using generation
@@ -396,7 +425,7 @@ class Snapshot(object):
         if self.module.params['universion'] is not None:
             universion_details = utils.universion_check(
                 self.module.params['universion'])
-            LOG.info("universion_details: {universion_details}")
+            LOG.info("universion_details: %s", universion_details)
 
             if not universion_details['is_valid_universion']:
                 self.show_error_exit(msg=universion_details['user_message'])
@@ -408,7 +437,7 @@ class Snapshot(object):
             self.show_error_exit(msg=str(e))
         self.replication = self.u4v_conn.replication
         self.common = self.u4v_conn.common
-        LOG.info('Check Mode flag is {self.module.check_mode}')
+        LOG.info('Check Mode flag is %s', self.module.check_mode)
         LOG.info('Got PyU4V instance for provisioning on PowerMax ')
 
     def is_snap_id_supported(self):
@@ -678,23 +707,27 @@ class Snapshot(object):
     def validate_params(self, snapshot_params):
         """ Validate snapshot parameters """
 
-        def is_valid_generation_or_id(param_name):
+        def is_valid_generation_or_id():
             generation = snapshot_params.get('generation')
             snap_id = snapshot_params.get('snapshot_id')
             if not (isinstance(generation, int) or isinstance(snap_id, int)):
-                self.show_error_exit(f"Please specify a valid {param_name} "
+                self.show_error_exit(f"Please specify a valid generation "
                                      "or a snapshot_id.")
 
         if snapshot_params.get('state') == 'present' and snapshot_params.get("sg_name") and \
                 snapshot_params.get('snapshot_name') and snapshot_params.get('new_snapshot_name'):
-            is_valid_generation_or_id('generation')
+            is_valid_generation_or_id()
 
         if snapshot_params["state"] == 'present' and snapshot_params["snapshot_name"] \
                 and snapshot_params["link_status"] and snapshot_params["target_sg_name"]:
-            is_valid_generation_or_id('generation')
+            is_valid_generation_or_id()
+
+        if snapshot_params["state"] == 'present' and snapshot_params["snapshot_name"] \
+                and snapshot_params["restore"]:
+            is_valid_generation_or_id()
 
         if snapshot_params["state"] == 'absent':
-            is_valid_generation_or_id('generation')
+            is_valid_generation_or_id()
 
 
 def get_snapshot_parameters():
