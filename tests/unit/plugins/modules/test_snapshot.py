@@ -28,9 +28,11 @@ from ansible_collections.dellemc.powermax.tests.unit.plugins.module_utils.mock_a
     import MockApiException
 from ansible_collections.dellemc.powermax.tests.unit.plugins.module_utils.shared_library.fail_json \
     import FailJsonException
+from ansible_collections.dellemc.powermax.tests.unit.plugins.module_utils.shared_library.powermax_unit_base \
+    import PowerMaxUnitBase
 
 
-class TestSnapshot():
+class TestSnapshot(PowerMaxUnitBase):
     MODULE_PATH = 'ansible_collections.dellemc.powermax.plugins.modules.snapshot.Snapshot.'
     MODULE_UTILS_PATH = 'ansible_collections.dellemc.powermax.plugins.module_utils.storage.dell.utils'
     snapshot_args = MockSnapshotApi.SNAPSHOT_COMMON_ARGS
@@ -43,20 +45,6 @@ class TestSnapshot():
         snapshot_module_mock.module.check_mode = False
         snapshot_module_mock.u4v_conn = MagicMock()
         return snapshot_module_mock
-
-    def capture_fail_json_call(self, error_msg, snapshot_module_mock):
-        try:
-            SnapshotHandler().handle(snapshot_module_mock, snapshot_module_mock.module.params)
-        except FailJsonException as fj_object:
-            assert error_msg in fj_object.message
-
-    def capture_fail_json_method(self, error_msg, module_mock, function_name, *args, **kwargs):
-        try:
-            func = getattr(module_mock, function_name)
-            func(*args, **kwargs)
-        except FailJsonException as fj_object:
-            if error_msg not in fj_object.message:
-                raise AssertionError(fj_object.message)
 
     def test_create_snapshot_ttl_unit_days(self, snapshot_module_mock):
         self.snapshot_args.update(
@@ -86,7 +74,7 @@ class TestSnapshot():
         snapshot_module_mock.replication.create_storage_group_snapshot.assert_called()
         assert snapshot_module_mock.module.exit_json.call_args[1]['changed'] is True
 
-    def test_create_snapshot_ttl_None(self, snapshot_module_mock):
+    def test_create_snapshot_ttl_none(self, snapshot_module_mock):
         self.snapshot_args.update(
             {'state': 'present',
              'sg_name': MockSnapshotApi.SG_NAME,
@@ -380,19 +368,17 @@ class TestSnapshot():
         SnapshotHandler().handle(snapshot_module_mock, snapshot_module_mock.module.params)
 
     def test_get_snapshot_by_id_exception(self, snapshot_module_mock):
-        self.snapshot_args.update(
-            {'state': 'present',
-             'sg_name': MockSnapshotApi.SG_NAME,
-             'snapshot_name': MockSnapshotApi.SNAPSHOT_NAME,
-             'snapshot_id': MockSnapshotApi.SNAPSHOT_ID
-             })
-        snapshot_module_mock.module.params = self.snapshot_args
+        sg_id = MockSnapshotApi.SG_NAME
+        snapshot_name = MockSnapshotApi.SNAPSHOT_NAME
+        snap_id = MockSnapshotApi.SNAPSHOT_ID
+        generation = None
         snapshot_module_mock.u4v_conn.set_array_id = MagicMock(return_value=None)
         snapshot_module_mock.replication.get_snapshot_snap_id_details = MagicMock(
             side_effect=MockApiException)
-        self.capture_fail_json_call(
-            MockSnapshotApi.get_snapshot_exception_response(
-                'get_details_exception'), snapshot_module_mock)
+        self.capture_fail_json_method(
+            MockSnapshotApi.get_error_message(
+                'get_details_exception'), snapshot_module_mock,
+            'get_snapshot', sg_id, snapshot_name, generation, snap_id)
 
     def test_rename_snapshot_by_id_exception(self, snapshot_module_mock):
         sg_id = MockSnapshotApi.SG_NAME
@@ -400,11 +386,10 @@ class TestSnapshot():
         new_snap_name = "new_test_snapshot_name"
         generation = 0
         snap_id = MockSnapshotApi.SNAPSHOT_ID
-        snapshot = MockSnapshotApi.SNAPSHOT_DETAILS_1
         snapshot_module_mock.replication.modify_storage_group_snapshot = MagicMock(
             side_effect=MockApiException)
         self.capture_fail_json_method(
-            MockSnapshotApi.get_snapshot_exception_response(
+            MockSnapshotApi.get_error_message(
                 'rename_exception'), snapshot_module_mock,
             'rename_sg_snapshot', sg_id, snap_name, new_snap_name, generation, snap_id)
 
@@ -416,7 +401,7 @@ class TestSnapshot():
         snapshot_module_mock.replication.create_storage_group_snapshot = MagicMock(
             side_effect=MockApiException)
         self.capture_fail_json_method(
-            MockSnapshotApi.get_snapshot_exception_response(
+            MockSnapshotApi.get_error_message(
                 'create_exception'), snapshot_module_mock,
             'create_sg_snapshot', sg_id, snap_name, ttl, ttl_unit)
 
@@ -425,11 +410,10 @@ class TestSnapshot():
         snap_name = MockSnapshotApi.SNAPSHOT_NAME
         generation = None
         snap_id = MockSnapshotApi.SNAPSHOT_ID
-        snapshot = MockSnapshotApi.SNAPSHOT_DETAILS_1
         snapshot_module_mock.replication.delete_storage_group_snapshot_by_snap_id = MagicMock(
             side_effect=MockApiException)
         self.capture_fail_json_method(
-            MockSnapshotApi.get_snapshot_exception_response(
+            MockSnapshotApi.get_error_message(
                 'delete_exception'), snapshot_module_mock,
             'delete_sg_snapshot', sg_id, snap_name, generation, snap_id)
 
@@ -440,7 +424,7 @@ class TestSnapshot():
         snapshot_module_mock.replication.modify_storage_group_snapshot_by_snap_id = MagicMock(
             side_effect=MockApiException)
         self.capture_fail_json_method(
-            MockSnapshotApi.get_snapshot_exception_response(
+            MockSnapshotApi.get_error_message(
                 'restore_exception'), snapshot_module_mock,
             'restore_snapshot', sg_id, snap_name, snap_id)
 
@@ -455,7 +439,7 @@ class TestSnapshot():
         snapshot_module_mock.replication.modify_storage_group_snapshot_by_snap_id = MagicMock(
             side_effect=MockApiException)
         self.capture_fail_json_method(
-            MockSnapshotApi.get_snapshot_exception_response(
+            MockSnapshotApi.get_error_message(
                 'link_exception'), snapshot_module_mock,
             'modify_snapshot', sg_id, target_sg, snap_name, link, unlink, snap_id, generation)
 
@@ -464,18 +448,14 @@ class TestSnapshot():
         utils.close_connection = MagicMock(
             side_effect=MockApiException)
         self.capture_fail_json_method(
-            MockSnapshotApi.get_snapshot_exception_response(
+            MockSnapshotApi.get_error_message(
                 'exit_exception'), snapshot_module_mock,
             'show_error_exit', msg)
 
     def test_rename_snapshot_wo_snapshot_id_or_generation_exception(self, snapshot_module_mock):
-        self.snapshot_args.update(
-            {'state': 'present',
-             'sg_name': MockSnapshotApi.SG_NAME,
-             'snapshot_name': MockSnapshotApi.SNAPSHOT_NAME,
-             'new_snapshot_name': "new_test_snapshot_name"
-             })
-        snapshot_module_mock.module.params = self.snapshot_args
-        self.capture_fail_json_call(
-            MockSnapshotApi.get_snapshot_exception_response(
-                'no_id_exception'), snapshot_module_mock)
+        generation = None
+        snap_id = None
+        self.capture_fail_json_method(
+            MockSnapshotApi.get_error_message(
+                'no_id_exception'), snapshot_module_mock,
+            'is_valid_generation_or_id', generation, snap_id)

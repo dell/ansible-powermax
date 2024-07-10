@@ -175,20 +175,13 @@ class MockSnapshotApi:
     SNAP_ID_LIST = [185950553857]
 
     @staticmethod
-    def get_snapshot_exception_response(response_type):
-        if response_type == 'get_details_exception':
-            return "Got error: SDK Error message while getting details of storage group ansible_sg_test snapshot ansible_snap_test "
-        elif response_type == 'rename_exception':
-            return "Renaming Snapshot ansible_snap_test for Storage Group ansible_sg_test failed with error SDK Error message"
-        elif response_type == 'create_exception':
-            return 'Create Snapshot ansible_snap_test for SG ansible_sg_test failed with error SDK Error message'
-        elif response_type == 'delete_exception':
-            return 'Delete SG ansible_sg_test Snapshot ansible_snap_test failed with error SDK Error message'
-        elif response_type == 'exit_exception':
-            return 'Failed to close unisphere connection with error: SDK Error message'
-        elif response_type == 'restore_exception':
-            return 'Restore SG ansible_sg_test Snapshot ansible_snap_test failed with error: SDK Error message'
-        elif response_type == 'link_exception':
-            return 'Change SG ansible_sg_test Snapshot ansible_snap_test link status failed with error SDK Error message'
-        elif response_type == 'no_id_exception':
-            return 'Please specify a valid generation or a snapshot_id'
+    def get_error_message(response_type):
+        error_msg = {"get_details_exception": "Got error: SDK Error message while getting details of storage group ansible_sg_test snapshot ansible_snap_test ",
+                     "rename_exception": "Renaming Snapshot ansible_snap_test for Storage Group ansible_sg_test failed with error SDK Error message",
+                     "create_exception": "Create Snapshot ansible_snap_test for SG ansible_sg_test failed with error SDK Error message",
+                     "delete_exception": "Delete SG ansible_sg_test Snapshot ansible_snap_test failed with error SDK Error message",
+                     "exit_exception": "Failed to close unisphere connection with error: SDK Error message",
+                     "restore_exception": "Restore SG ansible_sg_test Snapshot ansible_snap_test failed with error: SDK Error message",
+                     "link_exception": "Change SG ansible_sg_test Snapshot ansible_snap_test link status failed with error SDK Error message",
+                     "no_id_exception": "Please specify a valid generation or a snapshot_id"}
+        return error_msg[response_type]
