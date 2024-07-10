@@ -26,8 +26,6 @@ from ansible_collections.dellemc.powermax.plugins.modules.snapshot import Snapsh
 from ansible_collections.dellemc.powermax.tests.unit.plugins.module_utils.mock_snapshot_api import MockSnapshotApi
 from ansible_collections.dellemc.powermax.tests.unit.plugins.module_utils.mock_api_exception \
     import MockApiException
-from ansible_collections.dellemc.powermax.tests.unit.plugins.module_utils.shared_library.fail_json \
-    import FailJsonException
 from ansible_collections.dellemc.powermax.tests.unit.plugins.module_utils.shared_library.powermax_unit_base \
     import PowerMaxUnitBase
 
