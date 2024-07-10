@@ -792,8 +792,8 @@ class SnapshotExitHandler:
     def handle(self, snapshot_obj, snapshot_params):
         if snapshot_params["state"] == 'present' and not snapshot_params["ttl"] and not \
                 snapshot_params["link_status"] and not snapshot_params["new_snapshot_name"]:
-            LOG.info(f"Returning storage group {snapshot_params["sg_name"]} "
-                     f"snapshot {snapshot_params["snapshot_name"]} details")
+            LOG.info(f'Returning storage group {snapshot_params["sg_name"]}'
+                     f' snapshot {snapshot_params["snapshot_name"]} details ')
             snapshot_obj.result["sg_snap_details"] = snapshot_obj.get_snapshot(
                 sg_id=snapshot_params['sg_name'],
                 snapshot_name=snapshot_params['snapshot_name'],
@@ -827,8 +827,8 @@ class SnapshotLinkHandler:
     def handle(self, snapshot_obj, snapshot_params):
         if snapshot_params["state"] == 'present' and snapshot_params["snapshot_name"] is not None and \
                 snapshot_params["link_status"] is not None and snapshot_params["target_sg_name"] is not None:
-            LOG.info(f"Change storage group {snapshot_params["sg_name"]}"
-                     f"snapshot {snapshot_params["snapshot_name"]} link status ")
+            LOG.info(f'Change storage group {snapshot_params["sg_name"]}'
+                     f'snapshot {snapshot_params["snapshot_name"]} link status ')
             snapshot_obj.result['change_snap_link_status'], snapshot_obj.result['sg_snap_link_details'] = \
                 snapshot_obj.change_snapshot_link_status(
                     sg_id=snapshot_params["sg_name"],
@@ -867,8 +867,8 @@ class SnapshotRenameHandler:
         if snapshot_params["state"] == "present" and snapshot_params["sg_name"] is not None and \
                 snapshot_params["snapshot_name"] is not None and snapshot_params["new_snapshot_name"] is not None:
             if snapshot_params["snapshot_id"] is not None or snapshot_params["generation"] == 0:
-                LOG.info(f"Rename storage group {snapshot_params["sg_name"]}"
-                         f"snapshot {snapshot_params["snapshot_name"]}")
+                LOG.info(f'Rename storage group {snapshot_params["sg_name"]}'
+                         f'snapshot {snapshot_params["snapshot_name"]}')
                 snapshot_obj.result['rename_sg_snap'], snapshot_obj.result['sg_snap_rename_details'] = \
                     snapshot_obj.rename_sg_snapshot(
                         sg_id=snapshot_params['sg_name'],
@@ -884,8 +884,8 @@ class SnapshotCreateHandler:
     def handle(self, snapshot_obj, snapshot_params):
         if snapshot_params["state"] == "present" and snapshot_params["ttl"] and not \
                 (snapshot_params["new_snapshot_name"] or snapshot_params["link_status"]):
-            LOG.info(f"Creating snapshot {snapshot_params["snapshot_name"]}"
-                     f" for storage group {snapshot_params["sg_name"]}")
+            LOG.info(f'Creating snapshot {snapshot_params["snapshot_name"]}'
+                     f' for storage group {snapshot_params["sg_name"]}')
             snapshot_obj.result["create_sg_snap"], snapshot_obj.result["sg_snap_details"] = \
                 snapshot_obj.create_sg_snapshot(
                     sg_id=snapshot_params['sg_name'],
