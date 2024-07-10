@@ -1,4 +1,2 @@
-plugins/modules/snapshot.py import-3.5
 plugins/modules/snapshot.py import-2.7
-plugins/modules/snapshot.py compile-3.5
 plugins/modules/snapshot.py compile-2.7
