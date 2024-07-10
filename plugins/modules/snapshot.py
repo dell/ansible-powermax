@@ -711,7 +711,7 @@ class Snapshot(object):
             generation = snapshot_params.get('generation')
             snap_id = snapshot_params.get('snapshot_id')
             if not (isinstance(generation, int) or isinstance(snap_id, int)):
-                self.show_error_exit(f"Please specify a valid generation "
+                self.show_error_exit("Please specify a valid generation " \
                                      "or a snapshot_id.")
 
         if snapshot_params.get('state') == 'present' and snapshot_params.get("sg_name") and \
