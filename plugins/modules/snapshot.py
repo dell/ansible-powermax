@@ -546,7 +546,7 @@ class Snapshot(object):
                                                                    hours=ttl_unit)
             return True, resp
         except Exception as e:
-            error_message = (f'Create Snapshot {snap_name} for SG {sg_id} failed '
+            error_message = (f'Create snapshot {snap_name} for storage group {sg_id} failed '
                              f'with error {str(e)} ')
             self.show_error_exit(msg=error_message)
 
@@ -582,7 +582,7 @@ class Snapshot(object):
                         snap_id)
             return True
         except Exception as e:
-            error_message = (f'Delete SG {sg_id} Snapshot {snap_name} failed with '
+            error_message = (f'Delete storage group {sg_id} snapshot {snap_name} failed with '
                              f'error {str(e)} ')
             self.show_error_exit(msg=error_message)
 
@@ -616,7 +616,7 @@ class Snapshot(object):
                             new_name=new_snap_name)
             return True, resp
         except Exception as e:
-            error_message = (f'Renaming Snapshot {snap_name} for Storage Group {sg_id} '
+            error_message = (f'Renaming snapshot {snap_name} for storage group {sg_id} '
                              f'failed with error {str(e)} ')
             self.show_error_exit(msg=error_message)
 
@@ -696,7 +696,7 @@ class Snapshot(object):
                         snap_id=snap_id)
 
         except Exception as e:
-            error_message = (f'Change SG {sg_id} Snapshot {snap_name} link status failed '
+            error_message = (f'Change storage group {sg_id} snapshot {snap_name} link status failed '
                              f'with error {str(e)} ')
             self.show_error_exit(msg=error_message)
 
@@ -723,7 +723,7 @@ class Snapshot(object):
                     )
             return True
         except Exception as e:
-            error_message = (f'Restore SG {sg_id} Snapshot {snap_name} failed with '
+            error_message = (f'Restore storage group {sg_id} snapshot {snap_name} failed with '
                              f'error {str(e)}')
             self.show_error_exit(msg=error_message)
 
