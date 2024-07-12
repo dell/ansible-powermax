@@ -23,6 +23,7 @@ extends_documentation_fragment:
 author:
 - Prashant Rakheja (@prashant-dell) <ansible.team@dell.com>
 - Rajshree Khare (@khareRajshree) <ansible.team@dell.com>
+- Trisha Datta (@trisha-dell) <ansible.team@dell.com>
 options:
   sg_name:
     description:
