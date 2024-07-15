@@ -21,8 +21,8 @@ Requirements
 The below requirements are needed on the host that executes this module.
 
 - A Dell PowerMax storage system.
-- Ansible-core 2.14 or later.
-- Python 3.9, 3.10 or 3.11.
+- Ansible-core 2.15 or later.
+- Python 3.10, 3.11 or 3.12.
 
 
 
@@ -44,7 +44,7 @@ Parameters
   gather_subset (False, list, None)
     List of string variables to specify the PowerMax or VMAX entities for which information is required.
 
-    Required only if the serial_no is present.
+    Required only if the serial\_no is present.
 
     List of all PowerMax or VMAX entities supported by the module.
 
@@ -70,23 +70,23 @@ Parameters
 
     To get RDF groups - rdf.
 
-    To get Metro DR environments - metro_dr_env.
+    To get Metro DR environments - metro\_dr\_env.
 
-    To get snapshot policies - snapshot_policies.
+    To get snapshot policies - snapshot\_policies.
 
     To get initiators - initiators.
 
-    To get masking view connections - mv_connections.
+    To get masking view connections - mv\_connections.
 
 
   filters (False, list, None)
     List of filters to support filtered output for storage entities.
 
-    Each filter is a tuple of {filter_key, filter_operator, filter_value}.
+    Each filter is a tuple of {filter\_key, filter\_operator, filter\_value}.
 
     Supports passing of multiple filters.
 
-    The storage entities, 'rdf', 'health', 'snapshot_policies' and 'metro_dr_env', does not support filters. Filters are ignored if passed.
+    The storage entities, 'rdf', 'health', 'snapshot\_policies' and 'metro\_dr\_env', does not support filters. Filters are ignored if passed.
 
 
     filter_key (True, str, None)
@@ -132,6 +132,10 @@ Parameters
     It is to be mentioned in seconds.
 
 
+  port (optional, int, 8443)
+    The port of the Unisphere host.
+
+
 
 
 
@@ -139,19 +143,19 @@ Notes
 -----
 
 .. note::
-   - Filter functionality is supported only for the following 'filter_key' against specific 'gather_subset'.
-   - For vol - allocated_percent, associated, available_thin_volumes, bound_tdev, cap_cyl, cap_gb, cap_mb, cap_tb, cu_image_num, cu_image_ssid, data_volume, dld, drv, effective_wwn, emulation, encapsulated, encapsulated_wwn, gatekeeper, has_effective_wwn, mapped, mobility_id_enabled, num_of_front_end_paths, num_of_masking_views, num_of_storage_groups, oracle_instance_name, physical_name, pinned, private_volumes, rdf_group_number, reserved, split_name, status, storageGroupId, symmlun, tdev, thin_bcv, type, vdev, virtual_volumes, volume_identifier, wwn.
-   - For srp - compression_state, description, effective_used_capacity_percent, emulation, num_of_disk_groups, num_of_srp_sg_demands, num_of_srp_slo_demands, rdfa_dse, reserved_cap_percent, total_allocated_cap_gb, total_srdf_dse_allocated_cap_gb, total_subscribed_cap_gb, total_usable_cap_gb.
-   - For sg - base_slo_name, cap_gb, child, child_sg_name, ckd, compression, compression_ratio_to_one, fba, num_of_child_sgs, num_of_masking_views, num_of_parent_sgs, num_of_snapshots, num_of_vols, parent, parent_sg_name, slo_compliance, slo_name, srp_name, storageGroupId, tag, volumeId.
-   - For pg - dir_port, fibre, iscsi, num_of_masking_views, num_of_ports.
-   - For host - host_group_name, num_of_host_groups, num_of_initiators, num_of_masking_views, num_of_powerpath_hosts, powerPathHostId.
-   - For hg - host_name, num_of_hosts, num_of_masking_views.
-   - For port - aclx, avoid_reset_broadcast, common_serial_number, director_status, disable_q_reset_on_ua, enable_auto_negotive, environ_set, hp_3000_mode, identifier, init_point_to_point, ip_list, ipv4_address, ipv6_address, iscsi_target, max_speed, negotiated_speed, neqotiate_reset, no_participating, node_wwn, num_of_cores, num_of_hypers, num_of_mapped_vols, num_of_masking_views, num_of_port_groups, port_interface, port_status, rdf_hardware_compression, rdf_hardware_compression_supported, rdf_software_compression, rdf_software_compression_supported, scsi_3, scsi_support1, siemens, soft_reset, spc2_protocol_version, sunapee, type, unique_wwn, vcm_state, vnx_attached, volume_set_addressing, wwn_node.
-   - For mv - host_or_host_group_name, port_group_name, protocol_endpoint_masking_view, storage_group_name.
-   - For alert - acknowledged, array, created_date, created_date_milliseconds, description, object, object_type, severity, state, type.
-   - For initiators - alias, directorId, initiator_hba, in_a_host, iscsi, logged_in, num_of_host_groups, num_of_masking_views, num_of_powerpath_hosts, num_of_vols, on_fabric, port_flag_overrides, portId, powerPathHostId.
-   - For mv_connections - volume_id, host_lun_address, cap_gb, initiator_id, alias, dir_port, logged_in, on_fabric.
-   - The check_mode is supported.
+   - Filter functionality is supported only for the following 'filter\_key' against specific 'gather\_subset'.
+   - For vol - allocated\_percent, associated, available\_thin\_volumes, bound\_tdev, cap\_cyl, cap\_gb, cap\_mb, cap\_tb, cu\_image\_num, cu\_image\_ssid, data\_volume, dld, drv, effective\_wwn, emulation, encapsulated, encapsulated\_wwn, gatekeeper, has\_effective\_wwn, mapped, mobility\_id\_enabled, num\_of\_front\_end\_paths, num\_of\_masking\_views, num\_of\_storage\_groups, oracle\_instance\_name, physical\_name, pinned, private\_volumes, rdf\_group\_number, reserved, split\_name, status, storageGroupId, symmlun, tdev, thin\_bcv, type, vdev, virtual\_volumes, volume\_identifier, wwn.
+   - For srp - compression\_state, description, effective\_used\_capacity\_percent, emulation, num\_of\_disk\_groups, num\_of\_srp\_sg\_demands, num\_of\_srp\_slo\_demands, rdfa\_dse, reserved\_cap\_percent, total\_allocated\_cap\_gb, total\_srdf\_dse\_allocated\_cap\_gb, total\_subscribed\_cap\_gb, total\_usable\_cap\_gb.
+   - For sg - base\_slo\_name, cap\_gb, child, child\_sg\_name, ckd, compression, compression\_ratio\_to\_one, fba, num\_of\_child\_sgs, num\_of\_masking\_views, num\_of\_parent\_sgs, num\_of\_snapshots, num\_of\_vols, parent, parent\_sg\_name, slo\_compliance, slo\_name, srp\_name, storageGroupId, tag, volumeId.
+   - For pg - dir\_port, fibre, iscsi, num\_of\_masking\_views, num\_of\_ports.
+   - For host - host\_group\_name, num\_of\_host\_groups, num\_of\_initiators, num\_of\_masking\_views, num\_of\_powerpath\_hosts, powerPathHostId.
+   - For hg - host\_name, num\_of\_hosts, num\_of\_masking\_views.
+   - For port - aclx, avoid\_reset\_broadcast, common\_serial\_number, director\_status, disable\_q\_reset\_on\_ua, enable\_auto\_negotive, environ\_set, hp\_3000\_mode, identifier, init\_point\_to\_point, ip\_list, ipv4\_address, ipv6\_address, iscsi\_target, max\_speed, negotiated\_speed, neqotiate\_reset, no\_participating, node\_wwn, num\_of\_cores, num\_of\_hypers, num\_of\_mapped\_vols, num\_of\_masking\_views, num\_of\_port\_groups, port\_interface, port\_status, rdf\_hardware\_compression, rdf\_hardware\_compression\_supported, rdf\_software\_compression, rdf\_software\_compression\_supported, scsi\_3, scsi\_support1, siemens, soft\_reset, spc2\_protocol\_version, sunapee, type, unique\_wwn, vcm\_state, vnx\_attached, volume\_set\_addressing, wwn\_node.
+   - For mv - host\_or\_host\_group\_name, port\_group\_name, protocol\_endpoint\_masking\_view, storage\_group\_name.
+   - For alert - acknowledged, array, created\_date, created\_date\_milliseconds, description, object, object\_type, severity, state, type.
+   - For initiators - alias, directorId, initiator\_hba, in\_a\_host, iscsi, logged\_in, num\_of\_host\_groups, num\_of\_masking\_views, num\_of\_powerpath\_hosts, num\_of\_vols, on\_fabric, port\_flag\_overrides, portId, powerPathHostId.
+   - For mv\_connections - volume\_id, host\_lun\_address, cap\_gb, initiator\_id, alias, dir\_port, logged\_in, on\_fabric.
+   - The check\_mode is supported.
    - The modules present in this collection named as 'dellemc.powermax' are built to support the Dell PowerMax storage platform.
 
 
@@ -393,21 +397,21 @@ Examples
 
     - name: Get list of masking view connections with filter
       dellemc.powermax.info:
-          unispherehost: "{{unispherehost}}"
-          universion: "{{universion}}"
-          verifycert: "{{verifycert}}"
-          user: "{{user}}"
-          password: "{{password}}"
-          serial_no: "{{serial_no}}"
-          gather_subset:
-            - mv_connections
-          filters:
-            - filter_key: "logged_in"
-              filter_operator: "equal"
-              filter_value: "True"
-            - filter_key: "cap_gb"
-              filter_operator: "equal"
-              filter_value: "10"
+        unispherehost: "{{unispherehost}}"
+        universion: "{{universion}}"
+        verifycert: "{{verifycert}}"
+        user: "{{user}}"
+        password: "{{password}}"
+        serial_no: "{{serial_no}}"
+        gather_subset:
+          - mv_connections
+        filters:
+          - filter_key: "logged_in"
+            filter_operator: "equal"
+            filter_value: "True"
+          - filter_key: "cap_gb"
+            filter_operator: "equal"
+            filter_value: "10"
 
 
 
@@ -452,7 +456,7 @@ Health (When the array exist., complex, )
 
 
     metric (, str, )
-      Information about the sub-system , such as SYSTEM_UTILIZATION, CONFIGURATION,CAPACITY, and so on.
+      Information about the sub-system , such as SYSTEM\_UTILIZATION, CONFIGURATION,CAPACITY, and so on.
 
 
 

@@ -21,8 +21,8 @@ Requirements
 The below requirements are needed on the host that executes this module.
 
 - A Dell PowerMax storage system.
-- Ansible-core 2.14 or later.
-- Python 3.9, 3.10 or 3.11.
+- Ansible-core 2.15 or later.
+- Python 3.10, 3.11 or 3.12.
 
 
 
@@ -84,6 +84,10 @@ Parameters
     It is to be mentioned in seconds.
 
 
+  port (optional, int, 8443)
+    The port of the Unisphere host.
+
+
   serial_no (True, str, None)
     The serial number of the PowerMax/VMAX array. It is a required parameter for all array-specific operations except for getting a list of arrays in the Gatherfacts module.
 
@@ -95,7 +99,7 @@ Notes
 -----
 
 .. note::
-   - initiator_id and alias are mutually exclusive parameters.
+   - initiator\_id and alias are mutually exclusive parameters.
    - The modules present in this collection named as 'dellemc.powermax' are built to support the Dell PowerMax storage platform.
 
 
