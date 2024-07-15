@@ -13,10 +13,12 @@ module: snapshot
 version_added: '1.0.0'
 short_description: Manage Snapshots on PowerMax/VMAX Storage System
 description:
-- Managing snapshots on a PowerMax storage system includes creating a new
-  storage group (SG) snapshot, getting details of the SG snapshot, renaming
-  the SG snapshot, changing the snapshot link status, and deleting an
-  existing SG snapshot.
+- Managing snapshots on a PowerMax storage system includes the following operations.
+- Creating a new storage group (SG) snapshot.
+- Getting details of the SG snapshot.
+- Renaming the SG snapshot.
+- Changing the snapshot link status.
+- Deleting an existing SG snapshot.
 extends_documentation_fragment:
   - dellemc.powermax.powermax
   - dellemc.powermax.powermax.powermax_serial_no
@@ -41,12 +43,12 @@ options:
     - If the TTL is not specified, the storage group snap details are
       returned.
     - However, to create a SG snap - TTL must be given.
-    - If the SG snap should not have any TTL - specify TTL as "None".
+    - If the SG snap should not have any TTL - specify TTL as C(None).
     type: str
   ttl_unit:
     description:
-    - The unit for the ttl.
-    - If no ttl_unit is specified, 'days' is taken as default ttl_unit.
+    - The unit for the I(ttl).
+    - If no I(ttl_unit) is specified, C(days) is taken as default I(ttl_unit).
     choices: [hours, days]
     default: days
     type: str
@@ -62,7 +64,7 @@ options:
   snapshot_id:
     description:
     - Unique ID of the snapshot.
-    - snapshot_id is required for link, unlink, rename and delete operations.
+    - I(snapshot_id) is required for link, unlink, rename and delete operations.
     - Optional for Get snapshot details.
     type: int
   new_snapshot_name:
@@ -90,11 +92,12 @@ options:
     choices: [absent, present]
     type: str
 notes:
-  - Paramters 'generation' and 'snapshot_id' are mutually exclusive.
-  - If 'generation' or 'snapshot_id' is not provided then a list of generation
-    versus snapshot_id is returned.
-  - Use of 'snapshot_id' over 'generation' is preferably recommended for
+  - Paramters I(generation) and I(snapshot_id) are mutually exclusive.
+  - If I(generation) or I(snapshot_id) is not provided then a list of generation
+    against snapshot_id is returned.
+  - Use of I(snapshot_id) over I(generation) is preferably recommended for
     PowerMax microcode version 5978.669.669 and onwards.
+  - The I(check_mode) is supported.
 '''
 
 EXAMPLES = r'''
@@ -298,22 +301,27 @@ changed:
     description: Whether or not the resource has changed.
     returned: always
     type: bool
+    sample: "false"
 create_sg_snap:
     description: Flag sets to true when the snapshot is created.
     returned: When snapshot is created.
     type: bool
+    sample: "false"
 delete_sg_snap:
     description: Flag sets to true when the snapshot is deleted.
     returned: When snapshot is deleted.
     type: bool
+    sample: "false"
 rename_sg_snap:
     description: Flag sets to true when the snapshot is renamed.
     returned: When snapshot is renamed.
     type: bool
+    sample: "false"
 restore_sg_snap:
     description: Flag sets to true when the snapshot is restored.
     returned: When snapshot is restored.
     type: bool
+    sample: "false"
 sg_snap_details:
     description: Details of the snapshot.
     returned: When snapshot exists.
