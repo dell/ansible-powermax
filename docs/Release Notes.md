@@ -1,7 +1,7 @@
 
 **Ansible modules for Dell Technologies PowerMax** 
 =========================================
-### Release Notes 3.0.0
+### Release Notes 3.1.0
 
 >   © 2022 Dell Inc. or its subsidiaries. All rights reserved. Dell
 >   and other trademarks are trademarks of Dell Inc. or its
@@ -26,7 +26,7 @@ Revision History
 
 | **Date**     | **Document revision** | **Description of changes**                      |
 |------------  |-----------------------|-------------------------------------------------|
-| November 2023 | 01                    | Ansible modules for Dell PowerMax release 3.0.0 |
+| July 2024 | 01                    | Ansible modules for Dell PowerMax release 3.1.0 |
 
 Product Description
 -------------------
@@ -56,9 +56,8 @@ New Features and Enhancements
 
 The Ansible modules for Dell PowerMax release has the following
 changes:
-- Added support for PowerMax Laurel.
-- Added bug fix for SRDF module.
-- Added support for connection timeout for all modules.
+- Added Unisphere port parameter.
+- Added support for restoration of storage group from a snapshot using Snapshot module.
 
 > **NOTE:** Unisphere Version 9.1 is compatible with PowerMax Python
 > library version 9.1.x.x and similarly Unisphere versions later than 9.1 will
@@ -75,7 +74,7 @@ There are no known limitations.
 Distribution
 ------------
 The software package is available for download from the [Ansible modules
-for PowerMax GitHub](https://github.com/dell/ansible-powermax/tree/3.0.0) page.
+for PowerMax GitHub](https://github.com/dell/ansible-powermax/tree/3.1.0) page.
 
 Documentation
 -------------
