@@ -183,5 +183,5 @@ releases:
     changes:
       minor_changes:
         - Added unisphere port parameter.
-        - Added support for restore from snapshot.
+        - Added support for restoration of storage group from a snapshot using Snapshot module.
     release_date: '2024-07-31'

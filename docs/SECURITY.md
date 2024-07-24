@@ -2,7 +2,7 @@
 
 The Ansible modules for Dell PowerMax repository is inspected for security vulnerabilities through blackduck scans and static code analysis.
 
-In addition to this, there are various security checks that are performed against a branch when a pull request is created or updated. See [pull request](https://github.com/dell/ansible-powermax/blob/3.0.0/docs/CONTRIBUTING.md#Pull-requests) for more information.
+In addition to this, there are various security checks that are performed against a branch when a pull request is created or updated. See [pull request](https://github.com/dell/ansible-powermax/blob/main/docs/CONTRIBUTING.md#Pull-requests) for more information.
 
 ## Reporting a vulnerability
 

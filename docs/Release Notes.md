@@ -74,7 +74,7 @@ There are no known limitations.
 Distribution
 ------------
 The software package is available for download from the [Ansible modules
-for PowerMax GitHub](https://github.com/dell/ansible-powermax/tree/3.1.0) page.
+for PowerMax GitHub](https://github.com/dell/ansible-powermax/tree/main) page.
 
 Documentation
 -------------
