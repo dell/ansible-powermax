@@ -43,7 +43,7 @@ Example Playbook
 License
 -------
 
-Apache 2
+ GPL-3.0-or-later
 
 Author Information
 ------------------

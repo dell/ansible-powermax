@@ -1,13 +1,3 @@
-<!--
-Copyright (c) 2022 Dell Inc., or its subsidiaries. All Rights Reserved.
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-    http://www.apache.org/licenses/LICENSE-2.0
--->
-
 # Installation and execution of Ansible modules for Dell PowerMax
 
 ## Installation of SDK
@@ -40,7 +30,7 @@ Depending on which PowerMax Unisphere version is being used, follow this procedu
 
   2. Use this command to install the collection anywhere in your system:
 
-	      ansible-galaxy collection install dellemc-powermax-3.0.0.tar.gz -p <install_path>
+	      ansible-galaxy collection install dellemc-powermax-3.1.0.tar.gz -p <install_path>
 
   3. Set the environment variable:
 
@@ -67,7 +57,7 @@ Depending on which PowerMax Unisphere version is being used, follow this procedu
 
 ## Running Ansible modules
 
-The Ansible server must be configured with Python library for Unisphere to run the Ansible playbooks. The [Documents](https://github.com/dell/ansible-powermax/blob/3.0.0/docs) provide information on different Ansible modules along with their functions and syntax. The parameters table in the Product Guide provides information on various parameters which need to be configured before running the modules.
+The Ansible server must be configured with Python library for Unisphere to run the Ansible playbooks. The [Documents](https://github.com/dell/ansible-powermax/blob/main/docs) provide information on different Ansible modules along with their functions and syntax. The parameters table in the Product Guide provides information on various parameters which need to be configured before running the modules.
 
 ## SSL certificate validation
 

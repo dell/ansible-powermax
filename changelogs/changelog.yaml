@@ -179,3 +179,9 @@ releases:
         - Added bug fix for SRDF module.
         - Added support for connection timeout for all modules.
     release_date: '2023-11-30'
+  3.1.0:
+    changes:
+      minor_changes:
+        - Added unisphere port parameter.
+        - Added support for restoration of storage group from a snapshot using Snapshot module.
+    release_date: '2024-07-31'

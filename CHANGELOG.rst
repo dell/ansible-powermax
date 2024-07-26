@@ -4,6 +4,15 @@ Dellemc.Powermax Change Logs
 
 .. contents:: Topics
 
+v3.1.0
+======
+
+Minor Changes
+-------------
+
+- Added Unisphere port parameter.
+- Added support for restoration of storage group from a snapshot using Snapshot module.
+
 v3.0.0
 ======
 
