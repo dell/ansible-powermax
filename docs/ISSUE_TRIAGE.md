@@ -31,7 +31,7 @@ This section describes the various issue templates and the expected content.
 
 Bug reports should explain what happened, what was expected and how to reproduce it. Additionally, any applicable material about the reported problem that may give a complete picture of what happened such as screenshots, outputs, and environment related information:
 
- - Ansible Version: [e.g. 2.14]
+ - Ansible Version: [e.g. 2.15]
  - Python Version [e.g. 3.10]
  - Ansible modules for Dell PowerMax Version: [e.g. 3.1.0]
  - PowerMax SDK version: [e.g. PyU4V 10.0.0.16]

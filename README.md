@@ -22,20 +22,42 @@ The capabilities of Ansible modules are managing volumes, storage groups, ports,
 * [Installation and execution of Ansible modules for Dell PowerMax](#installation-and-execution-of-ansible-modules-for-dell-powermax)
 * [Maintanence](#maintanence)
 
-## License
-Ansible collection for PowerMax is released and licensed under the GPL-3.0 license. See [LICENSE](https://github.com/dell/ansible-powermax/blob/main/LICENSE) for the full terms. Ansible modules and modules utilities that are part of the Ansible collection for PowerMax are released and licensed under the GPL-3.0 license. See [LICENSE](https://github.com/dell/ansible-powermax/blob/main/LICENSE) for the full terms.
-
-## Supported platforms
-Dell PowerMax and VMAX All Flash arrays support Unisphere version 9.2 and later.
-
-## Prerequisites
+## Requirements
 This table provides information about the software prerequisites for the Ansible Modules for Dell PowerMax.
 
 | **Ansible modules** | **Unisphere version** | **PowerMaxOS** | **Python version**            | **Python library version** | **Ansible**              |
 |---------------------|-----------------------|----------------|-------------------------------|----------------------------|--------------------------|
 | v3.1.0 | 9.2 <br> 10.0 <br> 10.1 | 5978.444.444 <br> 5978.669.669 <br> 5978.711.711 <br> 6079.xxx.xxx | 3.9.x <br> 3.10.x <br> 3.11.x | 9.2.x.x <br> 10.0.x.x <br> 10.1.x.x | 2.15 <br> 2.16 <br> 2.17 |
 
-  * Follow PyU4V installation instructions on [PyU4V Documentation](https://pyu4v.readthedocs.io/)
+* Follow PyU4V installation instructions on [PyU4V Documentation](https://pyu4v.readthedocs.io/)
+
+## Installation and execution of Ansible modules for Dell PowerMax
+The installation and execution steps of Ansible modules for Dell PowerMax can be found [here](https://github.com/dell/ansible-powermax/blob/main/docs/INSTALLATION.md).
+
+## Use Cases
+Refer the [example playbooks](https://github.com/dell/ansible-powermax/tree/main/docs/samples) on how the collection can be used for [modules.](https://github.com/dell/ansible-powermax/tree/main/plugins/modules)
+
+## Testing
+The following tests are done on ansible-powermax collection
+
+* Unit tests.
+* Integration tests.
+
+## Support
+Refer [Support](https://github.com/dell/ansible-powermax/blob/main/docs/SUPPORT.md) documenetation for more information on the support from Dell Technologies.
+
+## Release, Maintenance and Deprecation
+Ansible Modules for Dell Technologies PowerStore follows [Semantic Versioning](https://semver.org/).
+
+New version will be release regularly if significant changes (bug fix or new feature) are made in the collection.
+
+Released code versions are located on "release" branches with names of the form "release-x.y.z" where x.y.z corresponds to the version number. More information on branching strategy followed can be found [here](https://github.com/dell/ansible-powermax/blob/main/docs/BRANCHING.md).
+
+Ansible Modules for Dell Technologies PowerStore deprecation cycle is aligned with that of [Ansible](https://docs.ansible.com/ansible/latest/dev_guide/module_lifecycle.html).
+
+See [change logs](https://github.com/dell/ansible-powermax/blob/main/CHANGELOG.rst) for more information on what is new in the releases.
+
+## Related Information
 
 ## Idempotency
 The modules are written in such a way that all requests are idempotent and hence fault-tolerant. This means that the result of a successfully performed request is independent of the number of times it is performed.
@@ -60,8 +82,5 @@ The modules are written in such a way that all requests are idempotent and hence
   * [Initiator module](https://github.com/dell/ansible-powermax/blob/main/docs/modules/initiator.rst)
   * [Intelligent Volume Placement](https://github.com/dell/ansible-powermax/blob/main/docs/modules/capacity_role.rst)
 
-## Installation and execution of Ansible modules for Dell PowerMax
-The installation and execution steps of Ansible modules for Dell PowerMax can be found [here](https://github.com/dell/ansible-powermax/blob/main/docs/INSTALLATION.md).
-
-## Maintenance
-Ansible modules for Dell Technologies PowerMax deprecation cycle is aligned with [Ansible](https://docs.ansible.com/ansible/latest/dev_guide/module_lifecycle.html).
+## License
+Ansible collection for PowerMax is released and licensed under the GPL-3.0 license. See [LICENSE](https://github.com/dell/ansible-powermax/blob/main/LICENSE) for the full terms. Ansible modules and modules utilities that are part of the Ansible collection for PowerMax are released and licensed under the GPL-3.0 license. See [LICENSE](https://github.com/dell/ansible-powermax/blob/main/LICENSE) for the full terms.
