@@ -498,7 +498,7 @@ def get_portgroup_parameters():
         port_state=dict(required=False, type='str',
                         choices=['present-in-group', 'absent-in-group']),
         port_group_protocol=dict(required=False, type='str',
-                                 choices=['SCSI_FC', 'iSCSI', 'NVMe_TCP']),
+                                 choices=['SCSI_FC', 'iSCSI', 'NVMe_TCP', 'NVMe_FC']),
         new_name=dict(required=False, type='str')
     )
 
