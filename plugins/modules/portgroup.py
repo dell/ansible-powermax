@@ -42,7 +42,7 @@ options:
     - Port Group protocol.
     - Required only for V4(Juniper).
     required: false
-    choices: [SCSI_FC, iSCSI, NVMe_TCP]
+    choices: [SCSI_FC, iSCSI, NVMe_TCP, NVMe_FC]
     type: str
   new_name:
     description:
