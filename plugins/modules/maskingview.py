@@ -67,6 +67,13 @@ options:
     choices: [ absent, present ]
     required: true
     type: str
+  starting_lun_address:
+    description:
+    - Option to manually set the starting LUN address for the volumes in the masking view.
+    - If not specified, the Host LUN Address will be automatically set to the next available.
+    - Affect only MV creation, it is not idempotent
+    required: false
+    type: str
 '''
 
 EXAMPLES = r'''
@@ -82,6 +89,21 @@ EXAMPLES = r'''
     portgroup_name: "Ansible_Testing_portgroup"
     hostgroup_name: "Ansible_Testing_hostgroup"
     sg_name: "Ansible_Testing_SG"
+    state: "present"
+
+- name: Create MV with hostgroup provinding the starting lun address
+  dellemc.powermax.maskingview:
+    unispherehost: "{{unispherehost}}"
+    universion: "{{universion}}"
+    verifycert: "{{verifycert}}"
+    user: "{{user}}"
+    password: "{{password}}"
+    serial_no: "{{serial_no}}"
+    mv_name: "{{mv_name}}"
+    portgroup_name: "Ansible_Testing_portgroup"
+    hostgroup_name: "Ansible_Testing_hostgroup"
+    sg_name: "Ansible_Testing_SG"
+    starting_lun_address: "7B"
     state: "present"
 
 - name: Create MV with host
@@ -271,6 +293,8 @@ class MaskingView(object):
         sg_name = self.module.params['sg_name']
         host_name = self.module.params['host_name']
         hostgroup_name = self.module.params['hostgroup_name']
+        starting_lun_address = \
+            self.module.params['starting_lun_address'] if self.module.params['starting_lun_address'] else None
 
         if host_name and hostgroup_name:
             error_message = ('Failed to create masking view %s,'
@@ -293,7 +317,7 @@ class MaskingView(object):
                 resp = self.provisioning.create_masking_view_existing_components(
                     port_group_name=pg_name, masking_view_name=mv_name,
                     storage_group_name=sg_name, host_name=host_name,
-                    host_group_name=hostgroup_name)
+                    host_group_name=hostgroup_name, starting_lun_address=starting_lun_address)
             return True, resp
         except Exception as e:
             self.show_error_exit(msg='Create masking view %s failed; error '
@@ -442,7 +466,8 @@ def get_masking_view_parameters():
         hostgroup_name=dict(required=False, type='str'),
         sg_name=dict(required=False, type='str'),
         new_mv_name=dict(required=False, type='str'),
-        state=dict(required=True, choices=['present', 'absent'], type='str')
+        state=dict(required=True, choices=['present', 'absent'], type='str'),
+        starting_lun_address=dict(required=False, type='str')
     )
 
 
