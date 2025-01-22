@@ -7,8 +7,6 @@ from __future__ import (absolute_import, division, print_function)
 __metaclass__ = type
 import pytest
 from mock.mock import MagicMock
-from ansible_collections.dellemc.powermax.tests.unit.plugins.module_utils.mock_api_exception \
-    import MockApiException
 from ansible_collections.dellemc.powermax.tests.unit.plugins.module_utils.shared_library. \
     fail_json import FailJsonException, fail_json
 
@@ -19,8 +17,6 @@ class PowerMaxUnitBase:
 
     @pytest.fixture
     def powermax_module_mock(self, mocker, module_object):
-        exception_class_path = 'ansible_collections.dellemc.powermax.plugins.module_utils.storage.dell.utils.ApiException'
-        mocker.patch(exception_class_path, new=MockApiException)
         powermax_module_mock = module_object()
         powermax_module_mock.module = MagicMock()
         powermax_module_mock.module.fail_json = fail_json
