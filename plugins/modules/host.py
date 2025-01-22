@@ -660,8 +660,8 @@ class Host(object):
                 self.provisioning.delete_host(host_name)
             return True
         except Exception as e:
-            errorMsg = ('Delete host %s failed with error %s',
-                        host_name, str(e))
+            errorMsg = ('Delete host %s failed with error %s'
+                        % (host_name, str(e)))
             self.show_error_exit(msg=errorMsg)
 
     def _create_result_dict(self, changed, host=None):
