@@ -4,15 +4,15 @@
 # Tasks to find the best suitable PowerMax storage pool
 # for the given size and service level
 
-- name: Show error message on invalid cap_unit
+- name: Show error message on invalid capacity_role_cap_unit
   ansible.builtin.fail:
     msg: "Please provide valid value for cap_unit."
-  when: not cap_unit or cap_unit|length == 0
+  when: not capacity_role_cap_unit or capacity_role_cap_unit|length == 0
 
-- name: Show error message on invalid choice of cap_unit
+- name: Show error message on invalid choice of capacity_role_cap_unit
   ansible.builtin.fail:
-    msg: "cap_unit supports 'GB' or 'TB'."
-  when: cap_unit != 'GB' and cap_unit != 'TB'
+    msg: "capacity_role_cap_unit supports 'GB' or 'TB'."
+  when: capacity_role_cap_unit != 'GB' and capacity_role_cap_unit != 'TB'
 
 - name: Set fact for type of size
   ansible.builtin.set_fact:
@@ -23,15 +23,15 @@
     msg: "Please provide valid value of size."
   when: capacity_role_size_type != 'float' and capacity_role_size_type != 'int'
 
-- name: Take size with no change if the cap_unit is GB
+- name: Take size with no change if the capacity_role_cap_unit is GB
   ansible.builtin.set_fact:
     capacity_role_size_gb: "{{ capacity_role_size | float }}"
-  when: cap_unit == 'GB'
+  when: capacity_role_cap_unit == 'GB'
 
-- name: Convert size to GB if the cap_unit is TB
+- name: Convert size to GB if the capacity_role_cap_unit is TB
   ansible.builtin.set_fact:
     capacity_role_size_gb: "{{ capacity_role_size * 1024 | float }}"
-  when: cap_unit == 'TB'
+  when: capacity_role_cap_unit == 'TB'
 
 - name: Get the list of PowerMax arrays from Unisphere
   dellemc.powermax.info:
