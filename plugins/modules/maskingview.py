@@ -224,7 +224,7 @@ class MaskingView(object):
             if mv_name not in mv_list:
                 LOG.info('Masking view %s is not present in system',
                          mv_name)
-                return None
+                return None #todo TTHE defect ? no need to exit ???
             LOG.info('Getting masking view %s details', mv_name)
             return self.provisioning.get_masking_view(mv_name)
         except Exception as e:
@@ -277,14 +277,14 @@ class MaskingView(object):
                              'Please provide either host or '
                              'hostgroup' % mv_name)
             self.show_error_exit(msg=error_message)
-            return False
+            return False, None #todo TTHE defect ?
         elif (pg_name is None) or (sg_name is None) or \
                 (host_name is None and hostgroup_name is None):
             error_message = ('Failed to create masking view %s, Please '
                              'provide SG, PG and host / host group name to '
-                             'create masking view', mv_name)
+                             'create masking view' %mv_name) #todo TTHE defect ?
             self.show_error_exit(msg=error_message)
-            return False
+            return False, None #todo TTHE defect 
 
         try:
             resp = {}
@@ -298,6 +298,7 @@ class MaskingView(object):
         except Exception as e:
             self.show_error_exit(msg='Create masking view %s failed; error '
                                      '%s' % (mv_name, str(e)))
+        return False, None #todo TTHE defect ? ? now show_error_exit won't exit directly? still will goon the following steps
 
     def delete_masking_view(self, mv_name):
         """Delete masking view from system"""

@@ -18,14 +18,21 @@ class MockMaskingViewApi:
         "mv_name": None,
         "new_mv_name": None,
         "host_name": None,
-        "hostgroup_name": None,
-        "state": "present"
+        "hostgroup_name": None
     }
 
     CREATE_PAYLOAD = {
         "mv_name": "test_mv",
         "portgroup_name": "test_portgroup",
-        "sg_name": "test_sg"
+        "sg_name": "test_sg",
+        "state": "present"
+    }
+
+    DELETE_PAYLOAD = {
+        "mv_name": "test_mv",
+        "portgroup_name": "test_portgroup",
+        "sg_name": "test_sg",
+        "state": "absent"
     }
 
     GET_HOST_LIST_API_RESPONSE = [
@@ -43,7 +50,12 @@ class MockMaskingViewApi:
         "test_mv_3"
     ]
 
-    CREATE_MV_API_RESP = {
+    MASKING_VIEW_LIST_API_RESPONSE_EXIST = [
+        "test_mv",
+        "test_mv_rename"
+    ]
+
+    MASKING_VIEW_DETAIL_API_RESPONSE = {
         'maskingViewId': 'test_mv',
         'hostId': 'test_host_2',
         'portGroupId': 'test_portgroup',
@@ -60,12 +72,14 @@ class MockMaskingViewApi:
         return mv_payload
 
     @staticmethod
-    def get_create_mv_api_response(payload_type):
-        mv_response = MockMaskingViewApi.CREATE_MV_API_RESP.copy()
-        if payload_type == 'host':
-            mv_response['hostId'] = "test_host_2"
-        elif payload_type == 'hostgroup':
-            mv_response['hostGroupId'] = "test_host_gp_1"
+    def get_delete_mv_payload():
+        return MockMaskingViewApi.DELETE_PAYLOAD.copy()
+
+    @staticmethod
+    def get_mv_detail_api_response(payload_key, payload_value):
+        mv_response = MockMaskingViewApi.MASKING_VIEW_DETAIL_API_RESPONSE.copy()
+        if payload_key:
+            mv_response[payload_key] = payload_value
         return mv_response
 
     @staticmethod
@@ -74,3 +88,30 @@ class MockMaskingViewApi:
             return "Host test_host_2 does not exist"
         elif response_type == 'hostgroup':
             return "Host Group test_host_gp_1 does not exist"
+
+    @staticmethod
+    def get_create_mv_create_exception_response(response_id):
+        return ('Create masking view %s failed; error ' %response_id)
+
+    @staticmethod
+    def get_create_mv_none_host_host_group_exception_response(response_id):
+        return ('Failed to create masking view %s, Please '
+                             'provide SG, PG and host / host group name to '
+                             'create masking view' %response_id)
+
+    @staticmethod
+    def get_create_mv_both_host_host_group_exception_response(response_id):
+        return ('Failed to create masking view %s,'
+                             'Please provide either host or '
+                             'hostgroup' %response_id)
+      
+    @staticmethod
+    def get_change_mv_exception_response(response_id):
+        return ('One or more of parameters (PG, SG, '
+                             'Host/Host Group) provided for the MV '
+                             '%s differ from the state of the MV on the '
+                             'array.' %response_id)
+
+    @staticmethod
+    def get_delete_mv_create_exception_response(response_id):
+        return ('Delete masking view %s failed with error .' %response_id)
