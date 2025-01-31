@@ -1,0 +1,31 @@
+# nonk8s
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: dell-ansible-powermax
+  description: "Ansible Modules for Dell PowerMax"
+  tags:
+    - ansible
+    - devops
+    - automation
+    - dell
+    - infrastructure-as-code
+    - powermax
+  annotations:
+    backstage.io/techdocs-ref: dir:.
+    github.com/project-slug: dell/ansible-powermax
+  links:   
+    - url: 'https://galaxy.ansible.com/dellemc/powermax'
+      title: 'Ansible Galaxy'
+      icon: 'web'
+    - url: 'https://console.redhat.com/ansible/automation-hub/repo/published/dellemc/powermax'
+      title: 'Automation Hub'
+      icon: 'web'
+    - url: 'https://github.com/dell/ansible-powermax/issues'
+      title: 'Contact Technical Support'
+      icon: 'help'
+spec:
+  type: service
+  lifecycle: production
+  owner: user:default/sachin.apagundi
+  visibility: all
