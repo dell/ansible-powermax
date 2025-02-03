@@ -14,7 +14,7 @@ metadata:
   annotations:
     backstage.io/techdocs-ref: dir:.
     github.com/project-slug: dell/ansible-powermax
-  links:   
+  links:
     - url: 'https://galaxy.ansible.com/dellemc/powermax'
       title: 'Ansible Galaxy'
       icon: 'web'
