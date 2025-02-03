@@ -3,7 +3,7 @@ apiVersion: backstage.io/v1alpha1
 kind: Component
 metadata:
   name: dell-ansible-powermax
-  description: "Ansible Modules for Dell PowerMax"
+  description: "Ansible Modules for Dell Technologies PowerMax"
   tags:
     - ansible
     - devops
