@@ -53,7 +53,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        python: ['3.10', '3.11', 'devel']
+        python: ['3.10', '3.11']
         ansible:
           - stable-2.15
           - stable-2.16
