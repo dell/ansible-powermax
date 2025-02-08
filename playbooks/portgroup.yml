@@ -4,7 +4,6 @@
   connection: local
   vars:
     unispherehost: '10.XX.XX.XX'
-    universion: "101"
     verifycert: false
     user: "user"
     password: "password"
@@ -16,7 +15,6 @@
     - name: Create port group
       dellemc.powermax.portgroup:
         unispherehost: "{{ unispherehost }}"
-        universion: "{{ universion }}"
         verifycert: "{{ verifycert }}"
         user: "{{ user }}"
         password: "{{ password }}"
@@ -27,7 +25,6 @@
     - name: Add port to port group
       dellemc.powermax.portgroup:
         unispherehost: "{{ unispherehost }}"
-        universion: "{{ universion }}"
         verifycert: "{{ verifycert }}"
         user: "{{ user }}"
         password: "{{ password }}"
@@ -44,7 +41,6 @@
     - name: Remove port from port group
       dellemc.powermax.portgroup:
         unispherehost: "{{ unispherehost }}"
-        universion: "{{ universion }}"
         verifycert: "{{ verifycert }}"
         user: "{{ user }}"
         password: "{{ password }}"
@@ -61,7 +57,6 @@
     - name: Modify port group
       dellemc.powermax.portgroup:
         unispherehost: "{{ unispherehost }}"
-        universion: "{{ universion }}"
         verifycert: "{{ verifycert }}"
         user: "{{ user }}"
         password: "{{ password }}"
@@ -73,7 +68,6 @@
     - name: Delete port group
       dellemc.powermax.portgroup:
         unispherehost: "{{ unispherehost }}"
-        universion: "{{ universion }}"
         verifycert: "{{ verifycert }}"
         user: "{{ user }}"
         password: "{{ password }}"
@@ -84,7 +78,6 @@
     - name: Create PG with ports
       dellemc.powermax.portgroup:
         unispherehost: "{{ unispherehost }}"
-        universion: "{{ universion }}"
         verifycert: "{{ verifycert }}"
         user: "{{ user }}"
         password: "{{ password }}"
@@ -101,7 +94,6 @@
     - name: Delete port group
       dellemc.powermax.portgroup:
         unispherehost: "{{ unispherehost }}"
-        universion: "{{ universion }}"
         verifycert: "{{ verifycert }}"
         user: "{{ user }}"
         password: "{{ password }}"

@@ -17,7 +17,6 @@ from ansible_collections.dellemc.powermax.plugins.module_utils.storage.dell \
 utils.get_logger = MagicMock()
 utils.has_pyu4v_sdk = MagicMock(return_value=True)
 utils.pyu4v_version_check = MagicMock(return_value=None)
-utils.universion_check = MagicMock(return_value={"is_valid_universion": True})
 utils.get_U4V_connection = MagicMock()
 from ansible.module_utils import basic
 basic.AnsibleModule = MagicMock()

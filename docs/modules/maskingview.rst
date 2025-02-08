@@ -74,7 +74,7 @@ Parameters
 
 
   universion (False, int, None)
-    Unisphere version, currently '91', '92', '100' and '101' versions are supported.
+    Unisphere version. This parameter has been deprecated. It is no longer necessary to specify this parameter.
 
 
   verifycert (True, str, None)
@@ -124,7 +124,6 @@ Examples
     - name: Create MV with hostgroup
       dellemc.powermax.maskingview:
         unispherehost: "{{unispherehost}}"
-        universion: "{{universion}}"
         verifycert: "{{verifycert}}"
         user: "{{user}}"
         password: "{{password}}"
@@ -138,7 +137,6 @@ Examples
     - name: Create MV with host
       dellemc.powermax.maskingview:
         unispherehost: "{{unispherehost}}"
-        universion: "{{universion}}"
         verifycert: "{{verifycert}}"
         user: "{{user}}"
         password: "{{password}}"
@@ -152,7 +150,6 @@ Examples
     - name: Rename host masking view
       dellemc.powermax.maskingview:
         unispherehost: "{{unispherehost}}"
-        universion: "{{universion}}"
         verifycert: "{{verifycert}}"
         user: "{{user}}"
         password: "{{password}}"
@@ -164,7 +161,6 @@ Examples
     - name: Delete host masking view
       dellemc.powermax.maskingview:
         unispherehost: "{{unispherehost}}"
-        universion: "{{universion}}"
         verifycert: "{{verifycert}}"
         user: "{{user}}"
         password: "{{password}}"

@@ -14,7 +14,6 @@ from ansible_collections.dellemc.powermax.plugins.module_utils.storage.dell \
 utils.get_logger = MagicMock()
 utils.has_pyu4v_sdk = MagicMock(return_value=True)
 utils.pyu4v_version_check = MagicMock(return_value=None)
-utils.universion_check = MagicMock(return_value={"is_valid_universion": True})
 utils.get_u4v_unisphere_connection = MagicMock()
 utils.close_connection = MagicMock()
 from ansible.module_utils import basic
@@ -38,12 +37,10 @@ class TestJob(PowerMaxUnitBase):
     def test_job_init(self, powermax_module_mock):
         with patch('ansible_collections.dellemc.powermax.plugins.modules.job.HAS_PYU4V', False):
             with patch('ansible_collections.dellemc.powermax.plugins.modules.job.PYU4V_VERSION_CHECK', "mock check err"):
-                utils.universion_check = MagicMock(return_value={
-                    "is_valid_universion": False, "user_message": "mock user msg"})
                 utils.get_u4v_unisphere_connection = MagicMock(side_effect=MockApiException())
                 powermax_module_mock.show_error_exit = MagicMock()
                 powermax_module_mock.__init__()
-                assert powermax_module_mock.show_error_exit.call_count == 4
+                assert powermax_module_mock.show_error_exit.call_count == 3
 
     def test_get_job_invalid_id(self, powermax_module_mock):
         self.job_args.update(

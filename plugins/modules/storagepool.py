@@ -45,7 +45,6 @@ EXAMPLES = r'''
 - name: Get specific storage pool details
   dellemc.powermax.storagepool:
     unispherehost: "{{unispherehost}}"
-    universion: "{{universion}}"
     verifycert: "{{verifycert}}"
     user: "{{user}}"
     password: "{{password}}"
@@ -134,14 +133,6 @@ class Pool(object):
 
         if PYU4V_VERSION_CHECK is not None:
             self.show_error_exit(msg=PYU4V_VERSION_CHECK)
-
-        if self.module.params['universion'] is not None:
-            universion_details = utils.universion_check(
-                self.module.params['universion'])
-            LOG.info("universion_details: %s", universion_details)
-
-            if not universion_details['is_valid_universion']:
-                self.show_error_exit(msg=universion_details['user_message'])
 
         try:
             self.u4v_conn = utils.get_U4V_connection(

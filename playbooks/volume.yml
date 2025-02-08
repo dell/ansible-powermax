@@ -4,7 +4,6 @@
   connection: local
   vars:
       unispherehost: '10.XX.XX.XX'
-      universion: '101'
       verifycert: false
       user: 'user'
       password: 'password'
@@ -20,7 +19,6 @@
         register: result
         dellemc.powermax.volume:
             unispherehost: "{{ unispherehost }}"
-            universion: "{{ universion }}"
             verifycert: "{{ verifycert }}"
             user: "{{ user }}"
             password: "{{ password }}"
@@ -35,7 +33,6 @@
       - name: Expand volume using native id
         dellemc.powermax.volume:
             unispherehost: "{{ unispherehost }}"
-            universion: "{{ universion }}"
             verifycert: "{{ verifycert }}"
             user: "{{ user }}"
             password: "{{ password }}"
@@ -48,7 +45,6 @@
       - name: Expand volume using volume identifier and storage group
         dellemc.powermax.volume:
             unispherehost: "{{ unispherehost }}"
-            universion: "{{ universion }}"
             verifycert: "{{ verifycert }}"
             user: "{{ user }}"
             password: "{{ password }}"
@@ -62,7 +58,6 @@
       - name: Move volume between storage group when current storage group is part of masking view
         dellemc.powermax.volume:
             unispherehost: "{{ unispherehost }}"
-            universion: "{{ universion }}"
             verifycert: "{{ verifycert }}"
             user: "{{ user }}"
             password: "{{ password }}"
@@ -75,7 +70,6 @@
       - name: Move volume between storage group when current storage group is not part of masking view
         dellemc.powermax.volume:
             unispherehost: "{{ unispherehost }}"
-            universion: "{{ universion }}"
             verifycert: "{{ verifycert }}"
             user: "{{ user }}"
             password: "{{ password }}"
@@ -88,7 +82,6 @@
       - name: Rename volume
         dellemc.powermax.volume:
             unispherehost: "{{ unispherehost }}"
-            universion: "{{ universion }}"
             verifycert: "{{ verifycert }}"
             user: "{{ user }}"
             password: "{{ password }}"
@@ -100,7 +93,6 @@
       - name: Get volume details
         dellemc.powermax.volume:
             unispherehost: "{{ unispherehost }}"
-            universion: "{{ universion }}"
             verifycert: "{{ verifycert }}"
             user: "{{ user }}"
             password: "{{ password }}"
@@ -111,7 +103,6 @@
       - name: Get volume details using WWN
         dellemc.powermax.volume:
             unispherehost: "{{ unispherehost }}"
-            universion: "{{ universion }}"
             verifycert: "{{ verifycert }}"
             user: "{{ user }}"
             password: "{{ password }}"
@@ -122,7 +113,6 @@
       - name: Remove existing volume from existing storage group
         dellemc.powermax.storagegroup:
             unispherehost: "{{ unispherehost }}"
-            universion: "{{ universion }}"
             verifycert: "{{ verifycert }}"
             user: "{{ user }}"
             password: "{{ password }}"
@@ -136,7 +126,6 @@
       - name: Delete volume
         dellemc.powermax.volume:
             unispherehost: "{{ unispherehost }}"
-            universion: "{{ universion }}"
             verifycert: "{{ verifycert }}"
             user: "{{ user }}"
             password: "{{ password }}"

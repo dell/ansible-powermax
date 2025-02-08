@@ -6,7 +6,6 @@
   connection: local
   vars:
     unispherehost: 'your_unisphere_host_url'
-    universion: "version_of_the_unisphere"
     verifycert: false
     user: 'your_username'
     password: 'your_password'
@@ -19,7 +18,6 @@
     - name: Get details of the Storage Group
       dellemc.powermax.storagegroup:
         unispherehost: "{{ unispherehost }}"
-        universion: "{{ universion }}"
         verifycert: "{{ verifycert }}"
         user: "{{ user }}"
         password: "{{ password }}"
@@ -38,7 +36,6 @@
       register: temp_result
       dellemc.powermax.volume:
         unispherehost: "{{ unispherehost }}"
-        universion: "{{ universion }}"
         verifycert: "{{ verifycert }}"
         user: "{{ user }}"
         password: "{{ password }}"

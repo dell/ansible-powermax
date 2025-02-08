@@ -153,7 +153,6 @@ EXAMPLES = r"""
 - name: Get metro environment details
   dellemc.powermax.metrodr:
     unispherehost: "{{unispherehost}}"
-    universion: "{{universion}}"
     verifycert: "{{verifycert}}"
     user: "{{user}}"
     password: "{{password}}"
@@ -164,7 +163,6 @@ EXAMPLES = r"""
 - name: Convert SG to metro DR environment
   dellemc.powermax.metrodr:
     unispherehost: "{{unispherehost}}"
-    universion: "{{universion}}"
     verifycert: "{{verifycert}}"
     user: "{{user}}"
     password: "{{password}}"
@@ -180,7 +178,6 @@ EXAMPLES = r"""
 - name: Create metro DR environment
   dellemc.powermax.metrodr:
     unispherehost: "{{unispherehost}}"
-    universion: "{{universion}}"
     verifycert: "{{verifycert}}"
     user: "{{user}}"
     password: "{{password}}"
@@ -198,7 +195,6 @@ EXAMPLES = r"""
 - name: Modify metro DR environment
   dellemc.powermax.metrodr:
     unispherehost: "{{unispherehost}}"
-    universion: "{{universion}}"
     verifycert: "{{verifycert}}"
     user: "{{user}}"
     password: "{{password}}"
@@ -215,7 +211,6 @@ EXAMPLES = r"""
 - name: Delete metro DR environment
   dellemc.powermax.metrodr:
     unispherehost: "{{unispherehost}}"
-    universion: "{{universion}}"
     verifycert: "{{verifycert}}"
     user: "{{user}}"
     password: "{{password}}"
@@ -395,15 +390,6 @@ class MetroDR(object):
             self.show_error_exit(PYU4V_VERSION_CHECK, close_conn=False)
 
         self.pre_check_for_PyU4V_version()
-
-        if self.module.params["universion"] is not None:
-            universion_details = utils.universion_check(
-                self.module.params["universion"])
-            LOG.info("universion_details: %s", universion_details)
-
-            if not universion_details["is_valid_universion"]:
-                self.show_error_exit(
-                    universion_details["user_message"], close_conn=False)
 
         try:
             self.conn = utils.get_U4V_connection(

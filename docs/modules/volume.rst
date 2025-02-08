@@ -80,7 +80,7 @@ Parameters
 
 
   universion (False, int, None)
-    Unisphere version, currently '91', '92', '100' and '101' versions are supported.
+    Unisphere version. This parameter has been deprecated. It is no longer necessary to specify this parameter.
 
 
   verifycert (True, str, None)
@@ -135,7 +135,6 @@ Examples
     - name: Create volume
       dellemc.powermax.volume:
         unispherehost: "{{unispherehost}}"
-        universion: "{{universion}}"
         verifycert: "{{verifycert}}"
         user: "{{user}}"
         password: "{{password}}"
@@ -150,7 +149,6 @@ Examples
     - name: Expanding volume size
       dellemc.powermax.volume:
         unispherehost: "{{unispherehost}}"
-        universion: "{{universion}}"
         verifycert: "{{verifycert}}"
         user: "{{user}}"
         password: "{{password}}"
@@ -163,7 +161,6 @@ Examples
     - name: Renaming volume
       dellemc.powermax.volume:
         unispherehost: "{{unispherehost}}"
-        universion: "{{universion}}"
         verifycert: "{{verifycert}}"
         user: "{{user}}"
         password: "{{password}}"
@@ -175,7 +172,6 @@ Examples
     - name: Delete volume using volume ID
       dellemc.powermax.volume:
         unispherehost: "{{unispherehost}}"
-        universion: "{{universion}}"
         verifycert: "{{verifycert}}"
         user: "{{user}}"
         password: "{{password}}"
@@ -186,7 +182,6 @@ Examples
     - name: Delete volume using volume WWN
       dellemc.powermax.volume:
         unispherehost: "{{unispherehost}}"
-        universion: "{{universion}}"
         verifycert: "{{verifycert}}"
         user: "{{user}}"
         password: "{{password}}"
@@ -197,7 +192,6 @@ Examples
     - name: Move volume between storage group
       dellemc.powermax.volume:
         unispherehost: "{{unispherehost}}"
-        universion: "{{universion}}"
         verifycert: "{{verifycert}}"
         user: "{{user}}"
         password: "{{password}}"
@@ -210,7 +204,6 @@ Examples
     - name: Create volume with capacity unit as cylinder
       dellemc.powermax.volume:
         unispherehost: "{{unispherehost}}"
-        universion: "{{universion}}"
         verifycert: "{{verifycert}}"
         user: "{{user}}"
         password: "{{password}}"

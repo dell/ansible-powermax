@@ -46,7 +46,7 @@ Parameters
 
 
   universion (False, int, None)
-    Unisphere version, currently '91', '92', '100' and '101' versions are supported.
+    Unisphere version. This parameter has been deprecated. It is no longer necessary to specify this parameter.
 
 
   verifycert (True, str, None)
@@ -97,7 +97,6 @@ Examples
     - name: Get the details of an RDF group and volumes
       dellemc.powermax.rdfgroup:
         unispherehost: "{{unispherehost}}"
-        universion: "{{universion}}"
         verifycert: "{{verifycert}}"
         user: "{{user}}"
         password: "{{password}}"
@@ -108,7 +107,6 @@ Examples
       dellemc.powermax.rdfgroup:
         unispherehost: "{{unispherehost}}"
         serial_no: "{{serial_no}}"
-        universion: "{{universion}}"
         verifycert: "{{verifycert}}"
         user: "{{user}}"
         password: "{{password}}"
