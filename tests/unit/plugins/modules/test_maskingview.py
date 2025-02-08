@@ -17,7 +17,6 @@ from ansible_collections.dellemc.powermax.plugins.module_utils.storage.dell \
 utils.get_logger = MagicMock()
 utils.has_pyu4v_sdk = MagicMock(return_value=True)
 utils.pyu4v_version_check = MagicMock(return_value=None)
-utils.universion_check = MagicMock(return_value={"is_valid_universion": True})
 utils.get_U4V_connection = MagicMock()
 from ansible.module_utils import basic
 basic.AnsibleModule = MagicMock()
@@ -232,9 +231,7 @@ class TestMaskingView():
     def test_maskingview_init_check_failed(self, maskingview_module_mock):
         with patch('ansible_collections.dellemc.powermax.plugins.modules.maskingview.HAS_PYU4V', False):
             with patch('ansible_collections.dellemc.powermax.plugins.modules.maskingview.PYU4V_VERSION_CHECK', "mock check err"):
-                utils.universion_check = MagicMock(return_value={
-                    "is_valid_universion": False, "user_message": "mock user msg"})
                 utils.get_U4V_connection = MagicMock(side_effect=Exception)
                 maskingview_module_mock.show_error_exit = MagicMock()
                 maskingview_module_mock.__init__()
-                assert maskingview_module_mock.show_error_exit.call_count == 4
+                assert maskingview_module_mock.show_error_exit.call_count == 3

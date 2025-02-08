@@ -396,15 +396,6 @@ class MetroDR(object):
 
         self.pre_check_for_PyU4V_version()
 
-        if self.module.params["universion"] is not None:
-            universion_details = utils.universion_check(
-                self.module.params["universion"])
-            LOG.info("universion_details: %s", universion_details)
-
-            if not universion_details["is_valid_universion"]:
-                self.show_error_exit(
-                    universion_details["user_message"], close_conn=False)
-
         try:
             self.conn = utils.get_U4V_connection(
                 self.module.params, application_type=APPLICATION_TYPE, metro_dr=True)

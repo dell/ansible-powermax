@@ -18,7 +18,7 @@ from ansible_collections.dellemc.powermax.tests.unit.plugins.module_utils.mock_a
 utils.get_logger = MagicMock()
 utils.has_pyu4v_sdk = MagicMock(return_value=True)
 utils.pyu4v_version_check = MagicMock(return_value=None)
-utils.universion_check = MagicMock(return_value={"is_valid_universion": True})
+utils.get_unisphere_version = MagicMock(return_value='100')
 utils.get_U4V_connection = MagicMock()
 utils.close_connection = MagicMock()
 from ansible.module_utils import basic
@@ -67,16 +67,10 @@ class TestVolume(PowerMaxUnitBase):
                 "ansible_collections.dellemc.powermax.plugins.modules.volume.PYU4V_VERSION_CHECK",
                 "mock check err",
             ):
-                utils.universion_check = MagicMock(
-                    return_value={
-                        "is_valid_universion": False,
-                        "user_message": "mock user msg",
-                    }
-                )
                 utils.get_U4V_connection = MagicMock(side_effect=MockApiException())
                 powermax_module_mock.show_error_exit = MagicMock()
                 powermax_module_mock.__init__()
-                assert powermax_module_mock.show_error_exit.call_count == 4
+                assert powermax_module_mock.show_error_exit.call_count == 3
 
     def test_create_volume_cap_unit_cyl(self, powermax_module_mock):
         self.vol_args.update(
