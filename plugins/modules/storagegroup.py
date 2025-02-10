@@ -990,7 +990,7 @@ class StorageGroup(object):
                                 err_msg = (
                                     "More than 2 RDF groups exist for the given "
                                     "storage group {0}. Create volume is not "
-                                    "supported.".formate(sg_name))
+                                    "supported.".format(sg_name))
                                 self.show_error_exit(msg=err_msg)
 
                         # non SRDF protected SG
