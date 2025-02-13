@@ -20,7 +20,7 @@ The capabilities of Ansible modules are managing volumes, storage groups, ports,
 * [Prerequisites](#prerequisites)
 * [List of Ansible modules for Dell PowerMax](#list-of-ansible-modules-for-dell-powermax)
 * [Installation and execution of Ansible modules for Dell PowerMax](#installation-and-execution-of-ansible-modules-for-dell-powermax)
-* [Maintanence](#maintanence)
+* [Maintenance](#maintenance)
 
 ## Requirements
 This table provides information about the software prerequisites for the Ansible Modules for Dell PowerMax.

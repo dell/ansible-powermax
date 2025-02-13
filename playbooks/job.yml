@@ -4,7 +4,6 @@
   connection: local
   vars:
     unispherehost: "10.XX.XX.XX"
-    universion: "101"
     verifycert: false
     user: "user"
     password: "password"
@@ -13,7 +12,6 @@
     - name: Get job details
       dellemc.powermax.job:
         unispherehost: "{{ unispherehost }}"
-        universion: "{{ universion }}"
         verifycert: "{{ verifycert }}"
         user: "{{ user }}"
         password: "{{ password }}"

@@ -124,7 +124,6 @@ EXAMPLES = r'''
   register: Job_details_body
   dellemc.powermax.srdf:
     unispherehost: "{{unispherehost}}"
-    universion: "{{universion}}"
     verifycert: "{{verifycert}}"
     user: "{{user}}"
     password: "{{password}}"
@@ -139,7 +138,6 @@ EXAMPLES = r'''
         Synchronous task
   dellemc.powermax.srdf:
     unispherehost: "{{unispherehost}}"
-    universion: "{{universion}}"
     verifycert: "{{verifycert}}"
     user: "{{user}}"
     password: "{{password}}"
@@ -153,7 +151,6 @@ EXAMPLES = r'''
 - name: Create storagegroup Metro SRDF pair with Witness for resiliency
   dellemc.powermax.srdf:
     unispherehost: "{{unispherehost}}"
-    universion: "{{universion}}"
     verifycert: "{{verifycert}}"
     user: "{{user}}"
     password: "{{password}}"
@@ -168,7 +165,6 @@ EXAMPLES = r'''
 - name: Suspend storagegroup Metro SRDF pair
   dellemc.powermax.srdf:
     unispherehost: "{{unispherehost}}"
-    universion: "{{universion}}"
     verifycert: "{{verifycert}}"
     user: "{{user}}"
     password: "{{password}}"
@@ -182,7 +178,6 @@ EXAMPLES = r'''
         resiliency
   dellemc.powermax.srdf:
     unispherehost: "{{unispherehost}}"
-    universion: "{{universion}}"
     verifycert: "{{verifycert}}"
     user: "{{user}}"
     password: "{{password}}"
@@ -197,7 +192,6 @@ EXAMPLES = r'''
 - name: Get SRDF details
   dellemc.powermax.srdf:
     unispherehost: "{{unispherehost}}"
-    universion: "{{universion}}"
     verifycert: "{{verifycert}}"
     user: "{{user}}"
     password: "{{password}}"
@@ -208,7 +202,6 @@ EXAMPLES = r'''
 - name: Modify SRDF mode
   dellemc.powermax.srdf:
     unispherehost: "{{unispherehost}}"
-    universion: "{{universion}}"
     verifycert: "{{verifycert}}"
     user: "{{user}}"
     password: "{{password}}"
@@ -220,7 +213,6 @@ EXAMPLES = r'''
 - name: Failover SRDF link
   dellemc.powermax.srdf:
     unispherehost: "{{unispherehost}}"
-    universion: "{{universion}}"
     verifycert: "{{verifycert}}"
     user: "{{user}}"
     password: "{{password}}"
@@ -232,7 +224,6 @@ EXAMPLES = r'''
 - name: Get SRDF Job status
   dellemc.powermax.srdf:
     unispherehost: "{{unispherehost}}"
-    universion: "{{universion}}"
     verifycert: "{{verifycert}}"
     user: "{{user}}"
     password: "{{password}}"
@@ -243,7 +234,6 @@ EXAMPLES = r'''
 - name: Establish SRDF link
   dellemc.powermax.srdf:
     unispherehost: "{{unispherehost}}"
-    universion: "{{universion}}"
     verifycert: "{{verifycert}}"
     user: "{{user}}"
     password: "{{password}}"
@@ -255,7 +245,6 @@ EXAMPLES = r'''
 - name: Suspend SRDF link
   dellemc.powermax.srdf:
     unispherehost: "{{unispherehost}}"
-    universion: "{{universion}}"
     verifycert: "{{verifycert}}"
     user: "{{user}}"
     password: "{{password}}"
@@ -267,7 +256,6 @@ EXAMPLES = r'''
 - name: Delete SRDF link
   dellemc.powermax.srdf:
     unispherehost: "{{unispherehost}}"
-    universion: "{{universion}}"
     verifycert: "{{verifycert}}"
     user: "{{user}}"
     password: "{{password}}"
@@ -415,14 +403,6 @@ class SRDF(object):
 
         if PYU4V_VERSION_CHECK is not None:
             self.show_error_exit(msg=PYU4V_VERSION_CHECK)
-
-        if self.module.params['universion'] is not None:
-            universion_details = utils.universion_check(
-                self.module.params['universion'])
-            LOG.info("universion_details: %s", universion_details)
-
-            if not universion_details['is_valid_universion']:
-                self.show_error_exit(msg=universion_details['user_message'])
 
         try:
             self.u4v_conn = utils.get_U4V_connection(

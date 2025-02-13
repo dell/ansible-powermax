@@ -5,7 +5,6 @@
   vars:
     # PowerMax connection parameters
     unispherehost: '10.XX.XX.XX'
-    universion: '101'
     verifycert: false
     user: 'user'
     password: 'password'
@@ -47,7 +46,6 @@
       register: storage_group_details
       dellemc.powermax.storagegroup:
         unispherehost: "{{ unispherehost }}"
-        universion: "{{ universion }}"
         verifycert: "{{ verifycert }}"
         user: "{{ user }}"
         password: "{{ password }}"
@@ -62,7 +60,6 @@
     - name: Create volumes
       dellemc.powermax.volume:
         unispherehost: "{{ unispherehost }}"
-        universion: "{{ universion }}"
         verifycert: "{{ verifycert }}"
         user: "{{ user }}"
         password: "{{ password }}"

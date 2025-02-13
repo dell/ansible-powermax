@@ -29,10 +29,6 @@ The below requirements are needed on the host that executes this module.
 Parameters
 ----------
 
-  universion (False, int, None)
-    Unisphere version, currently '92', '100' and '101' version is supported.
-
-
   snapshot_policy_name (True, str, None)
     Name of the snapshot policy.
 
@@ -103,6 +99,10 @@ Parameters
     IP or FQDN of the Unisphere host
 
 
+  universion (False, int, None)
+    Unisphere version. This parameter has been deprecated. It is no longer necessary to specify this parameter.
+
+
   verifycert (True, str, None)
     Specifies system whether to validate SSL certificate or not, Values can be True or False or a custom file path for SSL certificate with .pem extension or .cer with base 64 encoding.
 
@@ -153,7 +153,6 @@ Examples
     - name: Create a snapshot policy
       dellemc.powermax.snapshotpolicy:
         unispherehost: "{{unispherehost}}"
-        universion: "{{universion}}"
         verifycert: "{{verifycert}}"
         user: "{{user}}"
         password: "{{password}}"
@@ -170,7 +169,6 @@ Examples
     - name: Create a snapshot policy and associate storage groups to it
       dellemc.powermax.snapshotpolicy:
         unispherehost: "{{unispherehost}}"
-        universion: "{{universion}}"
         verifycert: "{{verifycert}}"
         user: "{{user}}"
         password: "{{password}}"
@@ -191,7 +189,6 @@ Examples
     - name: Get snapshot policy details
       dellemc.powermax.snapshotpolicy:
         unispherehost: "{{unispherehost}}"
-        universion: "{{universion}}"
         verifycert: "{{verifycert}}"
         user: "{{user}}"
         password: "{{password}}"
@@ -202,7 +199,6 @@ Examples
     - name: Modify snapshot policy attributes
       dellemc.powermax.snapshotpolicy:
         unispherehost: "{{unispherehost}}"
-        universion: "{{universion}}"
         verifycert: "{{verifycert}}"
         user: "{{user}}"
         password: "{{password}}"
@@ -219,7 +215,6 @@ Examples
     - name: Modify snapshot policy, associate to storage groups
       dellemc.powermax.snapshotpolicy:
         unispherehost: "{{unispherehost}}"
-        universion: "{{universion}}"
         verifycert: "{{verifycert}}"
         user: "{{user}}"
         password: "{{password}}"
@@ -234,7 +229,6 @@ Examples
     - name: Modify snapshot policy, disassociate from storage groups
       dellemc.powermax.snapshotpolicy:
         unispherehost: "{{unispherehost}}"
-        universion: "{{universion}}"
         verifycert: "{{verifycert}}"
         user: "{{user}}"
         password: "{{password}}"
@@ -249,7 +243,6 @@ Examples
     - name: Modify snapshot policy state to suspend
       dellemc.powermax.snapshotpolicy:
         unispherehost: "{{unispherehost}}"
-        universion: "{{universion}}"
         verifycert: "{{verifycert}}"
         user: "{{user}}"
         password: "{{password}}"
@@ -261,7 +254,6 @@ Examples
     - name: Modify snapshot policy state to resume
       dellemc.powermax.snapshotpolicy:
         unispherehost: "{{unispherehost}}"
-        universion: "{{universion}}"
         verifycert: "{{verifycert}}"
         user: "{{user}}"
         password: "{{password}}"
@@ -273,7 +265,6 @@ Examples
     - name: Delete a snapshot policy
       dellemc.powermax.snapshotpolicy:
         unispherehost: "{{unispherehost}}"
-        universion: "{{universion}}"
         verifycert: "{{verifycert}}"
         user: "{{user}}"
         password: "{{password}}"

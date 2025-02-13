@@ -4,7 +4,6 @@
   connection: local
   vars:
     unispherehost: '10.XX.XX.XX'
-    universion: "101"
     verifycert: false
     user: "user"
     password: "password"
@@ -15,7 +14,6 @@
     - name: Create MV with hostgroup
       dellemc.powermax.maskingview:
         unispherehost: "{{ unispherehost }}"
-        universion: "{{ unispherehost }}"
         verifycert: "{{ verifycert }}"
         user: "{{ user }}"
         password: "{{ password }}"
@@ -29,7 +27,6 @@
     - name: Rename hostgroup masking view
       dellemc.powermax.maskingview:
         unispherehost: "{{ unispherehost }}"
-        universion: "{{ unispherehost }}"
         verifycert: "{{ verifycert }}"
         user: "{{ user }}"
         password: "{{ password }}"
@@ -41,7 +38,6 @@
     - name: Delete hostgroup masking view
       dellemc.powermax.maskingview:
         unispherehost: "{{ unispherehost }}"
-        universion: "{{ unispherehost }}"
         verifycert: "{{ verifycert }}"
         user: "{{ user }}"
         password: "{{ password }}"
@@ -52,7 +48,6 @@
     - name: Create MV with host
       dellemc.powermax.maskingview:
         unispherehost: "{{ unispherehost }}"
-        universion: "{{ unispherehost }}"
         verifycert: "{{ verifycert }}"
         user: "{{ user }}"
         password: "{{ password }}"
@@ -66,7 +61,6 @@
     - name: Delete host masking view
       dellemc.powermax.maskingview:
         unispherehost: "{{ unispherehost }}"
-        universion: "{{ unispherehost }}"
         verifycert: "{{ verifycert }}"
         user: "{{ user }}"
         password: "{{ password }}"

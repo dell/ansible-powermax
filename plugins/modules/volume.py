@@ -84,7 +84,6 @@ EXAMPLES = r'''
 - name: Create volume
   dellemc.powermax.volume:
     unispherehost: "{{unispherehost}}"
-    universion: "{{universion}}"
     verifycert: "{{verifycert}}"
     user: "{{user}}"
     password: "{{password}}"
@@ -99,7 +98,6 @@ EXAMPLES = r'''
 - name: Expanding volume size
   dellemc.powermax.volume:
     unispherehost: "{{unispherehost}}"
-    universion: "{{universion}}"
     verifycert: "{{verifycert}}"
     user: "{{user}}"
     password: "{{password}}"
@@ -112,7 +110,6 @@ EXAMPLES = r'''
 - name: Renaming volume
   dellemc.powermax.volume:
     unispherehost: "{{unispherehost}}"
-    universion: "{{universion}}"
     verifycert: "{{verifycert}}"
     user: "{{user}}"
     password: "{{password}}"
@@ -124,7 +121,6 @@ EXAMPLES = r'''
 - name: Delete volume using volume ID
   dellemc.powermax.volume:
     unispherehost: "{{unispherehost}}"
-    universion: "{{universion}}"
     verifycert: "{{verifycert}}"
     user: "{{user}}"
     password: "{{password}}"
@@ -135,7 +131,6 @@ EXAMPLES = r'''
 - name: Delete volume using volume WWN
   dellemc.powermax.volume:
     unispherehost: "{{unispherehost}}"
-    universion: "{{universion}}"
     verifycert: "{{verifycert}}"
     user: "{{user}}"
     password: "{{password}}"
@@ -146,7 +141,6 @@ EXAMPLES = r'''
 - name: Move volume between storage group
   dellemc.powermax.volume:
     unispherehost: "{{unispherehost}}"
-    universion: "{{universion}}"
     verifycert: "{{verifycert}}"
     user: "{{user}}"
     password: "{{password}}"
@@ -159,7 +153,6 @@ EXAMPLES = r'''
 - name: Create volume with capacity unit as cylinder
   dellemc.powermax.volume:
     unispherehost: "{{unispherehost}}"
-    universion: "{{universion}}"
     verifycert: "{{verifycert}}"
     user: "{{user}}"
     password: "{{password}}"
@@ -308,14 +301,6 @@ class Volume(object):
 
         if PYU4V_VERSION_CHECK is not None:
             self.show_error_exit(msg=PYU4V_VERSION_CHECK)
-
-        if self.module.params['universion'] is not None:
-            universion_details = utils.universion_check(
-                self.module.params['universion'])
-            LOG.info("universion_details: %s", universion_details)
-
-            if not universion_details['is_valid_universion']:
-                self.show_error_exit(msg=universion_details['user_message'])
 
         try:
             self.u4v_conn = utils.get_U4V_connection(
@@ -807,7 +792,7 @@ class Volume(object):
         vol_params['create_new_volumes'] = create_new_volumes
         vol_params['remote_array_1_id'] = remote_array
         vol_params['remote_array_1_sgs'] = remote_array_1_sg
-        universion = self.module.params['universion']
+        universion = int(utils.get_unisphere_version())
         append_vol_id = self.module.params['append_vol_id']
 
         if remote_array_2 is not None and remote_array_2_sg is not None:

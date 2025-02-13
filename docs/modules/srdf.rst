@@ -100,7 +100,7 @@ Parameters
 
 
   universion (False, int, None)
-    Unisphere version, currently '91', '92', '100' and '101' versions are supported.
+    Unisphere version. This parameter has been deprecated. It is no longer necessary to specify this parameter.
 
 
   verifycert (True, str, None)
@@ -147,7 +147,6 @@ Examples
       register: Job_details_body
       dellemc.powermax.srdf:
         unispherehost: "{{unispherehost}}"
-        universion: "{{universion}}"
         verifycert: "{{verifycert}}"
         user: "{{user}}"
         password: "{{password}}"
@@ -162,7 +161,6 @@ Examples
             Synchronous task
       dellemc.powermax.srdf:
         unispherehost: "{{unispherehost}}"
-        universion: "{{universion}}"
         verifycert: "{{verifycert}}"
         user: "{{user}}"
         password: "{{password}}"
@@ -176,7 +174,6 @@ Examples
     - name: Create storagegroup Metro SRDF pair with Witness for resiliency
       dellemc.powermax.srdf:
         unispherehost: "{{unispherehost}}"
-        universion: "{{universion}}"
         verifycert: "{{verifycert}}"
         user: "{{user}}"
         password: "{{password}}"
@@ -191,7 +188,6 @@ Examples
     - name: Suspend storagegroup Metro SRDF pair
       dellemc.powermax.srdf:
         unispherehost: "{{unispherehost}}"
-        universion: "{{universion}}"
         verifycert: "{{verifycert}}"
         user: "{{user}}"
         password: "{{password}}"
@@ -205,7 +201,6 @@ Examples
             resiliency
       dellemc.powermax.srdf:
         unispherehost: "{{unispherehost}}"
-        universion: "{{universion}}"
         verifycert: "{{verifycert}}"
         user: "{{user}}"
         password: "{{password}}"
@@ -220,7 +215,6 @@ Examples
     - name: Get SRDF details
       dellemc.powermax.srdf:
         unispherehost: "{{unispherehost}}"
-        universion: "{{universion}}"
         verifycert: "{{verifycert}}"
         user: "{{user}}"
         password: "{{password}}"
@@ -231,7 +225,6 @@ Examples
     - name: Modify SRDF mode
       dellemc.powermax.srdf:
         unispherehost: "{{unispherehost}}"
-        universion: "{{universion}}"
         verifycert: "{{verifycert}}"
         user: "{{user}}"
         password: "{{password}}"
@@ -243,7 +236,6 @@ Examples
     - name: Failover SRDF link
       dellemc.powermax.srdf:
         unispherehost: "{{unispherehost}}"
-        universion: "{{universion}}"
         verifycert: "{{verifycert}}"
         user: "{{user}}"
         password: "{{password}}"
@@ -255,7 +247,6 @@ Examples
     - name: Get SRDF Job status
       dellemc.powermax.srdf:
         unispherehost: "{{unispherehost}}"
-        universion: "{{universion}}"
         verifycert: "{{verifycert}}"
         user: "{{user}}"
         password: "{{password}}"
@@ -266,7 +257,6 @@ Examples
     - name: Establish SRDF link
       dellemc.powermax.srdf:
         unispherehost: "{{unispherehost}}"
-        universion: "{{universion}}"
         verifycert: "{{verifycert}}"
         user: "{{user}}"
         password: "{{password}}"
@@ -278,7 +268,6 @@ Examples
     - name: Suspend SRDF link
       dellemc.powermax.srdf:
         unispherehost: "{{unispherehost}}"
-        universion: "{{universion}}"
         verifycert: "{{verifycert}}"
         user: "{{user}}"
         password: "{{password}}"
@@ -290,7 +279,6 @@ Examples
     - name: Delete SRDF link
       dellemc.powermax.srdf:
         unispherehost: "{{unispherehost}}"
-        universion: "{{universion}}"
         verifycert: "{{verifycert}}"
         user: "{{user}}"
         password: "{{password}}"

@@ -94,7 +94,7 @@ Parameters
 
 
   universion (False, int, None)
-    Unisphere version, currently '91', '92', '100' and '101' versions are supported.
+    Unisphere version. This parameter has been deprecated. It is no longer necessary to specify this parameter.
 
 
   verifycert (True, str, None)
@@ -117,6 +117,10 @@ Parameters
 
   port (optional, int, 8443)
     The port of the Unisphere host.
+
+
+  serial_no (True, str, None)
+    The serial number of the PowerMax/VMAX array. It is a required parameter for all array-specific operations except for getting a list of arrays in the Gatherfacts module.
 
 
 
@@ -144,7 +148,6 @@ Examples
     - name: Create host group with 'default' host_type
       dellemc.powermax.hostgroup:
         unispherehost: "{{unispherehost}}"
-        universion: "{{universion}}"
         verifycert: "{{verifycert}}"
         user: "{{user}}"
         password: "{{password}}"
@@ -159,7 +162,6 @@ Examples
     - name: Create host group with 'hpux' host_type
       dellemc.powermax.hostgroup:
         unispherehost: "{{unispherehost}}"
-        universion: "{{universion}}"
         verifycert: "{{verifycert}}"
         user: "{{user}}"
         password: "{{password}}"
@@ -174,7 +176,6 @@ Examples
     - name: Create host group with host_flags
       dellemc.powermax.hostgroup:
         unispherehost: "{{unispherehost}}"
-        universion: "{{universion}}"
         verifycert: "{{verifycert}}"
         user: "{{user}}"
         password: "{{password}}"
@@ -194,7 +195,6 @@ Examples
     - name: Get host group details
       dellemc.powermax.hostgroup:
         unispherehost: "{{unispherehost}}"
-        universion: "{{universion}}"
         verifycert: "{{verifycert}}"
         user: "{{user}}"
         password: "{{password}}"
@@ -205,7 +205,6 @@ Examples
     - name: Adding host to host group
       dellemc.powermax.hostgroup:
         unispherehost: "{{unispherehost}}"
-        universion: "{{universion}}"
         verifycert: "{{verifycert}}"
         user: "{{user}}"
         password: "{{password}}"
@@ -219,7 +218,6 @@ Examples
     - name: Removing host from host group
       dellemc.powermax.hostgroup:
         unispherehost: "{{unispherehost}}"
-        universion: "{{universion}}"
         verifycert: "{{verifycert}}"
         user: "{{user}}"
         password: "{{password}}"
@@ -233,7 +231,6 @@ Examples
     - name: Modify host group using host_type
       dellemc.powermax.hostgroup:
         unispherehost: "{{unispherehost}}"
-        universion: "{{universion}}"
         verifycert: "{{verifycert}}"
         user: "{{user}}"
         password: "{{password}}"
@@ -245,7 +242,6 @@ Examples
     - name: Modify host group using host_flags
       dellemc.powermax.hostgroup:
         unispherehost: "{{unispherehost}}"
-        universion: "{{universion}}"
         verifycert: "{{verifycert}}"
         user: "{{user}}"
         password: "{{password}}"
@@ -261,7 +257,6 @@ Examples
     - name: Rename host group
       dellemc.powermax.hostgroup:
         unispherehost: "{{unispherehost}}"
-        universion: "{{universion}}"
         verifycert: "{{verifycert}}"
         user: "{{user}}"
         password: "{{password}}"
@@ -273,7 +268,6 @@ Examples
     - name: Delete host group
       dellemc.powermax.hostgroup:
         unispherehost: "{{unispherehost}}"
-        universion: "{{universion}}"
         verifycert: "{{verifycert}}"
         user: "{{user}}"
         password: "{{password}}"

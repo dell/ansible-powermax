@@ -4,7 +4,6 @@
   connection: local
   vars:
     unispherehost: '10.XX.XX.XX'
-    universion: "101"
     verifycert: false
     user: "user"
     password: "password"
@@ -20,7 +19,6 @@
     - name: Create a new Storage group - prereq
       dellemc.powermax.storagegroup:
         unispherehost: "{{ unispherehost }}"
-        universion: "{{ universion }}"
         verifycert: "{{ verifycert }}"
         user: "{{ user }}"
         password: "{{ password }}"
@@ -35,7 +33,6 @@
       register: volume_details
       dellemc.powermax.volume:
         unispherehost: "{{ unispherehost }}"
-        universion: "{{ universion }}"
         verifycert: "{{ verifycert }}"
         user: "{{ user }}"
         password: "{{ password }}"
@@ -49,7 +46,6 @@
     - name: Create metrodr env
       dellemc.powermax.metrodr:
         unispherehost: "{{ unispherehost }}"
-        universion: "{{ universion }}"
         verifycert: "{{ verifycert }}"
         user: "{{ user }}"
         password: "{{ password }}"
@@ -65,7 +61,6 @@
     - name: Modify metrodr env
       dellemc.powermax.metrodr:
         unispherehost: "{{ unispherehost }}"
-        universion: "{{ universion }}"
         verifycert: "{{ verifycert }}"
         user: "{{ user }}"
         password: "{{ password }}"
@@ -82,7 +77,6 @@
     - name: Delete metrodr env
       dellemc.powermax.metrodr:
         unispherehost: "{{ unispherehost }}"
-        universion: "{{ universion }}"
         verifycert: "{{ verifycert }}"
         user: "{{ user }}"
         password: "{{ password }}"
@@ -93,7 +87,6 @@
     - name: Convert sg to metrodr env
       dellemc.powermax.metrodr:
         unispherehost: "{{ unispherehost }}"
-        universion: "{{ universion }}"
         verifycert: "{{ verifycert }}"
         user: "{{ user }}"
         password: "{{ password }}"
@@ -108,7 +101,6 @@
     - name: Delete metrodr env
       dellemc.powermax.metrodr:
         unispherehost: "{{ unispherehost }}"
-        universion: "{{ universion }}"
         verifycert: "{{ verifycert }}"
         user: "{{ user }}"
         password: "{{ password }}"
@@ -119,7 +111,6 @@
     - name: Delete SRDF link from m1 - cleanup
       dellemc.powermax.srdf:
         unispherehost: "{{ unispherehost }}"
-        universion: "{{ universion }}"
         verifycert: "{{ verifycert }}"
         user: "{{ user }}"
         password: "{{ password }}"
@@ -130,7 +121,6 @@
     - name: Delete SRDF link from m2 - cleanup
       dellemc.powermax.srdf:
         unispherehost: "{{ unispherehost }}"
-        universion: "{{ universion }}"
         verifycert: "{{ verifycert }}"
         user: "{{ user }}"
         password: "{{ password }}"
@@ -141,7 +131,6 @@
     - name: Delete SRDF link from dr - cleanup
       dellemc.powermax.srdf:
         unispherehost: "{{ unispherehost }}"
-        universion: "{{ universion }}"
         verifycert: "{{ verifycert }}"
         user: "{{ user }}"
         password: "{{ password }}"
@@ -152,7 +141,6 @@
     - name: Remove volumes from SG - m1 - cleanup
       dellemc.powermax.storagegroup:
         unispherehost: "{{ unispherehost }}"
-        universion: "{{ universion }}"
         verifycert: "{{ verifycert }}"
         user: "{{ user }}"
         password: "{{ password }}"
@@ -166,7 +154,6 @@
     - name: Remove volumes from SG - m2 - cleanup
       dellemc.powermax.storagegroup:
         unispherehost: "{{ unispherehost }}"
-        universion: "{{ universion }}"
         verifycert: "{{ verifycert }}"
         user: "{{ user }}"
         password: "{{ password }}"
@@ -180,7 +167,6 @@
     - name: Remove volumes from SG - dr - cleanup
       dellemc.powermax.storagegroup:
         unispherehost: "{{ unispherehost }}"
-        universion: "{{ universion }}"
         verifycert: "{{ verifycert }}"
         user: "{{ user }}"
         password: "{{ password }}"
@@ -194,7 +180,6 @@
     - name: Delete volume - m1 - cleanup
       dellemc.powermax.volume:
         unispherehost: "{{ unispherehost }}"
-        universion: "{{ universion }}"
         verifycert: "{{ verifycert }}"
         user: "{{ user }}"
         password: "{{ password }}"
@@ -206,7 +191,6 @@
     - name: Delete volume - m2 - cleanup
       dellemc.powermax.volume:
         unispherehost: "{{ unispherehost }}"
-        universion: "{{ universion }}"
         verifycert: "{{ verifycert }}"
         user: "{{ user }}"
         password: "{{ password }}"
@@ -218,7 +202,6 @@
     - name: Delete volume - dr - cleanup
       dellemc.powermax.volume:
         unispherehost: "{{ unispherehost }}"
-        universion: "{{ universion }}"
         verifycert: "{{ verifycert }}"
         user: "{{ user }}"
         password: "{{ password }}"
@@ -230,7 +213,6 @@
     - name: Delete SG from m1 array - cleanup
       dellemc.powermax.storagegroup:
         unispherehost: "{{ unispherehost }}"
-        universion: "{{ universion }}"
         verifycert: "{{ verifycert }}"
         user: "{{ user }}"
         password: "{{ password }}"
@@ -241,7 +223,6 @@
     - name: Delete SG from m2 array - cleanup
       dellemc.powermax.storagegroup:
         unispherehost: "{{ unispherehost }}"
-        universion: "{{ universion }}"
         verifycert: "{{ verifycert }}"
         user: "{{ user }}"
         password: "{{ password }}"
@@ -252,7 +233,6 @@
     - name: Delete SG from dr array - cleanup
       dellemc.powermax.storagegroup:
         unispherehost: "{{ unispherehost }}"
-        universion: "{{ universion }}"
         verifycert: "{{ verifycert }}"
         user: "{{ user }}"
         password: "{{ password }}"

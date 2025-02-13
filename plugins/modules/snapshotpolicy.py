@@ -25,12 +25,6 @@ extends_documentation_fragment:
 author:
 - Rajshree Khare (@khareRajshree) <ansible.team@dell.com>
 options:
-  universion:
-    description:
-    - Unisphere version, currently '92', '100' and '101' version is supported.
-    type: int
-    required: False
-    choices: [92, 100, 101]
   snapshot_policy_name:
     description:
     - Name of the snapshot policy.
@@ -123,7 +117,6 @@ EXAMPLES = r"""
 - name: Create a snapshot policy
   dellemc.powermax.snapshotpolicy:
     unispherehost: "{{unispherehost}}"
-    universion: "{{universion}}"
     verifycert: "{{verifycert}}"
     user: "{{user}}"
     password: "{{password}}"
@@ -140,7 +133,6 @@ EXAMPLES = r"""
 - name: Create a snapshot policy and associate storage groups to it
   dellemc.powermax.snapshotpolicy:
     unispherehost: "{{unispherehost}}"
-    universion: "{{universion}}"
     verifycert: "{{verifycert}}"
     user: "{{user}}"
     password: "{{password}}"
@@ -161,7 +153,6 @@ EXAMPLES = r"""
 - name: Get snapshot policy details
   dellemc.powermax.snapshotpolicy:
     unispherehost: "{{unispherehost}}"
-    universion: "{{universion}}"
     verifycert: "{{verifycert}}"
     user: "{{user}}"
     password: "{{password}}"
@@ -172,7 +163,6 @@ EXAMPLES = r"""
 - name: Modify snapshot policy attributes
   dellemc.powermax.snapshotpolicy:
     unispherehost: "{{unispherehost}}"
-    universion: "{{universion}}"
     verifycert: "{{verifycert}}"
     user: "{{user}}"
     password: "{{password}}"
@@ -189,7 +179,6 @@ EXAMPLES = r"""
 - name: Modify snapshot policy, associate to storage groups
   dellemc.powermax.snapshotpolicy:
     unispherehost: "{{unispherehost}}"
-    universion: "{{universion}}"
     verifycert: "{{verifycert}}"
     user: "{{user}}"
     password: "{{password}}"
@@ -204,7 +193,6 @@ EXAMPLES = r"""
 - name: Modify snapshot policy, disassociate from storage groups
   dellemc.powermax.snapshotpolicy:
     unispherehost: "{{unispherehost}}"
-    universion: "{{universion}}"
     verifycert: "{{verifycert}}"
     user: "{{user}}"
     password: "{{password}}"
@@ -219,7 +207,6 @@ EXAMPLES = r"""
 - name: Modify snapshot policy state to suspend
   dellemc.powermax.snapshotpolicy:
     unispherehost: "{{unispherehost}}"
-    universion: "{{universion}}"
     verifycert: "{{verifycert}}"
     user: "{{user}}"
     password: "{{password}}"
@@ -231,7 +218,6 @@ EXAMPLES = r"""
 - name: Modify snapshot policy state to resume
   dellemc.powermax.snapshotpolicy:
     unispherehost: "{{unispherehost}}"
-    universion: "{{universion}}"
     verifycert: "{{verifycert}}"
     user: "{{user}}"
     password: "{{password}}"
@@ -243,7 +229,6 @@ EXAMPLES = r"""
 - name: Delete a snapshot policy
   dellemc.powermax.snapshotpolicy:
     unispherehost: "{{unispherehost}}"
-    universion: "{{universion}}"
     verifycert: "{{verifycert}}"
     user: "{{user}}"
     password: "{{password}}"
@@ -357,15 +342,6 @@ class SnapshotPolicy(object):
             self.show_error_exit(PYU4V_VERSION_CHECK, close_conn=False)
 
         self.pre_check_for_PyU4V_version()
-
-        if self.module.params["universion"] is not None:
-            universion_details = utils.universion_check(
-                self.module.params["universion"])
-            LOG.info("universion_details: %s", universion_details)
-
-            if not universion_details["is_valid_universion"]:
-                self.show_error_exit(
-                    universion_details["user_message"], close_conn=False)
 
         try:
             self.conn = utils.get_U4V_connection(
@@ -839,7 +815,6 @@ def convert_interval_minute(interval):
 
 def get_snapshotpolicy_parameters():
     return dict(
-        universion=dict(type='int', required=False, choices=[92, 100, 101]),
         snapshot_policy_name=dict(required=True, type='str'),
         interval=dict(required=False, type='str', choices=INTERVAL),
         secure=dict(required=False, type='bool', choices=[True, False]),

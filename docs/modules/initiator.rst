@@ -63,7 +63,7 @@ Parameters
 
 
   universion (False, int, None)
-    Unisphere version, currently '91', '92', '100' and '101' versions are supported.
+    Unisphere version. This parameter has been deprecated. It is no longer necessary to specify this parameter.
 
 
   verifycert (True, str, None)
@@ -114,7 +114,6 @@ Examples
     - name: Get initiator details using initiator id
       dellemc.powermax.initiator:
         unispherehost: "{{unispherehost}}"
-        universion: "{{universion}}"
         verifycert: "{{verifycert}}"
         user: "{{user}}"
         password: "{{password}}"
@@ -125,7 +124,6 @@ Examples
     - name: Get initiator details using alias
       dellemc.powermax.initiator:
         unispherehost: "{{unispherehost}}"
-        universion: "{{universion}}"
         verifycert: "{{verifycert}}"
         user: "{{user}}"
         password: "{{password}}"
@@ -136,7 +134,6 @@ Examples
     - name: Rename initiator alias using initiator id
       dellemc.powermax.initiator:
         unispherehost: "{{unispherehost}}"
-        universion: "{{universion}}"
         verifycert: "{{verifycert}}"
         user: "{{user}}"
         password: "{{password}}"
@@ -150,7 +147,6 @@ Examples
     - name: Rename initiator alias using alias
       dellemc.powermax.initiator:
         unispherehost: "{{unispherehost}}"
-        universion: "{{universion}}"
         verifycert: "{{verifycert}}"
         user: "{{user}}"
         password: "{{password}}"

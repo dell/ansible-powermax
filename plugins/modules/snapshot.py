@@ -104,7 +104,6 @@ EXAMPLES = r'''
 - name: Create a Snapshot for a Storage Group
   dellemc.powermax.snapshot:
     unispherehost: "{{unispherehost}}"
-    universion: "{{universion}}"
     verifycert: "{{verifycert}}"
     user: "{{user}}"
     password: "{{password}}"
@@ -118,7 +117,6 @@ EXAMPLES = r'''
 - name: Get Storage Group Snapshot details
   dellemc.powermax.snapshot:
     unispherehost: "{{unispherehost}}"
-    universion: "{{universion}}"
     verifycert: "{{verifycert}}"
     user: "{{user}}"
     password: "{{password}}"
@@ -130,7 +128,6 @@ EXAMPLES = r'''
 - name: Get Storage Group Snapshot details using generation
   dellemc.powermax.snapshot:
     unispherehost: "{{unispherehost}}"
-    universion: "{{universion}}"
     verifycert: "{{verifycert}}"
     user: "{{user}}"
     password: "{{password}}"
@@ -143,7 +140,6 @@ EXAMPLES = r'''
 - name: Get Storage Group Snapshot details using snapshot_id
   dellemc.powermax.snapshot:
     unispherehost: "{{unispherehost}}"
-    universion: "{{universion}}"
     verifycert: "{{verifycert}}"
     user: "{{user}}"
     password: "{{password}}"
@@ -156,7 +152,6 @@ EXAMPLES = r'''
 - name: Rename Storage Group Snapshot using generation
   dellemc.powermax.snapshot:
     unispherehost: "{{unispherehost}}"
-    universion: "{{universion}}"
     verifycert: "{{verifycert}}"
     user: "{{user}}"
     password: "{{password}}"
@@ -170,7 +165,6 @@ EXAMPLES = r'''
 - name: Rename Storage Group Snapshot using snapshot_id
   dellemc.powermax.snapshot:
     unispherehost: "{{unispherehost}}"
-    universion: "{{universion}}"
     verifycert: "{{verifycert}}"
     user: "{{user}}"
     password: "{{password}}"
@@ -184,7 +178,6 @@ EXAMPLES = r'''
 - name: Change Snapshot Link Status to Linked using generation
   dellemc.powermax.snapshot:
     unispherehost: "{{unispherehost}}"
-    universion: "{{universion}}"
     verifycert: "{{verifycert}}"
     user: "{{user}}"
     password: "{{password}}"
@@ -199,7 +192,6 @@ EXAMPLES = r'''
 - name: Change Snapshot Link Status to UnLinked using generation
   dellemc.powermax.snapshot:
     unispherehost: "{{unispherehost}}"
-    universion: "{{universion}}"
     verifycert: "{{verifycert}}"
     user: "{{user}}"
     password: "{{password}}"
@@ -214,7 +206,6 @@ EXAMPLES = r'''
 - name: Change Snapshot Link Status to Linked using snapshot_id
   dellemc.powermax.snapshot:
     unispherehost: "{{unispherehost}}"
-    universion: "{{universion}}"
     verifycert: "{{verifycert}}"
     user: "{{user}}"
     password: "{{password}}"
@@ -229,7 +220,6 @@ EXAMPLES = r'''
 - name: Change Snapshot Link Status to UnLinked using snapshot_id
   dellemc.powermax.snapshot:
     unispherehost: "{{unispherehost}}"
-    universion: "{{universion}}"
     verifycert: "{{verifycert}}"
     user: "{{user}}"
     password: "{{password}}"
@@ -244,7 +234,6 @@ EXAMPLES = r'''
 - name: Restore storage group snapshot using generation
   dellemc.powermax.snapshot:
     unispherehost: "{{unispherehost}}"
-    universion: "{{universion}}"
     verifycert: "{{verifycert}}"
     user: "{{user}}"
     password: "{{password}}"
@@ -258,7 +247,6 @@ EXAMPLES = r'''
 - name: Restore Storage Group Snapshot using snapshot_id
   dellemc.powermax.snapshot:
     unispherehost: "{{unispherehost}}"
-    universion: "{{universion}}"
     verifycert: "{{verifycert}}"
     user: "{{user}}"
     password: "{{password}}"
@@ -272,7 +260,6 @@ EXAMPLES = r'''
 - name: Delete Storage Group Snapshot using generation
   dellemc.powermax.snapshot:
     unispherehost: "{{unispherehost}}"
-    universion: "{{universion}}"
     verifycert: "{{verifycert}}"
     user: "{{user}}"
     password: "{{password}}"
@@ -285,7 +272,6 @@ EXAMPLES = r'''
 - name: Delete Storage Group Snapshot using snapshot_id
   dellemc.powermax.snapshot:
     unispherehost: "{{unispherehost}}"
-    universion: "{{universion}}"
     verifycert: "{{verifycert}}"
     user: "{{user}}"
     password: "{{password}}"
@@ -464,14 +450,6 @@ class Snapshot(object):
 
         if PYU4V_VERSION_CHECK is not None:
             self.show_error_exit(msg=PYU4V_VERSION_CHECK)
-
-        if self.module.params['universion'] is not None:
-            universion_details = utils.universion_check(
-                self.module.params['universion'])
-            LOG.info("universion_details: %s", universion_details)
-
-            if not universion_details['is_valid_universion']:
-                self.show_error_exit(msg=universion_details['user_message'])
 
         try:
             self.u4v_conn = utils.get_U4V_connection(
