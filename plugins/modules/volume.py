@@ -945,8 +945,6 @@ class Volume(object):
             changed = True
 
         if state == 'present' and vol and size:
-            if size is None:
-                self.show_error_exit(msg='Size is required to expand volume')
             # Convert the given size to GB
             if size is not None and size > 0:
                 size = utils.get_size_in_gb(size, cap_unit)
