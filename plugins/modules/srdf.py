@@ -620,6 +620,7 @@ class SRDF(object):
         except Exception as e:
             LOG.info('Failed to retrieve SRDF link status. Exception '
                      'received was %s.', e)
+            raise e
 
     def _compute_required_establish_flag(self, srdf_state):
         if (srdf_state is None or srdf_state == 'Suspend'):

@@ -1,3 +1,4 @@
 output
 __pycache__/
 *.log
+dellemc-powermax-*.tar.gz
