@@ -618,7 +618,7 @@ class SRDF(object):
                         break
             return True
         except Exception as e:
-            LOG.info('Failed to retrieve SRDF link status. Exception '
+            LOG.error('Failed to retrieve SRDF link status. Exception '
                      'received was %s.', e)
             raise e
 
