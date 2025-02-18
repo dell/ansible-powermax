@@ -29,10 +29,6 @@ The below requirements are needed on the host that executes this module.
 Parameters
 ----------
 
-  universion (False, int, None)
-    Unisphere version, currently '92', '100' and '101' version is supported.
-
-
   snapshot_policy_name (True, str, None)
     Name of the snapshot policy.
 
@@ -101,6 +97,10 @@ Parameters
 
   unispherehost (True, str, None)
     IP or FQDN of the Unisphere host
+
+
+  universion (False, int, None)
+    Unisphere version. This parameter has been deprecated. It is no longer necessary to specify this parameter.
 
 
   verifycert (True, str, None)

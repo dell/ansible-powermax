@@ -16,11 +16,9 @@ options:
         required: True
     universion:
         description:
-            - Unisphere version, currently '91', '92', '100' and '101' versions are
-              supported.
+            - Unisphere version. This parameter has been deprecated. It is no longer necessary to specify this parameter.
         type: int
         required: False
-        choices: [91, 92, 100, 101]
     verifycert:
         description:
             - Specifies system whether to validate SSL certificate or not, Values can be True or
