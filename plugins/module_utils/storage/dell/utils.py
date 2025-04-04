@@ -319,7 +319,7 @@ def get_size_in_gb(size, cap_units):
     size_in_bytes = get_size_bytes(size, cap_units)
     size = Decimal(size_in_bytes / GB_IN_BYTES)
     size_in_gb = round(size, 2)
-    return size_in_gb
+    return float(size_in_gb)
 
 
 '''
