@@ -729,11 +729,11 @@ class StorageGroup(object):
             return None
 
     def if_srdf_protected(self, sg_details):
-        """Check if this storage group is protected with SRDF"""
+        """Check if this storage group is protected with srdf"""
         try:
             if not sg_details['unprotected']:
-                srdf_sgs = self.replication.get_replication_enabled_storage_groups(has_srdf=True)
-                if sg_details['storageGroupId'] in srdf_sgs:
+                rdf_group_numbers = self.replication.get_storage_group_srdf_group_list(sg_details['storageGroupId'])
+                if (len(rdf_group_numbers) > 0):
                     return True
             return False
         except Exception as e:
@@ -1045,7 +1045,6 @@ class StorageGroup(object):
     def add_existing_volumes_to_sg(self, vol_list, sg_name):
         """Add existing volumes to existing storage group"""
 
-        storage_group = self.provisioning.get_storage_group(sg_name)
         existing_volumes_in_sg = self.provisioning.get_volumes_from_storage_group(
             sg_name)
         vol_ids = []
@@ -1091,12 +1090,28 @@ class StorageGroup(object):
                 get_volumes_details_storagegroup(sg_name)
             return False, existing_volumes_details_in_sg
         try:
-            if self.if_srdf_protected(storage_group):
-                self.show_error_exit(msg=self.protected_sg_msg)
+            params = {
+                "storage_group_id": sg_name,
+                "vol_ids": volumes_to_add
+            }
+
+            rdfg_list = self.replication.get_storage_group_srdf_group_list(storage_group_id=sg_name)
+
+            if len(rdfg_list) > 2:
+                err_msg = (
+                    "More than 2 RDF groups exist for the given "
+                    "storage group {0}. Add existing volume is not "
+                    "supported.".format(sg_name))
+                self.show_error_exit(msg=err_msg)
+
+            for i, rdfg in enumerate(rdfg_list, 1):
+                rdfg_details = self.replication.get_rdf_group(rdf_number=rdfg)
+
+                params["remote_array_" + str(i) + "_id"] = rdfg_details['remoteSymmetrix']
+                params["remote_array_" + str(i) + "_sgs"] = [sg_name]
 
             if not self.module.check_mode:
-                self.provisioning.\
-                    add_existing_volume_to_storage_group(sg_name, volumes_to_add)
+                self.provisioning.add_existing_volume_to_storage_group(**params)
             existing_volumes_details_in_sg = self.get_volumes_details_storagegroup(sg_name)
             return True, existing_volumes_details_in_sg
         except Exception as e:
