@@ -82,15 +82,6 @@ options:
     type: str
     choices: [Establish, Resume, Restore, Suspend, Swap, Split, Failback,
              Failover, Setbias]
-  new_rdf_group:
-    description:
-    - Overrides the SRDF group selection functionality and forces the creation
-      of a new SRDF group.
-    - PowerMax has a limited number of RDF groups. If this flag is set to True,
-      and the RDF groups are exhausted, then SRDF link creation will fail.
-    - If not specified, default value is 'false'.
-    required: false
-    type: bool
   wait_for_completion:
     description:
     - Flag to indicate if the operation should be run synchronously or
@@ -466,7 +457,6 @@ class SRDF(object):
             rdfg_no=dict(type='int', required=False),
             wait_for_completion=dict(type='bool', required=False,
                                      default=False),
-            new_rdf_group=dict(type='bool', required=False),
             witness=dict(type='bool', required=False),
             job_id=dict(type='str', required=False))
 
@@ -538,7 +528,6 @@ class SRDF(object):
             establish_flag = self._compute_required_establish_flag(
                 self.module.params['srdf_state'])
             rdfg_number = self.module.params['rdfg_no']
-            forceNewRdfGroup = self.module.params['new_rdf_group']
             async_flag = not (self.module.params['wait_for_completion'])
             witness = self.module.params['witness']
 
@@ -553,7 +542,6 @@ class SRDF(object):
                    ', srdfmode= ', srdf_mode,
                    ', establish_flag= ', establish_flag,
                    ', rdfgroup_no= ', rdfg_number,
-                   ', new_rdf_group= ', forceNewRdfGroup,
                    ', async_flag= ', async_flag
                    )
             LOG.info(msg)
@@ -565,7 +553,6 @@ class SRDF(object):
                         remote_sid=remote_serial_no,
                         srdf_mode=srdf_mode,
                         establish=establish_flag,
-                        force_new_rdf_group=forceNewRdfGroup,
                         rdfg_number=rdfg_number,
                         _async=async_flag)
                 elif self.module.params['wait_for_completion'] is True:
@@ -574,7 +561,6 @@ class SRDF(object):
                         remote_sid=remote_serial_no,
                         srdf_mode=srdf_mode,
                         establish=establish_flag,
-                        force_new_rdf_group=forceNewRdfGroup,
                         rdfg_number=rdfg_number,
                         _async=True)
                     link_status = self.get_created_srdf_link_status(job)
