@@ -538,7 +538,6 @@ class SRDF(object):
             establish_flag = self._compute_required_establish_flag(
                 self.module.params['srdf_state'])
             rdfg_number = self.module.params['rdfg_no']
-            forceNewRdfGroup = self.module.params['new_rdf_group']
             async_flag = not (self.module.params['wait_for_completion'])
             witness = self.module.params['witness']
 
@@ -553,7 +552,6 @@ class SRDF(object):
                    ', srdfmode= ', srdf_mode,
                    ', establish_flag= ', establish_flag,
                    ', rdfgroup_no= ', rdfg_number,
-                   ', new_rdf_group= ', forceNewRdfGroup,
                    ', async_flag= ', async_flag
                    )
             LOG.info(msg)
@@ -565,7 +563,6 @@ class SRDF(object):
                         remote_sid=remote_serial_no,
                         srdf_mode=srdf_mode,
                         establish=establish_flag,
-                        force_new_rdf_group=forceNewRdfGroup,
                         rdfg_number=rdfg_number,
                         _async=async_flag)
                 elif self.module.params['wait_for_completion'] is True:
@@ -574,7 +571,6 @@ class SRDF(object):
                         remote_sid=remote_serial_no,
                         srdf_mode=srdf_mode,
                         establish=establish_flag,
-                        force_new_rdf_group=forceNewRdfGroup,
                         rdfg_number=rdfg_number,
                         _async=True)
                     link_status = self.get_created_srdf_link_status(job)
