@@ -2,14 +2,14 @@
 
 ## Installation of SDK
 Depending on which PowerMax Unisphere version is being used, follow this procedure to install SDK:
-
-* For PowerMax Unisphere version 92, install Python [sdk](https://pypi.org/project/PyU4V/9.2.1.6/) named 'PyU4V 9.2.1.6': 
   
-        pip install PyU4V==9.2.1.6
-  
-* For PowerMax Unisphere version 100 and above, install Python [sdk](https://pypi.org/project/PyU4V/10.0.0.16/) named 'PyU4V 10.0.0.16':
+* For PowerMax Unisphere version 100 and 101, install Python [sdk](https://pypi.org/project/PyU4V/10.0.0.16/) named 'PyU4V 10.0.0.16':
         
         pip install PyU4V==10.0.0.16
+
+* For PowerMax Unisphere version 102, install Python [sdk](https://pypi.org/project/pyu4v/10.2.0.2/) named 'PyU4V 10.2.0.2':
+        
+        pip install pip install PyU4V==10.2.0.2
 
 ## Building collections
 * Use this command to build the collection from source code:
