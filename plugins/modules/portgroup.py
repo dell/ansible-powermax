@@ -42,7 +42,7 @@ options:
     - Port Group protocol.
     - Required only for V4(Juniper).
     required: false
-    choices: [SCSI_FC, iSCSI, NVMe_TCP]
+    choices: [SCSI_FC, iSCSI, NVMe_TCP, NVMe_FC]
     type: str
   new_name:
     description:
@@ -245,14 +245,6 @@ class PortGroup(object):
 
         if PYU4V_VERSION_CHECK is not None:
             self.show_error_exit(msg=PYU4V_VERSION_CHECK)
-
-        if self.module.params['universion'] is not None:
-            universion_details = utils.universion_check(
-                self.module.params['universion'])
-            LOG.info("universion_details: %s", universion_details)
-
-            if not universion_details['is_valid_universion']:
-                self.show_error_exit(msg=universion_details['user_message'])
 
         # Getting PyU4V instance for provisioning on to VMAX
         try:
@@ -506,7 +498,7 @@ def get_portgroup_parameters():
         port_state=dict(required=False, type='str',
                         choices=['present-in-group', 'absent-in-group']),
         port_group_protocol=dict(required=False, type='str',
-                                 choices=['SCSI_FC', 'iSCSI', 'NVMe_TCP']),
+                                 choices=['SCSI_FC', 'iSCSI', 'NVMe_TCP', 'NVMe_FC']),
         new_name=dict(required=False, type='str')
     )
 

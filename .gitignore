@@ -1,0 +1,44 @@
+output
+
+# Byte-compiled Python files
+*.pyc
+*.pyo
+__pycache__/
+
+# Virtual environment directories
+venv/
+.env/
+
+# Distribution packages
+dist/
+build/
+*.egg-info/
+
+# Ansible-related temporary files
+*.retry
+.cache/
+
+# Test coverage reports
+htmlcov/
+.coverage
+.tox/
+
+# Editor-specific files
+.idea/
+.vscode/
+*.swp
+*~
+
+# System-specific files
+.DS_Store
+Thumbs.db
+
+# Log files
+*.log
+
+# Ignore secrets or configuration files
+secrets.yml
+config.yml
+
+# ansible-galaxy build output files
+*.tar.gz

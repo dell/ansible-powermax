@@ -200,14 +200,6 @@ class MaskingView(object):
         if PYU4V_VERSION_CHECK is not None:
             self.show_error_exit(msg=PYU4V_VERSION_CHECK)
 
-        if self.module.params['universion'] is not None:
-            universion_details = utils.universion_check(
-                self.module.params['universion'])
-            LOG.info("universion_details: %s", universion_details)
-
-            if not universion_details['is_valid_universion']:
-                self.show_error_exit(msg=universion_details['user_message'])
-
         try:
             self.u4v_conn = utils.get_U4V_connection(
                 self.module.params, application_type=APPLICATION_TYPE)
@@ -277,14 +269,14 @@ class MaskingView(object):
                              'Please provide either host or '
                              'hostgroup' % mv_name)
             self.show_error_exit(msg=error_message)
-            return False
+            return False, None
         elif (pg_name is None) or (sg_name is None) or \
                 (host_name is None and hostgroup_name is None):
             error_message = ('Failed to create masking view %s, Please '
                              'provide SG, PG and host / host group name to '
-                             'create masking view', mv_name)
+                             'create masking view' % mv_name)
             self.show_error_exit(msg=error_message)
-            return False
+            return False, None
 
         try:
             resp = {}
@@ -298,6 +290,7 @@ class MaskingView(object):
         except Exception as e:
             self.show_error_exit(msg='Create masking view %s failed; error '
                                      '%s' % (mv_name, str(e)))
+        return False, None
 
     def delete_masking_view(self, mv_name):
         """Delete masking view from system"""
@@ -308,6 +301,7 @@ class MaskingView(object):
         except Exception as e:
             self.show_error_exit(msg='Delete masking view %s failed with '
                                      'error %s.' % (mv_name, str(e)))
+        return False
 
     def rename_masking_view(self, mv_name, new_mv_name):
         """Rename existing masking view with given name"""

@@ -94,7 +94,7 @@ Parameters
 
 
   universion (False, int, None)
-    Unisphere version, currently '91', '92', '100' and '101' versions are supported.
+    Unisphere version. This parameter has been deprecated. It is no longer necessary to specify this parameter.
 
 
   verifycert (True, str, None)
@@ -117,6 +117,10 @@ Parameters
 
   port (optional, int, 8443)
     The port of the Unisphere host.
+
+
+  serial_no (True, str, None)
+    The serial number of the PowerMax/VMAX array. It is a required parameter for all array-specific operations except for getting a list of arrays in the Gatherfacts module.
 
 
 
