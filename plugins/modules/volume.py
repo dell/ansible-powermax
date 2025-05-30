@@ -857,8 +857,8 @@ class Volume(object):
         """Check if this storage group is protected with srdf"""
         try:
             if not sg_details['unprotected']:
-                srdf_sgs = self.replication.get_replication_enabled_storage_groups(has_srdf=True)
-                if sg_details['storageGroupId'] in srdf_sgs:
+                rdf_group_numbers = self.replication.get_storage_group_srdf_group_list(sg_details['storageGroupId'])
+                if (len(rdf_group_numbers) > 0):
                     return True
             return False
         except Exception as e:
