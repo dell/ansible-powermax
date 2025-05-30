@@ -71,14 +71,6 @@ Parameters
     Desired state of the SRDF pairing. While creating a new SRDF pair, allowed values are 'Establish' and 'Suspend'. If the state is not specified, the pair will be created in a 'Suspended' state. When modifying the state, only certain changes are allowed.
 
 
-  new_rdf_group (False, bool, None)
-    Overrides the SRDF group selection functionality and forces the creation of a new SRDF group.
-
-    PowerMax has a limited number of RDF groups. If this flag is set to True, and the RDF groups are exhausted, then SRDF link creation will fail.
-
-    If not specified, default value is 'false'.
-
-
   wait_for_completion (False, bool, False)
     Flag to indicate if the operation should be run synchronously or asynchronously. True signifies synchronous execution. By default, all create and update operations will be run asynchronously.
 
