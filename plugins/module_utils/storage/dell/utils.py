@@ -15,6 +15,7 @@ __metaclass__ = type
 try:
     import PyU4V
     from PyU4V.utils.exception import ResourceNotFoundException  # noqa # pylint: disable=unused-import
+    from PyU4V.utils.constants import UNISPHERE_VERSION
     HAS_PYU4V = True
 except ImportError:
     HAS_PYU4V = False
@@ -36,6 +37,10 @@ def has_pyu4v_sdk():
     return HAS_PYU4V
 
 
+def get_unisphere_version():
+    return UNISPHERE_VERSION
+
+
 def pyu4v_version_check():
     '''
     Check if required PyU4V version is installed
@@ -46,16 +51,14 @@ def pyu4v_version_check():
                                           "'pkg_resources', please install" \
                                           " the required package"
             return unsupported_version_message
-        min_ver = '9.1.2.0'
-        max_ver = '10.1.0.2'
+        min_ver = '9.2.1.6'
         curr_version = PyU4V.__version__
         unsupported_version_message = "PyU4V {0} is not supported by this " \
-                                      "module.Minimum supported version " \
-                                      "is : {1} and less than {2} ".format(
-                                          curr_version, min_ver, max_ver)
+                                      "module. Minimum supported version " \
+                                      "is : {1}".format(
+                                          curr_version, min_ver)
         supported_version = (parse_version(
-            min_ver) <= parse_version(curr_version) <= parse_version(max_ver)
-        )
+            min_ver) <= parse_version(curr_version))
         if supported_version is False:
             return unsupported_version_message
         return None
@@ -63,40 +66,6 @@ def pyu4v_version_check():
         unsupported_version_message = "Unable to get the PyU4V version, " \
                                       "failed with Error {0} ".format(str(e))
         return unsupported_version_message
-
-
-def universion_check(universion):
-    '''
-    Check if valid Unisphere Version
-    '''
-    is_valid_universion = False
-    user_message = ""
-    curr_version = PyU4V.__version__
-
-    try:
-        if curr_version.startswith("9.1") and universion == 91:
-            is_valid_universion = True
-        elif curr_version.startswith("9.2") and universion == 92:
-            is_valid_universion = True
-        elif curr_version.startswith("10.0") and universion == 100:
-            is_valid_universion = True
-        elif curr_version.startswith("10.1") and universion == 101:
-            is_valid_universion = True
-        else:
-            user_message = "Unsupported unisphere version for current PyU4V"
-
-        universion_details = {"is_valid_universion": is_valid_universion,
-                              "user_message": user_message}
-        return universion_details
-
-    except Exception as e:
-        is_valid_universion = False
-        user_message = "Failed to validate the Unisphere version " \
-                       "with error {0}".format(str(e))
-
-        universion_details = {"is_valid_universion": is_valid_universion,
-                              "user_message": user_message}
-        return universion_details
 
 
 '''
@@ -109,7 +78,12 @@ options:
     required: true
   universion:
     description:
-    - Version of univmax SDK.
+    - Version of univmax SDK. This parameter has been deprecated. It is no longer necessary to specify this parameter.
+    deprecated:
+      why: This parameter has been deprecated. It is no longer necessary to specify this parameter.
+      version: 3.2.0
+      removed_in: 4.0.0
+      removed_from_collection="dellemc.powermax"
   verifycert:
     description:
     - Specifies system whether to validate SSL certificate or not, Values can be True or
@@ -122,7 +96,7 @@ options:
     - password to access on to unispherehost.
   serial_no:
     description:
-    - Serial number of Powermax system.
+    - Serial number of PowerMax system.
   port:
     description:
     - Port number of unispherehost.
@@ -136,7 +110,12 @@ def get_powermax_management_host_parameters(metro_dr=False):
     if metro_dr:
         return dict(
             unispherehost=dict(type='str', required=True, no_log=True),
-            universion=dict(type='int', required=False, choices=[91, 92, 100, 101]),
+            universion=dict(
+                type='int',
+                required=False,
+                removed_in_version='4.0.0',
+                removed_from_collection="dellemc.powermax"
+            ),
             verifycert=dict(type='str', required=True),
             user=dict(type='str', required=True),
             password=dict(type='str', required=True, no_log=True),
@@ -145,7 +124,12 @@ def get_powermax_management_host_parameters(metro_dr=False):
 
     return dict(
         unispherehost=dict(type='str', required=True, no_log=True),
-        universion=dict(type='int', required=False, choices=[91, 92, 100, 101]),
+        universion=dict(
+            type='int',
+            required=False,
+            removed_in_version='4.0.0',
+            removed_from_collection="dellemc.powermax"
+        ),
         verifycert=dict(type='str', required=True),
         user=dict(type='str', required=True),
         password=dict(type='str', required=True, no_log=True),
@@ -165,6 +149,11 @@ options:
   universion:
     description:
     - Version of univmax SDK.
+    - This parameter has been deprecated. It is no longer necessary to specify this parameter.
+    deprecated:
+      why: This parameter has been deprecated. It is no longer necessary to specify this parameter.
+      version: 3.2.0
+      removed_in: 4.0.0
   verifycert:
     description:
     - Specifies system whether to validate SSL certificate or not, Values can be True or
@@ -187,7 +176,12 @@ options:
 def get_u4v_unisphere_connection_parameters():
     return dict(
         unispherehost=dict(type='str', required=True, no_log=True),
-        universion=dict(type='int', required=False, choices=[91, 92, 100, 101]),
+        universion=dict(
+            type='int',
+            required=False,
+            removed_in_version='4.0.0',
+            removed_from_collection="dellemc.powermax"
+        ),
         verifycert=dict(type='str', required=True),
         user=dict(type='str', required=True),
         password=dict(type='str', required=True, no_log=True),
@@ -203,12 +197,11 @@ parameters:
   module_params - Ansible module parameters which contain below unisphere
    details to establish connection on to Unisphere
      - unispherehost: IP/FQDN of unisphere host.
-     - universion:Version of univmax SDK.
      - verifycert: Specifies system whether to validate SSL certificate or not, Values can be True or
     False or a custom file path for SSL certificate with .pem extension or .cer with base 64 encoding.
      - user:  User name to access on to unispherehost.
      - password: Password to access on to unispherehost.
-     - serial_no: Serial number of Powermax system.
+     - serial_no: Serial number of PowerMax system.
      - port: Port number of unispherehost.
 returns connection object to access provisioning and protection sdks
 '''
@@ -239,7 +232,6 @@ parameters:
   module_params - Ansible module parameters which contain below unisphere
                   details to establish connection on to Unisphere
      - unispherehost: IP/FQDN of unisphere host.
-     - universion:Version of univmax SDK.
      - verifycert: Specifies system whether to validate SSL certificate or not, Values can be True or
     False or a custom file path for SSL certificate with .pem extension or .cer with base 64 encoding.
      - user:  User name to access on to unispherehost.
@@ -327,7 +319,7 @@ def get_size_in_gb(size, cap_units):
     size_in_bytes = get_size_bytes(size, cap_units)
     size = Decimal(size_in_bytes / GB_IN_BYTES)
     size_in_gb = round(size, 2)
-    return size_in_gb
+    return float(size_in_gb)
 
 
 '''

@@ -369,14 +369,6 @@ class Host(object):
         if PYU4V_VERSION_CHECK is not None:
             self.show_error_exit(msg=PYU4V_VERSION_CHECK)
 
-        if self.module.params['universion'] is not None:
-            universion_details = utils.universion_check(
-                self.module.params['universion'])
-            LOG.info("universion_details: %s", universion_details)
-
-            if not universion_details['is_valid_universion']:
-                self.show_error_exit(msg=universion_details['user_message'])
-
         try:
             self.u4v_conn = utils.get_U4V_connection(
                 self.module.params, application_type=APPLICATION_TYPE)
@@ -660,8 +652,8 @@ class Host(object):
                 self.provisioning.delete_host(host_name)
             return True
         except Exception as e:
-            errorMsg = ('Delete host %s failed with error %s',
-                        host_name, str(e))
+            errorMsg = ('Delete host %s failed with error %s'
+                        % (host_name, str(e)))
             self.show_error_exit(msg=errorMsg)
 
     def _create_result_dict(self, changed, host=None):

@@ -63,3 +63,26 @@ class MockHostApi:
             return "Adding initiators ['100xx111xxxxxxxx'] to host test_host failed with error "
         elif response_type == 'remove_initiators_from_host':
             return "Removing initiators ['100xx000xxxxxxxx'] from host test_host failed with error "
+        if response_type == 'get_initiators_alias':
+            return "Retrieving initiator details based on alias 100xx000xxxxxxxx/200xx000xxxxxxxx failed with error"
+        if response_type == 'invalid_initiator':
+            return "Initiator invalid_initiator is invalid"
+
+    @staticmethod
+    def get_host_exception_response(response_type):
+        if response_type == 'create_host_empty_name':
+            return "host_name is mandatory parameter"
+        if response_type == 'modify_host':
+            return "Modify host test_host failed with error "
+        if response_type == 'rename_host':
+            return "Renaming of host test_host failed with error "
+        if response_type == 'delete_host':
+            return "Delete host test_host failed with error "
+        if response_type == 'create_host':
+            return "Create host test_host failed with error "
+        if response_type == 'create_host_new_name':
+            return "Invalid argument 'new_name' while creating a host"
+        if response_type == 'create_host_init_absent':
+            return "Incorrect initiator_state specified for Create host functionality"
+        if response_type == 'rename_host_empty_name':
+            return "Please provide valid host name."

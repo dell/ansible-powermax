@@ -12,7 +12,17 @@ snapshot -- Manage Snapshots on PowerMax/VMAX Storage System
 Synopsis
 --------
 
-Managing snapshots on a PowerMax storage system includes creating a new storage group (SG) snapshot, getting details of the SG snapshot, renaming the SG snapshot, changing the snapshot link status, and deleting an existing SG snapshot.
+Managing snapshots on a PowerMax storage system includes the following operations.
+
+Creating a new storage group (SG) snapshot.
+
+Getting details of the SG snapshot.
+
+Renaming the SG snapshot.
+
+Changing the snapshot link status.
+
+Deleting an existing SG snapshot.
 
 
 
@@ -44,13 +54,13 @@ Parameters
 
     However, to create a SG snap - TTL must be given.
 
-    If the SG snap should not have any TTL - specify TTL as "None".
+    If the SG snap should not have any TTL - specify TTL as :literal:`None`.
 
 
   ttl_unit (optional, str, days)
-    The unit for the ttl.
+    The unit for the :emphasis:`ttl`.
 
-    If no ttl\_unit is specified, 'days' is taken as default ttl\_unit.
+    If no :emphasis:`ttl\_unit` is specified, :literal:`days` is taken as default :emphasis:`ttl\_unit`.
 
 
   generation (optional, int, None)
@@ -68,7 +78,7 @@ Parameters
   snapshot_id (optional, int, None)
     Unique ID of the snapshot.
 
-    snapshot\_id is required for link, unlink, rename and delete operations.
+    :emphasis:`snapshot\_id` is required for link, unlink, rename and delete operations.
 
     Optional for Get snapshot details.
 
@@ -98,7 +108,7 @@ Parameters
 
 
   universion (False, int, None)
-    Unisphere version, currently '91', '92', '100' and '101' versions are supported.
+    Unisphere version. This parameter has been deprecated. It is no longer necessary to specify this parameter.
 
 
   verifycert (True, str, None)
@@ -134,9 +144,10 @@ Notes
 -----
 
 .. note::
-   - Paramters 'generation' and 'snapshot\_id' are mutually exclusive.
-   - If 'generation' or 'snapshot\_id' is not provided then a list of generation versus snapshot\_id is returned.
-   - Use of 'snapshot\_id' over 'generation' is preferably recommended for PowerMax microcode version 5978.669.669 and onwards.
+   - Paramters :emphasis:`generation` and :emphasis:`snapshot\_id` are mutually exclusive.
+   - If :emphasis:`generation` or :emphasis:`snapshot\_id` is not provided then a list of generation against snapshot\_id is returned.
+   - Use of :emphasis:`snapshot\_id` over :emphasis:`generation` is preferably recommended for PowerMax microcode version 5978.669.669 and onwards.
+   - The :emphasis:`check\_mode` is supported.
    - The modules present in this collection named as 'dellemc.powermax' are built to support the Dell PowerMax storage platform.
 
 
@@ -288,6 +299,34 @@ Examples
         link_status: "unlinked"
         state: "present"
 
+    - name: Restore storage group snapshot using generation
+      dellemc.powermax.snapshot:
+        unispherehost: "{{unispherehost}}"
+        universion: "{{universion}}"
+        verifycert: "{{verifycert}}"
+        user: "{{user}}"
+        password: "{{password}}"
+        serial_no: "{{serial_no}}"
+        sg_name: "ansible_sg"
+        snapshot_name: "ansible_sg_snap"
+        generation: 1
+        restore: true
+        state: "present"
+
+    - name: Restore Storage Group Snapshot using snapshot_id
+      dellemc.powermax.snapshot:
+        unispherehost: "{{unispherehost}}"
+        universion: "{{universion}}"
+        verifycert: "{{verifycert}}"
+        user: "{{user}}"
+        password: "{{password}}"
+        serial_no: "{{serial_no}}"
+        sg_name: "ansible_sg"
+        snapshot_name: "ansible_sg_snap"
+        snapshot_id: 135023964929
+        restore: true
+        state: "present"
+
     - name: Delete Storage Group Snapshot using generation
       dellemc.powermax.snapshot:
         unispherehost: "{{unispherehost}}"
@@ -319,23 +358,27 @@ Examples
 Return Values
 -------------
 
-changed (always, bool, )
+changed (always, bool, false)
   Whether or not the resource has changed.
 
 
-create_sg_snap (When snapshot is created., bool, )
+create_sg_snap (When snapshot is created., bool, false)
   Flag sets to true when the snapshot is created.
 
 
-delete_sg_snap (When snapshot is deleted., bool, )
+delete_sg_snap (When snapshot is deleted., bool, false)
   Flag sets to true when the snapshot is deleted.
 
 
-rename_sg_snap (When snapshot is renamed., bool, )
+rename_sg_snap (When snapshot is renamed., bool, false)
   Flag sets to true when the snapshot is renamed.
 
 
-sg_snap_details (When snapshot exists., complex, )
+restore_sg_snap (When snapshot is restored., bool, false)
+  Flag sets to true when the snapshot is restored.
+
+
+sg_snap_details (When snapshot exists., complex, {'change_snap_link_status': '', 'changed': False, 'create_sg_snap': '', 'delete_sg_snap': '', 'rename_sg_snap': '', 'restore_sg_snap': '', 'sg_snap_details': {'generation': 0, 'isExpired': False, 'isLinked': False, 'isRestored': False, 'name': 'ansible_sample_snapshot', 'nonSharedTracks': 0, 'numSharedTracks': 0, 'numSourceVolumes': 1, 'numStorageGroupVolumes': 1, 'numUniqueTracks': 0, 'sourceVolume': [{'capacity': 547, 'capacity_gb': 1.0015869, 'name': '00205'}], 'state': ['Established'], 'timeToLiveExpiryDate': '09:55:28 Thu, 11 Jul 2024 +0000', 'timestamp': '09:55:28 Wed, 10 Jul 2024 +0000', 'timestamp_utc': 1720605328000, 'tracks': 0}})
   Details of the snapshot.
 
 
@@ -424,4 +467,5 @@ Authors
 
 - Prashant Rakheja (@prashant-dell) <ansible.team@dell.com>
 - Rajshree Khare (@khareRajshree) <ansible.team@dell.com>
+- Trisha Datta (@trisha-dell) <ansible.team@dell.com>
 

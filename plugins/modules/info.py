@@ -675,14 +675,6 @@ class Info(object):
         if PYU4V_VERSION_CHECK is not None:
             self.show_error_exit(msg=PYU4V_VERSION_CHECK)
 
-        if self.module.params['universion'] is not None:
-            universion_details = utils.universion_check(
-                self.module.params['universion'])
-            LOG.info("universion_details: %s", universion_details)
-
-            if not universion_details['is_valid_universion']:
-                self.show_error_exit(msg=universion_details['user_message'])
-
         try:
             if serial_no == '':
                 self.u4v_unisphere_con = utils.get_u4v_unisphere_connection(
@@ -1260,7 +1252,12 @@ def get_info_parameters():
 
     return dict(
         unispherehost=dict(type='str', required=True, no_log=True),
-        universion=dict(type='int', required=False, choices=[91, 92, 100, 101]),
+        universion=dict(
+            type='int',
+            required=False,
+            removed_in_version='4.0.0',
+            removed_from_collection="dellemc.powermax"
+        ),
         verifycert=dict(type='str', required=True),
         user=dict(type='str', required=True),
         password=dict(type='str', required=True, no_log=True),

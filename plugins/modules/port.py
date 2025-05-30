@@ -232,22 +232,14 @@ class Port(object):
         if PYU4V_VERSION_CHECK is not None:
             self.show_error_exit(msg=PYU4V_VERSION_CHECK)
 
-        if self.module.params['universion'] is not None:
-            universion_details = utils.universion_check(
-                self.module.params['universion'])
-            LOG.info("universion_details: %s", universion_details)
-
-            if not universion_details['is_valid_universion']:
-                self.show_error_exit(msg=universion_details['user_message'])
-
-        # Getting PyU4V instance for provisioning on to VMAX
+        # Getting PyU4V instance for system on to VMAX
         try:
             self.u4v_conn = utils.get_U4V_connection(
                 self.module.params, application_type=APPLICATION_TYPE)
         except Exception as e:
             self.show_error_exit(msg=str(e))
-        self.provisioning = self.u4v_conn.provisioning
-        LOG.info("Got PyU4V instance for provisioning on to VMAX")
+        self.system = self.u4v_conn.system
+        LOG.info("Got PyU4V instance for system on to VMAX")
 
     def get_port_details(self):
         """
@@ -270,7 +262,7 @@ class Port(object):
                 port_id = port["port_id"]
 
                 details[director_id + ":" + port_id] = \
-                    self.provisioning.get_director_port(director_id, port_id)
+                    self.system.get_director_port(director_id, port_id)
                 self.result["port_details"] = details
             return
         except Exception as e:
