@@ -110,9 +110,6 @@ Parameters
     IP or FQDN of the Unisphere host
 
 
-  universion (False, int, None)
-    Unisphere version. This parameter has been deprecated. It is no longer necessary to specify this parameter.
-
 
   verifycert (True, str, None)
     Specifies system whether to validate SSL certificate or not, Values can be True or False or a custom file path for SSL certificate with .pem extension or .cer with base 64 encoding.
@@ -171,7 +168,6 @@ Examples
     - name: Get list of volumes with filter -- all TDEV volumes of size equal to 5 GB
       dellemc.powermax.info:
         unispherehost: "{{unispherehost}}"
-        universion: "{{universion}}"
         verifycert: "{{verifycert}}"
         user: "{{user}}"
         password: "{{password}}"
@@ -189,7 +185,6 @@ Examples
     - name: Get list of volumes and storage groups with filter
       dellemc.powermax.info:
         unispherehost: "{{unispherehost}}"
-        universion: "{{universion}}"
         verifycert: "{{verifycert}}"
         user: "{{user}}"
         password: "{{password}}"
@@ -208,7 +203,6 @@ Examples
     - name: Get list of storage groups with capacity between 2 GB to 10 GB
       dellemc.powermax.info:
         unispherehost: "{{unispherehost}}"
-        universion: "{{universion}}"
         verifycert: "{{verifycert}}"
         user: "{{user}}"
         password: "{{password}}"
@@ -226,7 +220,6 @@ Examples
     - name: Get the list of arrays for a given Unisphere host
       dellemc.powermax.info:
         unispherehost: "{{unispherehost}}"
-        universion: "{{universion}}"
         verifycert: "{{verifycert}}"
         user: "{{user}}"
         password: "{{password}}"
@@ -235,7 +228,6 @@ Examples
     - name: Get list of TDEV-volumes
       dellemc.powermax.info:
         unispherehost: "{{unispherehost}}"
-        universion: "{{universion}}"
         verifycert: "{{verifycert}}"
         user: "{{user}}"
         password: "{{password}}"
@@ -247,7 +239,6 @@ Examples
     - name: Get the list of arrays for a given Unisphere host
       dellemc.powermax.info:
         unispherehost: "{{unispherehost}}"
-        universion: "{{universion}}"
         verifycert: "{{verifycert}}"
         user: "{{user}}"
         password: "{{password}}"
@@ -255,7 +246,6 @@ Examples
     - name: Get array health status
       dellemc.powermax.info:
         unispherehost: "{{unispherehost}}"
-        universion: "{{universion}}"
         verifycert: "{{verifycert}}"
         user: "{{user}}"
         password: "{{password}}"
@@ -266,7 +256,6 @@ Examples
     - name: Get array alerts summary
       dellemc.powermax.info:
         unispherehost: "{{unispherehost}}"
-        universion: "{{universion}}"
         verifycert: "{{verifycert}}"
         user: "{{user}}"
         password: "{{password}}"
@@ -277,7 +266,6 @@ Examples
     - name: Get the list of Metro DR environments for a given Unisphere host
       dellemc.powermax.info:
         unispherehost: "{{unispherehost}}"
-        universion: "{{universion}}"
         verifycert: "{{verifycert}}"
         user: "{{user}}"
         password: "{{password}}"
@@ -288,7 +276,6 @@ Examples
     - name: Get list of storage groups
       dellemc.powermax.info:
         unispherehost: "{{unispherehost}}"
-        universion: "{{universion}}"
         verifycert: "{{verifycert}}"
         user: "{{user}}"
         password: "{{password}}"
@@ -299,7 +286,6 @@ Examples
     - name: Get list of Storage Resource Pools
       dellemc.powermax.info:
         unispherehost: "{{unispherehost}}"
-        universion: "{{universion}}"
         verifycert: "{{verifycert}}"
         user: "{{user}}"
         password: "{{password}}"
@@ -310,7 +296,6 @@ Examples
     - name: Get list of ports
       dellemc.powermax.info:
         unispherehost: "{{unispherehost}}"
-        universion: "{{universion}}"
         verifycert: "{{verifycert}}"
         user: "{{user}}"
         password: "{{password}}"
@@ -321,7 +306,6 @@ Examples
     - name: Get list of Port Groups
       dellemc.powermax.info:
         unispherehost: "{{unispherehost}}"
-        universion: "{{universion}}"
         verifycert: "{{verifycert}}"
         user: "{{user}}"
         password: "{{password}}"
@@ -332,7 +316,6 @@ Examples
     - name: Get list of hosts
       dellemc.powermax.info:
         unispherehost: "{{unispherehost}}"
-        universion: "{{universion}}"
         verifycert: "{{verifycert}}"
         user: "{{user}}"
         password: "{{password}}"
@@ -343,7 +326,6 @@ Examples
     - name: Get list of Host Groups
       dellemc.powermax.info:
         unispherehost: "{{unispherehost}}"
-        universion: "{{universion}}"
         verifycert: "{{verifycert}}"
         user: "{{user}}"
         password: "{{password}}"
@@ -354,7 +336,6 @@ Examples
     - name: Get list of Masking Views
       dellemc.powermax.info:
         unispherehost: "{{unispherehost}}"
-        universion: "{{universion}}"
         verifycert: "{{verifycert}}"
         user: "{{user}}"
         password: "{{password}}"
@@ -365,7 +346,6 @@ Examples
     - name: Get list of RDF Groups
       dellemc.powermax.info:
         unispherehost: "{{unispherehost}}"
-        universion: "{{universion}}"
         verifycert: "{{verifycert}}"
         user: "{{user}}"
         password: "{{password}}"
@@ -376,7 +356,6 @@ Examples
     - name: Get list of snapshot policies
       dellemc.powermax.info:
         unispherehost: "{{unispherehost}}"
-        universion: "{{universion}}"
         verifycert: "{{verifycert}}"
         user: "{{user}}"
         password: "{{password}}"
@@ -387,7 +366,6 @@ Examples
     - name: Get list of initiators
       dellemc.powermax.info:
         unispherehost: "{{unispherehost}}"
-        universion: "{{universion}}"
         verifycert: "{{verifycert}}"
         user: "{{user}}"
         password: "{{password}}"
@@ -398,7 +376,6 @@ Examples
     - name: Get list of masking view connections with filter
       dellemc.powermax.info:
         unispherehost: "{{unispherehost}}"
-        universion: "{{universion}}"
         verifycert: "{{verifycert}}"
         user: "{{user}}"
         password: "{{password}}"

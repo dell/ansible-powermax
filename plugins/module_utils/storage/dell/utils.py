@@ -76,9 +76,6 @@ options:
     description:
     - IP/FQDN of unisphere host.
     required: true
-  universion:
-    description:
-    - Version of univmax SDK. This parameter has been deprecated. It is no longer necessary to specify this parameter.
     deprecated:
       why: This parameter has been deprecated. It is no longer necessary to specify this parameter.
       version: 3.2.0
@@ -110,12 +107,6 @@ def get_powermax_management_host_parameters(metro_dr=False):
     if metro_dr:
         return dict(
             unispherehost=dict(type='str', required=True, no_log=True),
-            universion=dict(
-                type='int',
-                required=False,
-                removed_in_version='4.0.0',
-                removed_from_collection="dellemc.powermax"
-            ),
             verifycert=dict(type='str', required=True),
             user=dict(type='str', required=True),
             password=dict(type='str', required=True, no_log=True),
@@ -124,12 +115,6 @@ def get_powermax_management_host_parameters(metro_dr=False):
 
     return dict(
         unispherehost=dict(type='str', required=True, no_log=True),
-        universion=dict(
-            type='int',
-            required=False,
-            removed_in_version='4.0.0',
-            removed_from_collection="dellemc.powermax"
-        ),
         verifycert=dict(type='str', required=True),
         user=dict(type='str', required=True),
         password=dict(type='str', required=True, no_log=True),
@@ -146,14 +131,6 @@ options:
     description:
     - IP/FQDN of unisphere host.
     required: true
-  universion:
-    description:
-    - Version of univmax SDK.
-    - This parameter has been deprecated. It is no longer necessary to specify this parameter.
-    deprecated:
-      why: This parameter has been deprecated. It is no longer necessary to specify this parameter.
-      version: 3.2.0
-      removed_in: 4.0.0
   verifycert:
     description:
     - Specifies system whether to validate SSL certificate or not, Values can be True or
@@ -176,12 +153,6 @@ options:
 def get_u4v_unisphere_connection_parameters():
     return dict(
         unispherehost=dict(type='str', required=True, no_log=True),
-        universion=dict(
-            type='int',
-            required=False,
-            removed_in_version='4.0.0',
-            removed_from_collection="dellemc.powermax"
-        ),
         verifycert=dict(type='str', required=True),
         user=dict(type='str', required=True),
         password=dict(type='str', required=True, no_log=True),

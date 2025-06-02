@@ -91,7 +91,6 @@ EXAMPLES = r'''
 - name: Create host with host_type 'default'
   dellemc.powermax.host:
     unispherehost: "{{unispherehost}}"
-    universion: "{{universion}}"
     verifycert: "{{verifycert}}"
     user: "{{user}}"
     password: "{{password}}"
@@ -103,7 +102,6 @@ EXAMPLES = r'''
 - name: Create host with host_type 'hpux'
   dellemc.powermax.host:
     unispherehost: "{{unispherehost}}"
-    universion: "{{universion}}"
     verifycert: "{{verifycert}}"
     user: "{{user}}"
     password: "{{password}}"
@@ -115,7 +113,6 @@ EXAMPLES = r'''
 - name: Create host with host_flags
   dellemc.powermax.host:
     unispherehost: "{{unispherehost}}"
-    universion: "{{universion}}"
     verifycert: "{{verifycert}}"
     user: "{{user}}"
     password: "{{password}}"
@@ -136,7 +133,6 @@ EXAMPLES = r'''
 - name: Get host details
   dellemc.powermax.host:
     unispherehost: "{{unispherehost}}"
-    universion: "{{universion}}"
     verifycert: "{{verifycert}}"
     user: "{{user}}"
     password: "{{password}}"
@@ -147,7 +143,6 @@ EXAMPLES = r'''
 - name: Adding initiator to host
   dellemc.powermax.host:
     unispherehost: "{{unispherehost}}"
-    universion: "{{universion}}"
     verifycert: "{{verifycert}}"
     user: "{{user}}"
     password: "{{password}}"
@@ -162,7 +157,6 @@ EXAMPLES = r'''
 - name: Removing initiator from host
   dellemc.powermax.host:
     unispherehost: "{{unispherehost}}"
-    universion: "{{universion}}"
     verifycert: "{{verifycert}}"
     user: "{{user}}"
     password: "{{password}}"
@@ -177,7 +171,6 @@ EXAMPLES = r'''
 - name: Modify host using host_type
   dellemc.powermax.host:
     unispherehost: "{{unispherehost}}"
-    universion: "{{universion}}"
     verifycert: "{{verifycert}}"
     user: "{{user}}"
     password: "{{password}}"
@@ -189,7 +182,6 @@ EXAMPLES = r'''
 - name: Modify host using host_flags
   dellemc.powermax.host:
     unispherehost: "{{unispherehost}}"
-    universion: "{{universion}}"
     verifycert: "{{verifycert}}"
     user: "{{user}}"
     password: "{{password}}"
@@ -207,7 +199,6 @@ EXAMPLES = r'''
 - name: Rename host
   dellemc.powermax.host:
     unispherehost: "{{unispherehost}}"
-    universion: "{{universion}}"
     verifycert: "{{verifycert}}"
     user: "{{user}}"
     password: "{{password}}"
@@ -219,7 +210,6 @@ EXAMPLES = r'''
 - name: Delete host
   dellemc.powermax.host:
     unispherehost: "{{unispherehost}}"
-    universion: "{{universion}}"
     verifycert: "{{verifycert}}"
     user: "{{user}}"
     password: "{{password}}"

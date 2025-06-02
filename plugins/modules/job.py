@@ -32,7 +32,6 @@ EXAMPLES = r'''
 - name: Get the details of a Job.
   dellemc.powermax.job:
     unispherehost: "{{unispherehost}}"
-    universion: "{{universion}}"
     verifycert: "{{verifycert}}"
     user: "{{user}}"
     password: "{{password}}"

@@ -9,7 +9,7 @@ Depending on which PowerMax Unisphere version is being used, follow this procedu
 
 * For PowerMax Unisphere version 102, install Python [sdk](https://pypi.org/project/pyu4v/10.2.0.2/) named 'PyU4V 10.2.0.2':
         
-        pip install pip install PyU4V==10.2.0.2
+        pip install PyU4V==10.2.0.2
 
 ## Building collections
 * Use this command to build the collection from source code:

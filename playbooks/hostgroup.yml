@@ -4,7 +4,6 @@
   connection: local
   vars:
     unispherehost: '10.XX.XX.XX'
-    universion: "101"
     verifycert: false
     user: 'user'
     password: 'password'
@@ -17,7 +16,6 @@
     - name: Create host group with host_type 'default'
       dellemc.powermax.hostgroup:
         unispherehost: "{{ unispherehost }}"
-        universion: "{{ universion }}"
         verifycert: "{{ verifycert }}"
         user: "{{ user }}"
         password: "{{ password }}"
@@ -32,7 +30,6 @@
     - name: Create host group with host_type 'hpux'
       dellemc.powermax.hostgroup:
         unispherehost: "{{ unispherehost }}"
-        universion: "{{ universion }}"
         verifycert: "{{ verifycert }}"
         user: "{{ user }}"
         password: "{{ password }}"
@@ -47,7 +44,6 @@
     - name: Create host group with host_flags
       dellemc.powermax.hostgroup:
         unispherehost: "{{ unispherehost }}"
-        universion: "{{ universion }}"
         verifycert: "{{ verifycert }}"
         user: "{{ user }}"
         password: "{{ password }}"
@@ -66,7 +62,6 @@
     - name: Get host group details
       dellemc.powermax.hostgroup:
         unispherehost: "{{ unispherehost }}"
-        universion: "{{ universion }}"
         verifycert: "{{ verifycert }}"
         user: "{{ user }}"
         password: "{{ password }}"
@@ -77,7 +72,6 @@
     - name: Adding host to host group
       dellemc.powermax.hostgroup:
         unispherehost: "{{ unispherehost }}"
-        universion: "{{ universion }}"
         verifycert: "{{ verifycert }}"
         user: "{{ user }}"
         password: "{{ password }}"
@@ -91,7 +85,6 @@
     - name: Removing host from host group
       dellemc.powermax.hostgroup:
         unispherehost: "{{ unispherehost }}"
-        universion: "{{ universion }}"
         verifycert: "{{ verifycert }}"
         user: "{{ user }}"
         password: "{{ password }}"
@@ -105,7 +98,6 @@
     - name: Modify flags of host group using host_type
       dellemc.powermax.hostgroup:
         unispherehost: "{{ unispherehost }}"
-        universion: "{{ universion }}"
         verifycert: "{{ verifycert }}"
         user: "{{ user }}"
         password: "{{ password }}"
@@ -117,7 +109,6 @@
     - name: Modify flags of host group using host_flags
       dellemc.powermax.hostgroup:
         unispherehost: "{{ unispherehost }}"
-        universion: "{{ universion }}"
         verifycert: "{{ verifycert }}"
         user: "{{ user }}"
         password: "{{ password }}"
@@ -133,7 +124,6 @@
     - name: Rename host group
       dellemc.powermax.hostgroup:
         unispherehost: "{{ unispherehost }}"
-        universion: "{{ universion }}"
         verifycert: "{{ verifycert }}"
         user: "{{ user }}"
         password: "{{ password }}"
@@ -145,7 +135,6 @@
     - name: Delete host group
       dellemc.powermax.hostgroup:
         unispherehost: "{{ unispherehost }}"
-        universion: "{{ universion }}"
         verifycert: "{{ verifycert }}"
         user: "{{ user }}"
         password: "{{ password }}"

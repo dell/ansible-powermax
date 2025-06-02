@@ -144,9 +144,6 @@ Parameters
     IP or FQDN of the Unisphere host
 
 
-  universion (False, int, None)
-    Unisphere version. This parameter has been deprecated. It is no longer necessary to specify this parameter.
-
 
   verifycert (True, str, None)
     Specifies system whether to validate SSL certificate or not, Values can be True or False or a custom file path for SSL certificate with .pem extension or .cer with base 64 encoding.
@@ -198,7 +195,6 @@ Examples
     - name: Get storage group details including volumes
       dellemc.powermax.storagegroup:
         unispherehost: "{{unispherehost}}"
-        universion: "{{universion}}"
         verifycert: "{{verifycert}}"
         user: "{{user}}"
         password: "{{password}}"
@@ -209,7 +205,6 @@ Examples
     - name: Create empty storage group
       dellemc.powermax.storagegroup:
         unispherehost: "{{unispherehost}}"
-        universion: "{{universion}}"
         verifycert: "{{verifycert}}"
         user: "{{user}}"
         password: "{{password}}"
@@ -223,7 +218,6 @@ Examples
     - name: Delete the storage group
       dellemc.powermax.storagegroup:
         unispherehost: "{{unispherehost}}"
-        universion: "{{universion}}"
         verifycert: "{{verifycert}}"
         user: "{{user}}"
         password: "{{password}}"
@@ -234,7 +228,6 @@ Examples
     - name: Adding existing volumes to existing SG
       dellemc.powermax.storagegroup:
         unispherehost: "{{unispherehost}}"
-        universion: "{{universion}}"
         verifycert: "{{verifycert}}"
         user: "{{user}}"
         password: "{{password}}"
@@ -250,7 +243,6 @@ Examples
     - name: Create new volumes for existing SG
       dellemc.powermax.storagegroup:
         unispherehost: "{{unispherehost}}"
-        universion: "{{universion}}"
         verifycert: "{{verifycert}}"
         user: "{{user}}"
         password: "{{password}}"
@@ -269,7 +261,6 @@ Examples
     - name: Remove volumes from existing SG
       dellemc.powermax.storagegroup:
         unispherehost: "{{unispherehost}}"
-        universion: "{{universion}}"
         verifycert: "{{verifycert}}"
         user: "{{user}}"
         password: "{{password}}"
@@ -285,7 +276,6 @@ Examples
     - name: Move volumes to target SG
       dellemc.powermax.storagegroup:
         unispherehost: "{{unispherehost}}"
-        universion: "{{universion}}"
         verifycert: "{{verifycert}}"
         user: "{{user}}"
         password: "{{password}}"
@@ -303,7 +293,6 @@ Examples
     - name: Adding child SG to parent SG
       dellemc.powermax.storagegroup:
         unispherehost: "{{unispherehost}}"
-        universion: "{{universion}}"
         verifycert: "{{verifycert}}"
         user: "{{user}}"
         password: "{{password}}"
@@ -318,7 +307,6 @@ Examples
     - name: Removing child SG from parent SG
       dellemc.powermax.storagegroup:
         unispherehost: "{{unispherehost}}"
-        universion: "{{universion}}"
         verifycert: "{{verifycert}}"
         user: "{{user}}"
         password: "{{password}}"
@@ -333,7 +321,6 @@ Examples
     - name: Rename storage group
       dellemc.powermax.storagegroup:
         unispherehost: "{{unispherehost}}"
-        universion: "{{universion}}"
         verifycert: "{{verifycert}}"
         user: "{{user}}"
         password: "{{password}}"
@@ -345,7 +332,6 @@ Examples
     - name: Create a storage group with snapshot policies
       dellemc.powermax.storagegroup:
         unispherehost: "{{unispherehost}}"
-        universion: "{{universion}}"
         verifycert: "{{verifycert}}"
         user: "{{user}}"
         password: "{{password}}"
@@ -363,7 +349,6 @@ Examples
     - name: Add snapshot policy to a storage group
       dellemc.powermax.storagegroup:
         unispherehost: "{{unispherehost}}"
-        universion: "{{universion}}"
         verifycert: "{{verifycert}}"
         user: "{{user}}"
         password: "{{password}}"
@@ -377,7 +362,6 @@ Examples
     - name: Remove snapshot policy from a storage group
       dellemc.powermax.storagegroup:
         unispherehost: "{{unispherehost}}"
-        universion: "{{universion}}"
         verifycert: "{{verifycert}}"
         user: "{{user}}"
         password: "{{password}}"
@@ -391,7 +375,6 @@ Examples
     - name: Set host I/O limits on an existing storage group
       dellemc.powermax.storagegroup:
         unispherehost: "{{unispherehost}}"
-        universion: "{{universion}}"
         verifycert: "{{verifycert}}"
         user: "{{user}}"
         password: "{{password}}"

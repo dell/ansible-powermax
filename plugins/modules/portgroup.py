@@ -75,7 +75,6 @@ EXAMPLES = r'''
 - name: Create port group without ports
   dellemc.powermax.portgroup:
     unispherehost: "{{unispherehost}}"
-    universion: "{{universion}}"
     verifycert: "{{verifycert}}"
     user: "{{user}}"
     password: "{{password}}"
@@ -86,7 +85,6 @@ EXAMPLES = r'''
 - name: Create port group in V4 without ports
   dellemc.powermax.portgroup:
     unispherehost: "{{unispherehost}}"
-    universion: "{{universion}}"
     verifycert: "{{verifycert}}"
     user: "{{user}}"
     password: "{{password}}"
@@ -98,7 +96,6 @@ EXAMPLES = r'''
 - name: Create port group with ports
   dellemc.powermax.portgroup:
     unispherehost: "{{unispherehost}}"
-    universion: "{{universion}}"
     verifycert: "{{verifycert}}"
     user: "{{user}}"
     password: "{{password}}"
@@ -115,7 +112,6 @@ EXAMPLES = r'''
 - name: Add ports to port group
   dellemc.powermax.portgroup:
     unispherehost: "{{unispherehost}}"
-    universion: "{{universion}}"
     verifycert: "{{verifycert}}"
     user: "{{user}}"
     password: "{{password}}"
@@ -132,7 +128,6 @@ EXAMPLES = r'''
 - name: Remove ports from port group
   dellemc.powermax.portgroup:
     unispherehost: "{{unispherehost}}"
-    universion: "{{universion}}"
     verifycert: "{{verifycert}}"
     user: "{{user}}"
     password: "{{password}}"
@@ -149,7 +144,6 @@ EXAMPLES = r'''
 - name: Modify port group
   dellemc.powermax.portgroup:
     unispherehost: "{{unispherehost}}"
-    universion: "{{universion}}"
     verifycert: "{{verifycert}}"
     user: "{{user}}"
     password: "{{password}}"
@@ -161,7 +155,6 @@ EXAMPLES = r'''
 - name: Delete port group
   dellemc.powermax.portgroup:
     unispherehost: "{{unispherehost}}"
-    universion: "{{universion}}"
     verifycert: "{{verifycert}}"
     user: "{{user}}"
     password: "{{password}}"

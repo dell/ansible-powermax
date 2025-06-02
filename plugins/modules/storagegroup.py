@@ -139,7 +139,6 @@ EXAMPLES = r'''
 - name: Get storage group details including volumes
   dellemc.powermax.storagegroup:
     unispherehost: "{{unispherehost}}"
-    universion: "{{universion}}"
     verifycert: "{{verifycert}}"
     user: "{{user}}"
     password: "{{password}}"
@@ -150,7 +149,6 @@ EXAMPLES = r'''
 - name: Create empty storage group
   dellemc.powermax.storagegroup:
     unispherehost: "{{unispherehost}}"
-    universion: "{{universion}}"
     verifycert: "{{verifycert}}"
     user: "{{user}}"
     password: "{{password}}"
@@ -164,7 +162,6 @@ EXAMPLES = r'''
 - name: Delete the storage group
   dellemc.powermax.storagegroup:
     unispherehost: "{{unispherehost}}"
-    universion: "{{universion}}"
     verifycert: "{{verifycert}}"
     user: "{{user}}"
     password: "{{password}}"
@@ -175,7 +172,6 @@ EXAMPLES = r'''
 - name: Adding existing volumes to existing SG
   dellemc.powermax.storagegroup:
     unispherehost: "{{unispherehost}}"
-    universion: "{{universion}}"
     verifycert: "{{verifycert}}"
     user: "{{user}}"
     password: "{{password}}"
@@ -191,7 +187,6 @@ EXAMPLES = r'''
 - name: Create new volumes for existing SG
   dellemc.powermax.storagegroup:
     unispherehost: "{{unispherehost}}"
-    universion: "{{universion}}"
     verifycert: "{{verifycert}}"
     user: "{{user}}"
     password: "{{password}}"
@@ -210,7 +205,6 @@ EXAMPLES = r'''
 - name: Remove volumes from existing SG
   dellemc.powermax.storagegroup:
     unispherehost: "{{unispherehost}}"
-    universion: "{{universion}}"
     verifycert: "{{verifycert}}"
     user: "{{user}}"
     password: "{{password}}"
@@ -226,7 +220,6 @@ EXAMPLES = r'''
 - name: Move volumes to target SG
   dellemc.powermax.storagegroup:
     unispherehost: "{{unispherehost}}"
-    universion: "{{universion}}"
     verifycert: "{{verifycert}}"
     user: "{{user}}"
     password: "{{password}}"
@@ -244,7 +237,6 @@ EXAMPLES = r'''
 - name: Adding child SG to parent SG
   dellemc.powermax.storagegroup:
     unispherehost: "{{unispherehost}}"
-    universion: "{{universion}}"
     verifycert: "{{verifycert}}"
     user: "{{user}}"
     password: "{{password}}"
@@ -259,7 +251,6 @@ EXAMPLES = r'''
 - name: Removing child SG from parent SG
   dellemc.powermax.storagegroup:
     unispherehost: "{{unispherehost}}"
-    universion: "{{universion}}"
     verifycert: "{{verifycert}}"
     user: "{{user}}"
     password: "{{password}}"
@@ -274,7 +265,6 @@ EXAMPLES = r'''
 - name: Rename storage group
   dellemc.powermax.storagegroup:
     unispherehost: "{{unispherehost}}"
-    universion: "{{universion}}"
     verifycert: "{{verifycert}}"
     user: "{{user}}"
     password: "{{password}}"
@@ -286,7 +276,6 @@ EXAMPLES = r'''
 - name: Create a storage group with snapshot policies
   dellemc.powermax.storagegroup:
     unispherehost: "{{unispherehost}}"
-    universion: "{{universion}}"
     verifycert: "{{verifycert}}"
     user: "{{user}}"
     password: "{{password}}"
@@ -304,7 +293,6 @@ EXAMPLES = r'''
 - name: Add snapshot policy to a storage group
   dellemc.powermax.storagegroup:
     unispherehost: "{{unispherehost}}"
-    universion: "{{universion}}"
     verifycert: "{{verifycert}}"
     user: "{{user}}"
     password: "{{password}}"
@@ -318,7 +306,6 @@ EXAMPLES = r'''
 - name: Remove snapshot policy from a storage group
   dellemc.powermax.storagegroup:
     unispherehost: "{{unispherehost}}"
-    universion: "{{universion}}"
     verifycert: "{{verifycert}}"
     user: "{{user}}"
     password: "{{password}}"
@@ -332,7 +319,6 @@ EXAMPLES = r'''
 - name: Set host I/O limits on an existing storage group
   dellemc.powermax.storagegroup:
     unispherehost: "{{unispherehost}}"
-    universion: "{{universion}}"
     verifycert: "{{verifycert}}"
     user: "{{user}}"
     password: "{{password}}"

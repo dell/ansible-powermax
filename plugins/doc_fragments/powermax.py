@@ -14,11 +14,6 @@ options:
             - IP or FQDN of the Unisphere host
         type: str
         required: True
-    universion:
-        description:
-            - Unisphere version. This parameter has been deprecated. It is no longer necessary to specify this parameter.
-        type: int
-        required: False
     verifycert:
         description:
             - Specifies system whether to validate SSL certificate or not, Values can be True or

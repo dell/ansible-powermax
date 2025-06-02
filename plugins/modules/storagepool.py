@@ -45,7 +45,6 @@ EXAMPLES = r'''
 - name: Get specific storage pool details
   dellemc.powermax.storagepool:
     unispherehost: "{{unispherehost}}"
-    universion: "{{universion}}"
     verifycert: "{{verifycert}}"
     user: "{{user}}"
     password: "{{password}}"

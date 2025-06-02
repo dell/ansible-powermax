@@ -18,7 +18,8 @@ class MockMaskingViewApi:
         "mv_name": None,
         "new_mv_name": None,
         "host_name": None,
-        "hostgroup_name": None
+        "hostgroup_name": None,
+        "starting_lun_address": None
     }
 
     CREATE_PAYLOAD = {
