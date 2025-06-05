@@ -27,7 +27,7 @@ from ansible_collections.dellemc.powermax.tests.unit.plugins.module_utils \
 
 class TestPowerMaxInitiator():
     MODULE_UTILS_PATH = 'ansible_collections.dellemc.powermax.plugins.module_utils.storage.dell.utils'
-    initiator_args = {'universion': None, 'initiator_id': '1000000000000001', 'state': 'present',
+    initiator_args = {'initiator_id': '1000000000000001', 'state': 'present',
                       'alias': None, 'new_alias': None}
 
     @pytest.fixture

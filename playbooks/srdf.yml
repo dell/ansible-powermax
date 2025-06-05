@@ -4,7 +4,6 @@
   connection: local
   vars:
     unispherehost: '10.XX.XX.XX'
-    universion: "101"
     verifycert: false
     user: 'user'
     password: 'password'
@@ -23,7 +22,6 @@
     - name: Create a new Storage group
       dellemc.powermax.storagegroup:
         unispherehost: "{{ unispherehost }}"
-        universion: "{{ universion }}"
         verifycert: "{{ verifycert }}"
         user: "{{ user }}"
         password: "{{ password }}"
@@ -38,7 +36,6 @@
     - name: Create new volumes for existing Storage Group
       dellemc.powermax.storagegroup:
         unispherehost: "{{ unispherehost }}"
-        universion: "{{ universion }}"
         verifycert: "{{ verifycert }}"
         user: "{{ user }}"
         password: "{{ password }}"
@@ -58,7 +55,6 @@
     - name: Add existing volumes to existing Storage Group
       dellemc.powermax.storagegroup:
         unispherehost: "{{ unispherehost }}"
-        universion: "{{ universion }}"
         verifycert: "{{ verifycert }}"
         user: "{{ user }}"
         password: "{{ password }}"
@@ -74,7 +70,6 @@
     - name: List volumes of a Storage Group
       dellemc.powermax.storagegroup:
         unispherehost: "{{ unispherehost }}"
-        universion: "{{ universion }}"
         verifycert: "{{ verifycert }}"
         user: "{{ user }}"
         password: "{{ password }}"
@@ -86,7 +81,6 @@
     - name: Remove existing volumes from existing Storage Group
       dellemc.powermax.storagegroup:
         unispherehost: "{{ unispherehost }}"
-        universion: "{{ universion }}"
         verifycert: "{{ verifycert }}"
         user: "{{ user }}"
         password: "{{ password }}"
@@ -103,7 +97,6 @@
     - name: Modify the Storage Group
       dellemc.powermax.storagegroup:
         unispherehost: "{{ unispherehost }}"
-        universion: "{{ universion }}"
         verifycert: "{{ verifycert }}"
         user: "{{ user }}"
         password: "{{ password }}"
@@ -117,7 +110,6 @@
     - name: Add snapshot policy to storage group
       dellemc.powermax.storagegroup:
         unispherehost: "{{ unispherehost }}"
-        universion: "{{ universion }}"
         verifycert: "{{ verifycert }}"
         user: "{{ user }}"
         password: "{{ password }}"
@@ -131,7 +123,6 @@
     - name: Remove snapshot policy from storage group
       dellemc.powermax.storagegroup:
         unispherehost: "{{ unispherehost }}"
-        universion: "{{ universion }}"
         verifycert: "{{ verifycert }}"
         user: "{{ user }}"
         password: "{{ password }}"
@@ -145,7 +136,6 @@
     - name: Delete the Storage Group
       dellemc.powermax.storagegroup:
         unispherehost: "{{ unispherehost }}"
-        universion: "{{ universion }}"
         verifycert: "{{ verifycert }}"
         user: "{{ user }}"
         password: "{{ password }}"
@@ -156,7 +146,6 @@
     - name: Create a new Parent Storage Group with FAST policy
       dellemc.powermax.storagegroup:
         unispherehost: "{{ unispherehost }}"
-        universion: "{{ universion }}"
         verifycert: "{{ verifycert }}"
         user: "{{ user }}"
         password: "{{ password }}"
@@ -170,7 +159,6 @@
     - name: Create a new child Storage Group - prashant_child_SG_xx1
       dellemc.powermax.storagegroup:
         unispherehost: "{{ unispherehost }}"
-        universion: "{{ universion }}"
         verifycert: "{{ verifycert }}"
         user: "{{ user }}"
         password: "{{ password }}"
@@ -185,7 +173,6 @@
     - name: Create a volume for child SG
       dellemc.powermax.storagegroup:
         unispherehost: "{{ unispherehost }}"
-        universion: "{{ universion }}"
         verifycert: "{{ verifycert }}"
         user: "{{ user }}"
         password: "{{ password }}"
@@ -202,7 +189,6 @@
     - name: Create a new child Storage Group - prashant_child_SG_xx2
       dellemc.powermax.storagegroup:
         unispherehost: "{{ unispherehost }}"
-        universion: "{{ universion }}"
         verifycert: "{{ verifycert }}"
         user: "{{ user }}"
         password: "{{ password }}"
@@ -217,7 +203,6 @@
     - name: Create a volume for child SG
       dellemc.powermax.storagegroup:
         unispherehost: "{{ unispherehost }}"
-        universion: "{{ universion }}"
         verifycert: "{{ verifycert }}"
         user: "{{ user }}"
         password: "{{ password }}"
@@ -234,7 +219,6 @@
     - name: Modify the parent SG and add child SGs
       dellemc.powermax.storagegroup:
         unispherehost: "{{ unispherehost }}"
-        universion: "{{ universion }}"
         verifycert: "{{ verifycert }}"
         user: "{{ user }}"
         password: "{{ password }}"
@@ -251,7 +235,6 @@
     - name: Remove Child Storage Groups from Parent Storage Group
       dellemc.powermax.storagegroup:
         unispherehost: "{{ unispherehost }}"
-        universion: "{{ universion }}"
         verifycert: "{{ verifycert }}"
         user: "{{ user }}"
         password: "{{ password }}"
@@ -267,7 +250,6 @@
     - name: Test rename SG functionality
       dellemc.powermax.storagegroup:
         unispherehost: "{{ unispherehost }}"
-        universion: "{{ universion }}"
         verifycert: "{{ verifycert }}"
         user: "{{ user }}"
         password: "{{ password }}"
@@ -280,7 +262,6 @@
     - name: Delete the storage group - prashant_child_SG_xx1
       dellemc.powermax.storagegroup:
         unispherehost: "{{ unispherehost }}"
-        universion: "{{ universion }}"
         verifycert: "{{ verifycert }}"
         user: "{{ user }}"
         password: "{{ password }}"
@@ -291,7 +272,6 @@
     - name: Delete the storage group - prashant_child_SG_xx2
       dellemc.powermax.storagegroup:
         unispherehost: "{{ unispherehost }}"
-        universion: "{{ universion }}"
         verifycert: "{{ verifycert }}"
         user: "{{ user }}"
         password: "{{ password }}"
@@ -302,7 +282,6 @@
     - name: Delete the storage group - ansible_sg_renamed_successful
       dellemc.powermax.storagegroup:
         unispherehost: "{{ unispherehost }}"
-        universion: "{{ universion }}"
         verifycert: "{{ verifycert }}"
         user: "{{ user }}"
         password: "{{ password }}"
@@ -313,7 +292,6 @@
     - name: Move volumes between Storage groups
       dellemc.powermax.storagegroup:
         unispherehost: "{{ unispherehost }}"
-        universion: "{{ universion }}"
         verifycert: "{{ verifycert }}"
         user: "{{ user }}"
         password: "{{ password }}"
@@ -329,7 +307,6 @@
     - name: Set host IO limits on an existing storage group
       dellemc.powermax.storagegroup:
         unispherehost: "{{ unispherehost }}"
-        universion: "{{ universion }}"
         verifycert: "{{ verifycert }}"
         user: "{{ user }}"
         password: "{{ password }}"

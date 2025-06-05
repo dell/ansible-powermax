@@ -126,9 +126,6 @@ Parameters
     IP or FQDN of the Unisphere host
 
 
-  universion (False, int, None)
-    Unisphere version. This parameter has been deprecated. It is no longer necessary to specify this parameter.
-
 
   verifycert (True, str, None)
     Specifies system whether to validate SSL certificate or not, Values can be True or False or a custom file path for SSL certificate with .pem extension or .cer with base 64 encoding.
@@ -173,7 +170,6 @@ Examples
     - name: Get metro environment details
       dellemc.powermax.metrodr:
         unispherehost: "{{unispherehost}}"
-        universion: "{{universion}}"
         verifycert: "{{verifycert}}"
         user: "{{user}}"
         password: "{{password}}"
@@ -184,7 +180,6 @@ Examples
     - name: Convert SG to metro DR environment
       dellemc.powermax.metrodr:
         unispherehost: "{{unispherehost}}"
-        universion: "{{universion}}"
         verifycert: "{{verifycert}}"
         user: "{{user}}"
         password: "{{password}}"
@@ -200,7 +195,6 @@ Examples
     - name: Create metro DR environment
       dellemc.powermax.metrodr:
         unispherehost: "{{unispherehost}}"
-        universion: "{{universion}}"
         verifycert: "{{verifycert}}"
         user: "{{user}}"
         password: "{{password}}"
@@ -218,7 +212,6 @@ Examples
     - name: Modify metro DR environment
       dellemc.powermax.metrodr:
         unispherehost: "{{unispherehost}}"
-        universion: "{{universion}}"
         verifycert: "{{verifycert}}"
         user: "{{user}}"
         password: "{{password}}"
@@ -235,7 +228,6 @@ Examples
     - name: Delete metro DR environment
       dellemc.powermax.metrodr:
         unispherehost: "{{unispherehost}}"
-        universion: "{{universion}}"
         verifycert: "{{verifycert}}"
         user: "{{user}}"
         password: "{{password}}"

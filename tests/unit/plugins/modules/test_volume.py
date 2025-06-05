@@ -82,7 +82,6 @@ class TestVolume(PowerMaxUnitBase):
                 "cap_unit": "CYL",
                 "serial_no": "Test_Serial",
                 "append_vol_id": "test_append_vol_id",
-                "universion": 100,
             }
         )
         powermax_module_mock.module.params = self.vol_args
@@ -108,7 +107,6 @@ class TestVolume(PowerMaxUnitBase):
                 "cap_unit": "GB",
                 "serial_no": "Test_Serial",
                 "append_vol_id": "test_append_vol_id",
-                "universion": 100,
             }
         )
         powermax_module_mock.module.params = self.vol_args
@@ -131,7 +129,6 @@ class TestVolume(PowerMaxUnitBase):
                 "cap_unit": "CYL",
                 "sg_name": "test_sg",
                 "serial_no": "Test_Serial",
-                "universion": 100,
             }
         )
         powermax_module_mock.module.params = self.vol_args
@@ -161,7 +158,6 @@ class TestVolume(PowerMaxUnitBase):
                 "sg_name": "test_sg",
                 "cap_unit": "MB",
                 "serial_no": "Test_Serial",
-                "universion": 100,
             }
         )
         powermax_module_mock.module.params = self.vol_args
@@ -191,7 +187,6 @@ class TestVolume(PowerMaxUnitBase):
                 "cap_unit": "CYL",
                 "sg_name": "test_sg",
                 "serial_no": "Test_Serial",
-                "universion": 100,
             }
         )
         powermax_module_mock.module.params = self.vol_args
@@ -219,7 +214,6 @@ class TestVolume(PowerMaxUnitBase):
                 "cap_unit": "CYL",
                 "serial_no": "Test_Serial",
                 "append_vol_id": True,
-                "universion": 100,
             }
         )
         powermax_module_mock.module.params = self.vol_args
@@ -325,7 +319,6 @@ class TestVolume(PowerMaxUnitBase):
                 "cap_unit": "CYL",
                 "sg_name": "test_sg",
                 "serial_no": "Test_Serial",
-                "universion": 100,
             }
         )
         powermax_module_mock.module.params = self.vol_args

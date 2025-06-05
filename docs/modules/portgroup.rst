@@ -67,9 +67,6 @@ Parameters
     IP or FQDN of the Unisphere host
 
 
-  universion (False, int, None)
-    Unisphere version. This parameter has been deprecated. It is no longer necessary to specify this parameter.
-
 
   verifycert (True, str, None)
     Specifies system whether to validate SSL certificate or not, Values can be True or False or a custom file path for SSL certificate with .pem extension or .cer with base 64 encoding.
@@ -118,7 +115,6 @@ Examples
     - name: Create port group without ports
       dellemc.powermax.portgroup:
         unispherehost: "{{unispherehost}}"
-        universion: "{{universion}}"
         verifycert: "{{verifycert}}"
         user: "{{user}}"
         password: "{{password}}"
@@ -129,7 +125,6 @@ Examples
     - name: Create port group in V4 without ports
       dellemc.powermax.portgroup:
         unispherehost: "{{unispherehost}}"
-        universion: "{{universion}}"
         verifycert: "{{verifycert}}"
         user: "{{user}}"
         password: "{{password}}"
@@ -141,7 +136,6 @@ Examples
     - name: Create port group with ports
       dellemc.powermax.portgroup:
         unispherehost: "{{unispherehost}}"
-        universion: "{{universion}}"
         verifycert: "{{verifycert}}"
         user: "{{user}}"
         password: "{{password}}"
@@ -158,7 +152,6 @@ Examples
     - name: Add ports to port group
       dellemc.powermax.portgroup:
         unispherehost: "{{unispherehost}}"
-        universion: "{{universion}}"
         verifycert: "{{verifycert}}"
         user: "{{user}}"
         password: "{{password}}"
@@ -175,7 +168,6 @@ Examples
     - name: Remove ports from port group
       dellemc.powermax.portgroup:
         unispherehost: "{{unispherehost}}"
-        universion: "{{universion}}"
         verifycert: "{{verifycert}}"
         user: "{{user}}"
         password: "{{password}}"
@@ -192,7 +184,6 @@ Examples
     - name: Modify port group
       dellemc.powermax.portgroup:
         unispherehost: "{{unispherehost}}"
-        universion: "{{universion}}"
         verifycert: "{{verifycert}}"
         user: "{{user}}"
         password: "{{password}}"
@@ -204,7 +195,6 @@ Examples
     - name: Delete port group
       dellemc.powermax.portgroup:
         unispherehost: "{{unispherehost}}"
-        universion: "{{universion}}"
         verifycert: "{{verifycert}}"
         user: "{{user}}"
         password: "{{password}}"

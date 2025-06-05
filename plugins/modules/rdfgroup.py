@@ -45,7 +45,6 @@ EXAMPLES = r'''
 - name: Get the details of an RDF group and volumes
   dellemc.powermax.rdfgroup:
     unispherehost: "{{unispherehost}}"
-    universion: "{{universion}}"
     verifycert: "{{verifycert}}"
     user: "{{user}}"
     password: "{{password}}"
@@ -56,7 +55,6 @@ EXAMPLES = r'''
   dellemc.powermax.rdfgroup:
     unispherehost: "{{unispherehost}}"
     serial_no: "{{serial_no}}"
-    universion: "{{universion}}"
     verifycert: "{{verifycert}}"
     user: "{{user}}"
     password: "{{password}}"

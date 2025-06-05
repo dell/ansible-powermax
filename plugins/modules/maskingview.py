@@ -80,7 +80,6 @@ EXAMPLES = r'''
 - name: Create MV with hostgroup
   dellemc.powermax.maskingview:
     unispherehost: "{{unispherehost}}"
-    universion: "{{universion}}"
     verifycert: "{{verifycert}}"
     user: "{{user}}"
     password: "{{password}}"
@@ -94,7 +93,6 @@ EXAMPLES = r'''
 - name: Create MV with hostgroup provinding the starting lun address
   dellemc.powermax.maskingview:
     unispherehost: "{{unispherehost}}"
-    universion: "{{universion}}"
     verifycert: "{{verifycert}}"
     user: "{{user}}"
     password: "{{password}}"
@@ -109,7 +107,6 @@ EXAMPLES = r'''
 - name: Create MV with host
   dellemc.powermax.maskingview:
     unispherehost: "{{unispherehost}}"
-    universion: "{{universion}}"
     verifycert: "{{verifycert}}"
     user: "{{user}}"
     password: "{{password}}"
@@ -123,7 +120,6 @@ EXAMPLES = r'''
 - name: Rename host masking view
   dellemc.powermax.maskingview:
     unispherehost: "{{unispherehost}}"
-    universion: "{{universion}}"
     verifycert: "{{verifycert}}"
     user: "{{user}}"
     password: "{{password}}"
@@ -135,7 +131,6 @@ EXAMPLES = r'''
 - name: Delete host masking view
   dellemc.powermax.maskingview:
     unispherehost: "{{unispherehost}}"
-    universion: "{{universion}}"
     verifycert: "{{verifycert}}"
     user: "{{user}}"
     password: "{{password}}"

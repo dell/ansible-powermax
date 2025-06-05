@@ -157,7 +157,6 @@ EXAMPLES = r'''
 - name: Get list of volumes with filter -- all TDEV volumes of size equal to 5 GB
   dellemc.powermax.info:
     unispherehost: "{{unispherehost}}"
-    universion: "{{universion}}"
     verifycert: "{{verifycert}}"
     user: "{{user}}"
     password: "{{password}}"
@@ -175,7 +174,6 @@ EXAMPLES = r'''
 - name: Get list of volumes and storage groups with filter
   dellemc.powermax.info:
     unispherehost: "{{unispherehost}}"
-    universion: "{{universion}}"
     verifycert: "{{verifycert}}"
     user: "{{user}}"
     password: "{{password}}"
@@ -194,7 +192,6 @@ EXAMPLES = r'''
 - name: Get list of storage groups with capacity between 2 GB to 10 GB
   dellemc.powermax.info:
     unispherehost: "{{unispherehost}}"
-    universion: "{{universion}}"
     verifycert: "{{verifycert}}"
     user: "{{user}}"
     password: "{{password}}"
@@ -212,7 +209,6 @@ EXAMPLES = r'''
 - name: Get the list of arrays for a given Unisphere host
   dellemc.powermax.info:
     unispherehost: "{{unispherehost}}"
-    universion: "{{universion}}"
     verifycert: "{{verifycert}}"
     user: "{{user}}"
     password: "{{password}}"
@@ -221,7 +217,6 @@ EXAMPLES = r'''
 - name: Get list of TDEV-volumes
   dellemc.powermax.info:
     unispherehost: "{{unispherehost}}"
-    universion: "{{universion}}"
     verifycert: "{{verifycert}}"
     user: "{{user}}"
     password: "{{password}}"
@@ -233,7 +228,6 @@ EXAMPLES = r'''
 - name: Get the list of arrays for a given Unisphere host
   dellemc.powermax.info:
     unispherehost: "{{unispherehost}}"
-    universion: "{{universion}}"
     verifycert: "{{verifycert}}"
     user: "{{user}}"
     password: "{{password}}"
@@ -241,7 +235,6 @@ EXAMPLES = r'''
 - name: Get array health status
   dellemc.powermax.info:
     unispherehost: "{{unispherehost}}"
-    universion: "{{universion}}"
     verifycert: "{{verifycert}}"
     user: "{{user}}"
     password: "{{password}}"
@@ -252,7 +245,6 @@ EXAMPLES = r'''
 - name: Get array alerts summary
   dellemc.powermax.info:
     unispherehost: "{{unispherehost}}"
-    universion: "{{universion}}"
     verifycert: "{{verifycert}}"
     user: "{{user}}"
     password: "{{password}}"
@@ -263,7 +255,6 @@ EXAMPLES = r'''
 - name: Get the list of Metro DR environments for a given Unisphere host
   dellemc.powermax.info:
     unispherehost: "{{unispherehost}}"
-    universion: "{{universion}}"
     verifycert: "{{verifycert}}"
     user: "{{user}}"
     password: "{{password}}"
@@ -274,7 +265,6 @@ EXAMPLES = r'''
 - name: Get list of storage groups
   dellemc.powermax.info:
     unispherehost: "{{unispherehost}}"
-    universion: "{{universion}}"
     verifycert: "{{verifycert}}"
     user: "{{user}}"
     password: "{{password}}"
@@ -285,7 +275,6 @@ EXAMPLES = r'''
 - name: Get list of Storage Resource Pools
   dellemc.powermax.info:
     unispherehost: "{{unispherehost}}"
-    universion: "{{universion}}"
     verifycert: "{{verifycert}}"
     user: "{{user}}"
     password: "{{password}}"
@@ -296,7 +285,6 @@ EXAMPLES = r'''
 - name: Get list of ports
   dellemc.powermax.info:
     unispherehost: "{{unispherehost}}"
-    universion: "{{universion}}"
     verifycert: "{{verifycert}}"
     user: "{{user}}"
     password: "{{password}}"
@@ -307,7 +295,6 @@ EXAMPLES = r'''
 - name: Get list of Port Groups
   dellemc.powermax.info:
     unispherehost: "{{unispherehost}}"
-    universion: "{{universion}}"
     verifycert: "{{verifycert}}"
     user: "{{user}}"
     password: "{{password}}"
@@ -318,7 +305,6 @@ EXAMPLES = r'''
 - name: Get list of hosts
   dellemc.powermax.info:
     unispherehost: "{{unispherehost}}"
-    universion: "{{universion}}"
     verifycert: "{{verifycert}}"
     user: "{{user}}"
     password: "{{password}}"
@@ -329,7 +315,6 @@ EXAMPLES = r'''
 - name: Get list of Host Groups
   dellemc.powermax.info:
     unispherehost: "{{unispherehost}}"
-    universion: "{{universion}}"
     verifycert: "{{verifycert}}"
     user: "{{user}}"
     password: "{{password}}"
@@ -340,7 +325,6 @@ EXAMPLES = r'''
 - name: Get list of Masking Views
   dellemc.powermax.info:
     unispherehost: "{{unispherehost}}"
-    universion: "{{universion}}"
     verifycert: "{{verifycert}}"
     user: "{{user}}"
     password: "{{password}}"
@@ -351,7 +335,6 @@ EXAMPLES = r'''
 - name: Get list of RDF Groups
   dellemc.powermax.info:
     unispherehost: "{{unispherehost}}"
-    universion: "{{universion}}"
     verifycert: "{{verifycert}}"
     user: "{{user}}"
     password: "{{password}}"
@@ -362,7 +345,6 @@ EXAMPLES = r'''
 - name: Get list of snapshot policies
   dellemc.powermax.info:
     unispherehost: "{{unispherehost}}"
-    universion: "{{universion}}"
     verifycert: "{{verifycert}}"
     user: "{{user}}"
     password: "{{password}}"
@@ -373,7 +355,6 @@ EXAMPLES = r'''
 - name: Get list of initiators
   dellemc.powermax.info:
     unispherehost: "{{unispherehost}}"
-    universion: "{{universion}}"
     verifycert: "{{verifycert}}"
     user: "{{user}}"
     password: "{{password}}"
@@ -384,7 +365,6 @@ EXAMPLES = r'''
 - name: Get list of masking view connections with filter
   dellemc.powermax.info:
     unispherehost: "{{unispherehost}}"
-    universion: "{{universion}}"
     verifycert: "{{verifycert}}"
     user: "{{user}}"
     password: "{{password}}"
@@ -1252,12 +1232,6 @@ def get_info_parameters():
 
     return dict(
         unispherehost=dict(type='str', required=True, no_log=True),
-        universion=dict(
-            type='int',
-            required=False,
-            removed_in_version='4.0.0',
-            removed_from_collection="dellemc.powermax"
-        ),
         verifycert=dict(type='str', required=True),
         user=dict(type='str', required=True),
         password=dict(type='str', required=True, no_log=True),

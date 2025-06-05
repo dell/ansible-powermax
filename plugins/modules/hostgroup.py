@@ -93,7 +93,6 @@ EXAMPLES = r'''
 - name: Create host group with 'default' host_type
   dellemc.powermax.hostgroup:
     unispherehost: "{{unispherehost}}"
-    universion: "{{universion}}"
     verifycert: "{{verifycert}}"
     user: "{{user}}"
     password: "{{password}}"
@@ -108,7 +107,6 @@ EXAMPLES = r'''
 - name: Create host group with 'hpux' host_type
   dellemc.powermax.hostgroup:
     unispherehost: "{{unispherehost}}"
-    universion: "{{universion}}"
     verifycert: "{{verifycert}}"
     user: "{{user}}"
     password: "{{password}}"
@@ -123,7 +121,6 @@ EXAMPLES = r'''
 - name: Create host group with host_flags
   dellemc.powermax.hostgroup:
     unispherehost: "{{unispherehost}}"
-    universion: "{{universion}}"
     verifycert: "{{verifycert}}"
     user: "{{user}}"
     password: "{{password}}"
@@ -143,7 +140,6 @@ EXAMPLES = r'''
 - name: Get host group details
   dellemc.powermax.hostgroup:
     unispherehost: "{{unispherehost}}"
-    universion: "{{universion}}"
     verifycert: "{{verifycert}}"
     user: "{{user}}"
     password: "{{password}}"
@@ -154,7 +150,6 @@ EXAMPLES = r'''
 - name: Adding host to host group
   dellemc.powermax.hostgroup:
     unispherehost: "{{unispherehost}}"
-    universion: "{{universion}}"
     verifycert: "{{verifycert}}"
     user: "{{user}}"
     password: "{{password}}"
@@ -168,7 +163,6 @@ EXAMPLES = r'''
 - name: Removing host from host group
   dellemc.powermax.hostgroup:
     unispherehost: "{{unispherehost}}"
-    universion: "{{universion}}"
     verifycert: "{{verifycert}}"
     user: "{{user}}"
     password: "{{password}}"
@@ -182,7 +176,6 @@ EXAMPLES = r'''
 - name: Modify host group using host_type
   dellemc.powermax.hostgroup:
     unispherehost: "{{unispherehost}}"
-    universion: "{{universion}}"
     verifycert: "{{verifycert}}"
     user: "{{user}}"
     password: "{{password}}"
@@ -194,7 +187,6 @@ EXAMPLES = r'''
 - name: Modify host group using host_flags
   dellemc.powermax.hostgroup:
     unispherehost: "{{unispherehost}}"
-    universion: "{{universion}}"
     verifycert: "{{verifycert}}"
     user: "{{user}}"
     password: "{{password}}"
@@ -210,7 +202,6 @@ EXAMPLES = r'''
 - name: Rename host group
   dellemc.powermax.hostgroup:
     unispherehost: "{{unispherehost}}"
-    universion: "{{universion}}"
     verifycert: "{{verifycert}}"
     user: "{{user}}"
     password: "{{password}}"
@@ -222,7 +213,6 @@ EXAMPLES = r'''
 - name: Delete host group
   dellemc.powermax.hostgroup:
     unispherehost: "{{unispherehost}}"
-    universion: "{{universion}}"
     verifycert: "{{verifycert}}"
     user: "{{user}}"
     password: "{{password}}"

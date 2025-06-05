@@ -107,9 +107,6 @@ Parameters
     IP or FQDN of the Unisphere host
 
 
-  universion (False, int, None)
-    Unisphere version. This parameter has been deprecated. It is no longer necessary to specify this parameter.
-
 
   verifycert (True, str, None)
     Specifies system whether to validate SSL certificate or not, Values can be True or False or a custom file path for SSL certificate with .pem extension or .cer with base 64 encoding.
@@ -162,7 +159,6 @@ Examples
     - name: Create a Snapshot for a Storage Group
       dellemc.powermax.snapshot:
         unispherehost: "{{unispherehost}}"
-        universion: "{{universion}}"
         verifycert: "{{verifycert}}"
         user: "{{user}}"
         password: "{{password}}"
@@ -176,7 +172,6 @@ Examples
     - name: Get Storage Group Snapshot details
       dellemc.powermax.snapshot:
         unispherehost: "{{unispherehost}}"
-        universion: "{{universion}}"
         verifycert: "{{verifycert}}"
         user: "{{user}}"
         password: "{{password}}"
@@ -188,7 +183,6 @@ Examples
     - name: Get Storage Group Snapshot details using generation
       dellemc.powermax.snapshot:
         unispherehost: "{{unispherehost}}"
-        universion: "{{universion}}"
         verifycert: "{{verifycert}}"
         user: "{{user}}"
         password: "{{password}}"
@@ -201,7 +195,6 @@ Examples
     - name: Get Storage Group Snapshot details using snapshot_id
       dellemc.powermax.snapshot:
         unispherehost: "{{unispherehost}}"
-        universion: "{{universion}}"
         verifycert: "{{verifycert}}"
         user: "{{user}}"
         password: "{{password}}"
@@ -214,7 +207,6 @@ Examples
     - name: Rename Storage Group Snapshot using generation
       dellemc.powermax.snapshot:
         unispherehost: "{{unispherehost}}"
-        universion: "{{universion}}"
         verifycert: "{{verifycert}}"
         user: "{{user}}"
         password: "{{password}}"
@@ -228,7 +220,6 @@ Examples
     - name: Rename Storage Group Snapshot using snapshot_id
       dellemc.powermax.snapshot:
         unispherehost: "{{unispherehost}}"
-        universion: "{{universion}}"
         verifycert: "{{verifycert}}"
         user: "{{user}}"
         password: "{{password}}"
@@ -242,7 +233,6 @@ Examples
     - name: Change Snapshot Link Status to Linked using generation
       dellemc.powermax.snapshot:
         unispherehost: "{{unispherehost}}"
-        universion: "{{universion}}"
         verifycert: "{{verifycert}}"
         user: "{{user}}"
         password: "{{password}}"
@@ -257,7 +247,6 @@ Examples
     - name: Change Snapshot Link Status to UnLinked using generation
       dellemc.powermax.snapshot:
         unispherehost: "{{unispherehost}}"
-        universion: "{{universion}}"
         verifycert: "{{verifycert}}"
         user: "{{user}}"
         password: "{{password}}"
@@ -272,7 +261,6 @@ Examples
     - name: Change Snapshot Link Status to Linked using snapshot_id
       dellemc.powermax.snapshot:
         unispherehost: "{{unispherehost}}"
-        universion: "{{universion}}"
         verifycert: "{{verifycert}}"
         user: "{{user}}"
         password: "{{password}}"
@@ -287,7 +275,6 @@ Examples
     - name: Change Snapshot Link Status to UnLinked using snapshot_id
       dellemc.powermax.snapshot:
         unispherehost: "{{unispherehost}}"
-        universion: "{{universion}}"
         verifycert: "{{verifycert}}"
         user: "{{user}}"
         password: "{{password}}"
@@ -302,7 +289,6 @@ Examples
     - name: Restore storage group snapshot using generation
       dellemc.powermax.snapshot:
         unispherehost: "{{unispherehost}}"
-        universion: "{{universion}}"
         verifycert: "{{verifycert}}"
         user: "{{user}}"
         password: "{{password}}"
@@ -316,7 +302,6 @@ Examples
     - name: Restore Storage Group Snapshot using snapshot_id
       dellemc.powermax.snapshot:
         unispherehost: "{{unispherehost}}"
-        universion: "{{universion}}"
         verifycert: "{{verifycert}}"
         user: "{{user}}"
         password: "{{password}}"
@@ -330,7 +315,6 @@ Examples
     - name: Delete Storage Group Snapshot using generation
       dellemc.powermax.snapshot:
         unispherehost: "{{unispherehost}}"
-        universion: "{{universion}}"
         verifycert: "{{verifycert}}"
         user: "{{user}}"
         password: "{{password}}"
@@ -343,7 +327,6 @@ Examples
     - name: Delete Storage Group Snapshot using snapshot_id
       dellemc.powermax.snapshot:
         unispherehost: "{{unispherehost}}"
-        universion: "{{universion}}"
         verifycert: "{{verifycert}}"
         user: "{{user}}"
         password: "{{password}}"

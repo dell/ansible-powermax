@@ -153,7 +153,6 @@ EXAMPLES = r"""
 - name: Get metro environment details
   dellemc.powermax.metrodr:
     unispherehost: "{{unispherehost}}"
-    universion: "{{universion}}"
     verifycert: "{{verifycert}}"
     user: "{{user}}"
     password: "{{password}}"
@@ -164,7 +163,6 @@ EXAMPLES = r"""
 - name: Convert SG to metro DR environment
   dellemc.powermax.metrodr:
     unispherehost: "{{unispherehost}}"
-    universion: "{{universion}}"
     verifycert: "{{verifycert}}"
     user: "{{user}}"
     password: "{{password}}"
@@ -180,7 +178,6 @@ EXAMPLES = r"""
 - name: Create metro DR environment
   dellemc.powermax.metrodr:
     unispherehost: "{{unispherehost}}"
-    universion: "{{universion}}"
     verifycert: "{{verifycert}}"
     user: "{{user}}"
     password: "{{password}}"
@@ -198,7 +195,6 @@ EXAMPLES = r"""
 - name: Modify metro DR environment
   dellemc.powermax.metrodr:
     unispherehost: "{{unispherehost}}"
-    universion: "{{universion}}"
     verifycert: "{{verifycert}}"
     user: "{{user}}"
     password: "{{password}}"
@@ -215,7 +211,6 @@ EXAMPLES = r"""
 - name: Delete metro DR environment
   dellemc.powermax.metrodr:
     unispherehost: "{{unispherehost}}"
-    universion: "{{universion}}"
     verifycert: "{{verifycert}}"
     user: "{{user}}"
     password: "{{password}}"

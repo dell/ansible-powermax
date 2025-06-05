@@ -49,9 +49,6 @@ Parameters
     IP or FQDN of the Unisphere host
 
 
-  universion (False, int, None)
-    Unisphere version. This parameter has been deprecated. It is no longer necessary to specify this parameter.
-
 
   verifycert (True, str, None)
     Specifies system whether to validate SSL certificate or not, Values can be True or False or a custom file path for SSL certificate with .pem extension or .cer with base 64 encoding.
@@ -92,7 +89,6 @@ Examples
           register: storage_group_details
           dellemc.powermax.storagegroup:
             unispherehost: "{{unispherehost}}"
-            universion: "{{universion}}"
             verifycert: "{{verifycert}}"
             user: "{{user}}"
             password: "{{password}}"
@@ -106,7 +102,6 @@ Examples
         - name: Create volume on the storage group
           dellemc.powermax.volume:
             unispherehost: "{{unispherehost}}"
-            universion: "{{universion}}"
             verifycert: "{{verifycert}}"
             user: "{{user}}"
             password: "{{password}}"

@@ -4,7 +4,6 @@
   connection: local
   vars:
     unispherehost: 'your_unisphere_host_url'
-    universion: 'version_of_the_unisphere'
     verifycert: false
     user: 'your_username'
     password: 'your_password'

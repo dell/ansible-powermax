@@ -117,7 +117,6 @@ EXAMPLES = r"""
 - name: Create a snapshot policy
   dellemc.powermax.snapshotpolicy:
     unispherehost: "{{unispherehost}}"
-    universion: "{{universion}}"
     verifycert: "{{verifycert}}"
     user: "{{user}}"
     password: "{{password}}"
@@ -134,7 +133,6 @@ EXAMPLES = r"""
 - name: Create a snapshot policy and associate storage groups to it
   dellemc.powermax.snapshotpolicy:
     unispherehost: "{{unispherehost}}"
-    universion: "{{universion}}"
     verifycert: "{{verifycert}}"
     user: "{{user}}"
     password: "{{password}}"
@@ -155,7 +153,6 @@ EXAMPLES = r"""
 - name: Get snapshot policy details
   dellemc.powermax.snapshotpolicy:
     unispherehost: "{{unispherehost}}"
-    universion: "{{universion}}"
     verifycert: "{{verifycert}}"
     user: "{{user}}"
     password: "{{password}}"
@@ -166,7 +163,6 @@ EXAMPLES = r"""
 - name: Modify snapshot policy attributes
   dellemc.powermax.snapshotpolicy:
     unispherehost: "{{unispherehost}}"
-    universion: "{{universion}}"
     verifycert: "{{verifycert}}"
     user: "{{user}}"
     password: "{{password}}"
@@ -183,7 +179,6 @@ EXAMPLES = r"""
 - name: Modify snapshot policy, associate to storage groups
   dellemc.powermax.snapshotpolicy:
     unispherehost: "{{unispherehost}}"
-    universion: "{{universion}}"
     verifycert: "{{verifycert}}"
     user: "{{user}}"
     password: "{{password}}"
@@ -198,7 +193,6 @@ EXAMPLES = r"""
 - name: Modify snapshot policy, disassociate from storage groups
   dellemc.powermax.snapshotpolicy:
     unispherehost: "{{unispherehost}}"
-    universion: "{{universion}}"
     verifycert: "{{verifycert}}"
     user: "{{user}}"
     password: "{{password}}"
@@ -213,7 +207,6 @@ EXAMPLES = r"""
 - name: Modify snapshot policy state to suspend
   dellemc.powermax.snapshotpolicy:
     unispherehost: "{{unispherehost}}"
-    universion: "{{universion}}"
     verifycert: "{{verifycert}}"
     user: "{{user}}"
     password: "{{password}}"
@@ -225,7 +218,6 @@ EXAMPLES = r"""
 - name: Modify snapshot policy state to resume
   dellemc.powermax.snapshotpolicy:
     unispherehost: "{{unispherehost}}"
-    universion: "{{universion}}"
     verifycert: "{{verifycert}}"
     user: "{{user}}"
     password: "{{password}}"
@@ -237,7 +229,6 @@ EXAMPLES = r"""
 - name: Delete a snapshot policy
   dellemc.powermax.snapshotpolicy:
     unispherehost: "{{unispherehost}}"
-    universion: "{{universion}}"
     verifycert: "{{verifycert}}"
     user: "{{user}}"
     password: "{{password}}"

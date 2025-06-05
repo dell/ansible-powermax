@@ -58,7 +58,6 @@ EXAMPLES = r'''
 - name: Get initiator details using initiator id
   dellemc.powermax.initiator:
     unispherehost: "{{unispherehost}}"
-    universion: "{{universion}}"
     verifycert: "{{verifycert}}"
     user: "{{user}}"
     password: "{{password}}"
@@ -69,7 +68,6 @@ EXAMPLES = r'''
 - name: Get initiator details using alias
   dellemc.powermax.initiator:
     unispherehost: "{{unispherehost}}"
-    universion: "{{universion}}"
     verifycert: "{{verifycert}}"
     user: "{{user}}"
     password: "{{password}}"
@@ -80,7 +78,6 @@ EXAMPLES = r'''
 - name: Rename initiator alias using initiator id
   dellemc.powermax.initiator:
     unispherehost: "{{unispherehost}}"
-    universion: "{{universion}}"
     verifycert: "{{verifycert}}"
     user: "{{user}}"
     password: "{{password}}"
@@ -94,7 +91,6 @@ EXAMPLES = r'''
 - name: Rename initiator alias using alias
   dellemc.powermax.initiator:
     unispherehost: "{{unispherehost}}"
-    universion: "{{universion}}"
     verifycert: "{{verifycert}}"
     user: "{{user}}"
     password: "{{password}}"

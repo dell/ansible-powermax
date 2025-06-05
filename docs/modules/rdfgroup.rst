@@ -45,9 +45,6 @@ Parameters
     IP or FQDN of the Unisphere host
 
 
-  universion (False, int, None)
-    Unisphere version. This parameter has been deprecated. It is no longer necessary to specify this parameter.
-
 
   verifycert (True, str, None)
     Specifies system whether to validate SSL certificate or not, Values can be True or False or a custom file path for SSL certificate with .pem extension or .cer with base 64 encoding.
@@ -97,7 +94,6 @@ Examples
     - name: Get the details of an RDF group and volumes
       dellemc.powermax.rdfgroup:
         unispherehost: "{{unispherehost}}"
-        universion: "{{universion}}"
         verifycert: "{{verifycert}}"
         user: "{{user}}"
         password: "{{password}}"
@@ -108,7 +104,6 @@ Examples
       dellemc.powermax.rdfgroup:
         unispherehost: "{{unispherehost}}"
         serial_no: "{{serial_no}}"
-        universion: "{{universion}}"
         verifycert: "{{verifycert}}"
         user: "{{user}}"
         password: "{{password}}"

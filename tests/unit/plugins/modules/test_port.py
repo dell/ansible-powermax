@@ -47,14 +47,14 @@ class TestPort(PowerMaxUnitBase):
             {"ports": [{"director_id": "FA-1D", "port_id": "5"}]})
         powermax_module_mock.module.params = self.port_args
         powermax_module_mock.perform_module_operation()
-        powermax_module_mock.provisioning.get_director_port.assert_called()
+        powermax_module_mock.system.get_director_port.assert_called()
         assert powermax_module_mock.module.exit_json.call_args[1]['changed'] is False
 
     def test_get_port_no_director(self, powermax_module_mock):
         self.port_args.update(
             {"ports": [{"director_id": "FA-1D", "port_id": "5"}, {"director_id": "FA-2D", "port_id": ""}]})
         powermax_module_mock.module.params = self.port_args
-        powermax_module_mock.provisioning.get_director_port = MagicMock(return_value={})
+        powermax_module_mock.system.get_director_port = MagicMock(return_value={})
         self.capture_fail_json_method(
             MockPortApi.get_error_message(
                 'missing_mandatory_args'), powermax_module_mock,
@@ -64,7 +64,7 @@ class TestPort(PowerMaxUnitBase):
         self.port_args.update(
             {"ports": [{"director_id": "FA-1D", "port_id": "5"}]})
         powermax_module_mock.module.params = self.port_args
-        powermax_module_mock.provisioning.get_director_port = MagicMock(side_effect=MockApiException)
+        powermax_module_mock.system.get_director_port = MagicMock(side_effect=MockApiException)
         self.capture_fail_json_method(
             MockPortApi.get_error_message(
                 'get_port_exception', director_id="FA-1D", port_id="5"), powermax_module_mock,
