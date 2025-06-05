@@ -646,7 +646,7 @@ class Info(object):
         self.module = AnsibleModule(
             argument_spec=self.module_params,
             supports_check_mode=True)
-        serial_no = self.module.params['serial_no']
+        serial_no = self.u4v_conn.array_id
         if HAS_PYU4V is False:
             self.show_error_exit(msg="Ansible modules for PowerMax require "
                                  "the PyU4V python library to be "
@@ -788,7 +788,7 @@ class Info(object):
 
         try:
             LOG.info('Getting Volume List ')
-            array_serial_no = self.module.params['serial_no']
+            array_serial_no = self.u4v_conn.array_id
             if tdev_volumes:
                 if filters_dict:
                     if "tdev" not in filters_dict.keys():
@@ -810,7 +810,7 @@ class Info(object):
 
         except Exception as e:
             msg = 'Get Volumes for array %s failed with error %s '\
-                  % (self.module.params['serial_no'], str(e))
+                  % (self.u4v_conn.array_id, str(e))
             self.show_error_exit(msg=msg)
 
     def get_volume_details(self, vol_list):
@@ -823,7 +823,7 @@ class Info(object):
             return vol_details_list
         except Exception as e:
             msg = 'Get Volumes for array %s failed with error %s '\
-                  % (self.module.params['serial_no'], str(e))
+                  % (self.u4v_conn.array_id, str(e))
             self.show_error_exit(msg=msg)
 
     def get_storage_group_list(self, filters_dict=None):
@@ -832,19 +832,18 @@ class Info(object):
 
         try:
             LOG.info('Getting Storage Group List ')
-            array_serial_no = self.module.params['serial_no']
             if filters_dict:
                 sg_list = self.provisioning.get_storage_group_list(
                     filters=filters_dict)
             else:
                 sg_list = self.provisioning.get_storage_group_list()
             LOG.info('Successfully listed %d Storage Group from array %s',
-                     len(sg_list), array_serial_no)
+                     len(sg_list), self.u4v_conn.array_id)
             return sg_list
 
         except Exception as e:
             msg = 'Get Storage Group for array %s failed with error %s' \
-                  % (self.module.params['serial_no'], str(e))
+                  % (self.u4v_conn.array_id, str(e))
             self.show_error_exit(msg=msg)
 
     def get_array_list(self):
@@ -868,7 +867,7 @@ class Info(object):
 
         try:
             LOG.info('Getting Storage Resource Pool List')
-            array_serial_no = self.module.params['serial_no']
+            array_serial_no = self.u4v_conn.array_id
             if filters_dict:
                 srp_list \
                     = self.provisioning.get_srp_list(filters=filters_dict)
@@ -888,7 +887,7 @@ class Info(object):
 
         except Exception as e:
             msg = 'Get Storage Resource Pool details for array %s failed ' \
-                  'with error %s' % (self.module.params['serial_no'], str(e))
+                  'with error %s' % (self.u4v_conn.array_id, str(e))
             self.show_error_exit(msg=msg)
 
     def get_portgroup_list(self, filters_dict=None):
@@ -897,19 +896,18 @@ class Info(object):
 
         try:
             LOG.info('Getting Port Group List ')
-            array_serial_no = self.module.params['serial_no']
             if filters_dict:
                 pg_list = self.provisioning.get_port_group_list(
                     filters=filters_dict)
             else:
                 pg_list = self.provisioning.get_port_group_list()
             LOG.info('Got %d Port Groups from array %s',
-                     len(pg_list), array_serial_no)
+                     len(pg_list), self.module)
             return pg_list
 
         except Exception as e:
             msg = 'Get Port Group for array %s failed with error %s' \
-                  % (self.module.params['serial_no'], str(e))
+                  % (self.u4v_conn.array_id, str(e))
             self.show_error_exit(msg=msg)
 
     def get_host_list(self, filters_dict=None):
@@ -917,7 +915,7 @@ class Info(object):
 
         try:
             LOG.info('Getting Host List ')
-            array_serial_no = self.module.params['serial_no']
+            array_serial_no = self.u4v_conn.array_id
             if filters_dict:
                 host_list = self.provisioning.get_host_list(
                     filters=filters_dict)
@@ -929,7 +927,7 @@ class Info(object):
 
         except Exception as e:
             msg = 'Get Host for array %s failed with error %s' \
-                  % (self.module.params['serial_no'], str(e))
+                  % (self.u4v_conn.array_id, str(e))
             self.show_error_exit(msg=msg)
 
     def get_hostgroup_list(self, filters_dict=None):
@@ -938,19 +936,18 @@ class Info(object):
 
         try:
             LOG.info('Getting Host Group List ')
-            array_serial_no = self.module.params['serial_no']
             if filters_dict:
                 hostgroup_list = self.provisioning.get_host_group_list(
                     filters=filters_dict)
             else:
                 hostgroup_list = self.provisioning.get_host_group_list()
             LOG.info('Got %d Host Groups from array %s',
-                     len(hostgroup_list), array_serial_no)
+                     len(hostgroup_list), self.u4v_conn.array_id)
             return hostgroup_list
 
         except Exception as e:
             msg = 'Get Host Group for array %s failed with error %s ' \
-                  % (self.module.params['serial_no'], str(e))
+                  % (self.u4v_conn.array_id, str(e))
             self.show_error_exit(msg=msg)
 
     def get_port_list(self, filters_dict=None):
@@ -958,19 +955,18 @@ class Info(object):
 
         try:
             LOG.info('Getting Port List ')
-            array_serial_no = self.module.params['serial_no']
             if filters_dict:
                 port_list = self.provisioning.get_port_list(
                     filters=filters_dict)
             else:
                 port_list = self.provisioning.get_port_list()
             LOG.info('Got %d Ports from array %s',
-                     len(port_list), array_serial_no)
+                     len(port_list), self.u4v_conn.array_id)
             return port_list
 
         except Exception as e:
             msg = 'Get Port for array %s failed with error %s ' \
-                  % (self.module.params['serial_no'], str(e))
+                  % (self.u4v_conn.array_id, str(e))
             self.show_error_exit(msg=msg)
 
     def get_masking_view_list(self, filters_dict=None):
@@ -979,19 +975,18 @@ class Info(object):
 
         try:
             LOG.info('Getting Masking View List')
-            array_serial_no = self.module.params['serial_no']
             if filters_dict:
                 mv_list = self.provisioning.\
                     get_masking_view_list(filters=filters_dict)
             else:
                 mv_list = self.provisioning.get_masking_view_list()
             LOG.info('Got %d Getting Masking Views from array %s',
-                     len(mv_list), array_serial_no)
+                     len(mv_list), self.u4v_conn.array_id)
             return mv_list
 
         except Exception as e:
             msg = 'Get Masking View for array %s failed with error %s' \
-                  % (self.module.params['serial_no'], str(e))
+                  % (self.u4v_conn.array_id, str(e))
             self.show_error_exit(msg=msg)
 
     def prepare_mv_connections_list(self, mv_connections_list, masking_view_id, filters_dict=None):
@@ -1011,7 +1006,7 @@ class Info(object):
 
         try:
             LOG.info('Getting Masking View Connections List')
-            array_serial_no = self.module.params['serial_no']
+            array_serial_no = self.u4v_conn.array_id
             masking_view_list = self.get_masking_view_list()
             mv_connections_list = []
 
@@ -1038,7 +1033,7 @@ class Info(object):
 
         except Exception as e:
             msg = 'Get Masking View Connections for array %s failed with error %s' \
-                  % (self.module.params['serial_no'], str(e))
+                  % (self.u4v_conn.array_id, str(e))
             self.show_error_exit(msg=msg)
 
     def get_rdfgroup_list(self):
@@ -1047,7 +1042,7 @@ class Info(object):
 
         try:
             LOG.info('Getting rdf group List ')
-            array_serial_no = self.module.params['serial_no']
+            array_serial_no = self.u4v_conn.array_id
             rdf_list = self.replication.get_rdf_group_list()
             LOG.info('Successfully listed %d rdf groups from array %s',
                      len(rdf_list), array_serial_no)
@@ -1055,7 +1050,7 @@ class Info(object):
 
         except Exception as e:
             msg = 'Get rdf group for array %s failed with error %s ' \
-                  % (self.module.params['serial_no'], str(e))
+                  % (self.u4v_conn.array_id, str(e))
             self.show_error_exit(msg=msg)
 
     def get_metro_dr_env_list(self):
@@ -1069,7 +1064,7 @@ class Info(object):
             LOG.info("Got PyU4V instance for metro DR on to PowerMax")
 
             LOG.info('Getting metro DR environment list ')
-            array_serial_no = self.module.params['serial_no']
+            array_serial_no = self.u4v_conn.array_id
             metro_dr_env_list = self.metro.get_metrodr_environment_list()
             LOG.info('Successfully listed %d metro DR environments from array'
                      ' %s', len(metro_dr_env_list), array_serial_no)
@@ -1077,7 +1072,7 @@ class Info(object):
 
         except Exception as e:
             msg = 'Get Metro DR environment for array %s failed with error ' \
-                  '%s ' % (self.module.params['serial_no'], str(e))
+                  '%s ' % (self.u4v_conn.array_id, str(e))
             self.show_error_exit(msg=msg)
 
     def get_snapshot_policies_list(self):
@@ -1090,16 +1085,15 @@ class Info(object):
             LOG.info("Got PyU4V instance for snapshot policy on to PowerMax")
 
             LOG.info('Getting snapshot policies list ')
-            array_serial_no = self.module.params['serial_no']
             snapshot_policy_list \
                 = self.snapshot_policy.get_snapshot_policy_list()
             LOG.info('Successfully listed %d snapshot policies from array'
-                     ' %s', len(snapshot_policy_list), array_serial_no)
+                     ' %s', len(snapshot_policy_list), self.u4v_conn.array_id)
             return snapshot_policy_list
 
         except Exception as e:
             msg = 'Get snapshot policies for array %s failed with error ' \
-                  '%s ' % (self.module.params['serial_no'], str(e))
+                  '%s ' % (self.u4v_conn.array_id, str(e))
             self.show_error_exit(msg=msg)
 
     def get_initiators_list(self, filters_dict=None):
@@ -1121,7 +1115,7 @@ class Info(object):
     def show_error_exit(self, msg):
         if self.u4v_conn is not None:
             try:
-                LOG.info("Closing Unisphere connection %s", self.u4v_conn)
+                LOG.info("Closing Unisphere connection %s", self.u4v_conn.array_id)
                 utils.close_connection(self.u4v_conn)
                 LOG.info("Connection closed successfully")
             except Exception as e:
@@ -1135,7 +1129,7 @@ class Info(object):
         """ Perform different actions on Gatherfacts based on user parameters
             chosen in playbook """
 
-        serial_no = self.module.params['serial_no']
+        serial_no = self.u4v_conn.array_id
         if serial_no == '':
             array_list = self.get_array_list()
             self.module.exit_json(Arrays=array_list)
@@ -1204,7 +1198,7 @@ class Info(object):
                     self.get_mv_connections_list(masking_view_name=masking_view_name,
                                                  filters_dict=filters_dict)
 
-            LOG.info("Closing Unisphere connection %s", self.u4v_conn)
+            LOG.info("Closing Unisphere connection %s", self.u4v_conn.array_id)
             utils.close_connection(self.u4v_conn)
             LOG.info("Connection closed successfully")
 

@@ -273,7 +273,7 @@ class Port(object):
     def show_error_exit(self, msg):
         if self.u4v_conn is not None:
             try:
-                LOG.info("Closing unisphere connection %s", self.u4v_conn)
+                LOG.info("Closing unisphere connection %s", self.u4v_conn.array_id)
                 utils.close_connection(self.u4v_conn)
                 LOG.info("Connection closed successfully")
             except Exception as e:
@@ -293,7 +293,7 @@ class Port(object):
         self.get_port_details()
         # Finally update the module changed state
         self.result["changed"] = changed
-        LOG.info("Closing unisphere connection %s", self.u4v_conn)
+        LOG.info("Closing unisphere connection %s", self.u4v_conn.array_id)
         utils.close_connection(self.u4v_conn)
         LOG.info("Connection closed successfully")
         self.module.exit_json(**self.result)

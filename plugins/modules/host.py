@@ -783,7 +783,7 @@ class Host(object):
         self._create_result_dict(changed, host)
         # Update the module's final state
         LOG.info('changed %s', changed)
-        LOG.info("Closing unisphere connection %s", self.u4v_conn)
+        LOG.info("Closing unisphere connection %s", self.u4v_conn.array_id)
         utils.close_connection(self.u4v_conn)
         LOG.info("Connection closed successfully")
         self.module.exit_json(**self.result)

@@ -761,7 +761,7 @@ class Volume(object):
                 vol_id = self.get_vol_id(vol_name, sg_name)
             return vol_id
         except Exception as e:
-            LOG.info('Failed to retrieve volume id. Exception '
+            LOG.error('Failed to retrieve volume id. Exception '
                      'received was %s.', e)
 
     def get_vol_id(self, vol_name, sg_name):
@@ -873,7 +873,7 @@ class Volume(object):
     def show_error_exit(self, msg):
         if self.u4v_conn is not None:
             try:
-                LOG.info("Closing unisphere connection %s", self.u4v_conn)
+                LOG.info("Closing unisphere connection %s", self.u4v_conn.array_id)
                 utils.close_connection(self.u4v_conn)
                 LOG.info("Connection closed successfully")
             except Exception as e:
@@ -969,7 +969,7 @@ class Volume(object):
         self.result["changed"] = changed
         if state == 'present':
             self.result["volume_details"] = self.get_volume()
-        LOG.info("Closing unisphere connection %s", self.u4v_conn)
+        LOG.info("Closing unisphere connection %s", self.u4v_conn.array_id)
         utils.close_connection(self.u4v_conn)
         LOG.info("Connection closed successfully")
         self.module.exit_json(**self.result)

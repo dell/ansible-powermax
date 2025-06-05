@@ -1626,7 +1626,7 @@ class StorageGroup(object):
     def show_error_exit(self, msg):
         if self.u4v_conn is not None:
             try:
-                LOG.info("Closing Unisphere connection %s", self.u4v_conn)
+                LOG.info("Closing unisphere connection %s", self.u4v_conn.array_id)
                 utils.close_connection(self.u4v_conn)
                 LOG.info("Connection closed successfully")
             except Exception as e:
@@ -1837,7 +1837,7 @@ class StorageGroup(object):
         result['removed_vols_details'] = \
             list(set(vols_before_op) - set(vols_after_op))
 
-        LOG.info("Closing Unisphere connection %s", self.u4v_conn)
+        LOG.info("Closing unisphere connection %s", self.u4v_conn.array_id)
         utils.close_connection(self.u4v_conn)
         LOG.info("Connection closed successfully")
 

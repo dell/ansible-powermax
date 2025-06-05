@@ -143,7 +143,7 @@ class ProcessPoolDict(object):
     def show_error_exit(self, msg):
         if self.u4v_conn is not None:
             try:
-                LOG.info("Closing unisphere connection %s", self.u4v_conn)
+                LOG.info("Closing unisphere connection %s", self.u4v_conn.array_id)
                 utils.close_connection(self.u4v_conn)
                 LOG.info("Connection closed successfully")
             except Exception as e:
