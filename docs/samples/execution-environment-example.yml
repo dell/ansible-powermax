@@ -1,0 +1,12 @@
+# This example can be used to set a specific PyU4V version.
+# If the user wants to use the latest supported version of PyU4V by the collection.
+# The `python: -PyU4V == version` does not need to be specified.
+# To see the correct version of PyU4V based on your powermax array,
+# please checkout our installation guide (https://github.com/dell/ansible-powermax/blob/main/docs/INSTALLATION.md).
+dependencies:
+  galaxy: |-
+    collections:
+      - name: dellemc.powermax
+        version: x.x.x
+  python:
+    - PyU4V == 10.0.0.* # Some specific version of the PyU4V
