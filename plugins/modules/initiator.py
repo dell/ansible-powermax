@@ -166,6 +166,10 @@ class Initiator(object):
             mutually_exclusive=mutually_exclusive,
             required_one_of=required_one_of
         )
+
+        # Get a copy of the module parameters without sensitive data for logging purposes
+        self.module_wo_sensitive_data = utils.get_powermax_management_host_parameters_remove_sensitive_data(self.module.params)
+
         if HAS_PYU4V is False:
             self.show_error_exit(msg="Ansible modules for PowerMax require "
                                  "the PyU4V python library to be "
@@ -268,10 +272,10 @@ class Initiator(object):
         Perform different actions on host based on user parameter
         chosen in playbook
         '''
-        initiator_id = self.module.params['initiator_id']
-        alias = self.module.params['alias']
-        new_alias = self.module.params['new_alias']
-        state = self.module.params['state']
+        initiator_id = self.module_wo_sensitive_data['initiator_id']
+        alias = self.module_wo_sensitive_data['alias']
+        new_alias = self.module_wo_sensitive_data['new_alias']
+        state = self.module_wo_sensitive_data['state']
         result = dict(
             changed=False,
             initiator_details=[]

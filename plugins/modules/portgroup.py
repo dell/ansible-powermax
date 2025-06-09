@@ -226,6 +226,10 @@ class PortGroup(object):
             argument_spec=self.module_params,
             supports_check_mode=True
         )
+
+        # Get a copy of the module parameters without sensitive data for logging purposes
+        self.module_wo_sensitive_data = utils.get_powermax_management_host_parameters_remove_sensitive_data(self.module.params)
+
         # result is a dictionary that contains changed status and portgroup
         # details
         self.result = {"changed": False, "portgroup_details": {}}
@@ -262,9 +266,9 @@ class PortGroup(object):
 
     def create_portgroup(self, portgroup_name):
         """Create port group with given ports"""
-        ports = self.module.params['ports']
-        port_state = self.module.params['port_state']
-        port_group_protocol = self.module.params['port_group_protocol']
+        ports = self.module_wo_sensitive_data['ports']
+        port_state = self.module_wo_sensitive_data['port_state']
+        port_group_protocol = self.module_wo_sensitive_data['port_group_protocol']
         try:
             if port_state and port_state != 'present-in-group':
                 self.show_error_exit(msg="Invalid port_state: Ports can only "
@@ -299,7 +303,7 @@ class PortGroup(object):
             port_group = self.provisioning.get_port_group(portgroup_name)
             if 'symmetrixPortKey' in port_group:
                 existing_ports = port_group["symmetrixPortKey"]
-            add_ports = self.module.params['ports']
+            add_ports = self.module_wo_sensitive_data['ports']
             if add_ports is None or len(add_ports) == 0:
                 self.show_error_exit(
                     msg=("List of ports to be added is empty for portgroup "
@@ -334,7 +338,7 @@ class PortGroup(object):
                 LOG.info("No ports in portgroup : %s", portgroup_name)
                 return False
             existing_ports = port_group["symmetrixPortKey"]
-            rem_ports = self.module.params['ports']
+            rem_ports = self.module_wo_sensitive_data['ports']
             if rem_ports is None or len(rem_ports) == 0:
                 self.show_error_exit(msg='List of ports to be removed is '
                                          'empty for portgroup %s'
@@ -378,7 +382,7 @@ class PortGroup(object):
         """
         Modify an existing port group
         """
-        new_name = self.module.params['new_name']
+        new_name = self.module_wo_sensitive_data['new_name']
 
         if len(new_name) == 0:
             LOG.info(' No new name for port group %s', portgroup_name)
@@ -423,10 +427,10 @@ class PortGroup(object):
         Perform different actions on port group based on user parameter
         chosen in playbook
         """
-        state = self.module.params['state']
-        port_state = self.module.params['port_state']
-        portgroup_name = self.module.params['portgroup_name']
-        new_name = self.module.params['new_name']
+        state = self.module_wo_sensitive_data['state']
+        port_state = self.module_wo_sensitive_data['port_state']
+        portgroup_name = self.module_wo_sensitive_data['portgroup_name']
+        new_name = self.module_wo_sensitive_data['new_name']
 
         portgroup = self.get_portgroup(portgroup_name)
         changed = False

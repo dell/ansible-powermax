@@ -55,16 +55,16 @@ class TestHost(PowerMaxUnitBase):
                 assert powermax_module_mock.show_error_exit.call_count == 3
 
     def test_get_host_exception(self, powermax_module_mock):
-        powermax_module_mock.module.params = self.host_args
-        powermax_module_mock.module.params.update({"host_name": "test_host"})
+        powermax_module_mock.module_wo_sensitive_data = self.host_args
+        powermax_module_mock.module_wo_sensitive_data.update({"host_name": "test_host"})
         powermax_module_mock.provisioning.get_host = MagicMock(
             side_effect=MockApiException
         )
         powermax_module_mock.perform_module_operation()
 
     def test_create_host(self, powermax_module_mock):
-        powermax_module_mock.module.params = self.host_args
-        powermax_module_mock.module.params.update(
+        powermax_module_mock.module_wo_sensitive_data = self.host_args
+        powermax_module_mock.module_wo_sensitive_data.update(
             {
                 "host_name": "test_host",
                 "host_flags": {
@@ -80,8 +80,8 @@ class TestHost(PowerMaxUnitBase):
         powermax_module_mock.provisioning.create_host.assert_called()
 
     def test_create_host_check_mode_disabe_consistent_lun(self, powermax_module_mock):
-        powermax_module_mock.module.params = self.host_args
-        powermax_module_mock.module.params.update(
+        powermax_module_mock.module_wo_sensitive_data = self.host_args
+        powermax_module_mock.module_wo_sensitive_data.update(
             {
                 "host_name": "test_host",
                 "host_flags": {
@@ -98,7 +98,7 @@ class TestHost(PowerMaxUnitBase):
         powermax_module_mock.provisioning.create_host.assert_not_called()
 
     def test_create_host_no_name(self, powermax_module_mock):
-        powermax_module_mock.module.params = self.host_args
+        powermax_module_mock.module_wo_sensitive_data = self.host_args
         powermax_module_mock.provisioning.get_host = MagicMock(return_value={})
         self.capture_fail_json_method(
             MockHostApi.get_host_exception_response("create_host_empty_name"),
@@ -107,8 +107,8 @@ class TestHost(PowerMaxUnitBase):
         )
 
     def test_create_host_with_type(self, powermax_module_mock):
-        powermax_module_mock.module.params = self.host_args
-        powermax_module_mock.module.params.update(
+        powermax_module_mock.module_wo_sensitive_data = self.host_args
+        powermax_module_mock.module_wo_sensitive_data.update(
             {"host_name": "test_host", "host_type": "default"}
         )
         powermax_module_mock.provisioning.get_host = MagicMock(return_value={})
@@ -116,8 +116,8 @@ class TestHost(PowerMaxUnitBase):
         powermax_module_mock.provisioning.create_host.assert_called()
 
     def test_create_host_new_name(self, powermax_module_mock):
-        powermax_module_mock.module.params = self.host_args
-        powermax_module_mock.module.params.update(
+        powermax_module_mock.module_wo_sensitive_data = self.host_args
+        powermax_module_mock.module_wo_sensitive_data.update(
             {"host_name": "test_host", "new_name": "test_host_new_name"}
         )
         powermax_module_mock.provisioning.get_host = MagicMock(return_value={})
@@ -128,8 +128,8 @@ class TestHost(PowerMaxUnitBase):
         )
 
     def test_create_host_init_absent(self, powermax_module_mock):
-        powermax_module_mock.module.params = self.host_args
-        powermax_module_mock.module.params.update(
+        powermax_module_mock.module_wo_sensitive_data = self.host_args
+        powermax_module_mock.module_wo_sensitive_data.update(
             {"host_name": "test_host", "initiator_state": "absent-in-host"}
         )
         powermax_module_mock.provisioning.get_host = MagicMock(return_value={})
@@ -140,16 +140,16 @@ class TestHost(PowerMaxUnitBase):
         )
 
     def test_create_host_check_mode(self, powermax_module_mock):
-        powermax_module_mock.module.params = self.host_args
-        powermax_module_mock.module.params.update({"host_name": "test_host"})
+        powermax_module_mock.module_wo_sensitive_data = self.host_args
+        powermax_module_mock.module_wo_sensitive_data.update({"host_name": "test_host"})
         powermax_module_mock.module.check_mode = True
         powermax_module_mock.provisioning.get_host = MagicMock(return_value={})
         powermax_module_mock.perform_module_operation()
         powermax_module_mock.provisioning.create_host.assert_not_called()
 
     def test_create_host_exception(self, powermax_module_mock):
-        powermax_module_mock.module.params = self.host_args
-        powermax_module_mock.module.params.update({"host_name": "test_host"})
+        powermax_module_mock.module_wo_sensitive_data = self.host_args
+        powermax_module_mock.module_wo_sensitive_data.update({"host_name": "test_host"})
         powermax_module_mock.provisioning.get_host = MagicMock(return_value={})
         powermax_module_mock.provisioning.create_host = MagicMock(
             side_effect=MockApiException
@@ -161,8 +161,8 @@ class TestHost(PowerMaxUnitBase):
         )
 
     def test_rename_host(self, powermax_module_mock):
-        powermax_module_mock.module.params = self.host_args
-        powermax_module_mock.module.params.update(
+        powermax_module_mock.module_wo_sensitive_data = self.host_args
+        powermax_module_mock.module_wo_sensitive_data.update(
             {"host_name": "test_host", "new_name": "test_host_new", "host_type": "hpux"}
         )
         powermax_module_mock.provisioning.get_host = MagicMock(
@@ -172,8 +172,8 @@ class TestHost(PowerMaxUnitBase):
         powermax_module_mock.provisioning.modify_host.assert_called()
 
     def test_rename_host_exception(self, powermax_module_mock):
-        powermax_module_mock.module.params = self.host_args
-        powermax_module_mock.module.params.update(
+        powermax_module_mock.module_wo_sensitive_data = self.host_args
+        powermax_module_mock.module_wo_sensitive_data.update(
             {"host_name": "test_host", "new_name": "test_host_new"}
         )
         powermax_module_mock.provisioning.get_host = MagicMock(
@@ -189,8 +189,8 @@ class TestHost(PowerMaxUnitBase):
         )
 
     def test_rename_host_check_mode(self, powermax_module_mock):
-        powermax_module_mock.module.params = self.host_args
-        powermax_module_mock.module.params.update(
+        powermax_module_mock.module_wo_sensitive_data = self.host_args
+        powermax_module_mock.module_wo_sensitive_data.update(
             {"host_name": "test_host", "new_name": "test_host_new", "host_type": "hpux"}
         )
         powermax_module_mock.module.check_mode = True
@@ -201,8 +201,8 @@ class TestHost(PowerMaxUnitBase):
         powermax_module_mock.provisioning.modify_host.assert_not_called()
 
     def test_rename_host_same_name(self, powermax_module_mock):
-        powermax_module_mock.module.params = self.host_args
-        powermax_module_mock.module.params.update(
+        powermax_module_mock.module_wo_sensitive_data = self.host_args
+        powermax_module_mock.module_wo_sensitive_data.update(
             {"host_name": "test_host", "new_name": "test_host"}
         )
         powermax_module_mock.provisioning.get_host = MagicMock(
@@ -212,8 +212,8 @@ class TestHost(PowerMaxUnitBase):
         powermax_module_mock.provisioning.modify_host.assert_not_called()
 
     def test_rename_host_empty_name(self, powermax_module_mock):
-        powermax_module_mock.module.params = self.host_args
-        powermax_module_mock.module.params.update(
+        powermax_module_mock.module_wo_sensitive_data = self.host_args
+        powermax_module_mock.module_wo_sensitive_data.update(
             {"host_name": "test_host", "new_name": ""}
         )
         powermax_module_mock.provisioning.get_host = MagicMock(
@@ -226,8 +226,8 @@ class TestHost(PowerMaxUnitBase):
         )
 
     def test_modify_host_host_flags(self, powermax_module_mock):
-        powermax_module_mock.module.params = self.host_args
-        powermax_module_mock.module.params.update(
+        powermax_module_mock.module_wo_sensitive_data = self.host_args
+        powermax_module_mock.module_wo_sensitive_data.update(
             {
                 "host_name": "test_host",
                 "host_flags": {
@@ -244,8 +244,8 @@ class TestHost(PowerMaxUnitBase):
         powermax_module_mock.provisioning.modify_host.assert_called()
 
     def test_modify_host_exception(self, powermax_module_mock):
-        powermax_module_mock.module.params = self.host_args
-        powermax_module_mock.module.params.update(
+        powermax_module_mock.module_wo_sensitive_data = self.host_args
+        powermax_module_mock.module_wo_sensitive_data.update(
             {"host_name": "test_host", "new_name": "test_host_new", "host_type": "hpux"}
         )
         powermax_module_mock.provisioning.get_host = MagicMock(
@@ -261,8 +261,8 @@ class TestHost(PowerMaxUnitBase):
         )
 
     def test_add_invalid_initiators_to_host(self, powermax_module_mock):
-        powermax_module_mock.module.params = self.host_args
-        powermax_module_mock.module.params.update(
+        powermax_module_mock.module_wo_sensitive_data = self.host_args
+        powermax_module_mock.module_wo_sensitive_data.update(
             {
                 "host_name": "test_host",
                 "initiators": ["invalid_initiator"],
@@ -276,7 +276,7 @@ class TestHost(PowerMaxUnitBase):
         )
 
     def test_modify_host_flags_no_change(self, powermax_module_mock):
-        powermax_module_mock.module.params = self.host_args
+        powermax_module_mock.module_wo_sensitive_data = self.host_args
         host_response = MockHostApi.GET_HOST_API_RESPONSE
         host_response.update(
             {
@@ -287,7 +287,7 @@ class TestHost(PowerMaxUnitBase):
         powermax_module_mock.provisioning.get_host = MagicMock(
             return_value=host_response
         )
-        powermax_module_mock.module.params.update(
+        powermax_module_mock.module_wo_sensitive_data.update(
             {
                 "host_name": "test_host",
                 "host_flags": {
@@ -301,31 +301,31 @@ class TestHost(PowerMaxUnitBase):
         powermax_module_mock.provisioning.modify_host.assert_not_called()
 
     def test_modify_host_flags_enable_consistent_lun(self, powermax_module_mock):
-        powermax_module_mock.module.params = self.host_args
+        powermax_module_mock.module_wo_sensitive_data = self.host_args
         powermax_module_mock.provisioning.get_host = MagicMock(
             return_value=MockHostApi.GET_HOST_API_RESPONSE
         )
-        powermax_module_mock.module.params.update(
+        powermax_module_mock.module_wo_sensitive_data.update(
             {"host_name": "test_host", "host_flags": {"consistent_lun": True}}
         )
         powermax_module_mock.perform_module_operation()
         powermax_module_mock.provisioning.modify_host.assert_called()
 
     def test_modify_host_flags_disable_consistent_lun(self, powermax_module_mock):
-        powermax_module_mock.module.params = self.host_args
+        powermax_module_mock.module_wo_sensitive_data = self.host_args
         host_response = MockHostApi.GET_HOST_API_RESPONSE
         host_response.update({"consistent_lun": True})
         powermax_module_mock.provisioning.get_host = MagicMock(
             return_value=host_response
         )
-        powermax_module_mock.module.params.update(
+        powermax_module_mock.module_wo_sensitive_data.update(
             {"host_name": "test_host", "host_flags": {"consistent_lun": False}}
         )
         powermax_module_mock.perform_module_operation()
         powermax_module_mock.provisioning.modify_host.assert_called()
 
     def test_modify_host_flags(self, powermax_module_mock):
-        powermax_module_mock.module.params = self.host_args
+        powermax_module_mock.module_wo_sensitive_data = self.host_args
         host_response = MockHostApi.GET_HOST_API_RESPONSE
         host_response.update(
             {
@@ -336,7 +336,7 @@ class TestHost(PowerMaxUnitBase):
         powermax_module_mock.provisioning.get_host = MagicMock(
             return_value=host_response
         )
-        powermax_module_mock.module.params.update(
+        powermax_module_mock.module_wo_sensitive_data.update(
             {
                 "host_name": "test_host",
                 "host_flags": {
@@ -349,7 +349,7 @@ class TestHost(PowerMaxUnitBase):
         powermax_module_mock.provisioning.modify_host.assert_called()
 
     def test_modify_host_flags_check_mode(self, powermax_module_mock):
-        powermax_module_mock.module.params = self.host_args
+        powermax_module_mock.module_wo_sensitive_data = self.host_args
         powermax_module_mock.module.check_mode = True
         host_response = MockHostApi.GET_HOST_API_RESPONSE
         host_response.update(
@@ -358,7 +358,7 @@ class TestHost(PowerMaxUnitBase):
                 "disabled_flags": "disable_q_reset_on_ua",
             }
         )
-        powermax_module_mock.module.params.update(
+        powermax_module_mock.module_wo_sensitive_data.update(
             {
                 "host_name": "test_host",
                 "host_flags": {
@@ -374,8 +374,8 @@ class TestHost(PowerMaxUnitBase):
         powermax_module_mock.provisioning.modify_host.assert_not_called()
 
     def test_delete_host(self, powermax_module_mock):
-        powermax_module_mock.module.params = self.host_args
-        powermax_module_mock.module.params.update(
+        powermax_module_mock.module_wo_sensitive_data = self.host_args
+        powermax_module_mock.module_wo_sensitive_data.update(
             {"host_name": "test_host", "state": "absent"}
         )
         powermax_module_mock.provisioning.get_host = MagicMock(
@@ -385,9 +385,9 @@ class TestHost(PowerMaxUnitBase):
         powermax_module_mock.provisioning.delete_host.assert_called()
 
     def test_delete_host_check_mode(self, powermax_module_mock):
-        powermax_module_mock.module.params = self.host_args
+        powermax_module_mock.module_wo_sensitive_data = self.host_args
         powermax_module_mock.module.check_mode = True
-        powermax_module_mock.module.params.update(
+        powermax_module_mock.module_wo_sensitive_data.update(
             {"host_name": "test_host", "state": "absent"}
         )
         powermax_module_mock.provisioning.get_host = MagicMock(
@@ -397,8 +397,8 @@ class TestHost(PowerMaxUnitBase):
         powermax_module_mock.provisioning.delete_host.assert_not_called()
 
     def test_delete_host_exception(self, powermax_module_mock):
-        powermax_module_mock.module.params = self.host_args
-        powermax_module_mock.module.params.update(
+        powermax_module_mock.module_wo_sensitive_data = self.host_args
+        powermax_module_mock.module_wo_sensitive_data.update(
             {"state": "absent", "host_name": "test_host"}
         )
         powermax_module_mock.provisioning.get_host = MagicMock(
@@ -425,8 +425,8 @@ class TestHost(PowerMaxUnitBase):
 
     def test_add_initiators_to_host_split(self, powermax_module_mock):
         self.host_args.update(MockHostApi.ADD_INITIATOR_PAYLOAD)
-        powermax_module_mock.module.params = self.host_args
-        powermax_module_mock.module.params.update(
+        powermax_module_mock.module_wo_sensitive_data = self.host_args
+        powermax_module_mock.module_wo_sensitive_data.update(
             {"initiators": ["100xx000xxxxxxxx/200xx000xxxxxxxx"]}
         )
         powermax_module_mock.provisioning.get_host = MagicMock(
@@ -437,8 +437,8 @@ class TestHost(PowerMaxUnitBase):
 
     def test_get_initiators_exception(self, powermax_module_mock):
         self.host_args.update(MockHostApi.ADD_INITIATOR_PAYLOAD)
-        powermax_module_mock.module.params = self.host_args
-        powermax_module_mock.module.params.update(
+        powermax_module_mock.module_wo_sensitive_data = self.host_args
+        powermax_module_mock.module_wo_sensitive_data.update(
             {"initiators": ["100xx000xxxxxxxx/200xx000xxxxxxxx"]}
         )
         powermax_module_mock.provisioning.get_initiator_list = MagicMock(
@@ -452,7 +452,7 @@ class TestHost(PowerMaxUnitBase):
 
     def test_add_initiators_to_host(self, powermax_module_mock):
         self.host_args.update(MockHostApi.ADD_INITIATOR_PAYLOAD)
-        powermax_module_mock.module.params = self.host_args
+        powermax_module_mock.module_wo_sensitive_data = self.host_args
         powermax_module_mock.provisioning.get_host = MagicMock(
             return_value=MockHostApi.GET_HOST_API_RESPONSE
         )
@@ -461,7 +461,7 @@ class TestHost(PowerMaxUnitBase):
 
     def test_add_initiators_to_host_check_mode(self, powermax_module_mock):
         self.host_args.update(MockHostApi.ADD_INITIATOR_PAYLOAD)
-        powermax_module_mock.module.params = self.host_args
+        powermax_module_mock.module_wo_sensitive_data = self.host_args
         powermax_module_mock.module.check_mode = True
         powermax_module_mock.provisioning.get_host = MagicMock(
             return_value=MockHostApi.GET_HOST_API_RESPONSE
@@ -471,8 +471,8 @@ class TestHost(PowerMaxUnitBase):
 
     def test_add_initiators_to_host_existing(self, powermax_module_mock):
         self.host_args.update(MockHostApi.ADD_INITIATOR_PAYLOAD)
-        powermax_module_mock.module.params = self.host_args
-        powermax_module_mock.module.params.update({"initiators": ["100xx000xxxxxxxx"]})
+        powermax_module_mock.module_wo_sensitive_data = self.host_args
+        powermax_module_mock.module_wo_sensitive_data.update({"initiators": ["100xx000xxxxxxxx"]})
         powermax_module_mock.provisioning.get_host = MagicMock(
             return_value=MockHostApi.GET_HOST_API_RESPONSE
         )
@@ -487,7 +487,7 @@ class TestHost(PowerMaxUnitBase):
 
     def test_add_initiators_to_host_exception(self, powermax_module_mock):
         self.host_args.update(MockHostApi.ADD_INITIATOR_PAYLOAD)
-        powermax_module_mock.module.params = self.host_args
+        powermax_module_mock.module_wo_sensitive_data = self.host_args
         powermax_module_mock.provisioning.get_host = MagicMock(
             return_value=MockHostApi.GET_HOST_API_RESPONSE
         )
@@ -502,7 +502,7 @@ class TestHost(PowerMaxUnitBase):
 
     def test_remove_initiators_from_host(self, powermax_module_mock):
         self.host_args.update(MockHostApi.REMOVE_INITIATOR_PAYLOAD)
-        powermax_module_mock.module.params = self.host_args
+        powermax_module_mock.module_wo_sensitive_data = self.host_args
         powermax_module_mock.provisioning.get_host = MagicMock(
             return_value=MockHostApi.GET_HOST_API_RESPONSE
         )
@@ -511,7 +511,7 @@ class TestHost(PowerMaxUnitBase):
 
     def test_remove_initiators_from_host_check_mode(self, powermax_module_mock):
         self.host_args.update(MockHostApi.REMOVE_INITIATOR_PAYLOAD)
-        powermax_module_mock.module.params = self.host_args
+        powermax_module_mock.module_wo_sensitive_data = self.host_args
         powermax_module_mock.module.check_mode = True
         powermax_module_mock.provisioning.get_host = MagicMock(
             return_value=MockHostApi.GET_HOST_API_RESPONSE
@@ -536,7 +536,7 @@ class TestHost(PowerMaxUnitBase):
 
     def test_remove_initiators_from_host_exception(self, powermax_module_mock):
         self.host_args.update(MockHostApi.REMOVE_INITIATOR_PAYLOAD)
-        powermax_module_mock.module.params = self.host_args
+        powermax_module_mock.module_wo_sensitive_data = self.host_args
         powermax_module_mock.provisioning.get_host = MagicMock(
             return_value=MockHostApi.GET_HOST_API_RESPONSE
         )

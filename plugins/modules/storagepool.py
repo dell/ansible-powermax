@@ -125,6 +125,9 @@ class Pool(object):
             supports_check_mode=False
         )
 
+        # Get a copy of the module parameters without sensitive data for logging purposes
+        self.module_wo_sensitive_data = utils.get_powermax_management_host_parameters_remove_sensitive_data(self.module.params)
+
         if HAS_PYU4V is False:
             self.show_error_exit(msg="Ansible modules for PowerMax require "
                                  "the PyU4V python library to be "
@@ -150,8 +153,8 @@ class Pool(object):
                         "error {1}"
         try:
             pool_details = self.provisioning.get_srp(srp=pool_id)
-            if 'serial_no' in self.module.params:
-                pool_details['serial_no'] = self.module.params['serial_no']
+            if 'serial_no' in self.module_wo_sensitive_data:
+                pool_details['serial_no'] = self.module_wo_sensitive_data['serial_no']
             if 'srp_capacity' in pool_details and \
                     'usable_total_tb' in pool_details['srp_capacity'] and \
                     'usable_used_tb' in pool_details['srp_capacity']:
@@ -190,8 +193,8 @@ class Pool(object):
         chosen in playbook
         """
 
-        pool = self.module.params['pool']
-        state = self.module.params['state']
+        pool = self.module_wo_sensitive_data['pool']
+        state = self.module_wo_sensitive_data['state']
 
         # result is a dictionary that contains changed status and storage
         # pool details

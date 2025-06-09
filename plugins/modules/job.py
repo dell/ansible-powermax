@@ -108,6 +108,9 @@ class Job(object):
             argument_spec=self.module_params,
             supports_check_mode=False)
 
+        # Get a copy of the module parameters without sensitive data for logging purposes
+        self.module_wo_sensitive_data = utils.get_powermax_management_host_parameters_remove_sensitive_data(self.module.params)
+
         if HAS_PYU4V is False:
             self.show_error_exit(msg="Ansible modules for PowerMax require "
                                  "the PyU4V python library to be "
@@ -166,7 +169,7 @@ class Job(object):
 
     def perform_module_operation(self):
 
-        job_id = self.module.params['job_id']
+        job_id = self.module_wo_sensitive_data['job_id']
         if job_id and job_id.isdigit():
             job_details = self.get_job_details(job_id)
         else:

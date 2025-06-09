@@ -41,6 +41,7 @@ class TestPowerMaxInitiator():
 
     def test_get_initiator_details(self, initiator_module_mock):
         initiator_module_mock.module.params = self.initiator_args
+        initiator_module_mock.module_wo_sensitive_data = self.initiator_args
         initiator_module_mock.perform_module_operation()
         assert (MockInitiatorApi.get_initiator_details()
                 == initiator_module_mock.module.exit_json.call_args[1]["initiator_details"])
@@ -49,6 +50,7 @@ class TestPowerMaxInitiator():
     def test_rename_initiator_alias(self, initiator_module_mock):
         self.initiator_args.update({'new_alias': {'new_node_name': 'None', 'new_port_name': 'hostHBA'}})
         initiator_module_mock.module.params = self.initiator_args
+        initiator_module_mock.module_wo_sensitive_data = self.initiator_args
         initiator_module_mock.provisioning.modify_initiator \
             = MagicMock(return_value=True)
         initiator_module_mock.perform_module_operation()
@@ -57,6 +59,7 @@ class TestPowerMaxInitiator():
     def test_set_initiator_alias(self, initiator_module_mock):
         self.initiator_args.update({'new_alias': {'new_node_name': 'testHBA', 'new_port_name': 'hostHBA'}})
         initiator_module_mock.module.params = self.initiator_args
+        initiator_module_mock.module_wo_sensitive_data = self.initiator_args
         initiator_module_mock.provisioning.get_initiator \
             = MagicMock(return_value=MockInitiatorApi.get_initiator_details_without_alias())
         initiator_module_mock.provisioning.modify_initiator \
@@ -67,6 +70,7 @@ class TestPowerMaxInitiator():
     def test_invalid_initiator_alias(self, initiator_module_mock):
         self.initiator_args.update({'new_alias': {'new_node_name': 'testHBA', 'new_port_name': ''}})
         initiator_module_mock.module.params = self.initiator_args
+        initiator_module_mock.module_wo_sensitive_data = self.initiator_args
         initiator_module_mock.perform_module_operation()
         assert initiator_module_mock.module.fail_json.call_args[1]['msg'] == \
             MockInitiatorApi.get_invalid_port_name()
@@ -74,6 +78,7 @@ class TestPowerMaxInitiator():
     def test_invalid_initiator_alias_port_name(self, initiator_module_mock):
         self.initiator_args.update({'new_alias': {'new_node_name': 'testHBA', 'new_port_name': None}})
         initiator_module_mock.module.params = self.initiator_args
+        initiator_module_mock.module_wo_sensitive_data = self.initiator_args
         initiator_module_mock.provisioning.get_initiator \
             = MagicMock(return_value=MockInitiatorApi.get_initiator_details_without_alias())
         initiator_module_mock.perform_module_operation()
@@ -83,6 +88,7 @@ class TestPowerMaxInitiator():
     def test_invalid_initiator_alias_node_name(self, initiator_module_mock):
         self.initiator_args.update({'new_alias': {'new_node_name': None, 'new_port_name': 'testHBA'}})
         initiator_module_mock.module.params = self.initiator_args
+        initiator_module_mock.module_wo_sensitive_data = self.initiator_args
         initiator_module_mock.provisioning.get_initiator \
             = MagicMock(return_value=MockInitiatorApi.get_initiator_details_without_alias())
         initiator_module_mock.perform_module_operation()
@@ -92,6 +98,7 @@ class TestPowerMaxInitiator():
     def test_modify_initiator_exception(self, initiator_module_mock):
         self.initiator_args.update({'new_alias': {'new_node_name': 'testHBA', 'new_port_name': ''}})
         initiator_module_mock.module.params = self.initiator_args
+        initiator_module_mock.module_wo_sensitive_data = self.initiator_args
         initiator_module_mock.provisioning.modify_initiator \
             = MagicMock(side_effect=Exception)
         initiator_module_mock.perform_module_operation()
@@ -101,6 +108,7 @@ class TestPowerMaxInitiator():
     def test_invalid_initiator_state(self, initiator_module_mock):
         self.initiator_args.update({'state': 'absent'})
         initiator_module_mock.module.params = self.initiator_args
+        initiator_module_mock.module_wo_sensitive_data = self.initiator_args
         initiator_module_mock.perform_module_operation()
         assert MockInitiatorApi.get_invalid_state_msg() in \
             initiator_module_mock.module.fail_json.call_args[1]['msg']

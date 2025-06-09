@@ -45,14 +45,14 @@ class TestMetroDR():
     def test_get_metro_session(self, metro_module_mock):
         self.metro_args.update({'env_name': 'metro_env', 'metro_r1_array_id': '1.1.1.1', 'metro_r2_array_id': '2.2.2.2',
                                 'dr_array_id': '3.3.3.3'})
-        metro_module_mock.module.params = self.metro_args
+        metro_module_mock.module_wo_sensitive_data = self.metro_args
         metro_module_mock.perform_module_operation()
         assert metro_module_mock.module.exit_json.call_args[1]["changed"] is False
 
     def test_create_metro_session(self, metro_module_mock):
         self.metro_args.update({'env_name': 'metro_env', 'metro_r1_array_id': '1.1.1.1', 'metro_r2_array_id': '2.2.2.2',
                                 'dr_array_id': '3.3.3.3', 'replication_mode': 'Asynchronous'})
-        metro_module_mock.module.params = self.metro_args
+        metro_module_mock.module_wo_sensitive_data = self.metro_args
         metro_module_mock.get_metrodr_env = MagicMock(return_value=None)
         metro_module_mock.get_storage_group_details = MagicMock(return_value={"unprotected": True, "sg_name": "Test"})
         metro_module_mock.perform_module_operation()
@@ -61,7 +61,7 @@ class TestMetroDR():
     def test_invalid_create_metro_session(self, metro_module_mock):
         self.metro_args.update({'env_name': 'metro_env', 'metro_r1_array_id': '1.1.1.1', 'metro_r2_array_id': '2.2.2.2',
                                 'dr_array_id': '3.3.3.3'})
-        metro_module_mock.module.params = self.metro_args
+        metro_module_mock.module_wo_sensitive_data = self.metro_args
         metro_module_mock.get_metrodr_env = MagicMock(return_value=None)
         metro_module_mock.get_storage_group_details = MagicMock(return_value={"unprotected": True, "sg_name": "Test"})
         metro_module_mock.perform_module_operation()

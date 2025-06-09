@@ -208,6 +208,10 @@ class MaskingView(object):
             supports_check_mode=True,
             mutually_exclusive=mutually_exclusive
         )
+
+        # Get a copy of the module parameters without sensitive data for logging purposes
+        self.module_wo_sensitive_data = utils.get_powermax_management_host_parameters_remove_sensitive_data(self.module.params)
+
         if HAS_PYU4V is False:
             self.show_error_exit(msg="Ansible modules for PowerMax require "
                                  "the PyU4V python library to be "
@@ -244,26 +248,26 @@ class MaskingView(object):
     def is_mv_changed(self, mv):
 
         is_mv_changed = False
-        if 'portGroupId' in mv and self.module.params['portgroup_name'] is \
+        if 'portGroupId' in mv and self.module_wo_sensitive_data['portgroup_name'] is \
                 not None and mv['portGroupId'] != \
-                self.module.params['portgroup_name']:
+                self.module_wo_sensitive_data['portgroup_name']:
             is_mv_changed = True
-        elif 'storageGroupId' in mv and self.module.params['sg_name'] \
+        elif 'storageGroupId' in mv and self.module_wo_sensitive_data['sg_name'] \
                 is not None and mv['storageGroupId'] \
-                != self.module.params['sg_name']:
+                != self.module_wo_sensitive_data['sg_name']:
             is_mv_changed = True
-        elif 'hostId' in mv and self.module.params['host_name'] is not None \
-                and mv['hostId'].lower() != self.module.params['host_name'].lower():
+        elif 'hostId' in mv and self.module_wo_sensitive_data['host_name'] is not None \
+                and mv['hostId'].lower() != self.module_wo_sensitive_data['host_name'].lower():
             is_mv_changed = True
-        elif 'hostGroupId' in mv and self.module.params['hostgroup_name'] \
+        elif 'hostGroupId' in mv and self.module_wo_sensitive_data['hostgroup_name'] \
                 is not \
                 None and mv['hostGroupId'].lower() != \
-                self.module.params['hostgroup_name'].lower():
+                self.module_wo_sensitive_data['hostgroup_name'].lower():
             is_mv_changed = True
-        elif 'hostId' in mv and self.module.params['hostgroup_name'] \
+        elif 'hostId' in mv and self.module_wo_sensitive_data['hostgroup_name'] \
                 is not None:
             is_mv_changed = True
-        elif 'hostGroupId' in mv and self.module.params['host_name'] \
+        elif 'hostGroupId' in mv and self.module_wo_sensitive_data['host_name'] \
                 is not None:
             is_mv_changed = True
         if is_mv_changed:
@@ -276,12 +280,12 @@ class MaskingView(object):
     def create_masking_view(self, mv_name):
         """Create masking view with given SG, PG and Host(s)"""
 
-        pg_name = self.module.params['portgroup_name']
-        sg_name = self.module.params['sg_name']
-        host_name = self.module.params['host_name']
-        hostgroup_name = self.module.params['hostgroup_name']
+        pg_name = self.module_wo_sensitive_data['portgroup_name']
+        sg_name = self.module_wo_sensitive_data['sg_name']
+        host_name = self.module_wo_sensitive_data['host_name']
+        hostgroup_name = self.module_wo_sensitive_data['hostgroup_name']
         starting_lun_address = \
-            self.module.params['starting_lun_address'] if self.module.params['starting_lun_address'] else None
+            self.module_wo_sensitive_data['starting_lun_address'] if self.module_wo_sensitive_data['starting_lun_address'] else None
 
         if host_name and hostgroup_name:
             error_message = ('Failed to create masking view %s,'
@@ -383,8 +387,8 @@ class MaskingView(object):
 
     def validate_host_params(self):
         if not self.module.check_mode:
-            host_name = self.module.params['host_name']
-            hostgroup_name = self.module.params['hostgroup_name']
+            host_name = self.module_wo_sensitive_data['host_name']
+            hostgroup_name = self.module_wo_sensitive_data['hostgroup_name']
             if host_name and not self.validate_host(host_name):
                 self.show_error_exit('Host %s does not exist' % host_name)
             if hostgroup_name and not self.validate_hostgroup(hostgroup_name):
@@ -396,9 +400,9 @@ class MaskingView(object):
         Perform different actions on masking view based on user parameter
         chosen in playbook
         """
-        state = self.module.params['state']
-        mv_name = self.module.params['mv_name']
-        new_mv_name = self.module.params['new_mv_name']
+        state = self.module_wo_sensitive_data['state']
+        mv_name = self.module_wo_sensitive_data['mv_name']
+        new_mv_name = self.module_wo_sensitive_data['new_mv_name']
 
         self.validate_host_params()
         masking_view = self.get_masking_view(mv_name)

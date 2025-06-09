@@ -48,13 +48,13 @@ class TestHostGroup(PowerMaxUnitBase):
                 assert powermax_module_mock.show_error_exit.call_count == 3
 
     def test_get_host_group(self, powermax_module_mock):
-        powermax_module_mock.module.params = self.host_group_args
+        powermax_module_mock.module_wo_sensitive_data = self.host_group_args
         powermax_module_mock.perform_module_operation()
         powermax_module_mock.provisioning.get_host_group.assert_called()
 
     def test_get_host_group_empty_name(self, powermax_module_mock):
-        powermax_module_mock.module.params = self.host_group_args
-        powermax_module_mock.module.params.update({"hostgroup_name": ""})
+        powermax_module_mock.module_wo_sensitive_data = self.host_group_args
+        powermax_module_mock.module_wo_sensitive_data.update({"hostgroup_name": ""})
         self.capture_fail_json_method(
             MockHostGroupApi.get_error_message("empty_hostgroup_name"),
             powermax_module_mock,
@@ -62,7 +62,7 @@ class TestHostGroup(PowerMaxUnitBase):
         )
 
     def test_get_host_group_exception(self, powermax_module_mock):
-        powermax_module_mock.module.params = self.host_group_args
+        powermax_module_mock.module_wo_sensitive_data = self.host_group_args
         powermax_module_mock.provisioning.get_host_group = MagicMock(
             side_effect=MockApiException
         )
@@ -73,14 +73,14 @@ class TestHostGroup(PowerMaxUnitBase):
         )
 
     def test_create_empty_host_group(self, powermax_module_mock):
-        powermax_module_mock.module.params = self.host_group_args
+        powermax_module_mock.module_wo_sensitive_data = self.host_group_args
         powermax_module_mock.provisioning.get_host_group = MagicMock(return_value=None)
         powermax_module_mock.perform_module_operation()
         powermax_module_mock.provisioning.create_host.assert_called()
 
     def test_create_empty_host_group_check_mode(self, powermax_module_mock):
-        powermax_module_mock.module.params = self.host_group_args
-        powermax_module_mock.module.params.update(
+        powermax_module_mock.module_wo_sensitive_data = self.host_group_args
+        powermax_module_mock.module_wo_sensitive_data.update(
             {
                 "hosts": ["ansible_test_host"],
                 "host_state": "present-in-group",
@@ -99,8 +99,8 @@ class TestHostGroup(PowerMaxUnitBase):
         powermax_module_mock.provisioning.create_host.assert_not_called()
 
     def test_create_host_group_with_new_name(self, powermax_module_mock):
-        powermax_module_mock.module.params = self.host_group_args
-        powermax_module_mock.module.params.update({"new_name": "test_hostgroup_new"})
+        powermax_module_mock.module_wo_sensitive_data = self.host_group_args
+        powermax_module_mock.module_wo_sensitive_data.update({"new_name": "test_hostgroup_new"})
         powermax_module_mock.provisioning.get_host_group = MagicMock(return_value=None)
         self.capture_fail_json_method(
             MockHostGroupApi.get_error_message("invalid_new_name_arg"),
@@ -109,7 +109,7 @@ class TestHostGroup(PowerMaxUnitBase):
         )
 
     def test_create_host_exception(self, powermax_module_mock):
-        powermax_module_mock.module.params = self.host_group_args
+        powermax_module_mock.module_wo_sensitive_data = self.host_group_args
         powermax_module_mock.provisioning.get_host_group = MagicMock(return_value=None)
         powermax_module_mock.provisioning.create_host = MagicMock(
             side_effect=MockApiException
@@ -123,8 +123,8 @@ class TestHostGroup(PowerMaxUnitBase):
         )
 
     def test_create_host_group(self, powermax_module_mock):
-        powermax_module_mock.module.params = self.host_group_args
-        powermax_module_mock.module.params.update(
+        powermax_module_mock.module_wo_sensitive_data = self.host_group_args
+        powermax_module_mock.module_wo_sensitive_data.update(
             {
                 "hosts": ["ansible_test_host"],
                 "host_state": "present-in-group",
@@ -142,8 +142,8 @@ class TestHostGroup(PowerMaxUnitBase):
         powermax_module_mock.provisioning.create_host_group.assert_called()
 
     def test_create_host_group_removing_hosts(self, powermax_module_mock):
-        powermax_module_mock.module.params = self.host_group_args
-        powermax_module_mock.module.params.update(
+        powermax_module_mock.module_wo_sensitive_data = self.host_group_args
+        powermax_module_mock.module_wo_sensitive_data.update(
             {"hosts": ["ansible_test_host"], "host_state": "absent-in-group"}
         )
         powermax_module_mock.provisioning.get_host_group = MagicMock(return_value=None)
@@ -156,8 +156,8 @@ class TestHostGroup(PowerMaxUnitBase):
         )
 
     def test_create_host_group_get_host_exception(self, powermax_module_mock):
-        powermax_module_mock.module.params = self.host_group_args
-        powermax_module_mock.module.params.update(
+        powermax_module_mock.module_wo_sensitive_data = self.host_group_args
+        powermax_module_mock.module_wo_sensitive_data.update(
             {
                 "hosts": ["ansible_test_host"],
                 "host_state": "present-in-group",
@@ -183,8 +183,8 @@ class TestHostGroup(PowerMaxUnitBase):
         )
 
     def test_create_host_group_different_flags(self, powermax_module_mock):
-        powermax_module_mock.module.params = self.host_group_args
-        powermax_module_mock.module.params.update(
+        powermax_module_mock.module_wo_sensitive_data = self.host_group_args
+        powermax_module_mock.module_wo_sensitive_data.update(
             {
                 "hosts": ["ansible_test_host"],
                 "host_state": "present-in-group",
@@ -198,8 +198,8 @@ class TestHostGroup(PowerMaxUnitBase):
         powermax_module_mock.provisioning.create_host_group.assert_called()
 
     def test_create_host_group_with_host_type(self, powermax_module_mock):
-        powermax_module_mock.module.params = self.host_group_args
-        powermax_module_mock.module.params.update(
+        powermax_module_mock.module_wo_sensitive_data = self.host_group_args
+        powermax_module_mock.module_wo_sensitive_data.update(
             {
                 "hosts": ["ansible_test_host"],
                 "host_state": "present-in-group",
@@ -211,8 +211,8 @@ class TestHostGroup(PowerMaxUnitBase):
         powermax_module_mock.provisioning.create_host_group.assert_called()
 
     def test_rename_host_group(self, powermax_module_mock):
-        powermax_module_mock.module.params = self.host_group_args
-        powermax_module_mock.module.params.update({"new_name": "test_hostgroup_new"})
+        powermax_module_mock.module_wo_sensitive_data = self.host_group_args
+        powermax_module_mock.module_wo_sensitive_data.update({"new_name": "test_hostgroup_new"})
         powermax_module_mock.provisioning.get_host_group = MagicMock(
             return_value=MockHostGroupApi.HOST_GROUP_RESPONSE
         )
@@ -220,8 +220,8 @@ class TestHostGroup(PowerMaxUnitBase):
         powermax_module_mock.provisioning.modify_host_group.assert_called()
 
     def test_rename_host_group_check_mode(self, powermax_module_mock):
-        powermax_module_mock.module.params = self.host_group_args
-        powermax_module_mock.module.params.update({"new_name": "test_hostgroup_new"})
+        powermax_module_mock.module_wo_sensitive_data = self.host_group_args
+        powermax_module_mock.module_wo_sensitive_data.update({"new_name": "test_hostgroup_new"})
         powermax_module_mock.module.check_mode = True
         powermax_module_mock.provisioning.get_host_group = MagicMock(
             return_value=MockHostGroupApi.HOST_GROUP_RESPONSE
@@ -230,8 +230,8 @@ class TestHostGroup(PowerMaxUnitBase):
         powermax_module_mock.provisioning.modify_host_group.assert_not_called()
 
     def test_rename_host_group_same_name(self, powermax_module_mock):
-        powermax_module_mock.module.params = self.host_group_args
-        powermax_module_mock.module.params.update({"new_name": "test_hostgroup"})
+        powermax_module_mock.module_wo_sensitive_data = self.host_group_args
+        powermax_module_mock.module_wo_sensitive_data.update({"new_name": "test_hostgroup"})
         powermax_module_mock.provisioning.get_host_group = MagicMock(
             return_value=MockHostGroupApi.HOST_GROUP_RESPONSE
         )
@@ -239,8 +239,8 @@ class TestHostGroup(PowerMaxUnitBase):
         powermax_module_mock.provisioning.modify_host_group.assert_not_called()
 
     def test_rename_host_group_empty_name(self, powermax_module_mock):
-        powermax_module_mock.module.params = self.host_group_args
-        powermax_module_mock.module.params.update({"new_name": ""})
+        powermax_module_mock.module_wo_sensitive_data = self.host_group_args
+        powermax_module_mock.module_wo_sensitive_data.update({"new_name": ""})
         powermax_module_mock.provisioning.get_host_group = MagicMock(
             return_value=MockHostGroupApi.HOST_GROUP_RESPONSE
         )
@@ -251,8 +251,8 @@ class TestHostGroup(PowerMaxUnitBase):
         )
 
     def test_rename_host_group_exception(self, powermax_module_mock):
-        powermax_module_mock.module.params = self.host_group_args
-        powermax_module_mock.module.params.update({"new_name": "test_hostgroup_new"})
+        powermax_module_mock.module_wo_sensitive_data = self.host_group_args
+        powermax_module_mock.module_wo_sensitive_data.update({"new_name": "test_hostgroup_new"})
         powermax_module_mock.provisioning.get_host_group = MagicMock(
             return_value=MockHostGroupApi.HOST_GROUP_RESPONSE
         )
@@ -266,8 +266,8 @@ class TestHostGroup(PowerMaxUnitBase):
         )
 
     def test_add_host_to_host_group(self, powermax_module_mock):
-        powermax_module_mock.module.params = self.host_group_args
-        powermax_module_mock.module.params.update(
+        powermax_module_mock.module_wo_sensitive_data = self.host_group_args
+        powermax_module_mock.module_wo_sensitive_data.update(
             {
                 "hosts": ["ansible_test_host"],
                 "host_state": "present-in-group",
@@ -281,8 +281,8 @@ class TestHostGroup(PowerMaxUnitBase):
         powermax_module_mock.provisioning.modify_host_group.assert_called()
 
     def test_add_host_to_host_group_check_mode(self, powermax_module_mock):
-        powermax_module_mock.module.params = self.host_group_args
-        powermax_module_mock.module.params.update(
+        powermax_module_mock.module_wo_sensitive_data = self.host_group_args
+        powermax_module_mock.module_wo_sensitive_data.update(
             {
                 "hosts": ["ansible_test_host"],
                 "host_state": "present-in-group",
@@ -297,8 +297,8 @@ class TestHostGroup(PowerMaxUnitBase):
         powermax_module_mock.provisioning.modify_host_group.assert_not_called()
 
     def test_add_host_to_host_group_exception(self, powermax_module_mock):
-        powermax_module_mock.module.params = self.host_group_args
-        powermax_module_mock.module.params.update(
+        powermax_module_mock.module_wo_sensitive_data = self.host_group_args
+        powermax_module_mock.module_wo_sensitive_data.update(
             {
                 "hosts": ["ansible_test_host"],
                 "host_state": "present-in-group",
@@ -318,8 +318,8 @@ class TestHostGroup(PowerMaxUnitBase):
         )
 
     def test_add_host_to_empty_host_group(self, powermax_module_mock):
-        powermax_module_mock.module.params = self.host_group_args
-        powermax_module_mock.module.params.update(
+        powermax_module_mock.module_wo_sensitive_data = self.host_group_args
+        powermax_module_mock.module_wo_sensitive_data.update(
             {
                 "hosts": ["ansible_test_host"],
                 "host_state": "present-in-group",
@@ -335,8 +335,8 @@ class TestHostGroup(PowerMaxUnitBase):
         powermax_module_mock.provisioning.modify_host_group.assert_called()
 
     def test_add_existing_host_to_host_group(self, powermax_module_mock):
-        powermax_module_mock.module.params = self.host_group_args
-        powermax_module_mock.module.params.update(
+        powermax_module_mock.module_wo_sensitive_data = self.host_group_args
+        powermax_module_mock.module_wo_sensitive_data.update(
             {"hosts": ["test_hg_host"], "host_state": "present-in-group"}
         )
         powermax_module_mock.provisioning.get_host_group = MagicMock(
@@ -355,8 +355,8 @@ class TestHostGroup(PowerMaxUnitBase):
         powermax_module_mock.provisioning.modify_host_group.assert_not_called()
 
     def test_remove_host_from_host_group(self, powermax_module_mock):
-        powermax_module_mock.module.params = self.host_group_args
-        powermax_module_mock.module.params.update(
+        powermax_module_mock.module_wo_sensitive_data = self.host_group_args
+        powermax_module_mock.module_wo_sensitive_data.update(
             {"hosts": ["test_hg_host"], "host_state": "absent-in-group"}
         )
         powermax_module_mock.provisioning.get_host_group = MagicMock(
@@ -366,8 +366,8 @@ class TestHostGroup(PowerMaxUnitBase):
         powermax_module_mock.provisioning.modify_host_group.assert_called()
 
     def test_remove_host_from_host_group_check_mode(self, powermax_module_mock):
-        powermax_module_mock.module.params = self.host_group_args
-        powermax_module_mock.module.params.update(
+        powermax_module_mock.module_wo_sensitive_data = self.host_group_args
+        powermax_module_mock.module_wo_sensitive_data.update(
             {"hosts": ["test_hg_host"], "host_state": "absent-in-group"}
         )
         powermax_module_mock.module.check_mode = True
@@ -378,8 +378,8 @@ class TestHostGroup(PowerMaxUnitBase):
         powermax_module_mock.provisioning.modify_host_group.assert_not_called()
 
     def test_remove_host_from_host_group_exception(self, powermax_module_mock):
-        powermax_module_mock.module.params = self.host_group_args
-        powermax_module_mock.module.params.update(
+        powermax_module_mock.module_wo_sensitive_data = self.host_group_args
+        powermax_module_mock.module_wo_sensitive_data.update(
             {"hosts": ["test_hg_host"], "host_state": "absent-in-group"}
         )
         powermax_module_mock.provisioning.get_host_group = MagicMock(
@@ -393,8 +393,8 @@ class TestHostGroup(PowerMaxUnitBase):
         )
 
     def test_remove_host_from_empty_host_group(self, powermax_module_mock):
-        powermax_module_mock.module.params = self.host_group_args
-        powermax_module_mock.module.params.update(
+        powermax_module_mock.module_wo_sensitive_data = self.host_group_args
+        powermax_module_mock.module_wo_sensitive_data.update(
             {
                 "hosts": ["ansible_test_host"],
                 "host_state": "absent-in-group",
@@ -420,8 +420,8 @@ class TestHostGroup(PowerMaxUnitBase):
         powermax_module_mock.provisioning.modify_host_group.assert_not_called()
 
     def test_modify_host_group_flags(self, powermax_module_mock):
-        powermax_module_mock.module.params = self.host_group_args
-        powermax_module_mock.module.params.update(
+        powermax_module_mock.module_wo_sensitive_data = self.host_group_args
+        powermax_module_mock.module_wo_sensitive_data.update(
             {
                 "host_flags": {
                     "spc2_protocol_version": True,
@@ -446,8 +446,8 @@ class TestHostGroup(PowerMaxUnitBase):
         powermax_module_mock.provisioning.modify_host_group.assert_called()
 
     def test_modify_host_group_flags_inital_set(self, powermax_module_mock):
-        powermax_module_mock.module.params = self.host_group_args
-        powermax_module_mock.module.params.update(
+        powermax_module_mock.module_wo_sensitive_data = self.host_group_args
+        powermax_module_mock.module_wo_sensitive_data.update(
             {"host_flags": {"spc2_protocol_version": True}}
         )
         host_group_response = MockHostGroupApi.HOST_GROUP_RESPONSE
@@ -458,8 +458,8 @@ class TestHostGroup(PowerMaxUnitBase):
         powermax_module_mock.provisioning.modify_host_group.assert_called()
 
     def test_modify_host_group_flags_disable_consistent_lun(self, powermax_module_mock):
-        powermax_module_mock.module.params = self.host_group_args
-        powermax_module_mock.module.params.update(
+        powermax_module_mock.module_wo_sensitive_data = self.host_group_args
+        powermax_module_mock.module_wo_sensitive_data.update(
             {"host_flags": {"consistent_lun": False}}
         )
         host_group_response = MockHostGroupApi.HOST_GROUP_RESPONSE
@@ -471,8 +471,8 @@ class TestHostGroup(PowerMaxUnitBase):
         powermax_module_mock.provisioning.modify_host_group.assert_called()
 
     def test_modify_host_group_flags_no_change(self, powermax_module_mock):
-        powermax_module_mock.module.params = self.host_group_args
-        powermax_module_mock.module.params.update(
+        powermax_module_mock.module_wo_sensitive_data = self.host_group_args
+        powermax_module_mock.module_wo_sensitive_data.update(
             {"host_flags": {"openvms": True, "spc2_protocol_version": False}}
         )
         host_group_response = MockHostGroupApi.HOST_GROUP_RESPONSE
@@ -493,8 +493,8 @@ class TestHostGroup(PowerMaxUnitBase):
         powermax_module_mock.provisioning.modify_host_group.assert_not_called()
 
     def test_delete_host_group(self, powermax_module_mock):
-        powermax_module_mock.module.params = self.host_group_args
-        powermax_module_mock.module.params.update({"state": "absent"})
+        powermax_module_mock.module_wo_sensitive_data = self.host_group_args
+        powermax_module_mock.module_wo_sensitive_data.update({"state": "absent"})
         powermax_module_mock.provisioning.get_host_group = MagicMock(
             return_value=MockHostGroupApi.HOST_GROUP_RESPONSE
         )
@@ -502,8 +502,8 @@ class TestHostGroup(PowerMaxUnitBase):
         powermax_module_mock.provisioning.delete_host_group.assert_called()
 
     def test_delete_host_group_check_mode(self, powermax_module_mock):
-        powermax_module_mock.module.params = self.host_group_args
-        powermax_module_mock.module.params.update({"state": "absent"})
+        powermax_module_mock.module_wo_sensitive_data = self.host_group_args
+        powermax_module_mock.module_wo_sensitive_data.update({"state": "absent"})
         powermax_module_mock.module.check_mode = True
         powermax_module_mock.provisioning.get_host_group = MagicMock(
             return_value=MockHostGroupApi.HOST_GROUP_RESPONSE
@@ -512,8 +512,8 @@ class TestHostGroup(PowerMaxUnitBase):
         powermax_module_mock.provisioning.delete_host_group.assert_not_called()
 
     def test_delete_host_group_exception(self, powermax_module_mock):
-        powermax_module_mock.module.params = self.host_group_args
-        powermax_module_mock.module.params.update({"state": "absent"})
+        powermax_module_mock.module_wo_sensitive_data = self.host_group_args
+        powermax_module_mock.module_wo_sensitive_data.update({"state": "absent"})
         powermax_module_mock.provisioning.get_host_group = MagicMock(
             return_value=MockHostGroupApi.HOST_GROUP_RESPONSE
         )

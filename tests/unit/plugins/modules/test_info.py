@@ -52,7 +52,7 @@ class TestInfo():
             ],
             "gather_subset": ['mv_connections']
         })
-        info_module_mock.module.params = self.get_module_args
+        info_module_mock.module_wo_sensitive_data = self.get_module_args
         info_module_mock.get_masking_view_list = MagicMock(
             return_value=MockInfoApi.MASKING_VIEW_LIST
         )
@@ -79,7 +79,7 @@ class TestInfo():
             ],
             "gather_subset": ['mv_connections']
         })
-        info_module_mock.module.params = self.get_module_args
+        info_module_mock.module_wo_sensitive_data = self.get_module_args
         info_module_mock.get_masking_view_list = MagicMock(
             return_value=MockInfoApi.MASKING_VIEW_LIST
         )
@@ -100,7 +100,7 @@ class TestInfo():
             ],
             'gather_subset': ['vol']
         })
-        info_module_mock.module.params = self.get_module_args
+        info_module_mock.module_wo_sensitive_data = self.get_module_args
         info_module_mock.get_volume_list = MagicMock(
             return_value=MockInfoApi.VOLUME_LIST
         )
@@ -119,7 +119,7 @@ class TestInfo():
             ],
             'gather_subset': ['vol']
         })
-        info_module_mock.module.params = self.get_module_args
+        info_module_mock.module_wo_sensitive_data = self.get_module_args
         info_module_mock.provisioning.get_volume_list = MagicMock(
             side_effect=Exception
         )

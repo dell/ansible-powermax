@@ -602,6 +602,10 @@ class StorageGroup(object):
             supports_check_mode=True,
             required_together=required_together
         )
+
+        # Get a copy of the module parameters without sensitive data for logging purposes
+        self.module_wo_sensitive_data = utils.get_powermax_management_host_parameters_remove_sensitive_data(self.module.params)
+
         if HAS_PYU4V is False:
             self.show_error_exit(msg="Ansible modules for PowerMax require "
                                  "the PyU4V python library to be "
@@ -631,10 +635,10 @@ class StorageGroup(object):
 
     def get_volume(self):
         """Get volume details"""
-        vol_id = self.module.params['vol_id']
+        vol_id = self.module_wo_sensitive_data['vol_id']
         if vol_id is None:
             vol_id = self.provisioning.find_volume_device_id(
-                self.module.params['vol_name'])
+                self.module_wo_sensitive_data['vol_name'])
         try:
             LOG.info('Getting volume %s details', vol_id)
             return self.provisioning.get_volume(vol_id)
@@ -730,9 +734,9 @@ class StorageGroup(object):
 
     def create_storage_group(self, sg_name):
         """Create a storage group"""
-        slo = self.module.params['service_level']
-        srp = self.module.params['srp']
-        compression = self.module.params['compression']
+        slo = self.module_wo_sensitive_data['service_level']
+        srp = self.module_wo_sensitive_data['srp']
+        compression = self.module_wo_sensitive_data['compression']
 
         if compression is None:
             compression = True
@@ -742,11 +746,11 @@ class StorageGroup(object):
         disable_compression = not compression
         resp = {}
         try:
-            if self.module.params['snapshot_policies'] \
-                    and self.module.params['snapshot_policy_state'] \
+            if self.module_wo_sensitive_data['snapshot_policies'] \
+                    and self.module_wo_sensitive_data['snapshot_policy_state'] \
                     == 'present-in-group':
                 self.pre_check_for_PyU4V_version()
-                snapshot_policies = self.module.params['snapshot_policies']
+                snapshot_policies = self.module_wo_sensitive_data['snapshot_policies']
                 LOG.info('Creating storage group %s and associating snapshot '
                          'policies to it %s', sg_name, snapshot_policies)
                 if not self.module.check_mode:
@@ -808,8 +812,8 @@ class StorageGroup(object):
         :param force: Force flag
         :return: boolean
         """
-        volumes = self.module.params['volumes']
-        vol_state = self.module.params['vol_state']
+        volumes = self.module_wo_sensitive_data['volumes']
+        vol_state = self.module_wo_sensitive_data['vol_state']
         if vol_state != 'absent-in-group':
             self.show_error_exit(msg="Specify vol_state as 'absent-in-group' to move volumes")
         if not force and (self.if_srdf_protected(self.get_storage_group(sg_name)) or
@@ -839,7 +843,7 @@ class StorageGroup(object):
 
     def add_volume_storage_group(self, sg_name):
         """Add new volumes to existing storage group"""
-        volumes = self.module.params['volumes']
+        volumes = self.module_wo_sensitive_data['volumes']
         LOG.info('Creating new volumes for SG %s', sg_name)
         changed = False
         storage_group = self.provisioning.get_storage_group(sg_name)
@@ -874,7 +878,7 @@ class StorageGroup(object):
 
                         # Check SRDF protected SG
                         if self.if_srdf_protected(storage_group):
-                            array_id = self.module.params['serial_no']
+                            array_id = self.module_wo_sensitive_data['serial_no']
                             array_details = self.common.get_array(
                                 array_id=array_id)
                             if 'ucode' in array_details and \
@@ -1237,13 +1241,13 @@ class StorageGroup(object):
         storage_group = self.get_storage_group(sg_name)
         LOG.info('Modifying the SG SLO to %s ', new_slo)
         if ('slo' in storage_group and storage_group['slo'].lower() !=
-            self.module.params['service_level'].lower()) or \
+            self.module_wo_sensitive_data['service_level'].lower()) or \
                 ('slo' not in storage_group and
-                 self.module.params['service_level'].lower() != "none"):
+                 self.module_wo_sensitive_data['service_level'].lower() != "none"):
             try:
                 LOG.info('The existing SG SLO is %s and the desired SG SLO '
                          'is %s ', storage_group['slo'],
-                         self.module.params['service_level'])
+                         self.module_wo_sensitive_data['service_level'])
                 if not self.module.check_mode:
                     self.provisioning.modify_storage_group(sg_name, payload)
             except Exception as e:
@@ -1265,12 +1269,12 @@ class StorageGroup(object):
         storage_group = self.get_storage_group(sg_name)
 
         if 'compression' in storage_group and storage_group[
-                'compression'] != self.module.params['compression']:
+                'compression'] != self.module_wo_sensitive_data['compression']:
             try:
                 LOG.info('The existing SG compression is %s and the desired'
                          ' SG compression is %s ',
                          storage_group['compression'],
-                         self.module.params['compression'])
+                         self.module_wo_sensitive_data['compression'])
                 if not self.module.check_mode:
                     self.provisioning.modify_storage_group(sg_name, payload)
             except Exception as e:
@@ -1352,30 +1356,30 @@ class StorageGroup(object):
         modified = False
         modified_param = dict()
 
-        if ('srp' in storage_group and self.module.params['srp'] is not None
-            and storage_group['srp'].lower() != self.module.params['srp'].
+        if ('srp' in storage_group and self.module_wo_sensitive_data['srp'] is not None
+            and storage_group['srp'].lower() != self.module_wo_sensitive_data['srp'].
             lower()) or ('srp' not in storage_group and self.module.
-                         params['srp'] is not None and self.module.params['srp'].
+                         params['srp'] is not None and self.module_wo_sensitive_data['srp'].
                          lower() != "none"):
-            modified_param['modified_srp'] = self.module.params['srp']
+            modified_param['modified_srp'] = self.module_wo_sensitive_data['srp']
             modified = True
 
-        if ('slo' in storage_group and self.module.params['service_level'] is
+        if ('slo' in storage_group and self.module_wo_sensitive_data['service_level'] is
             not None and storage_group['slo'].lower() != self.
             module.params['service_level'].lower()) or \
                 ('slo' not in storage_group and self.module.
                  params['service_level'] is not None and
-                 self.module.params['service_level'].lower() != "none"):
+                 self.module_wo_sensitive_data['service_level'].lower() != "none"):
             modified_param['modified_slo'] = \
-                self.module.params['service_level']
+                self.module_wo_sensitive_data['service_level']
             modified = True
 
         if 'compression' in storage_group and self.\
             module.params['compression'] is not None and \
                 storage_group['compression'] != \
-                self.module.params['compression']:
+                self.module_wo_sensitive_data['compression']:
             modified_param['modified_compression'] = \
-                self.module.params['compression']
+                self.module_wo_sensitive_data['compression']
             modified = True
 
         LOG.info('The storage group %s needs to be modified and the modified '
@@ -1388,7 +1392,7 @@ class StorageGroup(object):
         if not storage_group:
             error_message = ("Rename storage group %s to new name %s "
                              "failed because storage group does not exist "
-                             % (self.module.params['sg_name'], new_sg_name))
+                             % (self.module_wo_sensitive_data['sg_name'], new_sg_name))
             self.show_error_exit(msg=error_message)
         changed = False
         if storage_group['storageGroupId'] == new_sg_name:
@@ -1408,7 +1412,7 @@ class StorageGroup(object):
         except Exception as e:
             error_message = ("Rename storage group %s to new name %s "
                              "failed with error %s "
-                             % (self.module.params['sg_name'], new_sg_name, str(e)))
+                             % (self.module_wo_sensitive_data['sg_name'], new_sg_name, str(e)))
             self.show_error_exit(msg=error_message)
         return changed
 
@@ -1643,18 +1647,18 @@ class StorageGroup(object):
         Perform different actions on volume based on user parameter
         chosen in playbook
         """
-        state = self.module.params['state']
-        sg_name = self.module.params['sg_name']
-        target_sg_name = self.module.params['target_sg_name']
-        force = self.module.params['force'] or False
-        volumes = self.module.params['volumes']
-        vol_state = self.module.params['vol_state']
-        child_sgs = self.module.params['child_storage_groups']
-        child_sg_state = self.module.params['child_sg_state']
-        new_sg_name = self.module.params['new_sg_name']
-        snapshot_policies = self.module.params['snapshot_policies']
-        snapshot_policy_state = self.module.params['snapshot_policy_state']
-        host_io_limit = self.module.params['host_io_limit']
+        state = self.module_wo_sensitive_data['state']
+        sg_name = self.module_wo_sensitive_data['sg_name']
+        target_sg_name = self.module_wo_sensitive_data['target_sg_name']
+        force = self.module_wo_sensitive_data['force'] or False
+        volumes = self.module_wo_sensitive_data['volumes']
+        vol_state = self.module_wo_sensitive_data['vol_state']
+        child_sgs = self.module_wo_sensitive_data['child_storage_groups']
+        child_sg_state = self.module_wo_sensitive_data['child_sg_state']
+        new_sg_name = self.module_wo_sensitive_data['new_sg_name']
+        snapshot_policies = self.module_wo_sensitive_data['snapshot_policies']
+        snapshot_policy_state = self.module_wo_sensitive_data['snapshot_policy_state']
+        host_io_limit = self.module_wo_sensitive_data['host_io_limit']
 
         storage_group = self.get_storage_group(sg_name)
 

@@ -332,6 +332,9 @@ class SnapshotPolicy(object):
             required_together=required_together,
             supports_check_mode=True)
 
+        # Get a copy of the module parameters without sensitive data for logging purposes
+        self.module_wo_sensitive_data = utils.get_powermax_management_host_parameters_remove_sensitive_data(self.module.params)
+
         if HAS_PYU4V is False:
             msg = "Ansible modules for PowerMax require the PyU4V python " \
                   "library to be installed. Please install the library " \
@@ -412,7 +415,7 @@ class SnapshotPolicy(object):
                 snapshot_policy_details = self.snapshot_policy. \
                     get_snapshot_policy(snapshot_policy)
             else:
-                sp_name = self.module.params['snapshot_policy_name']
+                sp_name = self.module_wo_sensitive_data['snapshot_policy_name']
                 LOG.info("Getting snapshot policy details for: %s", sp_name)
                 snapshot_policy_details = self.snapshot_policy.\
                     get_snapshot_policy(sp_name)
@@ -422,7 +425,7 @@ class SnapshotPolicy(object):
         except utils.ResourceNotFoundException as e:
             error_message = "Failed to get details of snapshot policy " \
                             "{0} with error {1}" \
-                .format(self.module.params['snapshot_policy_name'], str(e))
+                .format(self.module_wo_sensitive_data['snapshot_policy_name'], str(e))
             LOG.error(error_message)
             return None
         except Exception as e:
@@ -437,14 +440,14 @@ class SnapshotPolicy(object):
         """
         try:
             resp = {}
-            sp_name = self.module.params['snapshot_policy_name']
-            interval = self.module.params['interval']
-            offset_mins = self.module.params['offset_mins']
-            secure = self.module.params['secure']
-            snapshot_count = self.module.params['snapshot_count']
-            compliance_count_warning = self.module.params[
+            sp_name = self.module_wo_sensitive_data['snapshot_policy_name']
+            interval = self.module_wo_sensitive_data['interval']
+            offset_mins = self.module_wo_sensitive_data['offset_mins']
+            secure = self.module_wo_sensitive_data['secure']
+            snapshot_count = self.module_wo_sensitive_data['snapshot_count']
+            compliance_count_warning = self.module_wo_sensitive_data[
                 'compliance_count_warning']
-            compliance_count_critical = self.module.params[
+            compliance_count_critical = self.module_wo_sensitive_data[
                 'compliance_count_critical']
 
             if interval is not None and offset_mins is not None:
@@ -482,21 +485,21 @@ class SnapshotPolicy(object):
             updated or not """
         LOG.info("Checking snapshot policy attributes")
         snapshot_policy_details = self.snapshot_policy.\
-            get_snapshot_policy(self.module.params['snapshot_policy_name'])
+            get_snapshot_policy(self.module_wo_sensitive_data['snapshot_policy_name'])
         LOG.debug("Snapshot Policy Details: %s", snapshot_policy_details)
         to_update = {}
 
-        interval = self.module.params['interval']
-        new_snapshot_policy_name = self.module.params[
+        interval = self.module_wo_sensitive_data['interval']
+        new_snapshot_policy_name = self.module_wo_sensitive_data[
             'new_snapshot_policy_name']
-        secure = self.module.params['secure']
-        snapshot_count = self.module.params['snapshot_count']
-        offset_mins = self.module.params['offset_mins']
-        compliance_count_warning = self.module.params[
+        secure = self.module_wo_sensitive_data['secure']
+        snapshot_count = self.module_wo_sensitive_data['snapshot_count']
+        offset_mins = self.module_wo_sensitive_data['offset_mins']
+        compliance_count_warning = self.module_wo_sensitive_data[
             'compliance_count_warning']
-        compliance_count_critical = self.module.params[
+        compliance_count_critical = self.module_wo_sensitive_data[
             'compliance_count_critical']
-        suspend = self.module.params['suspend']
+        suspend = self.module_wo_sensitive_data['suspend']
 
         if interval is not None:
             # extract integer value out of given string
@@ -581,7 +584,7 @@ class SnapshotPolicy(object):
         """ Modify given snapshot policy attributes """
 
         try:
-            sp_name = self.module.params['snapshot_policy_name']
+            sp_name = self.module_wo_sensitive_data['snapshot_policy_name']
             LOG.info("Modifying snapshot policy: %s", sp_name)
             # Suspend/Resume actions
             if 'suspend' in to_modify_dict:
@@ -620,8 +623,8 @@ class SnapshotPolicy(object):
     def associate_SG_to_SP(self):
         """ Associate storage group to snapshot policy """
         try:
-            sg_list = self.module.params["storage_groups"]
-            sp_name = self.module.params['snapshot_policy_name']
+            sg_list = self.module_wo_sensitive_data["storage_groups"]
+            sp_name = self.module_wo_sensitive_data['snapshot_policy_name']
             LOG.info("Associating storage group(s) %s to snapshot policy: %s",
                      sg_list, sp_name)
             changed = False
@@ -653,8 +656,8 @@ class SnapshotPolicy(object):
     def disassociate_SG_from_SP(self):
         """ Disassociate storage group to snapshot policy """
         try:
-            sg_list = self.module.params["storage_groups"]
-            sp_name = self.module.params['snapshot_policy_name']
+            sg_list = self.module_wo_sensitive_data["storage_groups"]
+            sp_name = self.module_wo_sensitive_data['snapshot_policy_name']
             LOG.info("Disassociating storage group(s) %s from "
                      "snapshot policy: %s",
                      sg_list, sp_name)
@@ -689,7 +692,7 @@ class SnapshotPolicy(object):
     def delete_snapshotpolicy(self):
         """ Delete given snapshot policy """
         try:
-            sp_name = self.module.params['snapshot_policy_name']
+            sp_name = self.module_wo_sensitive_data['snapshot_policy_name']
             LOG.info("Deleting snapshot policy: %s", sp_name)
             if not self.module.check_mode:
                 self.snapshot_policy.delete_snapshot_policy(sp_name)
@@ -741,11 +744,11 @@ class SnapshotPolicy(object):
     def perform_module_operation(self):
         """ Perform snapshot policy operation based on playbook task """
 
-        sp_name = self.module.params['snapshot_policy_name']
-        state = self.module.params['state']
-        sg_state = self.module.params["storage_group_state"]
-        storage_groups = self.module.params['storage_groups']
-        new_sp_name = self.module.params['new_snapshot_policy_name']
+        sp_name = self.module_wo_sensitive_data['snapshot_policy_name']
+        state = self.module_wo_sensitive_data['state']
+        sg_state = self.module_wo_sensitive_data["storage_group_state"]
+        storage_groups = self.module_wo_sensitive_data['storage_groups']
+        new_sp_name = self.module_wo_sensitive_data['new_snapshot_policy_name']
 
         # Get snapshot policy details
         if sp_name and len(sp_name.strip()):

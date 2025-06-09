@@ -65,7 +65,7 @@
         new_name: "{{ new_name }}"
         state: "present"
 
-    - name: Delete port group
+    - name: Delete port group after re-name
       dellemc.powermax.portgroup:
         unispherehost: "{{ unispherehost }}"
         verifycert: "{{ verifycert }}"

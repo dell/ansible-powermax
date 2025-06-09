@@ -206,7 +206,7 @@ EXAMPLES = r'''
         filter_operator: "lesser"
         filter_value: "10"
 
-- name: Get the list of arrays for a given Unisphere host
+- name: Get the list of arrays for a given Unisphere host and register
   dellemc.powermax.info:
     unispherehost: "{{unispherehost}}"
     verifycert: "{{verifycert}}"
@@ -624,6 +624,7 @@ MVConnections:
 from ansible_collections.dellemc.powermax.plugins.module_utils.storage.dell \
     import utils
 from ansible.module_utils.basic import AnsibleModule
+import copy
 
 LOG = utils.get_logger('info')
 
@@ -646,7 +647,11 @@ class Info(object):
         self.module = AnsibleModule(
             argument_spec=self.module_params,
             supports_check_mode=True)
-        serial_no = self.module.params['serial_no']
+        # Remove the sensitive data from the module parameters for a dictionary which can log other values when needed.
+        temp = copy.deepcopy(self.module.params)
+        temp.pop('password')
+        self.module_wo_sensitive_data = temp
+        serial_no = self.module_wo_sensitive_data['serial_no']
         if HAS_PYU4V is False:
             self.show_error_exit(msg="Ansible modules for PowerMax require "
                                  "the PyU4V python library to be "
@@ -788,7 +793,7 @@ class Info(object):
 
         try:
             LOG.info('Getting Volume List ')
-            array_serial_no = self.module.params['serial_no']
+            array_serial_no = self.module_wo_sensitive_data['serial_no']
             if tdev_volumes:
                 if filters_dict:
                     if "tdev" not in filters_dict.keys():
@@ -810,7 +815,7 @@ class Info(object):
 
         except Exception as e:
             msg = 'Get Volumes for array %s failed with error %s '\
-                  % (self.module.params['serial_no'], str(e))
+                  % (array_serial_no, str(e))
             self.show_error_exit(msg=msg)
 
     def get_volume_details(self, vol_list):
@@ -823,7 +828,7 @@ class Info(object):
             return vol_details_list
         except Exception as e:
             msg = 'Get Volumes for array %s failed with error %s '\
-                  % (self.module.params['serial_no'], str(e))
+                  % (self.module_wo_sensitive_data['serial_no'], str(e))
             self.show_error_exit(msg=msg)
 
     def get_storage_group_list(self, filters_dict=None):
@@ -832,7 +837,7 @@ class Info(object):
 
         try:
             LOG.info('Getting Storage Group List ')
-            array_serial_no = self.module.params['serial_no']
+            array_serial_no = self.module_wo_sensitive_data['serial_no']
             if filters_dict:
                 sg_list = self.provisioning.get_storage_group_list(
                     filters=filters_dict)
@@ -844,7 +849,7 @@ class Info(object):
 
         except Exception as e:
             msg = 'Get Storage Group for array %s failed with error %s' \
-                  % (self.module.params['serial_no'], str(e))
+                  % (array_serial_no, str(e))
             self.show_error_exit(msg=msg)
 
     def get_array_list(self):
@@ -868,7 +873,7 @@ class Info(object):
 
         try:
             LOG.info('Getting Storage Resource Pool List')
-            array_serial_no = self.module.params['serial_no']
+            array_serial_no = self.module_wo_sensitive_data['serial_no']
             if filters_dict:
                 srp_list \
                     = self.provisioning.get_srp_list(filters=filters_dict)
@@ -888,7 +893,7 @@ class Info(object):
 
         except Exception as e:
             msg = 'Get Storage Resource Pool details for array %s failed ' \
-                  'with error %s' % (self.module.params['serial_no'], str(e))
+                  'with error %s' % (array_serial_no, str(e))
             self.show_error_exit(msg=msg)
 
     def get_portgroup_list(self, filters_dict=None):
@@ -897,7 +902,7 @@ class Info(object):
 
         try:
             LOG.info('Getting Port Group List ')
-            array_serial_no = self.module.params['serial_no']
+            array_serial_no = self.module_wo_sensitive_data['serial_no']
             if filters_dict:
                 pg_list = self.provisioning.get_port_group_list(
                     filters=filters_dict)
@@ -909,7 +914,7 @@ class Info(object):
 
         except Exception as e:
             msg = 'Get Port Group for array %s failed with error %s' \
-                  % (self.module.params['serial_no'], str(e))
+                  % (array_serial_no, str(e))
             self.show_error_exit(msg=msg)
 
     def get_host_list(self, filters_dict=None):
@@ -917,7 +922,7 @@ class Info(object):
 
         try:
             LOG.info('Getting Host List ')
-            array_serial_no = self.module.params['serial_no']
+            array_serial_no = self.module_wo_sensitive_data['serial_no']
             if filters_dict:
                 host_list = self.provisioning.get_host_list(
                     filters=filters_dict)
@@ -929,7 +934,7 @@ class Info(object):
 
         except Exception as e:
             msg = 'Get Host for array %s failed with error %s' \
-                  % (self.module.params['serial_no'], str(e))
+                  % (array_serial_no, str(e))
             self.show_error_exit(msg=msg)
 
     def get_hostgroup_list(self, filters_dict=None):
@@ -938,7 +943,7 @@ class Info(object):
 
         try:
             LOG.info('Getting Host Group List ')
-            array_serial_no = self.module.params['serial_no']
+            array_serial_no = self.module_wo_sensitive_data['serial_no']
             if filters_dict:
                 hostgroup_list = self.provisioning.get_host_group_list(
                     filters=filters_dict)
@@ -950,7 +955,7 @@ class Info(object):
 
         except Exception as e:
             msg = 'Get Host Group for array %s failed with error %s ' \
-                  % (self.module.params['serial_no'], str(e))
+                  % (self.module_wo_sensitive_data['serial_no'], str(e))
             self.show_error_exit(msg=msg)
 
     def get_port_list(self, filters_dict=None):
@@ -958,7 +963,7 @@ class Info(object):
 
         try:
             LOG.info('Getting Port List ')
-            array_serial_no = self.module.params['serial_no']
+            array_serial_no = self.module_wo_sensitive_data['serial_no']
             if filters_dict:
                 port_list = self.provisioning.get_port_list(
                     filters=filters_dict)
@@ -970,7 +975,7 @@ class Info(object):
 
         except Exception as e:
             msg = 'Get Port for array %s failed with error %s ' \
-                  % (self.module.params['serial_no'], str(e))
+                  % (array_serial_no, str(e))
             self.show_error_exit(msg=msg)
 
     def get_masking_view_list(self, filters_dict=None):
@@ -979,7 +984,7 @@ class Info(object):
 
         try:
             LOG.info('Getting Masking View List')
-            array_serial_no = self.module.params['serial_no']
+            array_serial_no = self.module_wo_sensitive_data['serial_no']
             if filters_dict:
                 mv_list = self.provisioning.\
                     get_masking_view_list(filters=filters_dict)
@@ -991,7 +996,7 @@ class Info(object):
 
         except Exception as e:
             msg = 'Get Masking View for array %s failed with error %s' \
-                  % (self.module.params['serial_no'], str(e))
+                  % (array_serial_no, str(e))
             self.show_error_exit(msg=msg)
 
     def prepare_mv_connections_list(self, mv_connections_list, masking_view_id, filters_dict=None):
@@ -1011,7 +1016,7 @@ class Info(object):
 
         try:
             LOG.info('Getting Masking View Connections List')
-            array_serial_no = self.module.params['serial_no']
+            array_serial_no = self.module_wo_sensitive_data['serial_no']
             masking_view_list = self.get_masking_view_list()
             mv_connections_list = []
 
@@ -1038,7 +1043,7 @@ class Info(object):
 
         except Exception as e:
             msg = 'Get Masking View Connections for array %s failed with error %s' \
-                  % (self.module.params['serial_no'], str(e))
+                  % (array_serial_no, str(e))
             self.show_error_exit(msg=msg)
 
     def get_rdfgroup_list(self):
@@ -1047,7 +1052,7 @@ class Info(object):
 
         try:
             LOG.info('Getting rdf group List ')
-            array_serial_no = self.module.params['serial_no']
+            array_serial_no = self.module_wo_sensitive_data['serial_no']
             rdf_list = self.replication.get_rdf_group_list()
             LOG.info('Successfully listed %d rdf groups from array %s',
                      len(rdf_list), array_serial_no)
@@ -1055,7 +1060,7 @@ class Info(object):
 
         except Exception as e:
             msg = 'Get rdf group for array %s failed with error %s ' \
-                  % (self.module.params['serial_no'], str(e))
+                  % (array_serial_no, str(e))
             self.show_error_exit(msg=msg)
 
     def get_metro_dr_env_list(self):
@@ -1069,7 +1074,7 @@ class Info(object):
             LOG.info("Got PyU4V instance for metro DR on to PowerMax")
 
             LOG.info('Getting metro DR environment list ')
-            array_serial_no = self.module.params['serial_no']
+            array_serial_no = self.module_wo_sensitive_data['serial_no']
             metro_dr_env_list = self.metro.get_metrodr_environment_list()
             LOG.info('Successfully listed %d metro DR environments from array'
                      ' %s', len(metro_dr_env_list), array_serial_no)
@@ -1077,7 +1082,7 @@ class Info(object):
 
         except Exception as e:
             msg = 'Get Metro DR environment for array %s failed with error ' \
-                  '%s ' % (self.module.params['serial_no'], str(e))
+                  '%s ' % (array_serial_no, str(e))
             self.show_error_exit(msg=msg)
 
     def get_snapshot_policies_list(self):
@@ -1090,7 +1095,7 @@ class Info(object):
             LOG.info("Got PyU4V instance for snapshot policy on to PowerMax")
 
             LOG.info('Getting snapshot policies list ')
-            array_serial_no = self.module.params['serial_no']
+            array_serial_no = self.module_wo_sensitive_data['serial_no']
             snapshot_policy_list \
                 = self.snapshot_policy.get_snapshot_policy_list()
             LOG.info('Successfully listed %d snapshot policies from array'
@@ -1099,7 +1104,7 @@ class Info(object):
 
         except Exception as e:
             msg = 'Get snapshot policies for array %s failed with error ' \
-                  '%s ' % (self.module.params['serial_no'], str(e))
+                  '%s ' % (array_serial_no, str(e))
             self.show_error_exit(msg=msg)
 
     def get_initiators_list(self, filters_dict=None):
@@ -1121,7 +1126,7 @@ class Info(object):
     def show_error_exit(self, msg):
         if self.u4v_conn is not None:
             try:
-                LOG.info("Closing Unisphere connection %s", self.u4v_conn)
+                LOG.info("Closing Unisphere connection %s", self.module_wo_sensitive_data['serial_no'])
                 utils.close_connection(self.u4v_conn)
                 LOG.info("Connection closed successfully")
             except Exception as e:
@@ -1135,16 +1140,16 @@ class Info(object):
         """ Perform different actions on Gatherfacts based on user parameters
             chosen in playbook """
 
-        serial_no = self.module.params['serial_no']
+        serial_no = self.module_wo_sensitive_data['serial_no']
         if serial_no == '':
             array_list = self.get_array_list()
             self.module.exit_json(Arrays=array_list)
         else:
-            subset = self.module.params['gather_subset']
-            tdev_volumes = self.module.params['tdev_volumes']
-            masking_view_name = self.module.params['masking_view_name']
+            subset = self.module_wo_sensitive_data['gather_subset']
+            tdev_volumes = self.module_wo_sensitive_data['tdev_volumes']
+            masking_view_name = self.module_wo_sensitive_data['masking_view_name']
             filters = []
-            filters = self.module.params['filters']
+            filters = self.module_wo_sensitive_data['filters']
             if len(subset) == 0:
                 self.show_error_exit(msg="Please specify gather_subset")
 

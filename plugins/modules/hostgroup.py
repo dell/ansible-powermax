@@ -348,6 +348,10 @@ class HostGroup(object):
             mutually_exclusive=mutually_exclusive,
             required_together=required_together
         )
+
+        # Get a copy of the module parameters without sensitive data for logging purposes
+        self.module_wo_sensitive_data = utils.get_powermax_management_host_parameters_remove_sensitive_data(self.module.params)
+
         # result is a dictionary that contains changed status and host details
         self.result = {"changed": False, "hostgroup_details": {}}
         self.host_flags_list = ['volume_set_addressing', 'environ_set',
@@ -441,10 +445,10 @@ class HostGroup(object):
         '''
         Create host group with given hosts and host flags
         '''
-        hosts = self.module.params['hosts']
-        host_state = self.module.params['host_state']
-        received_host_flags = self.module.params['host_flags']
-        host_type = self.module.params['host_type']
+        hosts = self.module_wo_sensitive_data['hosts']
+        host_state = self.module_wo_sensitive_data['host_state']
+        received_host_flags = self.module_wo_sensitive_data['host_flags']
+        host_type = self.module_wo_sensitive_data['host_type']
         emptyHostGroupFlag = False
         param_list = [hostgroup_name]
         new_host_flags_dict = {}
@@ -683,16 +687,16 @@ class HostGroup(object):
 
     def _create_result_dict(self, changed, hostgroup):
         self.result['changed'] = changed
-        if self.module.params['state'] == 'absent' or \
+        if self.module_wo_sensitive_data['state'] == 'absent' or \
                 (not hostgroup and self.module.check_mode):
             self.result['hostgroup_details'] = {}
         else:
-            if self.module.params['new_name'] and not self.module.check_mode:
+            if self.module_wo_sensitive_data['new_name'] and not self.module.check_mode:
                 self.result['hostgroup_details'] = self.get_hostgroup(
-                    self.module.params['new_name'])
+                    self.module_wo_sensitive_data['new_name'])
             else:
                 self.result['hostgroup_details'] = self.get_hostgroup(
-                    self.module.params['hostgroup_name'])
+                    self.module_wo_sensitive_data['hostgroup_name'])
 
     def show_error_exit(self, msg):
         if self.u4v_conn is not None:
@@ -712,13 +716,13 @@ class HostGroup(object):
         Perform different actions on host group based on user parameter
         chosen in playbook
         '''
-        state = self.module.params['state']
-        host_state = self.module.params['host_state']
-        hostgroup_name = self.module.params['hostgroup_name']
-        hosts = self.module.params['hosts']
-        new_name = self.module.params['new_name']
-        host_flags = self.module.params['host_flags']
-        host_type = self.module.params['host_type']
+        state = self.module_wo_sensitive_data['state']
+        host_state = self.module_wo_sensitive_data['host_state']
+        hostgroup_name = self.module_wo_sensitive_data['hostgroup_name']
+        hosts = self.module_wo_sensitive_data['hosts']
+        new_name = self.module_wo_sensitive_data['new_name']
+        host_flags = self.module_wo_sensitive_data['host_flags']
+        host_type = self.module_wo_sensitive_data['host_type']
 
         if (hostgroup_name is None) or (hostgroup_name is not None and
                                         len(hostgroup_name.strip()) == 0):

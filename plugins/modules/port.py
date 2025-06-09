@@ -221,6 +221,10 @@ class Port(object):
             argument_spec=self.module_params,
             supports_check_mode=False
         )
+
+        # Get a copy of the module parameters without sensitive data for logging purposes
+        self.module_wo_sensitive_data = utils.get_powermax_management_host_parameters_remove_sensitive_data(self.module.params)
+
         # result is a dictionary that contains changed status and port details
         self.result = {"changed": False, "port_details": {}}
         if HAS_PYU4V is False:
@@ -246,7 +250,7 @@ class Port(object):
         Getting details of a port
         """
         LOG.info("Getting the details of port")
-        ports = self.module.params['ports']
+        ports = self.module_wo_sensitive_data['ports']
         try:
             details = {}
             message = "Director ID and Port ID is mandatory for listing " \

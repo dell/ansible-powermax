@@ -348,6 +348,9 @@ class Host(object):
             mutually_exclusive=mutually_exclusive,
             required_together=required_together
         )
+        # Get a copy of the module parameters without sensitive data for logging purposes
+        self.module_wo_sensitive_data = utils.get_powermax_management_host_parameters_remove_sensitive_data(self.module.params)
+
         # result is a dictionary that contains changed status and host details
         self.result = {"changed": False, "host_details": {}}
         if HAS_PYU4V is False:
@@ -440,8 +443,8 @@ class Host(object):
         '''
         Create host with given initiators and host_flags
         '''
-        received_host_flags = self.module.params['host_flags']
-        host_type = self.module.params['host_type']
+        received_host_flags = self.module_wo_sensitive_data['host_flags']
+        host_type = self.module_wo_sensitive_data['host_type']
 
         new_host_flags_dict = {}
         if host_type:
@@ -648,16 +651,16 @@ class Host(object):
 
     def _create_result_dict(self, changed, host=None):
         self.result['changed'] = changed
-        if self.module.params['state'] == 'absent' or \
+        if self.module_wo_sensitive_data['state'] == 'absent' or \
                 (not host and self.module.check_mode):
             self.result['host_details'] = {}
         else:
-            if self.module.params['new_name'] and not self.module.check_mode:
+            if self.module_wo_sensitive_data['new_name'] and not self.module.check_mode:
                 self.result['host_details'] = self.get_host(
-                    self.module.params['new_name'])
+                    self.module_wo_sensitive_data['new_name'])
             else:
                 self.result['host_details'] = self.get_host(
-                    self.module.params['host_name'])
+                    self.module_wo_sensitive_data['host_name'])
 
     def get_initiator_id(self, alias):
         '''
@@ -712,13 +715,13 @@ class Host(object):
         Perform different actions on host based on user parameter
         chosen in playbook
         '''
-        state = self.module.params['state']
-        initiator_state = self.module.params['initiator_state']
-        host_name = self.module.params['host_name']
-        initiators = self.module.params['initiators']
-        new_name = self.module.params['new_name']
-        host_flags = self.module.params['host_flags']
-        host_type = self.module.params['host_type']
+        state = self.module_wo_sensitive_data['state']
+        initiator_state = self.module_wo_sensitive_data['initiator_state']
+        host_name = self.module_wo_sensitive_data['host_name']
+        initiators = self.module_wo_sensitive_data['initiators']
+        new_name = self.module_wo_sensitive_data['new_name']
+        host_flags = self.module_wo_sensitive_data['host_flags']
+        host_type = self.module_wo_sensitive_data['host_type']
 
         if (host_name is None) or (host_name is not None and
                                    len(host_name.strip()) == 0):

@@ -84,7 +84,7 @@ class TestVolume(PowerMaxUnitBase):
                 "append_vol_id": "test_append_vol_id",
             }
         )
-        powermax_module_mock.module.params = self.vol_args
+        powermax_module_mock.module_wo_sensitive_data = self.vol_args
         powermax_module_mock.provisioning.find_volume_device_id = MagicMock(
             return_value="Vol_1"
         )
@@ -109,7 +109,7 @@ class TestVolume(PowerMaxUnitBase):
                 "append_vol_id": "test_append_vol_id",
             }
         )
-        powermax_module_mock.module.params = self.vol_args
+        powermax_module_mock.module_wo_sensitive_data = self.vol_args
         powermax_module_mock.provisioning.find_volume_device_id = MagicMock(
             return_value="Vol_1"
         )
@@ -131,7 +131,7 @@ class TestVolume(PowerMaxUnitBase):
                 "serial_no": "Test_Serial",
             }
         )
-        powermax_module_mock.module.params = self.vol_args
+        powermax_module_mock.module_wo_sensitive_data = self.vol_args
         powermax_module_mock.get_storage_group = MagicMock(
             return_value=MockVolApi.get_storagegroup_details_1()
         )
@@ -160,7 +160,7 @@ class TestVolume(PowerMaxUnitBase):
                 "serial_no": "Test_Serial",
             }
         )
-        powermax_module_mock.module.params = self.vol_args
+        powermax_module_mock.module_wo_sensitive_data = self.vol_args
         powermax_module_mock.get_storage_group = MagicMock(
             return_value=MockVolApi.get_storagegroup_details_1()
         )
@@ -189,7 +189,7 @@ class TestVolume(PowerMaxUnitBase):
                 "serial_no": "Test_Serial",
             }
         )
-        powermax_module_mock.module.params = self.vol_args
+        powermax_module_mock.module_wo_sensitive_data = self.vol_args
         powermax_module_mock.get_storage_group = MagicMock(
             return_value=MockVolApi.get_storagegroup_details_1()
         )
@@ -216,7 +216,7 @@ class TestVolume(PowerMaxUnitBase):
                 "append_vol_id": True,
             }
         )
-        powermax_module_mock.module.params = self.vol_args
+        powermax_module_mock.module_wo_sensitive_data = self.vol_args
         powermax_module_mock.provisioning.add_new_volume_to_storage_group = MagicMock(
             side_effect=Exception
         )
@@ -237,7 +237,7 @@ class TestVolume(PowerMaxUnitBase):
                 "append_vol_id": True,
             }
         )
-        powermax_module_mock.module.params = self.vol_args
+        powermax_module_mock.module_wo_sensitive_data = self.vol_args
         powermax_module_mock.provisioning.add_new_volume_to_storage_group = MagicMock(
             side_effect=Exception
         )
@@ -257,7 +257,7 @@ class TestVolume(PowerMaxUnitBase):
                 "append_vol_id": True,
             }
         )
-        powermax_module_mock.module.params = self.vol_args
+        powermax_module_mock.module_wo_sensitive_data = self.vol_args
         powermax_module_mock.provisioning.add_new_volume_to_storage_group = MagicMock(
             side_effect=Exception
         )
@@ -278,7 +278,7 @@ class TestVolume(PowerMaxUnitBase):
                 "append_vol_id": True,
             }
         )
-        powermax_module_mock.module.params = self.vol_args
+        powermax_module_mock.module_wo_sensitive_data = self.vol_args
         powermax_module_mock.provisioning.add_new_volume_to_storage_group = MagicMock(
             side_effect=Exception
         )
@@ -292,7 +292,7 @@ class TestVolume(PowerMaxUnitBase):
         self.vol_args.update(
             {"state": "present", "vol_id": "test_vol", "new_name": "test_new_name"}
         )
-        powermax_module_mock.module.params = self.vol_args
+        powermax_module_mock.module_wo_sensitive_data = self.vol_args
         powermax_module_mock.provisioning.get_volume = MagicMock(side_effect=Exception)
         utils.close_connection = MagicMock(side_effect=MockApiException)
         self.capture_fail_json_method(
@@ -303,7 +303,7 @@ class TestVolume(PowerMaxUnitBase):
 
     def test_create_without_name_exception(self, powermax_module_mock):
         self.vol_args.update({"state": "present", "size": 0.02})
-        powermax_module_mock.module.params = self.vol_args
+        powermax_module_mock.module_wo_sensitive_data = self.vol_args
         self.capture_fail_json_method(
             MockVolApi.get_error_message("create_without_name_exception"),
             powermax_module_mock,
@@ -321,7 +321,7 @@ class TestVolume(PowerMaxUnitBase):
                 "serial_no": "Test_Serial",
             }
         )
-        powermax_module_mock.module.params = self.vol_args
+        powermax_module_mock.module_wo_sensitive_data = self.vol_args
         powermax_module_mock.get_storage_group = MagicMock(
             return_value=MockVolApi.get_storagegroup_details_1()
         )
@@ -338,7 +338,7 @@ class TestVolume(PowerMaxUnitBase):
         self.vol_args.update(
             {"state": "present", "vol_name": "test_vol", "sg_name": "test_sg"}
         )
-        powermax_module_mock.module.params = self.vol_args
+        powermax_module_mock.module_wo_sensitive_data = self.vol_args
         powermax_module_mock.provisioning.get_volume_list = MagicMock(
             return_value=MockVolApi.get_vol_list()
         )
@@ -355,7 +355,7 @@ class TestVolume(PowerMaxUnitBase):
         self.vol_args.update(
             {"state": "present", "vol_wwn": "test_vol", "sg_name": "test_sg"}
         )
-        powermax_module_mock.module.params = self.vol_args
+        powermax_module_mock.module_wo_sensitive_data = self.vol_args
         powermax_module_mock.provisioning.get_volume_list = MagicMock(
             return_value=MockVolApi.get_vol_list()
         )
@@ -372,7 +372,7 @@ class TestVolume(PowerMaxUnitBase):
         self.vol_args.update(
             {"state": "present", "vol_name": "test_vol", "sg_name": "test_sg"}
         )
-        powermax_module_mock.module.params = self.vol_args
+        powermax_module_mock.module_wo_sensitive_data = self.vol_args
         powermax_module_mock.provisioning.get_volume_list = MagicMock(
             return_value=[1, 2]
         )
@@ -397,7 +397,7 @@ class TestVolume(PowerMaxUnitBase):
                 "append_vol_id": True,
             }
         )
-        powermax_module_mock.module.params = self.vol_args
+        powermax_module_mock.module_wo_sensitive_data = self.vol_args
         powermax_module_mock.provisioning.get_storage_group = MagicMock(
             side_effect=Exception
         )
@@ -418,7 +418,7 @@ class TestVolume(PowerMaxUnitBase):
                 "serial_no": "Test_Serial",
             }
         )
-        powermax_module_mock.module.params = self.vol_args
+        powermax_module_mock.module_wo_sensitive_data = self.vol_args
         powermax_module_mock.get_volume = MagicMock(
             return_value=MockVolApi.get_vol_details()
         )
@@ -439,7 +439,7 @@ class TestVolume(PowerMaxUnitBase):
                 "serial_no": "Test_Serial",
             }
         )
-        powermax_module_mock.module.params = self.vol_args
+        powermax_module_mock.module_wo_sensitive_data = self.vol_args
         powermax_module_mock.get_volume = MagicMock(
             return_value=MockVolApi.get_vol_details()
         )
@@ -460,7 +460,7 @@ class TestVolume(PowerMaxUnitBase):
                 "serial_no": "Test_Serial",
             }
         )
-        powermax_module_mock.module.params = self.vol_args
+        powermax_module_mock.module_wo_sensitive_data = self.vol_args
         powermax_module_mock.get_volume = MagicMock(
             return_value=MockVolApi.get_vol_srdf_details_1()
         )
@@ -485,7 +485,7 @@ class TestVolume(PowerMaxUnitBase):
                 "serial_no": "Test_Serial",
             }
         )
-        powermax_module_mock.module.params = self.vol_args
+        powermax_module_mock.module_wo_sensitive_data = self.vol_args
         powermax_module_mock.get_volume = MagicMock(
             return_value=MockVolApi.get_vol_srdf_details_2()
         )
@@ -513,7 +513,7 @@ class TestVolume(PowerMaxUnitBase):
                 "serial_no": "Test_Serial",
             }
         )
-        powermax_module_mock.module.params = self.vol_args
+        powermax_module_mock.module_wo_sensitive_data = self.vol_args
         powermax_module_mock.get_volume = MagicMock(
             return_value=MockVolApi.get_vol_srdf_details_2()
         )
@@ -544,7 +544,7 @@ class TestVolume(PowerMaxUnitBase):
                 "serial_no": "Test_Serial",
             }
         )
-        powermax_module_mock.module.params = self.vol_args
+        powermax_module_mock.module_wo_sensitive_data = self.vol_args
         powermax_module_mock.get_volume = MagicMock(
             return_value=MockVolApi.get_vol_srdf_details_4()
         )
@@ -572,7 +572,7 @@ class TestVolume(PowerMaxUnitBase):
                 "serial_no": "Test_Serial",
             }
         )
-        powermax_module_mock.module.params = self.vol_args
+        powermax_module_mock.module_wo_sensitive_data = self.vol_args
         powermax_module_mock.get_volume = MagicMock(
             return_value=MockVolApi.get_vol_srdf_details_2()
         )
@@ -595,7 +595,7 @@ class TestVolume(PowerMaxUnitBase):
                 "serial_no": "Test_Serial",
             }
         )
-        powermax_module_mock.module.params = self.vol_args
+        powermax_module_mock.module_wo_sensitive_data = self.vol_args
         powermax_module_mock.get_volume = MagicMock(
             return_value=MockVolApi.get_vol_srdf_details_1()
         )
@@ -626,7 +626,7 @@ class TestVolume(PowerMaxUnitBase):
                 "serial_no": "Test_Serial",
             }
         )
-        powermax_module_mock.module.params = self.vol_args
+        powermax_module_mock.module_wo_sensitive_data = self.vol_args
         powermax_module_mock.get_volume = MagicMock(
             return_value=MockVolApi.get_vol_details()
         )
@@ -647,7 +647,7 @@ class TestVolume(PowerMaxUnitBase):
                 "serial_no": "Test_Serial",
             }
         )
-        powermax_module_mock.module.params = self.vol_args
+        powermax_module_mock.module_wo_sensitive_data = self.vol_args
         powermax_module_mock.get_volume = MagicMock(
             return_value=MockVolApi.get_vol_srdf_details_2()
         )
@@ -681,7 +681,7 @@ class TestVolume(PowerMaxUnitBase):
                 "serial_no": "Test_Serial",
             }
         )
-        powermax_module_mock.module.params = self.vol_args
+        powermax_module_mock.module_wo_sensitive_data = self.vol_args
         powermax_module_mock.get_volume = MagicMock(
             return_value=MockVolApi.get_vol_srdf_details_3()
         )
@@ -706,7 +706,7 @@ class TestVolume(PowerMaxUnitBase):
                 "serial_no": "Test_Serial",
             }
         )
-        powermax_module_mock.module.params = self.vol_args
+        powermax_module_mock.module_wo_sensitive_data = self.vol_args
         powermax_module_mock.get_volume = MagicMock(
             return_value=MockVolApi.get_vol_srdf_details_1()
         )
@@ -732,7 +732,7 @@ class TestVolume(PowerMaxUnitBase):
                 "serial_no": "Test_Serial",
             }
         )
-        powermax_module_mock.module.params = self.vol_args
+        powermax_module_mock.module_wo_sensitive_data = self.vol_args
         powermax_module_mock.get_volume = MagicMock(
             return_value=MockVolApi.get_vol_details()
         )
@@ -755,7 +755,7 @@ class TestVolume(PowerMaxUnitBase):
                 "serial_no": "Test_Serial",
             }
         )
-        powermax_module_mock.module.params = self.vol_args
+        powermax_module_mock.module_wo_sensitive_data = self.vol_args
         powermax_module_mock.get_volume = MagicMock(
             return_value=MockVolApi.get_vol_details()
         )
@@ -777,7 +777,7 @@ class TestVolume(PowerMaxUnitBase):
                 "serial_no": "Test_Serial",
             }
         )
-        powermax_module_mock.module.params = self.vol_args
+        powermax_module_mock.module_wo_sensitive_data = self.vol_args
         powermax_module_mock.get_volume = MagicMock(
             return_value=MockVolApi.get_vol_details()
         )
@@ -799,7 +799,7 @@ class TestVolume(PowerMaxUnitBase):
                 "serial_no": "Test_Serial",
             }
         )
-        powermax_module_mock.module.params = self.vol_args
+        powermax_module_mock.module_wo_sensitive_data = self.vol_args
         powermax_module_mock.get_volume = MagicMock(
             return_value=MockVolApi.get_vol_details()
         )
@@ -822,7 +822,7 @@ class TestVolume(PowerMaxUnitBase):
         self.vol_args.update(
             {"state": "absent", "vol_id": "0072E", "serial_no": "Test_Serial"}
         )
-        powermax_module_mock.module.params = self.vol_args
+        powermax_module_mock.module_wo_sensitive_data = self.vol_args
         powermax_module_mock.get_volume = MagicMock(
             return_value=MockVolApi.get_vol_details()
         )
@@ -834,7 +834,7 @@ class TestVolume(PowerMaxUnitBase):
         self.vol_args.update(
             {"state": "absent", "vol_id": "0072E", "serial_no": "Test_Serial"}
         )
-        powermax_module_mock.module.params = self.vol_args
+        powermax_module_mock.module_wo_sensitive_data = self.vol_args
         powermax_module_mock.get_volume = MagicMock(
             return_value=MockVolApi.get_vol_details()
         )
@@ -851,7 +851,7 @@ class TestVolume(PowerMaxUnitBase):
         self.vol_args.update(
             {"state": "absent", "vol_id": "0072E", "serial_no": "Test_Serial"}
         )
-        powermax_module_mock.module.params = self.vol_args
+        powermax_module_mock.module_wo_sensitive_data = self.vol_args
         powermax_module_mock.get_volume = MagicMock(
             return_value=MockVolApi.get_vol_details()
         )
@@ -868,7 +868,7 @@ class TestVolume(PowerMaxUnitBase):
         self.vol_args.update(
             {"state": "absent", "vol_id": "0072E", "serial_no": "Test_Serial"}
         )
-        powermax_module_mock.module.params = self.vol_args
+        powermax_module_mock.module_wo_sensitive_data = self.vol_args
         powermax_module_mock.get_volume = MagicMock(
             return_value=MockVolApi.get_vol_details()
         )
@@ -894,7 +894,7 @@ class TestVolume(PowerMaxUnitBase):
                 "serial_no": "Test_Serial",
             }
         )
-        powermax_module_mock.module.params = self.vol_args
+        powermax_module_mock.module_wo_sensitive_data = self.vol_args
         powermax_module_mock.get_volume = MagicMock(
             return_value=MockVolApi.get_vol_details()
         )
@@ -921,7 +921,7 @@ class TestVolume(PowerMaxUnitBase):
                 "serial_no": "Test_Serial",
             }
         )
-        powermax_module_mock.module.params = self.vol_args
+        powermax_module_mock.module_wo_sensitive_data = self.vol_args
         powermax_module_mock.get_volume = MagicMock(
             return_value=MockVolApi.get_vol_details()
         )
@@ -949,7 +949,7 @@ class TestVolume(PowerMaxUnitBase):
                 "serial_no": "Test_Serial",
             }
         )
-        powermax_module_mock.module.params = self.vol_args
+        powermax_module_mock.module_wo_sensitive_data = self.vol_args
         powermax_module_mock.get_volume = MagicMock(
             return_value=MockVolApi.get_vol_details()
         )
@@ -977,7 +977,7 @@ class TestVolume(PowerMaxUnitBase):
                 "serial_no": "Test_Serial",
             }
         )
-        powermax_module_mock.module.params = self.vol_args
+        powermax_module_mock.module_wo_sensitive_data = self.vol_args
         powermax_module_mock.get_volume = MagicMock(
             return_value=MockVolApi.get_vol_details()
         )
@@ -1010,7 +1010,7 @@ class TestVolume(PowerMaxUnitBase):
                 "serial_no": "Test_Serial",
             }
         )
-        powermax_module_mock.module.params = self.vol_args
+        powermax_module_mock.module_wo_sensitive_data = self.vol_args
         powermax_module_mock.get_volume = MagicMock(
             return_value=MockVolApi.get_vol_details()
         )

@@ -380,6 +380,9 @@ class MetroDR(object):
             argument_spec=self.module_params,
             supports_check_mode=True)
 
+        # Get a copy of the module parameters without sensitive data for logging purposes
+        self.module_wo_sensitive_data = utils.get_powermax_management_host_parameters_remove_sensitive_data(self.module.params)
+
         if HAS_PYU4V is False:
             msg = "Ansible modules for PowerMax require the PyU4V python " \
                   "library to be installed. Please install the library " \
@@ -445,16 +448,16 @@ class MetroDR(object):
         """
         try:
             LOG.info("Getting metro DR environment details for: %s",
-                     self.module.params['env_name'])
+                     self.module_wo_sensitive_data['env_name'])
             metrodr_env_details = self.metro.get_metrodr_environment_details(
-                self.module.params['env_name'])
+                self.module_wo_sensitive_data['env_name'])
 
             LOG.info("Successfully got metro DR environment details")
             return metrodr_env_details
         except utils.ResourceNotFoundException as e:
             error_message = "Failed to get details of environment " \
                             "{0} with error {1}" \
-                .format(self.module.params['env_name'], str(e))
+                .format(self.module_wo_sensitive_data['env_name'], str(e))
             LOG.error(error_message)
             return None
         except Exception as e:
@@ -467,7 +470,7 @@ class MetroDR(object):
         LOG.info("Prechecking for create metro DR environment")
 
         for k in ("metro_r2_array_id", "dr_array_id", "replication_mode"):
-            if not self.module.params[k]:
+            if not self.module_wo_sensitive_data[k]:
                 self.show_error_exit("Please provide value for: '%s' for "
                                      "creating metro DR environment" % k)
         LOG.info("Successfully prechecked for create metro DR environment")
@@ -484,23 +487,23 @@ class MetroDR(object):
         try:
             self.pre_checks_for_create()
             param = {
-                "storage_group_name": self.module.params["sg_name"],
-                "environment_name": self.module.params["env_name"],
-                "metro_r1_array_id": self.module.params["metro_r1_array_id"],
-                "metro_r2_array_id": self.module.params["metro_r2_array_id"],
-                "dr_array_id": self.module.params["dr_array_id"],
-                "dr_replication_mode": self.module.params["replication_mode"],
-                "force_new_metro_r1_dr_rdfg": self.module.params[
+                "storage_group_name": self.module_wo_sensitive_data["sg_name"],
+                "environment_name": self.module_wo_sensitive_data["env_name"],
+                "metro_r1_array_id": self.module_wo_sensitive_data["metro_r1_array_id"],
+                "metro_r2_array_id": self.module_wo_sensitive_data["metro_r2_array_id"],
+                "dr_array_id": self.module_wo_sensitive_data["dr_array_id"],
+                "dr_replication_mode": self.module_wo_sensitive_data["replication_mode"],
+                "force_new_metro_r1_dr_rdfg": self.module_wo_sensitive_data[
                     "new_rdf_group_r1"],
-                "force_new_metro_r2_dr_rdfg": self.module.params[
+                "force_new_metro_r2_dr_rdfg": self.module_wo_sensitive_data[
                     "new_rdf_group_r2"],
-                "_async": not self.module.params['wait_for_completion']
+                "_async": not self.module_wo_sensitive_data['wait_for_completion']
             }
             resp = {}
             if param["dr_replication_mode"] == REPLICATION_MODES[1]:
                 param["dr_replication_mode"] = ADAPTIVE_COPY_DISK
             LOG.info("Creating metro DR environment: %s param: %s",
-                     self.module.params['env_name'], param)
+                     self.module_wo_sensitive_data['env_name'], param)
             if not self.module.check_mode:
                 resp = self.metro.create_metrodr_environment(**param)
             LOG.info("Successfully created metro DR environment")
@@ -518,10 +521,10 @@ class MetroDR(object):
         :rtype: dict
         """
         try:
-            if self.module.params['sg_name']:
+            if self.module_wo_sensitive_data['sg_name']:
                 LOG.info("Getting storage group details")
                 sg_details = self.provisioning.get_storage_group(
-                    self.module.params['sg_name'])
+                    self.module_wo_sensitive_data['sg_name'])
                 LOG.info("Successfully got storage group details")
                 return sg_details
             else:
@@ -540,7 +543,7 @@ class MetroDR(object):
         try:
             LOG.info("Getting SRDF group list")
             srdf_gr_list = self.replication.get_storage_group_srdf_group_list(
-                self.module.params['sg_name'])
+                self.module_wo_sensitive_data['sg_name'])
             LOG.info("Successfully got SRDf group list")
             return srdf_gr_list
         except Exception as e:
@@ -558,7 +561,7 @@ class MetroDR(object):
         try:
             LOG.info("Getting SRDF details for: %s", srdf_gr)
             srdf_detail = self.replication.get_storage_group_srdf_details(
-                self.module.params['sg_name'], srdf_gr)
+                self.module_wo_sensitive_data['sg_name'], srdf_gr)
             LOG.info("Successfully got SRDF details")
             return srdf_detail
         except Exception as e:
@@ -599,7 +602,7 @@ class MetroDR(object):
         srdf_gr_list = self.get_storage_group_srdf_group_list()
         if not srdf_gr_list:
             self.show_error_exit(
-                "SG: %s does not have srdf group" % self.module.params[
+                "SG: %s does not have srdf group" % self.module_wo_sensitive_data[
                     'sg_name'])
 
         is_srdf_adp_or_asyn = False
@@ -614,10 +617,10 @@ class MetroDR(object):
             if "Adaptive Copy" in srdf_detail['modes'] or "Asynchronous" in\
                     srdf_detail['modes']:
                 LOG.info("SRDF mode is asynchronous/adaptive_copy")
-                if self.module.params["dr_array_id"]:
+                if self.module_wo_sensitive_data["dr_array_id"]:
                     LOG.info("Validating given dr_array_id")
                     if self.get_rdf_group(srdf_gr)["remoteSymmetrix"] \
-                            == self.module.params["dr_array_id"]:
+                            == self.module_wo_sensitive_data["dr_array_id"]:
                         LOG.info("Given dr_array_id matches with rdfg")
                         is_srdf_adp_or_asyn = True
                     else:
@@ -628,10 +631,10 @@ class MetroDR(object):
             elif "Active" in srdf_detail['modes'] and \
                     not (set(req_metro_states) & set(srdf_detail['states'])):
                 LOG.info("SRDF metro mode is active")
-                if self.module.params["metro_r2_array_id"]:
+                if self.module_wo_sensitive_data["metro_r2_array_id"]:
                     LOG.info("Validating given metro_r2_array_id")
                     if self.get_rdf_group(srdf_gr)["remoteSymmetrix"] \
-                            == self.module.params["metro_r2_array_id"]:
+                            == self.module_wo_sensitive_data["metro_r2_array_id"]:
                         LOG.info("Given metro_r2_array_id matches with rdfg")
                         is_srdf_active = True
                     else:
@@ -663,14 +666,14 @@ class MetroDR(object):
             self.pre_checks_for_convert()
             resp = {}
             param = {
-                "storage_group_name": self.module.params['sg_name'],
-                "environment_name": self.module.params['env_name'],
-                "_async": not self.module.params['wait_for_completion']
+                "storage_group_name": self.module_wo_sensitive_data['sg_name'],
+                "environment_name": self.module_wo_sensitive_data['env_name'],
+                "_async": not self.module_wo_sensitive_data['wait_for_completion']
             }
             LOG.info("Converting SG: %s to metro DR environment: %s with "
                      "param: %s",
-                     self.module.params['sg_name'],
-                     self.module.params['env_name'], param)
+                     self.module_wo_sensitive_data['sg_name'],
+                     self.module_wo_sensitive_data['env_name'], param)
             if not self.module.check_mode:
                 resp = self.metro.convert_to_metrodr_environment(**param)
             LOG.info("Successfully converted to metro DR environment")
@@ -686,14 +689,14 @@ class MetroDR(object):
         """ Performs prechecks required for modifying metro DR environment """
         # Pre-check 1: replication_mode should be given only incase of
         # srdf_state is 'SetMode'
-        if self.module.params['replication_mode'] and self.module.params[
+        if self.module_wo_sensitive_data['replication_mode'] and self.module_wo_sensitive_data[
            'srdf_param']['srdf_state'] != SRDF_STATES[2]:  # SetMode
             self.show_error_exit(
                 "replication_mode required only with srdf_state 'SetMode'")
 
         # Pre-check 2: keep_r2 to be True only with srdf state suspend
-        if self.module.params['srdf_param']['keep_r2']:
-            if self.module.params['srdf_param']['srdf_state'] \
+        if self.module_wo_sensitive_data['srdf_param']['keep_r2']:
+            if self.module_wo_sensitive_data['srdf_param']['srdf_state'] \
                     != SRDF_STATES[6]:  # Suspend
                 self.show_error_exit(
                     "keep_r2 can be True only with srdf_state 'Suspend'")
@@ -710,66 +713,66 @@ class MetroDR(object):
 
         LOG.info("Fetching modify_dict")
         # comparing replication_mode
-        if self.module.params["replication_mode"]:
-            if self.module.params["replication_mode"] != \
+        if self.module_wo_sensitive_data["replication_mode"]:
+            if self.module_wo_sensitive_data["replication_mode"] != \
                     metrodr_env_details["dr_rdf_mode"]:
-                if self.module.params["replication_mode"] == \
+                if self.module_wo_sensitive_data["replication_mode"] == \
                         REPLICATION_MODES[1]:
                     modify_dict["dr_replication_mode"] = ADAPTIVE_COPY_DISK
                 else:
                     modify_dict["dr_replication_mode"] = \
-                        self.module.params["replication_mode"]
+                        self.module_wo_sensitive_data["replication_mode"]
             else:
                 LOG.info("Replication mode is already: %s",
-                         self.module.params['replication_mode'])
+                         self.module_wo_sensitive_data['replication_mode'])
 
         # comparing srdf_state
-        if self.module.params["srdf_param"]["srdf_state"]:  # mandatory param
+        if self.module_wo_sensitive_data["srdf_param"]["srdf_state"]:  # mandatory param
             # dr-true, metro-true
-            if self.module.params["srdf_param"]["metro"] \
-                    and self.module.params["srdf_param"]["dr"]:
+            if self.module_wo_sensitive_data["srdf_param"]["metro"] \
+                    and self.module_wo_sensitive_data["srdf_param"]["dr"]:
                 # Idempotency check for 'Establish', 'Suspend' and 'Recover'
                 # states
-                if ((self.module.params["srdf_param"]["srdf_state"] in
+                if ((self.module_wo_sensitive_data["srdf_param"]["srdf_state"] in
                         IDEMPOTENCY_STATES[
                             metrodr_env_details["dr_state"]])
-                    and (self.module.params["srdf_param"]["srdf_state"] in
+                    and (self.module_wo_sensitive_data["srdf_param"]["srdf_state"] in
                          IDEMPOTENCY_STATES[
                              metrodr_env_details["metro_state"]])):
                     LOG.info("Given srdf_state is already maintained by "
                              "DR and Metro arrays")
                 else:
                     modify_dict["action"] = \
-                        self.module.params["srdf_param"]["srdf_state"]
+                        self.module_wo_sensitive_data["srdf_param"]["srdf_state"]
             # dr-false, metro-false --> No change in states
-            elif not self.module.params["srdf_param"]["metro"] \
-                    and not self.module.params["srdf_param"]["dr"]:
+            elif not self.module_wo_sensitive_data["srdf_param"]["metro"] \
+                    and not self.module_wo_sensitive_data["srdf_param"]["dr"]:
                 LOG.info("Given srdf_state is already maintained by "
                          "DR and Metro arrays")
-            elif self.module.params["srdf_param"]["metro"]:
+            elif self.module_wo_sensitive_data["srdf_param"]["metro"]:
                 if metrodr_env_details["metro_state"] in IDEMPOTENCY_STATES:
-                    if self.module.params["srdf_param"]["srdf_state"] in \
+                    if self.module_wo_sensitive_data["srdf_param"]["srdf_state"] in \
                             IDEMPOTENCY_STATES[
                                 metrodr_env_details["metro_state"]]:
                         LOG.info("Given srdf_state is already maintained by "
                                  "Metro array")
                     else:
                         modify_dict["action"] = \
-                            self.module.params["srdf_param"]["srdf_state"]
+                            self.module_wo_sensitive_data["srdf_param"]["srdf_state"]
                 else:
                     self.show_error_exit(
                         "Mapping of %s to invalid state"
                         % metrodr_env_details["metro_state"])
-            elif self.module.params["srdf_param"]["dr"]:
+            elif self.module_wo_sensitive_data["srdf_param"]["dr"]:
                 if metrodr_env_details["dr_state"] in IDEMPOTENCY_STATES:
-                    if self.module.params["srdf_param"]["srdf_state"] in \
+                    if self.module_wo_sensitive_data["srdf_param"]["srdf_state"] in \
                             IDEMPOTENCY_STATES[
                                 metrodr_env_details["dr_state"]]:
                         LOG.info("Given srdf_state is already maintained by "
                                  "DR array")
                     else:
                         modify_dict["action"] = \
-                            self.module.params["srdf_param"]["srdf_state"]
+                            self.module_wo_sensitive_data["srdf_param"]["srdf_state"]
                 else:
                     self.show_error_exit(
                         "Mapping of %s to invalid state"
@@ -790,8 +793,8 @@ class MetroDR(object):
                                                else None -- dict
         :rtype: tuple containing 3 elements in order: bool, {}, {}
         """
-        if not self.module.params["srdf_param"] \
-                or not self.module.params["srdf_param"]["srdf_state"]:
+        if not self.module_wo_sensitive_data["srdf_param"] \
+                or not self.module_wo_sensitive_data["srdf_param"]["srdf_state"]:
             LOG.info("Modify not required, as its GET operation")
             return False, None, metrodr_env_details
 
@@ -802,10 +805,10 @@ class MetroDR(object):
             LOG.info("Nothing to modify, its idempotency case")
             return False, None, metrodr_env_details
 
-        modify_dict["metro"] = self.module.params["srdf_param"]["metro"]
-        modify_dict["dr"] = self.module.params["srdf_param"]["dr"]
-        modify_dict["keep_r2"] = self.module.params["srdf_param"]["keep_r2"]
-        modify_dict["_async"] = self.module.params["wait_for_completion"]
+        modify_dict["metro"] = self.module_wo_sensitive_data["srdf_param"]["metro"]
+        modify_dict["dr"] = self.module_wo_sensitive_data["srdf_param"]["dr"]
+        modify_dict["keep_r2"] = self.module_wo_sensitive_data["srdf_param"]["keep_r2"]
+        modify_dict["_async"] = self.module_wo_sensitive_data["wait_for_completion"]
 
         try:
             # State changes that require 'force' flag enabled explicitly.
@@ -856,7 +859,7 @@ class MetroDR(object):
 
             # Idempotency check for 'SetMode'
             if (modify_dict["action"] == "SetMode"
-                    and self.module.params['replication_mode']
+                    and self.module_wo_sensitive_data['replication_mode']
                     == metrodr_env_details["dr_rdf_mode"]):
                 LOG.info(
                     "Given replication_mode is already maintained by "
@@ -868,11 +871,11 @@ class MetroDR(object):
             resp = metrodr_env_details
             if not self.module.check_mode:
                 resp = self.metro.modify_metrodr_environment(
-                    self.module.params['env_name'],
+                    self.module_wo_sensitive_data['env_name'],
                     **modify_dict)
             LOG.info("Successfully modified metro DR environment")
 
-            if self.module.params["wait_for_completion"]:
+            if self.module_wo_sensitive_data["wait_for_completion"]:
                 return True, resp, None
             return True, None, self.get_metrodr_env()
         except Exception as e:
@@ -889,11 +892,11 @@ class MetroDR(object):
         """ Delete given metro DR environment """
         try:
             LOG.info("Deleting metro DR environment: %s",
-                     self.module.params['env_name'])
+                     self.module_wo_sensitive_data['env_name'])
             if not self.module.check_mode:
                 self.metro.delete_metrodr_environment(
-                    self.module.params['env_name'],
-                    self.module.params['remove_r1_dr_rdfg'])
+                    self.module_wo_sensitive_data['env_name'],
+                    self.module_wo_sensitive_data['remove_r1_dr_rdfg'])
             LOG.info("Successfully deleted metro DR environment")
         except Exception as e:
             self.show_error_exit(
@@ -936,7 +939,7 @@ class MetroDR(object):
                   'metrodr_env_details': self.get_metrodr_env(),
                   'Job_details': None}
 
-        if self.module.params['state'] == "present":
+        if self.module_wo_sensitive_data['state'] == "present":
             if not result['metrodr_env_details']:
                 # Create or convert metro DR environment
                 result['changed'], result['Job_details'], result[
@@ -946,7 +949,7 @@ class MetroDR(object):
                 result['changed'], result['Job_details'], result[
                     'metrodr_env_details'] = self.modify_metrodr_env(
                     result['metrodr_env_details'])
-        elif self.module.params['state'] == "absent":
+        elif self.module_wo_sensitive_data['state'] == "absent":
             if result['metrodr_env_details']:
                 # Delete metro DR environment
                 self.delete_metrodr_env()

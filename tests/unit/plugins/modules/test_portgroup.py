@@ -43,39 +43,40 @@ class TestPortGroup(PowerMaxUnitBase):
                 assert powermax_module_mock.show_error_exit.call_count == 3
 
     def test_get_port_group(self, powermax_module_mock):
-        powermax_module_mock.module.params = self.port_group_args
+        powermax_module_mock.module_wo_sensitive_data = self.port_group_args
         powermax_module_mock.perform_module_operation()
         powermax_module_mock.provisioning.get_port_group.assert_called()
 
     def test_create_port_group_invalid_port_state(self, powermax_module_mock):
-        powermax_module_mock.module.params = self.port_group_args
-        powermax_module_mock.module.params.update({"ports": [{"director_id": "FA-1D", "port_id": "5"}],
-                                                   "port_group_protocol": "iSCSI",
-                                                   "port_state": "absent-in-group"})
+
+        powermax_module_mock.module_wo_sensitive_data = self.port_group_args
+        powermax_module_mock.module_wo_sensitive_data.update({"ports": [{"director_id": "FA-1D", "port_id": "5"}],
+                                                              "port_group_protocol": "iSCSI",
+                                                              "port_state": "absent-in-group"})
         powermax_module_mock.provisioning.get_port_group = MagicMock(return_value={})
         self.capture_fail_json_method(
             MockPortGroupApi.get_error_message('invalid_port_state'), powermax_module_mock,
             'perform_module_operation')
 
     def test_create_port_group_no_ports_v4(self, powermax_module_mock):
-        powermax_module_mock.module.params = self.port_group_args
+        powermax_module_mock.module_wo_sensitive_data = self.port_group_args
         powermax_module_mock.provisioning.get_port_group = MagicMock(return_value={})
         utils.is_array_v4 = MagicMock(return_value=True)
         powermax_module_mock.perform_module_operation()
         powermax_module_mock.provisioning.create_empty_port_group.assert_called()
 
     def test_create_port_group_with_ports_v4(self, powermax_module_mock):
-        powermax_module_mock.module.params = self.port_group_args
-        powermax_module_mock.module.params.update({"ports": [{"director_id": "FA-1D", "port_id": "5"}],
-                                                   "port_group_protocol": "iSCSI",
-                                                   "port_state": "present-in-group"})
+        powermax_module_mock.module_wo_sensitive_data = self.port_group_args
+        powermax_module_mock.module_wo_sensitive_data.update({"ports": [{"director_id": "FA-1D", "port_id": "5"}],
+                                                              "port_group_protocol": "iSCSI",
+                                                              "port_state": "present-in-group"})
         powermax_module_mock.provisioning.get_port_group = MagicMock(return_value={})
         utils.is_array_v4 = MagicMock(return_value=True)
         powermax_module_mock.perform_module_operation()
         powermax_module_mock.provisioning.create_new_port_group.assert_called()
 
     def test_create_port_group_no_ports_check_mode(self, powermax_module_mock):
-        powermax_module_mock.module.params = self.port_group_args
+        powermax_module_mock.module_wo_sensitive_data = self.port_group_args
         powermax_module_mock.module.check_mode = True
         powermax_module_mock.provisioning.get_port_group = MagicMock(return_value={})
         utils.is_array_v4 = MagicMock(return_value=True)
@@ -83,17 +84,17 @@ class TestPortGroup(PowerMaxUnitBase):
         powermax_module_mock.provisioning.create_empty_port_group.assert_not_called()
 
     def test_create_port_group_no_ports_not_v4(self, powermax_module_mock):
-        powermax_module_mock.module.params = self.port_group_args
+        powermax_module_mock.module_wo_sensitive_data = self.port_group_args
         powermax_module_mock.provisioning.get_port_group = MagicMock(return_value={})
         utils.is_array_v4 = MagicMock(return_value=False)
         powermax_module_mock.perform_module_operation()
         powermax_module_mock.provisioning.create_multiport_port_group.assert_called()
 
     def test_create_port_group_exception(self, powermax_module_mock):
-        powermax_module_mock.module.params = self.port_group_args
-        powermax_module_mock.module.params.update({"ports": [{"director_id": "FA-1D", "port_id": "5"}],
-                                                   "port_group_protocol": "iSCSI",
-                                                   "port_state": "present-in-group"})
+        powermax_module_mock.module_wo_sensitive_data = self.port_group_args
+        powermax_module_mock.module_wo_sensitive_data.update({"ports": [{"director_id": "FA-1D", "port_id": "5"}],
+                                                              "port_group_protocol": "iSCSI",
+                                                              "port_state": "present-in-group"})
         powermax_module_mock.provisioning.get_port_group = MagicMock(side_effect=MockApiException)
         powermax_module_mock.provisioning.create_new_port_group = MagicMock(side_effect=MockApiException)
         self.capture_fail_json_method(
@@ -102,38 +103,38 @@ class TestPortGroup(PowerMaxUnitBase):
             'perform_module_operation')
 
     def test_add_port_to_port_group(self, powermax_module_mock):
-        powermax_module_mock.module.params = self.port_group_args
-        powermax_module_mock.module.params.update({"ports": [{"director_id": "FA-1D", "port_id": "10"}],
-                                                   "port_group_protocol": "iSCSI",
-                                                   "port_state": "present-in-group"})
+        powermax_module_mock.module_wo_sensitive_data = self.port_group_args
+        powermax_module_mock.module_wo_sensitive_data.update({"ports": [{"director_id": "FA-1D", "port_id": "10"}],
+                                                              "port_group_protocol": "iSCSI",
+                                                              "port_state": "present-in-group"})
         powermax_module_mock.provisioning.get_port_group = MagicMock(return_value=MockPortGroupApi.PORT_GROUP_RESPONSE)
         powermax_module_mock.perform_module_operation()
         powermax_module_mock.provisioning.modify_port_group.assert_called()
 
     def test_add_port_to_port_group_check_mode(self, powermax_module_mock):
-        powermax_module_mock.module.params = self.port_group_args
-        powermax_module_mock.module.params.update({"ports": [{"director_id": "FA-1D", "port_id": "10"}],
-                                                   "port_group_protocol": "iSCSI",
-                                                   "port_state": "present-in-group"})
+        powermax_module_mock.module_wo_sensitive_data = self.port_group_args
+        powermax_module_mock.module_wo_sensitive_data.update({"ports": [{"director_id": "FA-1D", "port_id": "10"}],
+                                                              "port_group_protocol": "iSCSI",
+                                                              "port_state": "present-in-group"})
         powermax_module_mock.module.check_mode = True
         powermax_module_mock.provisioning.get_port_group = MagicMock(return_value=MockPortGroupApi.PORT_GROUP_RESPONSE)
         powermax_module_mock.perform_module_operation()
         powermax_module_mock.provisioning.modify_port_group.assert_not_called()
 
     def test_add_existing_port_to_port_group(self, powermax_module_mock):
-        powermax_module_mock.module.params = self.port_group_args
-        powermax_module_mock.module.params.update({"ports": [{"director_id": "FA-2D", "port_id": "5"}],
-                                                   "port_group_protocol": "iSCSI",
-                                                   "port_state": "present-in-group"})
+        powermax_module_mock.module_wo_sensitive_data = self.port_group_args
+        powermax_module_mock.module_wo_sensitive_data.update({"ports": [{"director_id": "FA-2D", "port_id": "5"}],
+                                                              "port_group_protocol": "iSCSI",
+                                                              "port_state": "present-in-group"})
         powermax_module_mock.provisioning.get_port_group = MagicMock(return_value=MockPortGroupApi.PORT_GROUP_RESPONSE)
         powermax_module_mock.perform_module_operation()
         powermax_module_mock.provisioning.modify_port_group.assert_not_called()
 
     def test_add_port_to_empty_port_group(self, powermax_module_mock):
-        powermax_module_mock.module.params = self.port_group_args
-        powermax_module_mock.module.params.update({"ports": [{"director_id": "FA-1D", "port_id": "10"}],
-                                                   "port_group_protocol": "iSCSI",
-                                                   "port_state": "present-in-group"})
+        powermax_module_mock.module_wo_sensitive_data = self.port_group_args
+        powermax_module_mock.module_wo_sensitive_data.update({"ports": [{"director_id": "FA-1D", "port_id": "10"}],
+                                                              "port_group_protocol": "iSCSI",
+                                                              "port_state": "present-in-group"})
         empty_portgroup_response = MockPortGroupApi.PORT_GROUP_RESPONSE
         empty_portgroup_response.pop("symmetrixPortKey")
         powermax_module_mock.provisioning.get_port_group = MagicMock(return_value=empty_portgroup_response)
@@ -141,10 +142,10 @@ class TestPortGroup(PowerMaxUnitBase):
         powermax_module_mock.provisioning.modify_port_group.assert_called()
 
     def test_add_port_to_port_group_exception(self, powermax_module_mock):
-        powermax_module_mock.module.params = self.port_group_args
-        powermax_module_mock.module.params.update({"ports": [{"director_id": "FA-1D", "port_id": "10"}],
-                                                   "port_group_protocol": "iSCSI",
-                                                   "port_state": "present-in-group"})
+        powermax_module_mock.module_wo_sensitive_data = self.port_group_args
+        powermax_module_mock.module_wo_sensitive_data.update({"ports": [{"director_id": "FA-1D", "port_id": "10"}],
+                                                              "port_group_protocol": "iSCSI",
+                                                              "port_state": "present-in-group"})
         powermax_module_mock.provisioning.get_port_group = MagicMock(return_value=MockPortGroupApi.PORT_GROUP_RESPONSE)
         powermax_module_mock.provisioning.modify_port_group = MagicMock(side_effect=MockApiException)
         self.capture_fail_json_method(
@@ -153,38 +154,38 @@ class TestPortGroup(PowerMaxUnitBase):
             'perform_module_operation')
 
     def test_remove_port_from_port_group(self, powermax_module_mock):
-        powermax_module_mock.module.params = self.port_group_args
-        powermax_module_mock.module.params.update({"ports": [{"director_id": "FA-2D", "port_id": "5"}],
-                                                   "port_group_protocol": "iSCSI",
-                                                   "port_state": "absent-in-group"})
+        powermax_module_mock.module_wo_sensitive_data = self.port_group_args
+        powermax_module_mock.module_wo_sensitive_data.update({"ports": [{"director_id": "FA-2D", "port_id": "5"}],
+                                                              "port_group_protocol": "iSCSI",
+                                                              "port_state": "absent-in-group"})
         powermax_module_mock.provisioning.get_port_group = MagicMock(return_value=MockPortGroupApi.PORT_GROUP_RESPONSE)
         powermax_module_mock.perform_module_operation()
         powermax_module_mock.provisioning.modify_port_group.assert_called()
 
     def test_remove_port_from_port_group_check_mode(self, powermax_module_mock):
-        powermax_module_mock.module.params = self.port_group_args
-        powermax_module_mock.module.params.update({"ports": [{"director_id": "FA-2D", "port_id": "5"}],
-                                                   "port_group_protocol": "iSCSI",
-                                                   "port_state": "absent-in-group"})
+        powermax_module_mock.module_wo_sensitive_data = self.port_group_args
+        powermax_module_mock.module_wo_sensitive_data.update({"ports": [{"director_id": "FA-2D", "port_id": "5"}],
+                                                              "port_group_protocol": "iSCSI",
+                                                              "port_state": "absent-in-group"})
         powermax_module_mock.provisioning.get_port_group = MagicMock(return_value=MockPortGroupApi.PORT_GROUP_RESPONSE)
         powermax_module_mock.module.check_mode = True
         powermax_module_mock.perform_module_operation()
         powermax_module_mock.provisioning.modify_port_group.assert_not_called()
 
     def test_remove_non_existing_port_from_port_group(self, powermax_module_mock):
-        powermax_module_mock.module.params = self.port_group_args
-        powermax_module_mock.module.params.update({"ports": [{"director_id": "FA-2D", "port_id": "10"}],
-                                                   "port_group_protocol": "iSCSI",
-                                                   "port_state": "absent-in-group"})
+        powermax_module_mock.module_wo_sensitive_data = self.port_group_args
+        powermax_module_mock.module_wo_sensitive_data.update({"ports": [{"director_id": "FA-2D", "port_id": "10"}],
+                                                              "port_group_protocol": "iSCSI",
+                                                              "port_state": "absent-in-group"})
         powermax_module_mock.provisioning.get_port_group = MagicMock(return_value=MockPortGroupApi.PORT_GROUP_RESPONSE)
         powermax_module_mock.perform_module_operation()
         powermax_module_mock.provisioning.modify_port_group.assert_not_called()
 
     def test_remove_port_from_empty_port_group(self, powermax_module_mock):
-        powermax_module_mock.module.params = self.port_group_args
-        powermax_module_mock.module.params.update({"ports": [{"director_id": "FA-2D", "port_id": "5"}],
-                                                   "port_group_protocol": "iSCSI",
-                                                   "port_state": "absent-in-group"})
+        powermax_module_mock.module_wo_sensitive_data = self.port_group_args
+        powermax_module_mock.module_wo_sensitive_data.update({"ports": [{"director_id": "FA-2D", "port_id": "5"}],
+                                                              "port_group_protocol": "iSCSI",
+                                                              "port_state": "absent-in-group"})
         empty_portgroup_response = MockPortGroupApi.PORT_GROUP_RESPONSE
         empty_portgroup_response.pop("symmetrixPortKey")
         powermax_module_mock.provisioning.get_port_group = MagicMock(return_value=empty_portgroup_response)
@@ -192,10 +193,10 @@ class TestPortGroup(PowerMaxUnitBase):
         powermax_module_mock.provisioning.modify_port_group.assert_not_called()
 
     def test_remove_port_from_port_group_exception(self, powermax_module_mock):
-        powermax_module_mock.module.params = self.port_group_args
-        powermax_module_mock.module.params.update({"ports": [{"director_id": "FA-2D", "port_id": "5"}],
-                                                   "port_group_protocol": "iSCSI",
-                                                   "port_state": "absent-in-group"})
+        powermax_module_mock.module_wo_sensitive_data = self.port_group_args
+        powermax_module_mock.module_wo_sensitive_data.update({"ports": [{"director_id": "FA-2D", "port_id": "5"}],
+                                                              "port_group_protocol": "iSCSI",
+                                                              "port_state": "absent-in-group"})
         powermax_module_mock.provisioning.get_port_group = MagicMock(return_value=MockPortGroupApi.PORT_GROUP_RESPONSE)
         powermax_module_mock.provisioning.modify_port_group = MagicMock(side_effect=MockApiException)
         self.capture_fail_json_method(
@@ -204,29 +205,29 @@ class TestPortGroup(PowerMaxUnitBase):
             'perform_module_operation')
 
     def test_rename_port_group(self, powermax_module_mock):
-        powermax_module_mock.module.params = self.port_group_args
-        powermax_module_mock.module.params.update({"new_name": "test_portgroup_new"})
+        powermax_module_mock.module_wo_sensitive_data = self.port_group_args
+        powermax_module_mock.module_wo_sensitive_data.update({"new_name": "test_portgroup_new"})
         powermax_module_mock.provisioning.get_port_group = MagicMock(return_value=MockPortGroupApi.PORT_GROUP_RESPONSE)
         powermax_module_mock.perform_module_operation()
         powermax_module_mock.provisioning.modify_port_group.assert_called()
 
     def test_rename_port_group_check_mode(self, powermax_module_mock):
-        powermax_module_mock.module.params = self.port_group_args
+        powermax_module_mock.module_wo_sensitive_data = self.port_group_args
         powermax_module_mock.module.check_mode = True
-        powermax_module_mock.module.params.update({"new_name": "test_portgroup_new"})
+        powermax_module_mock.module_wo_sensitive_data.update({"new_name": "test_portgroup_new"})
         powermax_module_mock.provisioning.get_port_group = MagicMock(return_value=MockPortGroupApi.PORT_GROUP_RESPONSE)
         powermax_module_mock.perform_module_operation()
         powermax_module_mock.provisioning.modify_port_group.assert_not_called()
 
     def test_rename_port_group_empty_name(self, powermax_module_mock):
-        powermax_module_mock.module.params = self.port_group_args
-        powermax_module_mock.module.params.update({"new_name": ""})
+        powermax_module_mock.module_wo_sensitive_data = self.port_group_args
+        powermax_module_mock.module_wo_sensitive_data.update({"new_name": ""})
         self.capture_fail_json_method(
             "test_portgroup", powermax_module_mock, 'modify_portgroup', "test_portgroup")
 
     def test_rename_port_group_exception(self, powermax_module_mock):
-        powermax_module_mock.module.params = self.port_group_args
-        powermax_module_mock.module.params.update({"new_name": "test_portgroup_new"})
+        powermax_module_mock.module_wo_sensitive_data = self.port_group_args
+        powermax_module_mock.module_wo_sensitive_data.update({"new_name": "test_portgroup_new"})
         powermax_module_mock.provisioning.modify_port_group = MagicMock(side_effect=MockApiException)
         self.capture_fail_json_method(
             MockPortGroupApi.get_error_message(
@@ -234,23 +235,23 @@ class TestPortGroup(PowerMaxUnitBase):
             'perform_module_operation')
 
     def test_rename_port_group_original_name(self, powermax_module_mock):
-        powermax_module_mock.module.params = self.port_group_args
-        powermax_module_mock.module.params.update({"new_name": "test_portgroup"})
+        powermax_module_mock.module_wo_sensitive_data = self.port_group_args
+        powermax_module_mock.module_wo_sensitive_data.update({"new_name": "test_portgroup"})
         powermax_module_mock.provisioning.get_port_group = MagicMock(return_value=MockPortGroupApi.PORT_GROUP_RESPONSE)
         powermax_module_mock.perform_module_operation()
         powermax_module_mock.provisioning.modify_port_group.assert_not_called()
 
     def test_delete_port_group(self, powermax_module_mock):
-        powermax_module_mock.module.params = self.port_group_args
-        powermax_module_mock.module.params.update({"state": "absent"})
+        powermax_module_mock.module_wo_sensitive_data = self.port_group_args
+        powermax_module_mock.module_wo_sensitive_data.update({"state": "absent"})
         powermax_module_mock.provisioning.get_port_group = MagicMock(return_value=MockPortGroupApi.PORT_GROUP_RESPONSE)
         powermax_module_mock.provisioning.delete_port_group = MagicMock()
         powermax_module_mock.perform_module_operation()
         powermax_module_mock.provisioning.delete_port_group.assert_called()
 
     def test_delete_port_group_exception(self, powermax_module_mock):
-        powermax_module_mock.module.params = self.port_group_args
-        powermax_module_mock.module.params.update({"state": "absent"})
+        powermax_module_mock.module_wo_sensitive_data = self.port_group_args
+        powermax_module_mock.module_wo_sensitive_data.update({"state": "absent"})
         powermax_module_mock.provisioning.get_port_group = MagicMock(return_value=MockPortGroupApi.PORT_GROUP_RESPONSE)
         powermax_module_mock.provisioning.delete_port_group = MagicMock(side_effect=MockApiException)
         self.capture_fail_json_method(
@@ -259,8 +260,8 @@ class TestPortGroup(PowerMaxUnitBase):
             'perform_module_operation')
 
     def test_delete_port_group_check_mode(self, powermax_module_mock):
-        powermax_module_mock.module.params = self.port_group_args
-        powermax_module_mock.module.params.update({"state": "absent"})
+        powermax_module_mock.module_wo_sensitive_data = self.port_group_args
+        powermax_module_mock.module_wo_sensitive_data.update({"state": "absent"})
         powermax_module_mock.module.check_mode = True
         powermax_module_mock.provisioning.get_port_group = MagicMock(return_value=MockPortGroupApi.PORT_GROUP_RESPONSE)
         powermax_module_mock.provisioning.delete_port_group = MagicMock()

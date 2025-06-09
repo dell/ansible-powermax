@@ -432,6 +432,10 @@ class Snapshot(object):
             mutually_exclusive=mutually_exclusive,
             supports_check_mode=True
         )
+
+        # Get a copy of the module parameters without sensitive data for logging purposes
+        self.module_wo_sensitive_data = utils.get_powermax_management_host_parameters_remove_sensitive_data(self.module.params)
+
         self.result = {
             "changed": False,
             "create_sg_snap": '',
@@ -470,7 +474,7 @@ class Snapshot(object):
             supported_sdk_version = "9.2.0.8"
 
             curr_version = utils.PyU4V.__version__
-            array_details = self.common.get_array(self.module.params
+            array_details = self.common.get_array(self.module_wo_sensitive_data
                                                   ['serial_no'])
             if (utils.pkg_resources.parse_version(curr_version)
                 >= utils.pkg_resources.parse_version(supported_sdk_version)) and \

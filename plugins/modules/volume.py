@@ -290,6 +290,9 @@ class Volume(object):
             required_one_of=required_one_of
         )
 
+        # Get a copy of the module parameters without sensitive data for logging purposes
+        self.module_wo_sensitive_data = utils.get_powermax_management_host_parameters_remove_sensitive_data(self.module.params)
+
         # result is a dictionary that contains changed status and
         # volume details
         self.result = {"changed": False, "volume_details": {}}
@@ -321,17 +324,17 @@ class Volume(object):
         if self.volume_id:
             return self.get_volume_by_nativeid(self.volume_id)
 
-        sg_name = self.module.params['sg_name']
+        sg_name = self.module_wo_sensitive_data['sg_name']
         volume_list = None
         volume_name = None
-        if self.module.params['vol_name'] is not None:
-            volume_name = self.module.params['vol_name']
+        if self.module_wo_sensitive_data['vol_name'] is not None:
+            volume_name = self.module_wo_sensitive_data['vol_name']
             params = {"storageGroupId": sg_name,
                       "volume_identifier": volume_name}
             volume_list = self.provisioning.get_volume_list(params)
 
-        if self.module.params['vol_wwn'] is not None:
-            vol_wwn = self.module.params['vol_wwn']
+        if self.module_wo_sensitive_data['vol_wwn'] is not None:
+            vol_wwn = self.module_wo_sensitive_data['vol_wwn']
             params = {"storageGroupId": sg_name, "wwn": vol_wwn}
             volume_list = self.provisioning.get_volume_list(params)
 
@@ -348,14 +351,14 @@ class Volume(object):
                                  )
         else:
             vol = self.get_volume_by_nativeid(volume_list[0])
-            if self.module.params['vol_wwn'] is not None and "effective_wwn" \
+            if self.module_wo_sensitive_data['vol_wwn'] is not None and "effective_wwn" \
                     in vol and vol['effective_wwn'] \
-                    != self.module.params['vol_wwn']:
+                    != self.module_wo_sensitive_data['vol_wwn']:
                 msg = ('The given volume with WWN: %s also has an effective'
                        ' WWN: %s associated with it, which does not match. '
                        'It is recommended that the user retries the '
                        'operation with Volume name or ID'
-                       % (self.module.params['vol_wwn'], vol['effective_wwn']))
+                       % (self.module_wo_sensitive_data['vol_wwn'], vol['effective_wwn']))
                 self.show_error_exit(msg=msg)
         return vol
 
@@ -599,7 +602,7 @@ class Volume(object):
                                      format(existing_vol_size, size_in_gb))
             elif size_in_gb > existing_vol_size:
                 if 'rdfGroupId' in vol:
-                    array_id = self.module.params['serial_no']
+                    array_id = self.module_wo_sensitive_data['serial_no']
                     array_details = self.common.get_array(array_id=array_id)
                     if 'ucode' in array_details and \
                             utils.parse_version(array_details['ucode'])\
@@ -624,7 +627,7 @@ class Volume(object):
     def create_volume(self, vol_name, sg_name, size, cap_unit):
         """Create PowerMax volume in a storage group"""
         try:
-            if self.module.params['vol_name'] is None:
+            if self.module_wo_sensitive_data['vol_name'] is None:
                 self.show_error_exit(msg='vol_name is required'
                                      ' during volume creation')
             LOG.info("SG MSG: %s ", sg_name)
@@ -641,7 +644,7 @@ class Volume(object):
                 storage_group = self.get_storage_group(sg_name)
                 if (storage_group is not None and
                         self.if_srdf_protected(storage_group)):
-                    array_id = self.module.params['serial_no']
+                    array_id = self.module_wo_sensitive_data['serial_no']
                     array_details = self.common.get_array(array_id=array_id)
                     if 'ucode' in array_details and \
                             utils.parse_version(array_details['ucode']) \
@@ -744,7 +747,7 @@ class Volume(object):
     def get_created_vol_id(self, job, vol_name, sg_name):
         """Get created volume ID"""
         try:
-            append_vol_id = self.module.params['append_vol_id'] or False
+            append_vol_id = self.module_wo_sensitive_data['append_vol_id'] or False
             vol_id = None
             if append_vol_id:
                 task = self.common.wait_for_job('Create volume from storage group',
@@ -792,7 +795,7 @@ class Volume(object):
         vol_params['create_new_volumes'] = create_new_volumes
         vol_params['remote_array_1_id'] = remote_array
         vol_params['remote_array_1_sgs'] = remote_array_1_sg
-        append_vol_id = self.module.params['append_vol_id']
+        append_vol_id = self.module_wo_sensitive_data['append_vol_id']
 
         if remote_array_2 is not None and remote_array_2_sg is not None:
             vol_params['remote_array_2_id'] = remote_array_2
@@ -888,14 +891,14 @@ class Volume(object):
         Perform different actions on volume based on user parameter
         chosen in playbook
         """
-        size = self.module.params['size']
-        state = self.module.params['state']
-        new_name = self.module.params['new_name']
-        vol_id = self.module.params['vol_id']
-        vol_name = self.module.params['vol_name']
-        sg_name = self.module.params['sg_name']
-        cap_unit = self.module.params['cap_unit']
-        new_sg_name = self.module.params['new_sg_name']
+        size = self.module_wo_sensitive_data['size']
+        state = self.module_wo_sensitive_data['state']
+        new_name = self.module_wo_sensitive_data['new_name']
+        vol_id = self.module_wo_sensitive_data['vol_id']
+        vol_name = self.module_wo_sensitive_data['vol_name']
+        sg_name = self.module_wo_sensitive_data['sg_name']
+        cap_unit = self.module_wo_sensitive_data['cap_unit']
+        new_sg_name = self.module_wo_sensitive_data['new_sg_name']
 
         if vol_name is not None and sg_name is None:
             self.show_error_exit(msg='Specify Storage group name along '
@@ -965,7 +968,7 @@ class Volume(object):
         details
         '''
         self.u4v_conn.set_array_id(
-            array_id=self.module.params['serial_no'])
+            array_id=self.module_wo_sensitive_data['serial_no'])
         self.result["changed"] = changed
         if state == 'present':
             self.result["volume_details"] = self.get_volume()

@@ -217,7 +217,7 @@ Examples
             filter_operator: "lesser"
             filter_value: "10"
 
-    - name: Get the list of arrays for a given Unisphere host
+    - name: Get the list of arrays for a given Unisphere host and register
       dellemc.powermax.info:
         unispherehost: "{{unispherehost}}"
         verifycert: "{{verifycert}}"

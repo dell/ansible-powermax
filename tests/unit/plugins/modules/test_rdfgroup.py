@@ -42,6 +42,7 @@ class TestInfo():
             "vol_name": "test_vol"
         })
         rdfgroup_module_mock.module.params = self.get_module_args
+        rdfgroup_module_mock.module_wo_sensitive_data = self.get_module_args
         rdfgroup_module_mock.replication.get_rdf_group_volume_list = MagicMock(
             return_value=MockRDFGroupApi.RDF_GROUP_VOLUME_LIST
         )
@@ -58,6 +59,7 @@ class TestInfo():
             "vol_name": "test_vol"
         })
         rdfgroup_module_mock.module.params = self.get_module_args
+        rdfgroup_module_mock.module_wo_sensitive_data = self.get_module_args
         rdfgroup_module_mock.replication.get_rdf_group_volume_list = MagicMock(
             return_value=MockRDFGroupApi.RDF_GROUP_VOLUME_LIST
         )

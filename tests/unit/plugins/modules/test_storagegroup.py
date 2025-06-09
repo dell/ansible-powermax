@@ -66,6 +66,7 @@ class TestStorageGroup(PowerMaxUnitBase):
 
     def test_get_storagegroup_details(self, powermax_module_mock):
         powermax_module_mock.module.params = self.storage_group_args
+        powermax_module_mock.module_wo_sensitive_data = self.storage_group_args
         powermax_module_mock.provisioning.get_storage_group = MagicMock(
             return_value=MockStorageGroupApi.STORAGEGROUP_RESPONSE_DETAILS
         )
@@ -74,6 +75,7 @@ class TestStorageGroup(PowerMaxUnitBase):
 
     def test_get_storagegroup_details_exception(self, powermax_module_mock):
         powermax_module_mock.module.params = self.storage_group_args
+        powermax_module_mock.module_wo_sensitive_data = self.storage_group_args
         powermax_module_mock.provisioning.get_storage_group = MagicMock(
             side_effect=MockApiException
         )
@@ -83,6 +85,7 @@ class TestStorageGroup(PowerMaxUnitBase):
 
     def test_get_storagegroup_vol_exception(self, powermax_module_mock):
         powermax_module_mock.module.params = self.storage_group_args
+        powermax_module_mock.module_wo_sensitive_data = self.storage_group_args
         powermax_module_mock.provisioning.get_storage_group = MagicMock(
             return_value=MockStorageGroupApi.STORAGEGROUP_RESPONSE_DETAILS
         )
@@ -97,6 +100,7 @@ class TestStorageGroup(PowerMaxUnitBase):
 
     def test_get_storagegroup_vol_details_exception(self, powermax_module_mock):
         powermax_module_mock.module.params = self.storage_group_args
+        powermax_module_mock.module_wo_sensitive_data = self.storage_group_args
         powermax_module_mock.provisioning.get_storage_group = MagicMock(
             return_value=MockStorageGroupApi.STORAGEGROUP_RESPONSE_DETAILS
         )
@@ -114,6 +118,7 @@ class TestStorageGroup(PowerMaxUnitBase):
 
     def test_create_storagegroup(self, powermax_module_mock):
         powermax_module_mock.module.params = self.storage_group_args
+        powermax_module_mock.module_wo_sensitive_data = self.storage_group_args
         powermax_module_mock.provisioning.get_storage_group = MagicMock(
             return_value=None
         )
@@ -123,6 +128,7 @@ class TestStorageGroup(PowerMaxUnitBase):
     def test_create_storagegroup_check_mode(self, powermax_module_mock):
         powermax_module_mock.module.check_mode = True
         powermax_module_mock.module.params = self.storage_group_args
+        powermax_module_mock.module_wo_sensitive_data = self.storage_group_args
         powermax_module_mock.provisioning.get_storage_group = MagicMock(
             return_value=None
         )
@@ -131,6 +137,7 @@ class TestStorageGroup(PowerMaxUnitBase):
 
     def test_create_storagegroup_exception(self, powermax_module_mock):
         powermax_module_mock.module.params = self.storage_group_args
+        powermax_module_mock.module_wo_sensitive_data = self.storage_group_args
         powermax_module_mock.provisioning.get_storage_group = MagicMock(
             return_value=None
         )
@@ -145,7 +152,8 @@ class TestStorageGroup(PowerMaxUnitBase):
 
     def test_create_storagegroup_with_snapshots(self, powermax_module_mock):
         powermax_module_mock.module.params = self.storage_group_args
-        powermax_module_mock.module.params.update(
+        powermax_module_mock.module_wo_sensitive_data = self.storage_group_args
+        powermax_module_mock.module_wo_sensitive_data.update(
             {
                 "compression": True,
                 "service_level": "Diamond",
@@ -163,7 +171,8 @@ class TestStorageGroup(PowerMaxUnitBase):
     def test_create_storagegroup_with_snapshots_check_mode(self, powermax_module_mock):
         powermax_module_mock.module.check_mode = True
         powermax_module_mock.module.params = self.storage_group_args
-        powermax_module_mock.module.params.update(
+        powermax_module_mock.module_wo_sensitive_data = self.storage_group_args
+        powermax_module_mock.module_wo_sensitive_data.update(
             {
                 "compression": True,
                 "service_level": "Diamond",
@@ -179,21 +188,21 @@ class TestStorageGroup(PowerMaxUnitBase):
         powermax_module_mock.provisioning.create_storage_group.assert_not_called()
 
     def test_get_vol(self, powermax_module_mock):
-        powermax_module_mock.module.params = {"vol_id": "1"}
+        powermax_module_mock.module_wo_sensitive_data = {"vol_id": "1"}
         powermax_module_mock.provisioning.get_volume = MagicMock(
             return_value={"vol_id": "1"}
         )
         assert powermax_module_mock.get_volume() is not None
 
     def test_get_vol_name(self, powermax_module_mock):
-        powermax_module_mock.module.params = {"vol_id": None, "vol_name": "test_vol"}
+        powermax_module_mock.module_wo_sensitive_data = {"vol_id": None, "vol_name": "test_vol"}
         powermax_module_mock.provisioning.find_volume_device_id = MagicMock(
             return_value={"vol_id": "1"}
         )
         assert powermax_module_mock.get_volume() is not None
 
     def test_get_vol_exception(self, powermax_module_mock):
-        powermax_module_mock.module.params = {"vol_id": "test_vol"}
+        powermax_module_mock.module_wo_sensitive_data = {"vol_id": "test_vol"}
         powermax_module_mock.provisioning.get_volume = MagicMock(
             side_effect=MockApiException
         )
@@ -201,7 +210,8 @@ class TestStorageGroup(PowerMaxUnitBase):
 
     def test_add_vol_to_sg(self, powermax_module_mock):
         powermax_module_mock.module.params = self.storage_group_args
-        powermax_module_mock.module.params.update(
+        powermax_module_mock.module_wo_sensitive_data = self.storage_group_args
+        powermax_module_mock.module_wo_sensitive_data.update(
             {
                 "volumes": [
                     {},
@@ -228,7 +238,8 @@ class TestStorageGroup(PowerMaxUnitBase):
 
     def test_add_existing_vol_to_sg(self, powermax_module_mock):
         powermax_module_mock.module.params = self.storage_group_args
-        powermax_module_mock.module.params.update(
+        powermax_module_mock.module_wo_sensitive_data = self.storage_group_args
+        powermax_module_mock.module_wo_sensitive_data.update(
             {
                 "volumes": [{"vol_id": "1"}, {"vol_id": "2"}, {"vol_id": "3"}],
                 "vol_state": "present-in-group",
@@ -274,7 +285,8 @@ class TestStorageGroup(PowerMaxUnitBase):
     def test_add_existing_vol_to_sg_check_mode(self, powermax_module_mock):
         powermax_module_mock.module.check_mode = True
         powermax_module_mock.module.params = self.storage_group_args
-        powermax_module_mock.module.params.update(
+        powermax_module_mock.module_wo_sensitive_data = self.storage_group_args
+        powermax_module_mock.module_wo_sensitive_data.update(
             {
                 "volumes": [{"vol_id": "1"}],
                 "vol_state": "present-in-group",
@@ -300,7 +312,8 @@ class TestStorageGroup(PowerMaxUnitBase):
 
     def test_add_existing_vol_to_sg_exception(self, powermax_module_mock):
         powermax_module_mock.module.params = self.storage_group_args
-        powermax_module_mock.module.params.update(
+        powermax_module_mock.module_wo_sensitive_data = self.storage_group_args
+        powermax_module_mock.module_wo_sensitive_data.update(
             {
                 "volumes": [{"vol_id": "1"}],
                 "vol_state": "present-in-group",
@@ -334,7 +347,8 @@ class TestStorageGroup(PowerMaxUnitBase):
 
     def test_add_protected_existing_vol_to_sg_exception(self, powermax_module_mock):
         powermax_module_mock.module.params = self.storage_group_args
-        powermax_module_mock.module.params.update(
+        powermax_module_mock.module_wo_sensitive_data = self.storage_group_args
+        powermax_module_mock.module_wo_sensitive_data.update(
             {
                 "volumes": [{"vol_id": "1"}],
                 "vol_state": "present-in-group",
@@ -369,7 +383,8 @@ class TestStorageGroup(PowerMaxUnitBase):
 
     def test_add_existing_vol_to_sg_duplicated_id(self, powermax_module_mock):
         powermax_module_mock.module.params = self.storage_group_args
-        powermax_module_mock.module.params.update(
+        powermax_module_mock.module_wo_sensitive_data = self.storage_group_args
+        powermax_module_mock.module_wo_sensitive_data.update(
             {
                 "volumes": [{"vol_id": "1"}, {"vol_id": "2"}],
                 "vol_state": "present-in-group",
@@ -413,7 +428,8 @@ class TestStorageGroup(PowerMaxUnitBase):
 
     def test_add_existing_vol_to_sg_same_id(self, powermax_module_mock):
         powermax_module_mock.module.params = self.storage_group_args
-        powermax_module_mock.module.params.update(
+        powermax_module_mock.module_wo_sensitive_data = self.storage_group_args
+        powermax_module_mock.module_wo_sensitive_data.update(
             {
                 "volumes": [{"vol_id": "1"}, {"vol_id": "2"}],
                 "vol_state": "present-in-group",
@@ -452,7 +468,8 @@ class TestStorageGroup(PowerMaxUnitBase):
     def test_add_vol_to_sg_check_mode(self, powermax_module_mock):
         powermax_module_mock.module.check_mode = True
         powermax_module_mock.module.params = self.storage_group_args
-        powermax_module_mock.module.params.update(
+        powermax_module_mock.module_wo_sensitive_data = self.storage_group_args
+        powermax_module_mock.module_wo_sensitive_data.update(
             {
                 "volumes": [{"size": 2, "cap_unit": "GB"}],
                 "vol_state": "present-in-group",
@@ -467,7 +484,8 @@ class TestStorageGroup(PowerMaxUnitBase):
 
     def test_add_vol_to_sg_exception(self, powermax_module_mock):
         powermax_module_mock.module.params = self.storage_group_args
-        powermax_module_mock.module.params.update(
+        powermax_module_mock.module_wo_sensitive_data = self.storage_group_args
+        powermax_module_mock.module_wo_sensitive_data.update(
             {
                 "volumes": [{"size": 2, "cap_unit": "GB"}],
                 "vol_state": "present-in-group",
@@ -488,7 +506,8 @@ class TestStorageGroup(PowerMaxUnitBase):
 
     def test_add_vol_to_sg_size_conflict(self, powermax_module_mock):
         powermax_module_mock.module.params = self.storage_group_args
-        powermax_module_mock.module.params.update(
+        powermax_module_mock.module_wo_sensitive_data = self.storage_group_args
+        powermax_module_mock.module_wo_sensitive_data.update(
             {
                 "volumes": [
                     {},
@@ -515,7 +534,8 @@ class TestStorageGroup(PowerMaxUnitBase):
 
     def test_add_vol_to_sg_no_size(self, powermax_module_mock):
         powermax_module_mock.module.params = self.storage_group_args
-        powermax_module_mock.module.params.update(
+        powermax_module_mock.module_wo_sensitive_data = self.storage_group_args
+        powermax_module_mock.module_wo_sensitive_data.update(
             {
                 "volumes": [{}, {"cap_unit": "GB"}],
                 "vol_state": "present-in-group",
@@ -533,7 +553,8 @@ class TestStorageGroup(PowerMaxUnitBase):
 
     def test_add_vol_to_sg_srdf_wrong_version(self, powermax_module_mock):
         powermax_module_mock.module.params = self.storage_group_args
-        powermax_module_mock.module.params.update(
+        powermax_module_mock.module_wo_sensitive_data = self.storage_group_args
+        powermax_module_mock.module_wo_sensitive_data.update(
             {
                 "serial_no": "1",
                 "volumes": [{"size": "2"}],
@@ -558,7 +579,8 @@ class TestStorageGroup(PowerMaxUnitBase):
 
     def test_add_vol_to_sg_srdf_basic(self, powermax_module_mock):
         powermax_module_mock.module.params = self.storage_group_args
-        powermax_module_mock.module.params.update(
+        powermax_module_mock.module_wo_sensitive_data = self.storage_group_args
+        powermax_module_mock.module_wo_sensitive_data.update(
             {
                 "serial_no": "1",
                 "volumes": [{"size": "2"}],
@@ -582,7 +604,8 @@ class TestStorageGroup(PowerMaxUnitBase):
     def test_add_vol_to_sg_srdf_basic_check_mode(self, powermax_module_mock):
         powermax_module_mock.module.check_mode = True
         powermax_module_mock.module.params = self.storage_group_args
-        powermax_module_mock.module.params.update(
+        powermax_module_mock.module_wo_sensitive_data = self.storage_group_args
+        powermax_module_mock.module_wo_sensitive_data.update(
             {
                 "serial_no": "1",
                 "volumes": [{"size": "2"}],
@@ -605,7 +628,8 @@ class TestStorageGroup(PowerMaxUnitBase):
 
     def test_add_vol_to_sg_srdf_multisite(self, powermax_module_mock):
         powermax_module_mock.module.params = self.storage_group_args
-        powermax_module_mock.module.params.update(
+        powermax_module_mock.module_wo_sensitive_data = self.storage_group_args
+        powermax_module_mock.module_wo_sensitive_data.update(
             {
                 "serial_no": "1",
                 "volumes": [{"size": "2"}],
@@ -632,7 +656,8 @@ class TestStorageGroup(PowerMaxUnitBase):
     def test_add_vol_to_sg_srdf_multisite_check_mode(self, powermax_module_mock):
         powermax_module_mock.module.check_mode = True
         powermax_module_mock.module.params = self.storage_group_args
-        powermax_module_mock.module.params.update(
+        powermax_module_mock.module_wo_sensitive_data = self.storage_group_args
+        powermax_module_mock.module_wo_sensitive_data.update(
             {
                 "serial_no": "1",
                 "volumes": [{"size": "2"}],
@@ -658,7 +683,8 @@ class TestStorageGroup(PowerMaxUnitBase):
 
     def test_add_vol_to_sg_srdf_3_sites(self, powermax_module_mock):
         powermax_module_mock.module.params = self.storage_group_args
-        powermax_module_mock.module.params.update(
+        powermax_module_mock.module_wo_sensitive_data = self.storage_group_args
+        powermax_module_mock.module_wo_sensitive_data.update(
             {
                 "serial_no": "1",
                 "volumes": [{"size": "2"}],
@@ -688,7 +714,8 @@ class TestStorageGroup(PowerMaxUnitBase):
 
     def test_remove_volumes_from_sg(self, powermax_module_mock):
         powermax_module_mock.module.params = self.storage_group_args
-        powermax_module_mock.module.params.update(
+        powermax_module_mock.module_wo_sensitive_data = self.storage_group_args
+        powermax_module_mock.module_wo_sensitive_data.update(
             {
                 "volumes": [
                     {"vol_id": "1"},
@@ -728,7 +755,8 @@ class TestStorageGroup(PowerMaxUnitBase):
 
     def test_remove_volumes_from_sg_duplicate_name(self, powermax_module_mock):
         powermax_module_mock.module.params = self.storage_group_args
-        powermax_module_mock.module.params.update(
+        powermax_module_mock.module_wo_sensitive_data = self.storage_group_args
+        powermax_module_mock.module_wo_sensitive_data.update(
             {
                 "volumes": [{"vol_name": "vol_2"}],
                 "vol_state": "absent-in-group",
@@ -748,7 +776,8 @@ class TestStorageGroup(PowerMaxUnitBase):
 
     def test_remove_volumes_from_sg_exception(self, powermax_module_mock):
         powermax_module_mock.module.params = self.storage_group_args
-        powermax_module_mock.module.params.update(
+        powermax_module_mock.module_wo_sensitive_data = self.storage_group_args
+        powermax_module_mock.module_wo_sensitive_data.update(
             {
                 "volumes": [{"vol_id": "1"}],
                 "vol_state": "absent-in-group",
@@ -783,7 +812,8 @@ class TestStorageGroup(PowerMaxUnitBase):
     def test_remove_volumes_from_sg_check_mode(self, powermax_module_mock):
         powermax_module_mock.module.check_mode = True
         powermax_module_mock.module.params = self.storage_group_args
-        powermax_module_mock.module.params.update(
+        powermax_module_mock.module_wo_sensitive_data = self.storage_group_args
+        powermax_module_mock.module_wo_sensitive_data.update(
             {
                 "volumes": [{"vol_id": "1"}],
                 "vol_state": "absent-in-group",
@@ -812,7 +842,8 @@ class TestStorageGroup(PowerMaxUnitBase):
     def test_remove_volumes_from_sg_srdf_protected(self, powermax_module_mock):
         powermax_module_mock.module.check_mode = True
         powermax_module_mock.module.params = self.storage_group_args
-        powermax_module_mock.module.params.update(
+        powermax_module_mock.module_wo_sensitive_data = self.storage_group_args
+        powermax_module_mock.module_wo_sensitive_data.update(
             {
                 "volumes": [{"vol_id": "1"}],
                 "vol_state": "absent-in-group",
@@ -856,7 +887,8 @@ class TestStorageGroup(PowerMaxUnitBase):
         self, powermax_module_mock
     ):
         powermax_module_mock.module.params = self.storage_group_args
-        powermax_module_mock.module.params.update(
+        powermax_module_mock.module_wo_sensitive_data = self.storage_group_args
+        powermax_module_mock.module_wo_sensitive_data.update(
             {
                 "volumes": [{"vol_id": "1"}],
                 "vol_state": "absent-in-group",
@@ -904,7 +936,8 @@ class TestStorageGroup(PowerMaxUnitBase):
     ):
         powermax_module_mock.module.check_mode = True
         powermax_module_mock.module.params = self.storage_group_args
-        powermax_module_mock.module.params.update(
+        powermax_module_mock.module_wo_sensitive_data = self.storage_group_args
+        powermax_module_mock.module_wo_sensitive_data.update(
             {
                 "volumes": [{"vol_id": "1"}],
                 "vol_state": "absent-in-group",
@@ -950,7 +983,8 @@ class TestStorageGroup(PowerMaxUnitBase):
     def test_remove_volumes_from_sg_srdf_protected_3_sites(self, powermax_module_mock):
         powermax_module_mock.module.check_mode = True
         powermax_module_mock.module.params = self.storage_group_args
-        powermax_module_mock.module.params.update(
+        powermax_module_mock.module_wo_sensitive_data = self.storage_group_args
+        powermax_module_mock.module_wo_sensitive_data.update(
             {
                 "volumes": [{"vol_id": "1"}],
                 "vol_state": "absent-in-group",
@@ -999,7 +1033,8 @@ class TestStorageGroup(PowerMaxUnitBase):
 
     def test_remove_no_volume_from_sg(self, powermax_module_mock):
         powermax_module_mock.module.params = self.storage_group_args
-        powermax_module_mock.module.params.update(
+        powermax_module_mock.module_wo_sensitive_data = self.storage_group_args
+        powermax_module_mock.module_wo_sensitive_data.update(
             {
                 "volumes": [{"vol_id": "1"}],
                 "vol_state": "absent-in-group",
@@ -1013,7 +1048,8 @@ class TestStorageGroup(PowerMaxUnitBase):
 
     def test_move_volumes_between_sgs(self, powermax_module_mock):
         powermax_module_mock.module.params = self.storage_group_args
-        powermax_module_mock.module.params.update(
+        powermax_module_mock.module_wo_sensitive_data = self.storage_group_args
+        powermax_module_mock.module_wo_sensitive_data.update(
             {
                 "target_sg_name": "target_sg",
                 "volumes": [{"vol_id": "1"}, {"vol_name": "vol_2"}],
@@ -1033,7 +1069,8 @@ class TestStorageGroup(PowerMaxUnitBase):
     def test_move_volumes_between_sgs_check_mode(self, powermax_module_mock):
         powermax_module_mock.module.check_mode = True
         powermax_module_mock.module.params = self.storage_group_args
-        powermax_module_mock.module.params.update(
+        powermax_module_mock.module_wo_sensitive_data = self.storage_group_args
+        powermax_module_mock.module_wo_sensitive_data.update(
             {
                 "target_sg_name": "target_sg",
                 "volumes": [{}, {"vol_id": "1"}, {"vol_name": "vol_2"}],
@@ -1056,7 +1093,8 @@ class TestStorageGroup(PowerMaxUnitBase):
 
     def test_move_volumes_between_sgs_srdf_check_exception(self, powermax_module_mock):
         powermax_module_mock.module.params = self.storage_group_args
-        powermax_module_mock.module.params.update(
+        powermax_module_mock.module_wo_sensitive_data = self.storage_group_args
+        powermax_module_mock.module_wo_sensitive_data.update(
             {
                 "target_sg_name": "target_sg",
                 "volumes": [{"vol_id": "123"}],
@@ -1082,7 +1120,8 @@ class TestStorageGroup(PowerMaxUnitBase):
 
     def test_move_volumes_between_sgs_duplicate_vols(self, powermax_module_mock):
         powermax_module_mock.module.params = self.storage_group_args
-        powermax_module_mock.module.params.update(
+        powermax_module_mock.module_wo_sensitive_data = self.storage_group_args
+        powermax_module_mock.module_wo_sensitive_data.update(
             {
                 "state": "present",
                 "target_sg_name": "target_sg",
@@ -1101,7 +1140,8 @@ class TestStorageGroup(PowerMaxUnitBase):
 
     def test_move_volumes_between_srdf_protected_sgs(self, powermax_module_mock):
         powermax_module_mock.module.params = self.storage_group_args
-        powermax_module_mock.module.params.update(
+        powermax_module_mock.module_wo_sensitive_data = self.storage_group_args
+        powermax_module_mock.module_wo_sensitive_data.update(
             {
                 "target_sg_name": "target_sg",
                 "volumes": [{"vol_id": "123", "vol_name": "test"}],
@@ -1122,7 +1162,8 @@ class TestStorageGroup(PowerMaxUnitBase):
         self, powermax_module_mock
     ):
         powermax_module_mock.module.params = self.storage_group_args
-        powermax_module_mock.module.params.update(
+        powermax_module_mock.module_wo_sensitive_data = self.storage_group_args
+        powermax_module_mock.module_wo_sensitive_data.update(
             {
                 "target_sg_name": "target_sg",
                 "volumes": [{"vol_id": "123", "vol_name": "test"}],
@@ -1140,7 +1181,8 @@ class TestStorageGroup(PowerMaxUnitBase):
 
     def test_set_host_io_limit(self, powermax_module_mock):
         powermax_module_mock.module.params = self.storage_group_args
-        powermax_module_mock.module.params.update(
+        powermax_module_mock.module_wo_sensitive_data = self.storage_group_args
+        powermax_module_mock.module_wo_sensitive_data.update(
             {
                 "host_io_limit": {
                     "dynamic_distribution": "Always",
@@ -1174,7 +1216,8 @@ class TestStorageGroup(PowerMaxUnitBase):
 
     def test_set_host_io_limit_iops_none(self, powermax_module_mock):
         powermax_module_mock.module.params = self.storage_group_args
-        powermax_module_mock.module.params.update(
+        powermax_module_mock.module_wo_sensitive_data = self.storage_group_args
+        powermax_module_mock.module_wo_sensitive_data.update(
             {
                 "host_io_limit": {
                     "dynamic_distribution": "Always",
@@ -1208,7 +1251,8 @@ class TestStorageGroup(PowerMaxUnitBase):
 
     def test_set_host_io_limit_validate_iops_failed(self, powermax_module_mock):
         powermax_module_mock.module.params = self.storage_group_args
-        powermax_module_mock.module.params.update(
+        powermax_module_mock.module_wo_sensitive_data = self.storage_group_args
+        powermax_module_mock.module_wo_sensitive_data.update(
             {
                 "host_io_limit": {
                     "dynamic_distribution": "Always",
@@ -1225,7 +1269,8 @@ class TestStorageGroup(PowerMaxUnitBase):
 
     def test_set_host_io_limit_validate_mbps_failed(self, powermax_module_mock):
         powermax_module_mock.module.params = self.storage_group_args
-        powermax_module_mock.module.params.update(
+        powermax_module_mock.module_wo_sensitive_data = self.storage_group_args
+        powermax_module_mock.module_wo_sensitive_data.update(
             {
                 "host_io_limit": {
                     "dynamic_distribution": "Always",
@@ -1242,7 +1287,8 @@ class TestStorageGroup(PowerMaxUnitBase):
 
     def test_set_host_io_limit_without_io_limit(self, powermax_module_mock):
         powermax_module_mock.module.params = self.storage_group_args
-        powermax_module_mock.module.params.update(
+        powermax_module_mock.module_wo_sensitive_data = self.storage_group_args
+        powermax_module_mock.module_wo_sensitive_data.update(
             {
                 "host_io_limit": {
                     "dynamic_distribution": "Always",
@@ -1262,7 +1308,8 @@ class TestStorageGroup(PowerMaxUnitBase):
 
     def test_set_host_io_limit_no_change(self, powermax_module_mock):
         powermax_module_mock.module.params = self.storage_group_args
-        powermax_module_mock.module.params.update(
+        powermax_module_mock.module_wo_sensitive_data = self.storage_group_args
+        powermax_module_mock.module_wo_sensitive_data.update(
             {
                 "host_io_limit": {
                     "dynamic_distribution": "Always",
@@ -1289,7 +1336,8 @@ class TestStorageGroup(PowerMaxUnitBase):
 
     def test_set_host_io_limit_exception(self, powermax_module_mock):
         powermax_module_mock.module.params = self.storage_group_args
-        powermax_module_mock.module.params.update(
+        powermax_module_mock.module_wo_sensitive_data = self.storage_group_args
+        powermax_module_mock.module_wo_sensitive_data.update(
             {
                 "host_io_limit": {
                     "dynamic_distribution": "Always",
@@ -1322,7 +1370,8 @@ class TestStorageGroup(PowerMaxUnitBase):
 
     def test_modify_sg_attr(self, powermax_module_mock):
         powermax_module_mock.module.params = self.storage_group_args
-        powermax_module_mock.module.params.update(
+        powermax_module_mock.module_wo_sensitive_data = self.storage_group_args
+        powermax_module_mock.module_wo_sensitive_data.update(
             {
                 "new_sg_name": "test_sg_2",
                 "srp": "SRP_2",
@@ -1338,7 +1387,8 @@ class TestStorageGroup(PowerMaxUnitBase):
 
     def test_rename_storagegroup_same_name(self, powermax_module_mock):
         powermax_module_mock.module.params = self.storage_group_args
-        powermax_module_mock.module.params.update({"new_sg_name": "test_sg"})
+        powermax_module_mock.module_wo_sensitive_data = self.storage_group_args
+        powermax_module_mock.module_wo_sensitive_data.update({"new_sg_name": "test_sg"})
         powermax_module_mock.provisioning.get_storage_group = MagicMock(
             return_value=MockStorageGroupApi.STORAGEGROUP_RESPONSE_DETAILS
         )
@@ -1347,7 +1397,8 @@ class TestStorageGroup(PowerMaxUnitBase):
 
     def test_rename_storagegroup_when_create(self, powermax_module_mock):
         powermax_module_mock.module.params = self.storage_group_args
-        powermax_module_mock.module.params.update({"new_sg_name": "new_name"})
+        powermax_module_mock.module_wo_sensitive_data = self.storage_group_args
+        powermax_module_mock.module_wo_sensitive_data.update({"new_sg_name": "new_name"})
         powermax_module_mock.provisioning.get_storage_group = MagicMock(
             return_value=None
         )
@@ -1359,7 +1410,8 @@ class TestStorageGroup(PowerMaxUnitBase):
 
     def test_rename_storagegroup_exception(self, powermax_module_mock):
         powermax_module_mock.module.params = self.storage_group_args
-        powermax_module_mock.module.params.update({"new_sg_name": "test_sg_2"})
+        powermax_module_mock.module_wo_sensitive_data = self.storage_group_args
+        powermax_module_mock.module_wo_sensitive_data.update({"new_sg_name": "test_sg_2"})
         powermax_module_mock.provisioning.get_storage_group = MagicMock(
             return_value=MockStorageGroupApi.STORAGEGROUP_RESPONSE_DETAILS
         )
@@ -1375,7 +1427,8 @@ class TestStorageGroup(PowerMaxUnitBase):
     def test_modify_sg_attr_check_mode(self, powermax_module_mock):
         powermax_module_mock.module.check_mode = True
         powermax_module_mock.module.params = self.storage_group_args
-        powermax_module_mock.module.params.update(
+        powermax_module_mock.module_wo_sensitive_data = self.storage_group_args
+        powermax_module_mock.module_wo_sensitive_data.update(
             {
                 "new_sg_name": "test_sg_2",
                 "srp": "SRP_2",
@@ -1391,7 +1444,8 @@ class TestStorageGroup(PowerMaxUnitBase):
 
     def test_modify_sg_srp_exception(self, powermax_module_mock):
         powermax_module_mock.module.params = self.storage_group_args
-        powermax_module_mock.module.params.update({"srp": "SRP_2"})
+        powermax_module_mock.module_wo_sensitive_data = self.storage_group_args
+        powermax_module_mock.module_wo_sensitive_data.update({"srp": "SRP_2"})
         powermax_module_mock.provisioning.get_storage_group = MagicMock(
             return_value=MockStorageGroupApi.STORAGEGROUP_RESPONSE_DETAILS
         )
@@ -1406,7 +1460,8 @@ class TestStorageGroup(PowerMaxUnitBase):
 
     def test_modify_sg_slo_exception(self, powermax_module_mock):
         powermax_module_mock.module.params = self.storage_group_args
-        powermax_module_mock.module.params.update({"service_level": "Diamond"})
+        powermax_module_mock.module_wo_sensitive_data = self.storage_group_args
+        powermax_module_mock.module_wo_sensitive_data.update({"service_level": "Diamond"})
         powermax_module_mock.provisioning.get_storage_group = MagicMock(
             return_value=MockStorageGroupApi.STORAGEGROUP_RESPONSE_DETAILS
         )
@@ -1421,7 +1476,8 @@ class TestStorageGroup(PowerMaxUnitBase):
 
     def test_modify_sg_compression_exception(self, powermax_module_mock):
         powermax_module_mock.module.params = self.storage_group_args
-        powermax_module_mock.module.params.update({"compression": True})
+        powermax_module_mock.module_wo_sensitive_data = self.storage_group_args
+        powermax_module_mock.module_wo_sensitive_data.update({"compression": True})
         powermax_module_mock.provisioning.get_storage_group = MagicMock(
             return_value=MockStorageGroupApi.STORAGEGROUP_RESPONSE_DETAILS
         )
@@ -1438,7 +1494,8 @@ class TestStorageGroup(PowerMaxUnitBase):
 
     def test_add_child_sg(self, powermax_module_mock):
         powermax_module_mock.module.params = self.storage_group_args
-        powermax_module_mock.module.params.update(
+        powermax_module_mock.module_wo_sensitive_data = self.storage_group_args
+        powermax_module_mock.module_wo_sensitive_data.update(
             {
                 "child_storage_groups": ["child_1", "child_2"],
                 "child_sg_state": "present-in-group",
@@ -1456,7 +1513,8 @@ class TestStorageGroup(PowerMaxUnitBase):
     def test_add_child_sg_check_mode(self, powermax_module_mock):
         powermax_module_mock.module.check_mode = True
         powermax_module_mock.module.params = self.storage_group_args
-        powermax_module_mock.module.params.update(
+        powermax_module_mock.module_wo_sensitive_data = self.storage_group_args
+        powermax_module_mock.module_wo_sensitive_data.update(
             {"child_storage_groups": ["child_1"], "child_sg_state": "present-in-group"}
         )
         powermax_module_mock.provisioning.get_storage_group = MagicMock(
@@ -1470,7 +1528,8 @@ class TestStorageGroup(PowerMaxUnitBase):
 
     def test_add_protected_child_sg(self, powermax_module_mock):
         powermax_module_mock.module.params = self.storage_group_args
-        powermax_module_mock.module.params.update(
+        powermax_module_mock.module_wo_sensitive_data = self.storage_group_args
+        powermax_module_mock.module_wo_sensitive_data.update(
             {"child_storage_groups": ["child_1"], "child_sg_state": "present-in-group"}
         )
         powermax_module_mock.provisioning.get_storage_group = MagicMock(
@@ -1488,7 +1547,8 @@ class TestStorageGroup(PowerMaxUnitBase):
 
     def test_add_child_sg_exception(self, powermax_module_mock):
         powermax_module_mock.module.params = self.storage_group_args
-        powermax_module_mock.module.params.update(
+        powermax_module_mock.module_wo_sensitive_data = self.storage_group_args
+        powermax_module_mock.module_wo_sensitive_data.update(
             {"child_storage_groups": ["child_1"], "child_sg_state": "present-in-group"}
         )
         powermax_module_mock.provisioning.get_storage_group = MagicMock(
@@ -1508,7 +1568,8 @@ class TestStorageGroup(PowerMaxUnitBase):
 
     def test_remove_child_sg(self, powermax_module_mock):
         powermax_module_mock.module.params = self.storage_group_args
-        powermax_module_mock.module.params.update(
+        powermax_module_mock.module_wo_sensitive_data = self.storage_group_args
+        powermax_module_mock.module_wo_sensitive_data.update(
             {
                 "child_storage_groups": ["child_1", "child_2"],
                 "child_sg_state": "absent-in-group",
@@ -1526,7 +1587,8 @@ class TestStorageGroup(PowerMaxUnitBase):
     def test_remove_child_sg_check_mode(self, powermax_module_mock):
         powermax_module_mock.module.check_mode = True
         powermax_module_mock.module.params = self.storage_group_args
-        powermax_module_mock.module.params.update(
+        powermax_module_mock.module_wo_sensitive_data = self.storage_group_args
+        powermax_module_mock.module_wo_sensitive_data.update(
             {"child_storage_groups": ["child_1"], "child_sg_state": "absent-in-group"}
         )
         powermax_module_mock.provisioning.get_storage_group = MagicMock(
@@ -1540,7 +1602,8 @@ class TestStorageGroup(PowerMaxUnitBase):
 
     def test_remove_protected_child_sg(self, powermax_module_mock):
         powermax_module_mock.module.params = self.storage_group_args
-        powermax_module_mock.module.params.update(
+        powermax_module_mock.module_wo_sensitive_data = self.storage_group_args
+        powermax_module_mock.module_wo_sensitive_data.update(
             {"child_storage_groups": ["child_1"], "child_sg_state": "absent-in-group"}
         )
         powermax_module_mock.provisioning.get_storage_group = MagicMock(
@@ -1558,7 +1621,8 @@ class TestStorageGroup(PowerMaxUnitBase):
 
     def test_remove_child_sg_exception(self, powermax_module_mock):
         powermax_module_mock.module.params = self.storage_group_args
-        powermax_module_mock.module.params.update(
+        powermax_module_mock.module_wo_sensitive_data = self.storage_group_args
+        powermax_module_mock.module_wo_sensitive_data.update(
             {"child_storage_groups": ["child_1"], "child_sg_state": "absent-in-group"}
         )
         powermax_module_mock.provisioning.get_storage_group = MagicMock(
@@ -1578,7 +1642,8 @@ class TestStorageGroup(PowerMaxUnitBase):
 
     def test_add_snapshot_pol_to_sg(self, powermax_module_mock):
         powermax_module_mock.module.params = self.storage_group_args
-        powermax_module_mock.module.params.update(
+        powermax_module_mock.module_wo_sensitive_data = self.storage_group_args
+        powermax_module_mock.module_wo_sensitive_data.update(
             {
                 "snapshot_policies": ["10min_policy", "30min_policy"],
                 "snapshot_policy_state": "present-in-group",
@@ -1594,7 +1659,8 @@ class TestStorageGroup(PowerMaxUnitBase):
 
     def test_add_snapshot_pol_to_sg_unsupported_version(self, powermax_module_mock):
         powermax_module_mock.module.params = self.storage_group_args
-        powermax_module_mock.module.params.update(
+        powermax_module_mock.module_wo_sensitive_data = self.storage_group_args
+        powermax_module_mock.module_wo_sensitive_data.update(
             {
                 "snapshot_policies": ["10min_policy", "30min_policy"],
                 "snapshot_policy_state": "present-in-group",
@@ -1609,7 +1675,8 @@ class TestStorageGroup(PowerMaxUnitBase):
 
     def test_add_existing_snapshot_pol_to_sg(self, powermax_module_mock):
         powermax_module_mock.module.params = self.storage_group_args
-        powermax_module_mock.module.params.update(
+        powermax_module_mock.module_wo_sensitive_data = self.storage_group_args
+        powermax_module_mock.module_wo_sensitive_data.update(
             {
                 "snapshot_policies": ["10min_policy"],
                 "snapshot_policy_state": "present-in-group",
@@ -1626,7 +1693,8 @@ class TestStorageGroup(PowerMaxUnitBase):
     def test_add_snapshot_pol_to_sg_check_mode(self, powermax_module_mock):
         powermax_module_mock.module.check_mode = True
         powermax_module_mock.module.params = self.storage_group_args
-        powermax_module_mock.module.params.update(
+        powermax_module_mock.module_wo_sensitive_data = self.storage_group_args
+        powermax_module_mock.module_wo_sensitive_data.update(
             {
                 "snapshot_policies": ["10min_policy", "30min_policy"],
                 "snapshot_policy_state": "present-in-group",
@@ -1642,7 +1710,8 @@ class TestStorageGroup(PowerMaxUnitBase):
 
     def test_add_snapshot_pol_to_sg_exception(self, powermax_module_mock):
         powermax_module_mock.module.params = self.storage_group_args
-        powermax_module_mock.module.params.update(
+        powermax_module_mock.module_wo_sensitive_data = self.storage_group_args
+        powermax_module_mock.module_wo_sensitive_data.update(
             {
                 "snapshot_policies": ["10min_policy", "30min_policy"],
                 "snapshot_policy_state": "present-in-group",
@@ -1666,7 +1735,8 @@ class TestStorageGroup(PowerMaxUnitBase):
 
     def test_add_snapshot_pol_to_sg_compliance_exception(self, powermax_module_mock):
         powermax_module_mock.module.params = self.storage_group_args
-        powermax_module_mock.module.params.update(
+        powermax_module_mock.module_wo_sensitive_data = self.storage_group_args
+        powermax_module_mock.module_wo_sensitive_data.update(
             {
                 "snapshot_policies": ["10min_policy", "30min_policy"],
                 "snapshot_policy_state": "present-in-group",
@@ -1690,7 +1760,8 @@ class TestStorageGroup(PowerMaxUnitBase):
 
     def test_remove_snapshot_pol_from_sg(self, powermax_module_mock):
         powermax_module_mock.module.params = self.storage_group_args
-        powermax_module_mock.module.params.update(
+        powermax_module_mock.module_wo_sensitive_data = self.storage_group_args
+        powermax_module_mock.module_wo_sensitive_data.update(
             {
                 "snapshot_policies": ["10min_policy"],
                 "snapshot_policy_state": "absent-in-group",
@@ -1706,7 +1777,8 @@ class TestStorageGroup(PowerMaxUnitBase):
 
     def test_remove_snapshot_pol_from_empty_sg(self, powermax_module_mock):
         powermax_module_mock.module.params = self.storage_group_args
-        powermax_module_mock.module.params.update(
+        powermax_module_mock.module_wo_sensitive_data = self.storage_group_args
+        powermax_module_mock.module_wo_sensitive_data.update(
             {
                 "snapshot_policies": ["10min_policy"],
                 "snapshot_policy_state": "absent-in-group",
@@ -1720,7 +1792,8 @@ class TestStorageGroup(PowerMaxUnitBase):
 
     def test_remove_no_snapshot_pol_from_sg(self, powermax_module_mock):
         powermax_module_mock.module.params = self.storage_group_args
-        powermax_module_mock.module.params.update(
+        powermax_module_mock.module_wo_sensitive_data = self.storage_group_args
+        powermax_module_mock.module_wo_sensitive_data.update(
             {
                 "snapshot_policies": ["30min_policy"],
                 "snapshot_policy_state": "absent-in-group",
@@ -1737,7 +1810,8 @@ class TestStorageGroup(PowerMaxUnitBase):
     def test_remove_snapshot_pol_from_sg_check_mode(self, powermax_module_mock):
         powermax_module_mock.module.check_mode = True
         powermax_module_mock.module.params = self.storage_group_args
-        powermax_module_mock.module.params.update(
+        powermax_module_mock.module_wo_sensitive_data = self.storage_group_args
+        powermax_module_mock.module_wo_sensitive_data.update(
             {
                 "snapshot_policies": ["10min_policy"],
                 "snapshot_policy_state": "absent-in-group",
@@ -1753,7 +1827,8 @@ class TestStorageGroup(PowerMaxUnitBase):
 
     def test_remove_snapshot_pol_from_sg_exception(self, powermax_module_mock):
         powermax_module_mock.module.params = self.storage_group_args
-        powermax_module_mock.module.params.update(
+        powermax_module_mock.module_wo_sensitive_data = self.storage_group_args
+        powermax_module_mock.module_wo_sensitive_data.update(
             {
                 "snapshot_policies": ["10min_policy"],
                 "snapshot_policy_state": "absent-in-group",
@@ -1778,6 +1853,7 @@ class TestStorageGroup(PowerMaxUnitBase):
     def test_delete_storagegroup(self, powermax_module_mock):
         self.storage_group_args.update({"state": "absent"})
         powermax_module_mock.module.params = self.storage_group_args
+        powermax_module_mock.module_wo_sensitive_data = self.storage_group_args
         powermax_module_mock.provisioning.get_storage_group = MagicMock(
             return_value=MockStorageGroupApi.STORAGEGROUP_RESPONSE_DETAILS
         )
@@ -1786,7 +1862,8 @@ class TestStorageGroup(PowerMaxUnitBase):
 
     def test_delete_storagegroup_linked_snaps(self, powermax_module_mock):
         powermax_module_mock.module.params = self.storage_group_args
-        powermax_module_mock.module.params.update({"state": "absent"})
+        powermax_module_mock.module_wo_sensitive_data = self.storage_group_args
+        powermax_module_mock.module_wo_sensitive_data.update({"state": "absent"})
         powermax_module_mock.provisioning.get_storage_group = MagicMock(
             return_value=MockStorageGroupApi.STORAGEGROUP_RESPONSE_DETAILS
         )
@@ -1807,7 +1884,8 @@ class TestStorageGroup(PowerMaxUnitBase):
     def test_delete_storagegroup_check_mode(self, powermax_module_mock):
         powermax_module_mock.module.check_mode = True
         powermax_module_mock.module.params = self.storage_group_args
-        powermax_module_mock.module.params.update({"state": "absent"})
+        powermax_module_mock.module_wo_sensitive_data = self.storage_group_args
+        powermax_module_mock.module_wo_sensitive_data.update({"state": "absent"})
         powermax_module_mock.provisioning.get_storage_group = MagicMock(
             return_value=MockStorageGroupApi.STORAGEGROUP_RESPONSE_DETAILS
         )
@@ -1817,6 +1895,7 @@ class TestStorageGroup(PowerMaxUnitBase):
     def test_delete_storagegroup_exception(self, powermax_module_mock):
         self.storage_group_args.update({"state": "absent"})
         powermax_module_mock.module.params = self.storage_group_args
+        powermax_module_mock.module_wo_sensitive_data = self.storage_group_args
         powermax_module_mock.provisioning.get_storage_group = MagicMock(
             return_value=MockStorageGroupApi.STORAGEGROUP_RESPONSE_DETAILS
         )

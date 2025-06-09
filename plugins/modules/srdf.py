@@ -380,6 +380,10 @@ class SRDF(object):
             argument_spec=self.module_params,
             supports_check_mode=True
         )
+
+        # Get a copy of the module parameters without sensitive data for logging purposes
+        self.module_wo_sensitive_data = utils.get_powermax_management_host_parameters_remove_sensitive_data(self.module.params)
+
         # result is a dictionary that contains changed status, srdf_link
         # and job details
         self.result = {
@@ -453,7 +457,7 @@ class SRDF(object):
         Get details of a given srdf_link
         '''
         srdf_link_details = []
-        rdfg_number = self.module.params['rdfg_no']
+        rdfg_number = self.module_wo_sensitive_data['rdfg_no']
         try:
             if rdfg_number:
                 LOG.info("Getting srdf details for storage group %s "
@@ -502,9 +506,9 @@ class SRDF(object):
         '''
         Create srdf_link for given storagegroup_id group and remote array
         '''
-        sg_name = self.module.params['sg_name']
-        remote_serial_no = self.module.params['remote_serial_no']
-        srdf_mode = self.module.params['srdf_mode']
+        sg_name = self.module_wo_sensitive_data['sg_name']
+        remote_serial_no = self.module_wo_sensitive_data['remote_serial_no']
+        srdf_mode = self.module_wo_sensitive_data['srdf_mode']
         if srdf_mode == 'Adaptive Copy':
             srdf_mode = 'AdaptiveCopyDisk'
         if (remote_serial_no is None or srdf_mode is None):
@@ -514,10 +518,10 @@ class SRDF(object):
             self.show_error_exit(msg=error_msg)
         try:
             establish_flag = self._compute_required_establish_flag(
-                self.module.params['srdf_state'])
-            rdfg_number = self.module.params['rdfg_no']
-            async_flag = not (self.module.params['wait_for_completion'])
-            witness = self.module.params['witness']
+                self.module_wo_sensitive_data['srdf_state'])
+            rdfg_number = self.module_wo_sensitive_data['rdfg_no']
+            async_flag = not (self.module_wo_sensitive_data['wait_for_completion'])
+            witness = self.module_wo_sensitive_data['witness']
 
             if witness is False:
                 errorMsg = ("Create SRDF link operation failed as Ansible"
@@ -535,7 +539,7 @@ class SRDF(object):
             LOG.info(msg)
             resp = {}
             if not self.module.check_mode:
-                if self.module.params['wait_for_completion'] is False:
+                if self.module_wo_sensitive_data['wait_for_completion'] is False:
                     resp = self.replication.create_storage_group_srdf_pairings(
                         storage_group_id=sg_name,
                         remote_sid=remote_serial_no,
@@ -543,7 +547,7 @@ class SRDF(object):
                         establish=establish_flag,
                         rdfg_number=rdfg_number,
                         _async=async_flag)
-                elif self.module.params['wait_for_completion'] is True:
+                elif self.module_wo_sensitive_data['wait_for_completion'] is True:
                     job = self.replication.create_storage_group_srdf_pairings(
                         storage_group_id=sg_name,
                         remote_sid=remote_serial_no,
@@ -601,7 +605,7 @@ class SRDF(object):
             self.show_error_exit(msg=errorMsg)
 
     def modify_srdf_mode(self, srdf_mode):
-        async_flag = not (self.module.params['wait_for_completion'])
+        async_flag = not (self.module_wo_sensitive_data['wait_for_completion'])
         for link in self.result['SRDF_link_details']:
             if link['rdfGroupNumber'] == self.current_rdfg_no:
                 srdf_link = link
@@ -639,7 +643,7 @@ class SRDF(object):
     def modify_srdf_state(self, action):
         modify_body = {}
 
-        async_flag = not (self.module.params['wait_for_completion'])
+        async_flag = not (self.module_wo_sensitive_data['wait_for_completion'])
         for link in self.result['SRDF_link_details']:
             if link['rdfGroupNumber'] == self.current_rdfg_no:
                 srdf_link = link
@@ -650,7 +654,7 @@ class SRDF(object):
         modify_body['_async'] = async_flag
         resp = {}
 
-        if self.module.params['witness'] is not None:
+        if self.module_wo_sensitive_data['witness'] is not None:
             if srdf_link['modes'][0] != 'Active':
                 errorMsg = ("witness flag can not be used for non-Metro "
                             "configurations.")
@@ -662,7 +666,7 @@ class SRDF(object):
             else:
                 modify_body['options'] = {
                     action.lower(): {
-                        'metroBias': not (self.module.params['witness'])}}
+                        'metroBias': not (self.module_wo_sensitive_data['witness'])}}
 
         try:
             LOG.info('The modify_body is %s:', modify_body)
@@ -754,7 +758,7 @@ class SRDF(object):
         Check for correct RDF group among multiple RDF groups present for a
         storage group.
         '''
-        rdfg_no = self.module.params['rdfg_no']
+        rdfg_no = self.module_wo_sensitive_data['rdfg_no']
         found = False
         return_rdfg = None
         if srdf_link is None:
@@ -802,11 +806,11 @@ class SRDF(object):
         Perform different actions on srdf_link based on user parameter
         chosen in playbook
         '''
-        state = self.module.params['state']
-        sg_name = self.module.params['sg_name']
-        srdf_mode = self.module.params['srdf_mode']
-        srdf_state = self.module.params['srdf_state']
-        job_id = self.module.params['job_id']
+        state = self.module_wo_sensitive_data['state']
+        sg_name = self.module_wo_sensitive_data['sg_name']
+        srdf_mode = self.module_wo_sensitive_data['srdf_mode']
+        srdf_state = self.module_wo_sensitive_data['srdf_state']
+        job_id = self.module_wo_sensitive_data['job_id']
         changed = False
         remoteSymmetrixIDs = []
 
@@ -843,7 +847,7 @@ class SRDF(object):
 
                 # Create 2nd link for Multisite SRDF
                 if self.result['SRDF_link_details']\
-                        and self.module.params['remote_serial_no'] \
+                        and self.module_wo_sensitive_data['remote_serial_no'] \
                         and not changed:
                     LOG.debug('srdf_link details found.')
                     remoteSymmetrixIDcount = len(srdf_link)
@@ -851,7 +855,7 @@ class SRDF(object):
                         remoteSymmetrixIDs.append(
                             self.result['SRDF_link_details'][id]
                             ['remoteSymmetrix'])
-                    remote_serial_no = self.module.params['remote_serial_no']
+                    remote_serial_no = self.module_wo_sensitive_data['remote_serial_no']
                     if remote_serial_no not in remoteSymmetrixIDs:
                         changed = self.create_srdf_link()
 

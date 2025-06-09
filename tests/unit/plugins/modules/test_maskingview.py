@@ -123,49 +123,49 @@ class TestMaskingView():
 
     def test_create_maskingview_with_host(self, maskingview_module_mock):
         self.get_module_args.update(MockMaskingViewApi.get_create_mv_payload('host'))
-        maskingview_module_mock.module.params = self.get_module_args
+        maskingview_module_mock.module_wo_sensitive_data = self.get_module_args
         self.create_mv_host(maskingview_module_mock, 'host')
         maskingview_module_mock.provisioning.create_masking_view_existing_components.assert_called()
 
     def test_create_maskingview_with_host_exception(self, maskingview_module_mock):
         self.get_module_args.update(MockMaskingViewApi.get_create_mv_payload('host'))
-        maskingview_module_mock.module.params = self.get_module_args
+        maskingview_module_mock.module_wo_sensitive_data = self.get_module_args
         self.create_mv_host(maskingview_module_mock, 'host', True)
         assert MockMaskingViewApi.get_create_mv_exception_response('host') == \
             maskingview_module_mock.module.fail_json.call_args[1]['msg']
 
     def test_create_maskingview_with_hostgroup(self, maskingview_module_mock):
         self.get_module_args.update(MockMaskingViewApi.get_create_mv_payload('hostgroup'))
-        maskingview_module_mock.module.params = self.get_module_args
+        maskingview_module_mock.module_wo_sensitive_data = self.get_module_args
         self.create_mv_host(maskingview_module_mock, 'hostgroup')
         maskingview_module_mock.provisioning.create_masking_view_existing_components.assert_called()
 
     def test_create_maskingview_with_hostgroup_exception(self, maskingview_module_mock):
         self.get_module_args.update(MockMaskingViewApi.get_create_mv_payload('hostgroup'))
-        maskingview_module_mock.module.params = self.get_module_args
+        maskingview_module_mock.module_wo_sensitive_data = self.get_module_args
         self.create_mv_host(maskingview_module_mock, 'hostgroup', True)
         assert MockMaskingViewApi.get_create_mv_exception_response('hostgroup') == \
             maskingview_module_mock.module.fail_json.call_args[1]['msg']
 
     def test_create_maskingview_with_hostgroup_create_exception(self, maskingview_module_mock):
         self.get_module_args.update(MockMaskingViewApi.get_create_mv_payload('hostgroup'))
-        maskingview_module_mock.module.params = self.get_module_args
+        maskingview_module_mock.module_wo_sensitive_data = self.get_module_args
         self.create_mv_host(maskingview_module_mock, 'hostgroup', False, True)
         assert MockMaskingViewApi.get_create_mv_create_exception_response('test_mv') == \
             maskingview_module_mock.module.fail_json.call_args[1]['msg']
 
     def test_create_maskingview_with_both_hostgroup_host_exception(self, maskingview_module_mock):
         self.get_module_args.update(MockMaskingViewApi.get_create_mv_payload('hostgroup'))
-        maskingview_module_mock.module.params = self.get_module_args
+        maskingview_module_mock.module_wo_sensitive_data = self.get_module_args
         self.get_module_args.update(MockMaskingViewApi.get_create_mv_payload('host'))
-        maskingview_module_mock.module.params.update(self.get_module_args)
+        maskingview_module_mock.module_wo_sensitive_data.update(self.get_module_args)
         self.create_mv_host(maskingview_module_mock, 'hostgroup')
         assert MockMaskingViewApi.get_create_mv_both_host_hostgroup_exception_response('test_mv') == \
             maskingview_module_mock.module.fail_json.call_args[1]['msg']
 
     def test_create_maskingview_with_none_hostgroup_host_exception(self, maskingview_module_mock):
         self.get_module_args.update(MockMaskingViewApi.get_create_mv_payload(''))
-        maskingview_module_mock.module.params = self.get_module_args
+        maskingview_module_mock.module_wo_sensitive_data = self.get_module_args
         self.create_mv_host(maskingview_module_mock, 'hostgroup')
         assert MockMaskingViewApi.get_create_mv_none_host_hostgroup_exception_response('test_mv') == \
             maskingview_module_mock.module.fail_json.call_args[1]['msg']
@@ -176,7 +176,7 @@ class TestMaskingView():
             self.get_module_args.update(MockMaskingViewApi.get_create_mv_payload('host'))
             if param_key == 'hostId_hostgroup_name':
                 self.get_module_args.update(MockMaskingViewApi.get_create_mv_payload('hostgroup'))
-            maskingview_module_mock.module.params = self.get_module_args
+            maskingview_module_mock.module_wo_sensitive_data = self.get_module_args
             if param_key != 'hostId_hostgroup_name' and param_key != 'hostId_hostgroup_name' :
                 self.change_mv_host(maskingview_module_mock, param_key, ('%s_change' % param_key))
             assert MockMaskingViewApi.get_change_mv_exception_response('test_mv') == \
@@ -184,46 +184,46 @@ class TestMaskingView():
 
     def test_delete_maskingview(self, maskingview_module_mock):
         self.get_module_args.update(MockMaskingViewApi.get_delete_mv_payload())
-        maskingview_module_mock.module.params = self.get_module_args
+        maskingview_module_mock.module_wo_sensitive_data = self.get_module_args
         self.delete_mv_host(maskingview_module_mock)
         maskingview_module_mock.provisioning.delete_masking_view.assert_called()
 
     def test_delete_maskingview_with_check_mode(self, maskingview_module_mock):
         self.get_module_args.update(MockMaskingViewApi.get_delete_mv_payload())
-        maskingview_module_mock.module.params = self.get_module_args
+        maskingview_module_mock.module_wo_sensitive_data = self.get_module_args
         maskingview_module_mock.module.check_mode = True
         self.delete_mv_host(maskingview_module_mock)
         maskingview_module_mock.provisioning.delete_masking_view.assert_not_called()
 
     def test_delete_maskingview_with_exception(self, maskingview_module_mock):
         self.get_module_args.update(MockMaskingViewApi.get_delete_mv_payload())
-        maskingview_module_mock.module.params = self.get_module_args
+        maskingview_module_mock.module_wo_sensitive_data = self.get_module_args
         self.delete_mv_host(maskingview_module_mock, True)
         assert MockMaskingViewApi.get_delete_mv_exception_response('test_mv') == \
             maskingview_module_mock.module.fail_json.call_args[1]['msg']
 
     def test_rename_maskingview(self, maskingview_module_mock):
         self.get_module_args.update(MockMaskingViewApi.get_rename_mv_payload('test_mv_rename'))
-        maskingview_module_mock.module.params = self.get_module_args
+        maskingview_module_mock.module_wo_sensitive_data = self.get_module_args
         self.rename_mv_host(maskingview_module_mock)
         maskingview_module_mock.provisioning.rename_masking_view.assert_called()
 
     def test_rename_maskingview_with_check_mode(self, maskingview_module_mock):
         self.get_module_args.update(MockMaskingViewApi.get_rename_mv_payload('test_mv_rename'))
-        maskingview_module_mock.module.params = self.get_module_args
+        maskingview_module_mock.module_wo_sensitive_data = self.get_module_args
         maskingview_module_mock.module.check_mode = True
         self.rename_mv_host(maskingview_module_mock)
         maskingview_module_mock.provisioning.rename_masking_view.assert_not_called()
 
     def test_rename_maskingview_with_same_name(self, maskingview_module_mock):
         self.get_module_args.update(MockMaskingViewApi.get_rename_mv_payload('test_mv'))
-        maskingview_module_mock.module.params = self.get_module_args
+        maskingview_module_mock.module_wo_sensitive_data = self.get_module_args
         self.rename_mv_host(maskingview_module_mock)
         maskingview_module_mock.provisioning.rename_masking_view.assert_not_called()
 
     def test_rename_maskingview_with_exception(self, maskingview_module_mock):
         self.get_module_args.update(MockMaskingViewApi.get_rename_mv_payload('test_mv_rename'))
-        maskingview_module_mock.module.params = self.get_module_args
+        maskingview_module_mock.module_wo_sensitive_data = self.get_module_args
         self.rename_mv_host(maskingview_module_mock, True)
         assert MockMaskingViewApi.get_rename_mv_exception_response('test_mv') == \
             maskingview_module_mock.module.fail_json.call_args[1]['msg']

@@ -46,7 +46,7 @@ class TestJob(PowerMaxUnitBase):
         self.job_args.update(
             {"state": "present",
              "job_id": "invalid_id"})
-        powermax_module_mock.module.params = self.job_args
+        powermax_module_mock.module_wo_sensitive_data = self.job_args
         self.capture_fail_json_method(
             MockJobApi.get_error_message(
                 'invalid_job_id', job_id='invalid_id'), powermax_module_mock,
@@ -56,7 +56,7 @@ class TestJob(PowerMaxUnitBase):
         self.job_args.update(
             {"state": "present",
              "job_id": "100000000"})
-        powermax_module_mock.module.params = self.job_args
+        powermax_module_mock.module_wo_sensitive_data = self.job_args
         powermax_module_mock.perform_module_operation()
         powermax_module_mock.common.get_job_by_id.assert_called()
         assert powermax_module_mock.module.exit_json.call_args[1]['changed'] is False
@@ -65,7 +65,7 @@ class TestJob(PowerMaxUnitBase):
         self.job_args.update(
             {"state": "present",
              "job_id": "100000000"})
-        powermax_module_mock.module.params = self.job_args
+        powermax_module_mock.module_wo_sensitive_data = self.job_args
         powermax_module_mock.common.get_job_by_id = MagicMock(return_value={})
         self.capture_fail_json_method(
             MockJobApi.get_error_message(
@@ -76,7 +76,7 @@ class TestJob(PowerMaxUnitBase):
         self.job_args.update(
             {"state": "present",
              "job_id": "100000000"})
-        powermax_module_mock.module.params = self.job_args
+        powermax_module_mock.module_wo_sensitive_data = self.job_args
         powermax_module_mock.common.get_job_by_id = MagicMock(side_effect=MockApiException)
         self.capture_fail_json_method(
             MockJobApi.get_error_message(
