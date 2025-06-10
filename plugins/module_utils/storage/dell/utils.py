@@ -7,6 +7,7 @@
 from __future__ import (absolute_import, division, print_function)
 from decimal import Decimal
 import logging
+import copy
 from ansible_collections.dellemc.powermax.plugins.module_utils.storage.dell.logging_handler \
     import CustomRotatingFileHandler
 
@@ -121,6 +122,12 @@ def get_powermax_management_host_parameters(metro_dr=False):
         serial_no=dict(type='str', required=True),
         timeout=dict(type='int', required=False, default=120),
         port=dict(type='int', required=False, default=8443))
+
+
+def get_powermax_management_host_parameters_remove_sensitive_data(host_dict):
+    copy_dict_value = copy.deepcopy(host_dict)
+    copy_dict_value.pop('password')
+    return copy_dict_value
 
 
 '''
