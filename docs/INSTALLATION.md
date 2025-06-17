@@ -7,9 +7,9 @@ Depending on which PowerMax Unisphere version is being used, follow this procedu
         
         pip install PyU4V==10.0.0.16
 
-* For PowerMax Unisphere version 102, install Python [sdk](https://pypi.org/project/pyu4v/10.2.0.2/) named 'PyU4V 10.2.0.2':
+* For PowerMax Unisphere version 102, install Python [sdk](https://pypi.org/project/pyu4v/10.2.0.3/) named 'PyU4V 10.2.0.3':
         
-        pip install PyU4V==10.2.0.2
+        pip install PyU4V==10.2.0.3
 
 ## Building collections
 * Use this command to build the collection from source code:
@@ -30,7 +30,7 @@ Depending on which PowerMax Unisphere version is being used, follow this procedu
 
   2. Use this command to install the collection anywhere in your system:
 
-	      ansible-galaxy collection install dellemc-powermax-3.1.0.tar.gz -p <install_path>
+	      ansible-galaxy collection install dellemc-powermax-4.0.0.tar.gz -p <install_path>
 
   3. Set the environment variable:
 

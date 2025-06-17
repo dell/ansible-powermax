@@ -200,7 +200,7 @@
         state: "present"
       register: sg_result
 
-    - name: Create a volume for child SG
+    - name: Create a volume for child SG after volume re-name
       dellemc.powermax.storagegroup:
         unispherehost: "{{ unispherehost }}"
         verifycert: "{{ verifycert }}"

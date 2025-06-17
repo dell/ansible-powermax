@@ -132,7 +132,7 @@
         snapshot_policy_name: "10min_policy_1"
         state: "absent"
 
-    - name: Modify snapshot policy, disassociate from storage groups
+    - name: Modify snapshot policy, disassociate from storage groups after re-name
       dellemc.powermax.snapshotpolicy:
         unispherehost: "{{ unispherehost }}"
         verifycert: "{{ verifycert }}"
@@ -146,7 +146,7 @@
         storage_group_state: "absent-in-policy"
         state: "present"
 
-    - name: Delete a snapshot policy
+    - name: Delete a snapshot policy after re-name
       dellemc.powermax.snapshotpolicy:
         unispherehost: "{{ unispherehost }}"
         verifycert: "{{ verifycert }}"
