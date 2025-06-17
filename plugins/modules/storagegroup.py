@@ -1567,7 +1567,7 @@ class StorageGroup(object):
 
     def validate_host_io_limit_params(self, iops=None, mbps=None):
         """Validate host I/O limits params"""
-        if iops and (iops < 100 or iops > 2000000 or iops % 100 != 0):
+        if iops and iops != 0 and (iops < 100 or iops > 2000000 or iops % 100 != 0):
             errormsg = ('IOPS is not in the allowed value range of 100 - 2000000 '
                         'and must be specified as multiple of 100')
             LOG.error(errormsg)
@@ -1612,6 +1612,8 @@ class StorageGroup(object):
                                                            mbps, iops, dynamic_distribution)
             if modify or 'hostIOLimit' not in storage_group_details:
                 self.validate_host_io_limit_params(iops=iops, mbps=mbps)
+                if iops == 0:
+                    iops = 'nolimit'
                 host_io = self.provisioning.set_host_io_limit_iops_or_mbps(storage_group=sg_name,
                                                                            iops=iops,
                                                                            dynamic_distribution=dynamic_distribution,
