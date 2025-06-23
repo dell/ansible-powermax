@@ -834,6 +834,13 @@ class MetroDR(object):
                     and modify_dict["action"] == "Split":
                 modify_dict["force"] = True
 
+            # 'Synchronized-Suspend' with 'force' flag when
+            # replication_mode is 'Adaptive Copy'
+            if metrodr_env_details["dr_rdf_mode"] == "Adaptive Copy" \
+                    and metrodr_env_details["dr_state"] == "Synchronized" \
+                    and modify_dict["action"] == "Suspend":
+                modify_dict["force"] = True
+
             # 'Suspend-Failover' for 'dr' with 'force' flag when
             # replication_mode is 'Adaptive Copy'
             if metrodr_env_details["dr_rdf_mode"] == "Adaptive Copy" \
