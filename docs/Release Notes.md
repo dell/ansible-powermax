@@ -1,9 +1,9 @@
 
-**Ansible modules for Dell Technologies PowerMax** 
+**Ansible Modules for Dell Technologies PowerMax**
 =========================================
-### Release Notes 3.1.0
+### Release Notes 4.0.0
 
->   © 2022 Dell Inc. or its subsidiaries. All rights reserved. Dell
+>   © 2025 Dell Inc. or its subsidiaries. All rights reserved. Dell
 >   and other trademarks are trademarks of Dell Inc. or its
 >   subsidiaries. Other trademarks may be trademarks of their respective
 >   owners.
@@ -26,7 +26,7 @@ Revision History
 
 | **Date**     | **Document revision** | **Description of changes**                      |
 |------------  |-----------------------|-------------------------------------------------|
-| July 2024 | 01                    | Ansible modules for Dell PowerMax release 3.1.0 |
+| June 2025 | 01                    | Ansible modules for Dell PowerMax release 4.0.0 |
 
 Product Description
 -------------------
@@ -48,7 +48,7 @@ features:
 -   Delete volumes, storage groups, hosts, host groups, port groups,
     masking views, Metro DR environments, snapshot policies, and snapshots of a storage group.
 -   Get details of volumes, storage groups, hosts, host groups, port,
-    port groups, masking views, Metro DR environments, Job, RDF groups, 
+    port groups, masking views, Metro DR environments, Job, RDF groups,
     snapshot policies, storage pools, initiators and snapshots of a storage group.
 
 New Features and Enhancements
@@ -56,12 +56,14 @@ New Features and Enhancements
 
 The Ansible modules for Dell PowerMax release has the following
 changes:
-- Added Unisphere port parameter.
-- Added support for restoration of storage group from a snapshot using Snapshot module.
+- Updates on Secuirty and Unit test coverage
+- Added support to starting lun address when creating a masking view
+- Extended support for protected storage group
+- Bugfixes (Maskng view, SRDF, IOPs)
 
-> **NOTE:** Unisphere Version 9.1 is compatible with PowerMax Python
-> library version 9.1.x.x and similarly Unisphere versions later than 9.1 will
-> only work with Python library versions later than 9.1.x.x.
+> **NOTE:** Unisphere Version 10.2 is compatible with PowerMax Python
+> library version 10.2.x.x and similarly Unisphere versions later than 10.2 will
+> only work with Python library versions later than 10.2.x.x.
 
 Known issues
 ------------

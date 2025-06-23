@@ -98,16 +98,6 @@
         wait_for_completion: true
         state: "present"
 
-    - name: Delete metrodr env
-      dellemc.powermax.metrodr:
-        unispherehost: "{{ unispherehost }}"
-        verifycert: "{{ verifycert }}"
-        user: "{{ user }}"
-        password: "{{ password }}"
-        metro_r1_array_id: "{{ metro_r1_array_id }}"
-        env_name: "{{ env_name }}"
-        state: "absent"
-
     - name: Delete SRDF link from m1 - cleanup
       dellemc.powermax.srdf:
         unispherehost: "{{ unispherehost }}"
