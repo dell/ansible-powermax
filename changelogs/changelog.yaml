@@ -2,186 +2,198 @@ ancestor: null
 releases:
   1.0.0:
     modules:
-      - description: Manage host (initiator group) on PowerMax/VMAX Storage System
-        name: host
-        namespace: ''
-      - description: Manage a host group (cascaded initiator group) on a PowerMax/VMAX
-          storage system
-        name: hostgroup
-        namespace: ''
-      - description: Gathers information about PowerMax or VMAX storage entities
-        name: info
-        namespace: ''
-      - description: Managing masking views on PowerMax/VMAX Storage System
-        name: maskingview
-        namespace: ''
-      - description: Manage ports on PowerMax/VMAX Storage System
-        name: port
-        namespace: ''
-      - description: Manage port groups on PowerMax/VMAX Storage System
-        name: portgroup
-        namespace: ''
-      - description: Manage Snapshots on PowerMax/VMAX Storage System
-        name: snapshot
-        namespace: ''
-      - description: Manage storage groups on PowerMax or VMAX Storage System
-        name: storagegroup
-        namespace: ''
-      - description: Manage volumes on PowerMax Storage System
-        name: volume
-        namespace: ''
+    - description: Manage host (initiator group) on PowerMax/VMAX Storage System
+      name: host
+      namespace: ''
+    - description: Manage a host group (cascaded initiator group) on a PowerMax/VMAX
+        storage system
+      name: hostgroup
+      namespace: ''
+    - description: Gathers information about PowerMax or VMAX storage entities
+      name: info
+      namespace: ''
+    - description: Managing masking views on PowerMax/VMAX Storage System
+      name: maskingview
+      namespace: ''
+    - description: Manage ports on PowerMax/VMAX Storage System
+      name: port
+      namespace: ''
+    - description: Manage port groups on PowerMax/VMAX Storage System
+      name: portgroup
+      namespace: ''
+    - description: Manage Snapshots on PowerMax/VMAX Storage System
+      name: snapshot
+      namespace: ''
+    - description: Manage storage groups on PowerMax or VMAX Storage System
+      name: storagegroup
+      namespace: ''
+    - description: Manage volumes on PowerMax Storage System
+      name: volume
+      namespace: ''
     release_date: '2019-07-17'
   1.1.0:
     changes:
       minor_changes:
-        - Enhanced the gatherfacts module to list RDF Groups.
-        - Enhanced the volume module to support operations such as get, expand, move,
-          rename and delete through WWN.
+      - Enhanced the gatherfacts module to list RDF Groups.
+      - Enhanced the volume module to support operations such as get, expand, move,
+        rename and delete through WWN.
     modules:
-      - description: Gets the detail information about RDF Groups of a PowerMax or VMAX
-          storage system
-        name: rdfgroup
-        namespace: ''
-      - description: Manage SRDF pair on PowerMax/VMAX Storage System
-        name: srdf
-        namespace: ''
+    - description: Gets the detail information about RDF Groups of a PowerMax or VMAX
+        storage system
+      name: rdfgroup
+      namespace: ''
+    - description: Manage SRDF pair on PowerMax/VMAX Storage System
+      name: srdf
+      namespace: ''
     release_date: '2019-12-19'
   1.2.0:
     changes:
       minor_changes:
-        - Enhanced the SRDF module to support CRUD operations for concurrent configuration.
-        - Enhanced the storage group module to add or remove volumes to or from the
-          SRDF protected storage group.
-        - Enhanced the storage group module to add or remove volumes to or from the
-          SRDF protected storage group.
-        - Enhanced the volume module to add new volume to the SRDF protected storage
-          group and expand the volume which is part of the storage group.
+      - Enhanced the SRDF module to support CRUD operations for concurrent configuration.
+      - Enhanced the storage group module to add or remove volumes to or from the
+        SRDF protected storage group.
+      - Enhanced the storage group module to add or remove volumes to or from the
+        SRDF protected storage group.
+      - Enhanced the volume module to add new volume to the SRDF protected storage
+        group and expand the volume which is part of the storage group.
     release_date: '2020-09-29'
   1.3.0:
     changes:
       minor_changes:
-        - Enhanced the gatherfacts module to list alerts.
+      - Enhanced the gatherfacts module to list alerts.
     release_date: '2020-12-11'
   1.4.0:
     changes:
       minor_changes:
-        - Enhanced the gatherfacts module to list metro DR environments.
-        - Enhanced the host group module to set the host flags for the host group by
-          specifying the host_type.
-        - Enhanced the host module to set the host flags for the host explicitly by
-          specifying the host_type.
+      - Enhanced the gatherfacts module to list metro DR environments.
+      - Enhanced the host group module to set the host flags for the host group by
+        specifying the host_type.
+      - Enhanced the host module to set the host flags for the host explicitly by
+        specifying the host_type.
     modules:
-      - description: Gets the detail information about a Job of a PowerMax/VMAX storage
-          system
-        name: job
-        namespace: ''
-      - description: Manage metro DR environment on PowerMax/VMAX Storage System
-        name: metrodr
-        namespace: ''
+    - description: Gets the detail information about a Job of a PowerMax/VMAX storage
+        system
+      name: job
+      namespace: ''
+    - description: Manage metro DR environment on PowerMax/VMAX Storage System
+      name: metrodr
+      namespace: ''
     release_date: '2021-03-15'
   1.5.0:
     changes:
       minor_changes:
-        - Added the Ansible role for automatic volume placement.
-        - Enabled the check mode feature for the host, host group and volume modules.
-        - Enhanced the gatherfacts module to list the snapshot policies.
-        - Enhanced the snapshot module to include the new parameter snapshot_id.
-        - Enhanced the storagegroup module to associate or disassociate the snapshot
-          policy to or from a storage group.
+      - Added the Ansible role for automatic volume placement.
+      - Enabled the check mode feature for the host, host group and volume modules.
+      - Enhanced the gatherfacts module to list the snapshot policies.
+      - Enhanced the snapshot module to include the new parameter snapshot_id.
+      - Enhanced the storagegroup module to associate or disassociate the snapshot
+        policy to or from a storage group.
     modules:
-      - description: Process storage pools on PowerMax/VMAX Storage System
-        name: process_storage_pool_dict
-        namespace: ''
-      - description: Manage snapshot policy on PowerMax/VMAX Storage System
-        name: snapshotpolicy
-        namespace: ''
-      - description: Manage storage pools on PowerMax/VMAX storage system
-        name: storagepool
-        namespace: ''
+    - description: Process storage pools on PowerMax/VMAX Storage System
+      name: process_storage_pool_dict
+      namespace: ''
+    - description: Manage snapshot policy on PowerMax/VMAX Storage System
+      name: snapshotpolicy
+      namespace: ''
+    - description: Manage storage pools on PowerMax/VMAX storage system
+      name: storagepool
+      namespace: ''
     release_date: '2021-06-18'
   1.6.0:
     changes:
       minor_changes:
-        - Added dual licensing.
-        - Enabled the check mode feature for the storage group, port group, snapshot,
-          snapshot policy, masking view, SRDF and metroDR modules.
+      - Added dual licensing.
+      - Enabled the check mode feature for the storage group, port group, snapshot,
+        snapshot policy, masking view, SRDF and metroDR modules.
     release_date: '2021-09-23'
   1.6.1:
     changes:
       minor_changes:
-        - Fixed bugs in snapshot policy and masking view modules.
+      - Fixed bugs in snapshot policy and masking view modules.
     release_date: '2021-12-16'
   1.7.0:
     changes:
       minor_changes:
-        - Added rotating file handler for log files.
-        - Enhanced host module to add or remove initiators to or from host using alias.
-        - Enhanced info module to list the initiators.
-        - Names of previously released modules have been changed from dellemc_powermax_\<module
-          name> to \<module name>.
-        - Renamed gatherfacts module to info module.
+      - Added rotating file handler for log files.
+      - Enhanced host module to add or remove initiators to or from host using alias.
+      - Enhanced info module to list the initiators.
+      - Names of previously released modules have been changed from dellemc_powermax_\<module
+        name> to \<module name>.
+      - Renamed gatherfacts module to info module.
     modules:
-      - description: Manage initiators on PowerMax/VMAX Storage System
-        name: initiator
-        namespace: ''
+    - description: Manage initiators on PowerMax/VMAX Storage System
+      name: initiator
+      namespace: ''
     release_date: '2022-03-25'
   1.8.0:
     changes:
       minor_changes:
-        - Added execution environment manifest file to support building an execution
-          environment with ansible-builder.
-        - Enhanced storage group module to support moving volumes to destination storage
-          group.
-        - Enhanced volume module to support renaming volumes created without a name.
-        - Renamed metro DR module input parameters.
+      - Added execution environment manifest file to support building an execution
+        environment with ansible-builder.
+      - Enhanced storage group module to support moving volumes to destination storage
+        group.
+      - Enhanced volume module to support renaming volumes created without a name.
+      - Renamed metro DR module input parameters.
     release_date: '2022-06-28'
   2.0.0:
     changes:
       major_changes:
-        - Added support for PowerMax Juniper.
+      - Added support for PowerMax 10.0.0.
       minor_changes:
-        - Enhanced RDF group module to get volume pair information for an SRDF group.
-        - Enhanced info module to get masking view connection information.
-        - Enhanced storage group module to support for setting host I/O limits for existing
-          storage groups and added ability to force move devices between storage groups
-          with SRDF protection.
-        - Enhanced verifycert parameter in all modules to support file path for custom
-          certificate location.
-        - Enhanced volume module to support cylinders option to specify size while creating
-          LUN and added ability to create volumes with identifier_name and volume_id.
+      - Enhanced RDF group module to get volume pair information for an SRDF group.
+      - Enhanced info module to get masking view connection information.
+      - Enhanced storage group module to support for setting host I/O limits for existing
+        storage groups and added ability to force move devices between storage groups
+        with SRDF protection.
+      - Enhanced verifycert parameter in all modules to support file path for custom
+        certificate location.
+      - Enhanced volume module to support cylinders option to specify size while creating
+        LUN and added ability to create volumes with identifier_name and volume_id.
     release_date: '2022-09-27'
   2.1.0:
     changes:
       minor_changes:
-        - Added support of case insensitivity of host WWN to the host, and masking view
-          module.
-        - Enhanced info module to get detail of volumes.
-        - Enhanced storage group module to support for making volume name as an optional
-          parameter while adding a new volume to storage group.
+      - Added support of case insensitivity of host WWN to the host, and masking view
+        module.
+      - Enhanced info module to get detail of volumes.
+      - Enhanced storage group module to support for making volume name as an optional
+        parameter while adding a new volume to storage group.
     release_date: '2022-12-20'
   2.1.1:
     changes:
       minor_changes:
-        - Added a note on idempotency for the storage group module.
+      - Added a note on idempotency for the storage group module.
     release_date: '2023-03-31'
   2.2.1:
     changes:
       minor_changes:
-        - Added fix for storagegroup_id keyword in storage group module.
-        - Added support for masking_view_name for listing masking view connections
-          through info module.
+      - Added fix for storagegroup_id keyword in storage group module.
+      - Added support for masking_view_name for listing masking view connections through
+        info module.
     release_date: '2023-10-31'
   3.0.0:
     changes:
       major_changes:
-        - Added support for PowerMax Laurel.
+      - Added support for PowerMax 10.1.0.
       minor_changes:
-        - Added bug fix for SRDF module.
-        - Added support for connection timeout for all modules.
+      - Added bug fix for SRDF module.
+      - Added support for connection timeout for all modules.
     release_date: '2023-11-30'
   3.1.0:
     changes:
       minor_changes:
-        - Added unisphere port parameter.
-        - Added support for restoration of storage group from a snapshot using Snapshot module.
+      - Added support for restoration of storage group from a snapshot using Snapshot
+        module.
+      - Added unisphere port parameter.
     release_date: '2024-07-31'
+  4.0.0:
+    changes:
+      major_changes:
+      - Added support for PowerMax 10.2.0.
+      - Removed deprecated field universion.
+      minor_changes:
+      - Added support to starting lun address when creating a masking view
+      - Bugfixes (Maskng view, SRDF, IOPs)
+      - Extended support for protected storage group
+      - Updates on Secuirty and Unit test coverage
+    release_date: '2025-06-25'

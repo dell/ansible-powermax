@@ -1,8 +1,25 @@
 ==============================
-Dellemc.Powermax Change Logs
+Dellemc.Powermax Release Notes
 ==============================
 
 .. contents:: Topics
+
+v4.0.0
+======
+
+Major Changes
+-------------
+
+- Added support for PowerMax 10.2.0.
+- Removed deprecated field universion.
+
+Minor Changes
+-------------
+
+- Added support to starting lun address when creating a masking view
+- Bugfixes (Maskng view, SRDF, IOPs)
+- Extended support for protected storage group
+- Updates on Secuirty and Unit test coverage
 
 v3.1.0
 ======
@@ -10,8 +27,8 @@ v3.1.0
 Minor Changes
 -------------
 
-- Added Unisphere port parameter.
 - Added support for restoration of storage group from a snapshot using Snapshot module.
+- Added unisphere port parameter.
 
 v3.0.0
 ======
@@ -19,7 +36,7 @@ v3.0.0
 Major Changes
 -------------
 
-- Added support for PowerMax Laurel.
+- Added support for PowerMax 10.1.0.
 
 Minor Changes
 -------------
@@ -60,7 +77,7 @@ v2.0.0
 Major Changes
 -------------
 
-- Added support for PowerMax Juniper.
+- Added support for PowerMax 10.0.0.
 
 Minor Changes
 -------------
