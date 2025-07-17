@@ -8,5 +8,9 @@ dependencies:
     collections:
       - name: dellemc.powermax
         version: x.x.x
-  python:
-    - PyU4V == 10.0.0.* # Some specific version of the PyU4V
+
+# If you want to use a specific PyU4V version other then the latest supported version, please specify below.
+# additional_build_steps:
+#   append_final:
+#     - RUN pip3 uninstall -y PyU4V
+#     - RUN pip3 install PyU4V==10.0.0.16
