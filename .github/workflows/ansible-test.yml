@@ -19,7 +19,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        ansible-version: [stable-2.18]
+        ansible-version: [stable-2.19]
     steps:
       - name: Check out code
         uses: actions/checkout@v4
@@ -27,7 +27,7 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
-          python-version: 3.12
+          python-version: 3.13
 
       - name: Install ansible (${{ matrix.ansible-version }})
         run: pip install https://github.com/ansible/ansible/archive/${{ matrix.ansible-version }}.tar.gz --disable-pip-version-check
@@ -53,25 +53,26 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        python: ['3.10', '3.11', '3.12']
+        python: ['3.11', '3.12', '3.13']
         ansible:
           - stable-2.17
           - stable-2.18
+          - stable-2.19
           - devel
         exclude:
-          - ansible: stable-2.18
-            python: '3.10'
+          - ansible: stable-2.17
+            python: '3.13'
           - ansible: devel
-            python: '3.10'
+            python: '3.11'
 
     steps:
       - name: Perform unit testing with ansible-test
         uses: ansible-community/ansible-test-gh-action@release/v1
         with:
           testing-type: units
-          coverage: ${{ (matrix.python == '3.11' && matrix.ansible == 'stable-2.18') && 'always' ||  'never' }}
+          coverage: ${{ (matrix.python == '3.13' && matrix.ansible == 'stable-2.19') && 'always' ||  'never' }}
           ansible-core-version: ${{ matrix.ansible }}
-          target-python-version: ${{ matrix.python }}
+          origin-python-version: ${{ matrix.python }}
         env:
           CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
 
@@ -87,23 +88,24 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        python: ['3.10', '3.11', '3.12']
+        python: ['3.11', '3.12', '3.13']
         ansible:
           - stable-2.17
           - stable-2.18
+          - stable-2.19
           - devel
         exclude:
-          - ansible: stable-2.18
-            python: '3.10'
+          - ansible: stable-2.17
+            python: '3.13'
           - ansible: devel
-            python: '3.10'
+            python: '3.11'
 
     steps:
       - name: Perform sanity testing
-        uses: ansible-community/ansible-test-gh-action@release/v1
+        uses: ansible-community/ansible-test-gh-action@release/v1.16
         with:
           ansible-core-version: ${{ matrix.ansible }}
-          target-python-version: ${{ matrix.python }}
+          origin-python-version: ${{ matrix.python }}
           testing-type: sanity
           pull-request-change-detection: true
           coverage: never
