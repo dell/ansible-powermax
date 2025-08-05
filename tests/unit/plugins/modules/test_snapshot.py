@@ -8,7 +8,7 @@ from __future__ import (absolute_import, division, print_function)
 __metaclass__ = type
 
 import pytest
-from mock.mock import MagicMock
+from mock.mock import MagicMock, patch
 from ansible_collections.dellemc.powermax.plugins.module_utils.storage.dell \
     import utils
 
@@ -42,6 +42,24 @@ class TestSnapshot(PowerMaxUnitBase):
         snapshot_module_mock.module.check_mode = False
         snapshot_module_mock.u4v_conn = MagicMock()
         return snapshot_module_mock
+
+    @pytest.fixture
+    def module_object(self):
+        return Snapshot
+
+    def test_init_check_failed(self, powermax_module_mock):
+        with patch(
+            "ansible_collections.dellemc.powermax.plugins.modules.host.HAS_PYU4V",
+            False,
+        ):
+            with patch(
+                "ansible_collections.dellemc.powermax.plugins.modules.host.PYU4V_VERSION_CHECK",
+                "mock check err",
+            ):
+                utils.get_U4V_connection = MagicMock(side_effect=MockApiException())
+                powermax_module_mock.show_error_exit = MagicMock()
+                powermax_module_mock.__init__()
+                assert powermax_module_mock.show_error_exit.call_count == 1
 
     def test_create_snapshot_ttl_unit_days(self, snapshot_module_mock):
         self.snapshot_args.update(

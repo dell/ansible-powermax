@@ -601,6 +601,7 @@ class MetroDR(object):
             self.show_error_exit(
                 "SG: %s does not have srdf group" % self.module.params[
                     'sg_name'])
+            return
 
         is_srdf_adp_or_asyn = False
         is_srdf_active = False
