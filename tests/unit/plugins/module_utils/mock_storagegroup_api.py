@@ -1,4 +1,4 @@
-# Copyright: (c) 2022-2024, Dell Technologies
+# Copyright: (c) 2022-2025, Dell Technologies
 
 # GNU General Public License v3.0+ (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
 
@@ -90,3 +90,8 @@ class MockStorageGroupApi:
             "mbps_check_failed": "MBPS is not in the allowed value range",
         }
         return error_msg[response_type]
+
+    @staticmethod
+    def get_exception_response(response_type):
+        if response_type == 'get_storage_group':
+            return "Failed to get storage group details error:"
