@@ -441,6 +441,7 @@ class RDFGroup(object):
             msg = ('Get RDF Volumes List for RDF Group %s failed with error %s' %
                    (rdf_number, str(e)))
             self.show_error_exit(msg=msg)
+            return []
 
     def get_rdf_volume_details(self, rdf_number, vol):
         """
