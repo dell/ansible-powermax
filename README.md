@@ -35,7 +35,7 @@ This table provides information about the software prerequisites for the Ansible
 
 | **Ansible modules** | **Unisphere version** | **PowerMaxOS** | **Python version**            | **Python library version** | **Ansible**              |
 |---------------------|-----------------------|----------------|-------------------------------|----------------------------|--------------------------|
-| v4.0.0 | 10.1 <br> 10.2 | 5978.444.444 <br> 5978.669.669 <br> 5978.711.711 <br> 6079.xxx.xxx | 3.11.x <br> 3.12.x | 10.1.x.x <br> 10.2.x.x | 2.17 <br> 2.18 <br> 2.19 |
+| v4.0.1              | 10.1 <br> 10.2 | 5978.444.444 <br> 5978.669.669 <br> 5978.711.711 <br> 6079.xxx.xxx | 3.11.x <br> 3.12.x | 10.1.x.x <br> 10.2.x.x | 2.17 <br> 2.18 <br> 2.19 |
 
 * Follow PyU4V installation instructions on [PyU4V Documentation](https://pyu4v.readthedocs.io/)
 

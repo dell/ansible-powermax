@@ -3,6 +3,9 @@ Dellemc.Powermax Release Notes
 ==============================
 
 .. contents:: Topics
+v4.0.1
+======
+- Bugfix for Github Issue 82
 
 v4.0.0
 ======
