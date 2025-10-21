@@ -197,3 +197,13 @@ releases:
         - Extended support for protected storage group
         - Updates on Secuirty and Unit test coverage
     release_date: '2025-06-25'
+  4.0.1:
+    changes:
+      bugfixes:
+        - Fix for 'starting_lun_address' parameter in masking_view module. (Issue 82)
+      release_summary: '| Release Date: 2025-10-22
+
+        | This release brings bug fixes to the PowerMax Ansible Modules.
+
+        '
+    release_date: '2025-10-22'

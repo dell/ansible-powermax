@@ -3,9 +3,20 @@ Dellemc.Powermax Release Notes
 ==============================
 
 .. contents:: Topics
+
 v4.0.1
 ======
-- Bugfix for Github Issue 82
+
+Release Summary
+---------------
+
+| Release Date: 2025-10-22
+| This release brings bug fixes to the PowerMax Ansible Modules.
+
+Bug Fixes
+---------
+
+- Fix for 'starting_lun_address' parameter in masking_view module. (Issue 82)
 
 v4.0.0
 ======
