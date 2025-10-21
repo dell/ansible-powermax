@@ -1,7 +1,7 @@
 
 **Ansible Modules for Dell Technologies PowerMax**
 =========================================
-### Release Notes 4.0.0
+### Release Notes 4.0.1
 
 >   © 2025 Dell Inc. or its subsidiaries. All rights reserved. Dell
 >   and other trademarks are trademarks of Dell Inc. or its
@@ -26,6 +26,7 @@ Revision History
 
 | **Date**     | **Document revision** | **Description of changes**                      |
 |------------  |-----------------------|-------------------------------------------------|
+| October 2025 | 02                    | Ansible modules for Dell PowerMax release 4.0.1 |
 | June 2025 | 01                    | Ansible modules for Dell PowerMax release 4.0.0 |
 
 Product Description
@@ -56,10 +57,7 @@ New Features and Enhancements
 
 The Ansible modules for Dell PowerMax release has the following
 changes:
-- Updates on Secuirty and Unit test coverage
-- Added support to starting lun address when creating a masking view
-- Extended support for protected storage group
-- Bugfixes (Maskng view, SRDF, IOPs)
+- Fix for 'starting_lun_address' parameter in Maskng view module.
 
 > **NOTE:** Unisphere Version 10.2 is compatible with PowerMax Python
 > library version 10.2.x.x and similarly Unisphere versions later than 10.2 will

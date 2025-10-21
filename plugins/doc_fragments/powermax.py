@@ -44,8 +44,8 @@ options:
 
 requirements:
   - A Dell PowerMax storage system.
-  - Ansible-core 2.15 or later.
-  - Python 3.10, 3.11 or 3.12.
+  - Ansible-core 2.17 or later.
+  - Python 3.11 or 3.12.
 notes:
   - The modules present in this collection named as 'dellemc.powermax'
     are built to support the Dell PowerMax storage platform.

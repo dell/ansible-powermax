@@ -20,39 +20,42 @@ Depending on which PowerMax Unisphere version is being used, follow this procedu
 
 
 ## Installing collections
-#### Online installation of collections 
-* Use this command to install the latest collection hosted in galaxy:
-
-	      ansible-galaxy collection install dellemc.powermax -p <install_path>
-
-  #### Offline installation of collections
-  1. Download the latest tar build from either of the available distribution channels [Ansible Galaxy](https://galaxy.ansible.com/dellemc/powermax) /[Automation Hub](https://console.redhat.com/ansible/automation-hub/repo/published/dellemc/powermax)
-
-  2. Use this command to install the collection anywhere in your system:
-
-	      ansible-galaxy collection install dellemc-powermax-4.0.0.tar.gz -p <install_path>
-
-  3. Set the environment variable:
-
-	      export ANSIBLE_COLLECTIONS_PATHS=$ANSIBLE_COLLECTIONS_PATHS:<install_path>
+The dellemc.powermax collection can be installed with Ansible Galaxy command-line tool:
+```
+ansible-galaxy collection install dellemc.powermax
+```
+You can also include it in a `requirement.yml` file and install it with `ansible-galaxy collection install -r requirement.yml`, using format:
+```
+---
+collections:
+  - name: dellemc.powermax
+```
+Note that if you install any collections from Ansible Galaxy, they will not be upgraded automatically when you upgrade the Ansible package. To upgrade the collection to the latest available version, run the following command:
+```
+ansible-galaxy collection install dellemc.powermax --upgrade
+```
+Refer the following for more details:
+* [using Ansible collections](https://docs.ansible.com/ansible/latest/user_guide/collections_using.html) for more details.
 
 ## Using Collections
 
   * In order to use any Ansible module, ensure that the importing of a proper Fully Qualified Collection Name(FQCN) must be embedded in the playbook.
    For example:
- 
-        collections:
-        - dellemc.powermax
-
+ ```
+collections:
+  - dellemc.powermax
+```
   * Use a proper FQCN in order to use an installed collection specific to the task. For example:
+```yaml
+tasks:
+  - name: Get filesystem details
+    dellemc.powermax.filesystem
+```
 
-        tasks:
-        - name: Get filesystem details
-          dellemc.powermax.filesystem
-    
   * When generating Ansible documentation for a specific module, embed the FQCN  before the module name. For example:
-        
-        ansible-doc dellemc.powermax.info
+```
+ansible-doc dellemc.powermax.info
+```
 
 
 ## Running Ansible modules
