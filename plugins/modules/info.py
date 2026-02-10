@@ -624,6 +624,7 @@ MVConnections:
 from ansible_collections.dellemc.powermax.plugins.module_utils.storage.dell \
     import utils
 from ansible.module_utils.basic import AnsibleModule
+import PyU4V
 
 LOG = utils.get_logger('info')
 
@@ -637,7 +638,7 @@ APPLICATION_TYPE = 'ansible_v3.0.0'
 class Info(object):
     """Class with Gather Fact operations"""
 
-    u4v_conn = None
+    u4v_conn: PyU4V.U4VConn = None
 
     def __init__(self):
         """Define all the parameters required by this module"""
@@ -679,8 +680,8 @@ class Info(object):
         """ Performs pre-check for PyU4V version"""
         curr_version = utils.PyU4V.__version__
         supp_version = "9.2"
-        is_supported_version = utils.pkg_resources.parse_version(
-            curr_version) >= utils.pkg_resources.parse_version(supp_version)
+        is_supported_version = utils.parse_version(
+            curr_version) >= utils.parse_version(supp_version)
 
         if not is_supported_version:
             msg = "Listing of 'MetroDR Environments' and 'Alerts' are " \

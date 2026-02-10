@@ -472,8 +472,8 @@ class Snapshot(object):
             curr_version = utils.PyU4V.__version__
             array_details = self.common.get_array(self.module.params
                                                   ['serial_no'])
-            if (utils.pkg_resources.parse_version(curr_version)
-                >= utils.pkg_resources.parse_version(supported_sdk_version)) and \
+            if (utils.parse_version(curr_version)
+                >= utils.parse_version(supported_sdk_version)) and \
                     ('ucode' not in array_details or (utils.parse_version(array_details['ucode'])
                                                       >= utils.parse_version(supported_array_version))):
                 return True
