@@ -313,8 +313,11 @@ sg_snap_details:
     returned: When snapshot exists.
     type: complex
     contains:
-        generation/snapid:
-            description: The generation/snapshot ID of the snapshot.
+        generation:
+            description: The generation number of the snapshot.
+            type: int
+        snapid:
+            description: The snapshot ID of the snapshot.
             type: int
         expired:
             description: Indicates whether the snapshot is expired or not.
