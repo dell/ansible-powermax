@@ -624,10 +624,6 @@ MVConnections:
 from ansible_collections.dellemc.powermax.plugins.module_utils.storage.dell \
     import utils
 from ansible.module_utils.basic import AnsibleModule
-try:
-    import PyU4V
-except ImportError:
-    PyU4V = None
 
 LOG = utils.get_logger('info')
 
