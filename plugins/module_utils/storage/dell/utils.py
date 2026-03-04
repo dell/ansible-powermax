@@ -178,7 +178,7 @@ returns connection object to access provisioning and protection sdks
 '''
 
 
-def get_U4V_connection(module_params, application_type=None, metro_dr=False) -> PyU4V.U4VConn:
+def get_U4V_connection(module_params, application_type=None, metro_dr=False):
     if metro_dr:
         array_id = module_params['metro_r1_array_id']
     else:
