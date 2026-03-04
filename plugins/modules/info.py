@@ -626,12 +626,12 @@ from ansible_collections.dellemc.powermax.plugins.module_utils.storage.dell \
 from ansible.module_utils.basic import AnsibleModule
 try:
     import PyU4V
-    HAS_PYU4V = True
 except ImportError:
-    HAS_PYU4V = False
+    PyU4V = None
 
 LOG = utils.get_logger('info')
 
+HAS_PYU4V = utils.has_pyu4v_sdk()
 PYU4V_VERSION_CHECK = utils.pyu4v_version_check()
 
 # Application Type
@@ -681,7 +681,7 @@ class Info(object):
 
     def pre_check_for_PyU4V_version(self):
         """ Performs pre-check for PyU4V version"""
-        curr_version = PyU4V.__version__
+        curr_version = utils.PyU4V.__version__
         supp_version = "9.2"
         is_supported_version = utils.parse_version(
             curr_version) >= utils.parse_version(supp_version)

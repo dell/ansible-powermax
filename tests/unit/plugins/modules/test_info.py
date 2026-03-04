@@ -48,17 +48,17 @@ class TestInfo(PowerMaxUnitBase):
 
     def test_init_check_failed(self, powermax_module_mock):
         with patch(
-            "ansible_collections.dellemc.powermax.plugins.modules.host.HAS_PYU4V",
+            "ansible_collections.dellemc.powermax.plugins.modules.info.HAS_PYU4V",
             False,
         ):
             with patch(
-                "ansible_collections.dellemc.powermax.plugins.modules.host.PYU4V_VERSION_CHECK",
+                "ansible_collections.dellemc.powermax.plugins.modules.info.PYU4V_VERSION_CHECK",
                 "mock check err",
             ):
                 utils.get_U4V_connection = MagicMock(side_effect=MockApiException())
                 powermax_module_mock.show_error_exit = MagicMock()
                 powermax_module_mock.__init__()
-                assert powermax_module_mock.show_error_exit.call_count == 1
+                assert powermax_module_mock.show_error_exit.call_count == 3
 
     def test_get_mv_connections(self, info_module_mock):
         self.get_module_args.update({
