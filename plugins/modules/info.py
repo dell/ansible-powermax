@@ -624,11 +624,14 @@ MVConnections:
 from ansible_collections.dellemc.powermax.plugins.module_utils.storage.dell \
     import utils
 from ansible.module_utils.basic import AnsibleModule
-import PyU4V
+try:
+    import PyU4V
+    HAS_PYU4V = True
+except ImportError:
+    HAS_PYU4V = False
 
 LOG = utils.get_logger('info')
 
-HAS_PYU4V = utils.has_pyu4v_sdk()
 PYU4V_VERSION_CHECK = utils.pyu4v_version_check()
 
 # Application Type
@@ -638,7 +641,7 @@ APPLICATION_TYPE = 'ansible_v3.0.0'
 class Info(object):
     """Class with Gather Fact operations"""
 
-    u4v_conn: PyU4V.U4VConn = None
+    u4v_conn = None
 
     def __init__(self):
         """Define all the parameters required by this module"""
@@ -678,7 +681,7 @@ class Info(object):
 
     def pre_check_for_PyU4V_version(self):
         """ Performs pre-check for PyU4V version"""
-        curr_version = utils.PyU4V.__version__
+        curr_version = PyU4V.__version__
         supp_version = "9.2"
         is_supported_version = utils.parse_version(
             curr_version) >= utils.parse_version(supp_version)
