@@ -20,10 +20,10 @@ try:
 except ImportError:
     HAS_PYU4V = False
 
-'''import pkg_resources'''
+'''import packaging'''
 try:
-    from pkg_resources import parse_version
-    import pkg_resources  # noqa # pylint: disable=unused-import
+    from packaging.version import parse as parse_version
+    import packaging  # noqa # pylint: disable=unused-import
     PKG_RSRC_IMPORTED = True
 except ImportError:
     PKG_RSRC_IMPORTED = False
@@ -48,7 +48,7 @@ def pyu4v_version_check():
     try:
         if not PKG_RSRC_IMPORTED:
             unsupported_version_message = "Unable to import " \
-                                          "'pkg_resources', please install" \
+                                          "'packaging', please install" \
                                           " the required package"
             return unsupported_version_message
         min_ver = '9.2.1.6'

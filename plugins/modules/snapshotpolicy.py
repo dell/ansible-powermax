@@ -358,8 +358,8 @@ class SnapshotPolicy(object):
         """ Performs pre-check for PyU4V version"""
         curr_version = utils.PyU4V.__version__
         supp_version = "9.2.1.3"
-        is_supported_version = utils.pkg_resources.parse_version(
-            curr_version) >= utils.pkg_resources.parse_version(supp_version)
+        is_supported_version = utils.parse_version(
+            curr_version) >= utils.parse_version(supp_version)
 
         if not is_supported_version:
             msg = "This functionality is not supported by PyU4V version " \

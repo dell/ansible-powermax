@@ -18,8 +18,6 @@ utils.has_pyu4v_sdk = MagicMock(return_value=True)
 utils.pyu4v_version_check = MagicMock(return_value=None)
 utils.get_U4V_connection = MagicMock()
 utils.close_connection = MagicMock()
-utils.pkg_resources = MagicMock()
-utils.pkg_resources.parse_version = LooseVersion
 utils.parse_version = LooseVersion
 utils.PyU4V = MagicMock()
 utils.PyU4V.__version__ = "10.1.0.2"
