@@ -19,8 +19,8 @@ metadata:
       title: 'Ansible Galaxy'
       icon: 'web'
     - url: >
-      'https://console.redhat.com/ansible/automation-hub/
-      repo/published/dellemc/powermax'
+        https://console.redhat.com/ansible/automation-hub/repo/published/
+        dellemc/powermax
       title: 'Automation Hub'
       icon: 'web'
     - url: 'https://github.com/dell/ansible-powermax/issues'
