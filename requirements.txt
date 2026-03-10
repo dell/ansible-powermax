@@ -1,5 +1,5 @@
 urllib3>=2.6.0
 # This will set by defaut to 10.2.x or greater
 # but not anything more then the supported version of powermax ansible collection 
-PyU4V >= 10.2.0.3, == 10.2.0.*
+PyU4V >= 10.3.0.0
 packaging
