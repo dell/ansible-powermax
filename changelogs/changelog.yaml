@@ -200,7 +200,8 @@ releases:
   4.0.1:
     changes:
       bugfixes:
-        - Fix for 'starting_lun_address' parameter in masking_view module. (Issue 82)
+        - Fix for 'starting_lun_address' parameter in masking_view module.
+          (Issue 82)
       release_summary: '| Release Date: 2025-10-22
 
         | This release brings bug fixes to the PowerMax Ansible Modules.
