@@ -709,16 +709,12 @@ class Info(object):
                                  'description']
 
             LOG.info('Getting System alerts summary')
+            key_remap = {"object": "_object", "type": "_type"}
             filter_to_apply = {}
             if filters_dict:
                 for key, value in filters_dict.items():
                     if key in supported_filters:
-                        if key == "object":
-                            filter_to_apply.update({"_object": value})
-                        elif key == "type":
-                            filter_to_apply.update({"_type": value})
-                        else:
-                            filter_to_apply.update({key: value})
+                        filter_to_apply[key_remap.get(key, key)] = value
 
             alerts_ids = self.u4v_conn.system.get_alert_ids(**filter_to_apply)
             for alert_id in alerts_ids:
