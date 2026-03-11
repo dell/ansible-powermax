@@ -722,9 +722,13 @@ class Info(object):
 
             alerts_ids = self.u4v_conn.system.get_alert_ids(**filter_to_apply)
             for alert_id in alerts_ids:
-                alerts.append(
-                    self.u4v_conn.system.get_alert_details(
-                        alert_id=alert_id))
+                try:
+                    alerts.append(
+                        self.u4v_conn.system.get_alert_details(
+                            alert_id=alert_id))
+                except Exception as e:
+                    LOG.warning('Failed to get details for alert %s: %s',
+                                alert_id, str(e))
             LOG.info('Successfully listed %d alerts', len(alerts))
             return alerts
         except Exception as e:
@@ -739,9 +743,9 @@ class Info(object):
         for item in filters:
             if 'filter_key' in item and 'filter_operator' in item\
                     and 'filter_value' in item:
-                if item["filter_key"] is None \
-                        or item["filter_operator"] is None \
-                        or item["filter_value"] is None:
+                if not item["filter_key"] \
+                        or not item["filter_operator"] \
+                        or not item["filter_value"]:
                     error_msg = "Provide input for filter sub-options."
                     self.show_error_exit(msg=error_msg)
                 else:
