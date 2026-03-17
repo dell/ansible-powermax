@@ -58,11 +58,11 @@ New Features and Enhancements
 
 The Ansible modules for Dell PowerMax release has the following
 changes:
-- Added support for PowerMax 10.4.0.
+- Added support for PowerMax 10.3.0 and 10.4.0.
 
-> **NOTE:** Unisphere Version 10.4 is compatible with PowerMax Python
-> library version 10.4.x.x and similarly Unisphere versions later than 10.4 will
-> only work with Python library versions later than 10.4.x.x.
+> **NOTE:** Unisphere Version 10.2 is compatible with PowerMax Python
+> library version 10.2.x.x and similarly Unisphere versions later than 10.2 will
+> only work with Python library versions later than 10.2.x.x.
 
 Known issues
 ------------
