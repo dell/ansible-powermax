@@ -208,3 +208,13 @@ releases:
 
         '
     release_date: '2025-10-22'
+  4.0.2:
+    changes:
+      major_changes:
+        - Added support for PowerMax 10.4.0.
+      release_summary: '| Release Date: 2026-03-17
+
+        | This release adds support for PowerMax 10.4.0.
+
+        '
+    release_date: '2026-03-17'

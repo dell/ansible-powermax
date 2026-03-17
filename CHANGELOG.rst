@@ -4,6 +4,20 @@ Dellemc.Powermax Release Notes
 
 .. contents:: Topics
 
+v4.0.2
+======
+
+Release Summary
+---------------
+
+| Release Date: 2026-03-17
+| This release adds support for PowerMax 10.4.0.
+
+Major Changes
+-------------
+
+- Added support for PowerMax 10.4.0.
+
 v4.0.1
 ======
 

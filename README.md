@@ -8,28 +8,6 @@
 [![GitHub release (latest by date including pre-releases)](https://img.shields.io/github/v/release/dell/ansible-powermax?include_prereleases&label=latest&style=flat-square)](https://github.com/dell/ansible-powermax/releases)
 [![codecov](https://codecov.io/gh/dell/ansible-powermax/branch/main/graph/badge.svg)](https://app.codecov.io/gh/dell/ansible-powermax)
 
----
-## Warning
-
-Starting with setuptools 82.0.0+ and/or environments using Python 3.12+, users may encounter:
-
-**ModuleNotFoundError: No module named 'pkg_resources'**
-
-This can cause tasks in the affected Ansible Collections to fail at runtime. The root cause is the deprecation/removal of `pkg_resources` usage in conjunction with changes in Python packaging tooling.
-
-We are implementing a permanent fix to remove dependencies on `pkg_resources` and adopt modern Python alternatives. Until then, please follow the guidance below.
-
-Users are requested to pin setuptools to a version lower than 82.0.0 on the Ansible control machine's Python environment:
-
-```bash
-### If you use virtualenv/venv, activate it first
-python3 -m pip install --upgrade "setuptools<82.0.0"
-```
-
-Add this guidance to your environment bootstrap scripts or CI pipelines to ensure consistent behavior until the permanent fix is released.
-
-> **Note:** If your environment mandates Python 3.12+, ensure you apply the pin in the relevant virtual environment(s) used by Ansible.
----
 The Ansible modules for Dell Technologies (Dell) PowerMax allow data center and IT administrators to use RedHat Ansible to automate and orchestrate the configuration and management of Dell PowerMax arrays.
 
 The capabilities of Ansible modules are managing volumes, storage groups, ports, port groups, hosts, host groups, masking views, initiators, snapshots, SRDF links, RDF groups, Metro DR environments, jobs, snapshot policies, storage pools and gathering high-level facts about the arrays. The options available for each capability are list, show, create, delete, and modify. These tasks are performed by running simple playbooks written in YAML syntax. The modules are written so that all the operations are idempotent, therefore making multiple identical requests has the same effect as making a single request.
@@ -57,7 +35,7 @@ This table provides information about the software prerequisites for the Ansible
 
 | **Ansible modules** | **Unisphere version** | **PowerMaxOS** | **Python version**            | **Python library version** | **Ansible**              |
 |---------------------|-----------------------|----------------|-------------------------------|----------------------------|--------------------------|
-| v4.0.1              | 10.1 <br> 10.2 | 5978.444.444 <br> 5978.669.669 <br> 5978.711.711 <br> 6079.xxx.xxx | 3.11.x <br> 3.12.x | 10.1.x.x <br> 10.2.x.x | 2.17 <br> 2.18 <br> 2.19 |
+| v4.0.2              | 10.2 <br> 10.3 <br> 10.4 | 5978.444.444 <br> 5978.669.669 <br> 5978.711.711 <br> 6079.xxx.xxx | 3.13.x <br> 3.14.x | 10.1.x.x <br> 10.2.x.x <br> 10.4.x.x | 2.18 <br> 2.19 <br> 2.20 |
 
 * Follow PyU4V installation instructions on [PyU4V Documentation](https://pyu4v.readthedocs.io/)
 
