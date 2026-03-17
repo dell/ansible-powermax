@@ -10,7 +10,7 @@ v4.0.2
 Release Summary
 ---------------
 
-| Release Date: 2025-10-22
+| Release Date: 2026-03-17
 | This release adds support for PowerMax 10.4.0.
 
 Major Changes
