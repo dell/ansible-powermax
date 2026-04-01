@@ -51,9 +51,6 @@ The following tests are done on ansible-powermax collection
 * Unit tests.
 * Integration tests.
 
-## Support
-Refer [Support](https://github.com/dell/ansible-powermax/blob/main/docs/SUPPORT.md) documenetation for more information on the support from Dell Technologies.
-
 ## Release, Maintenance and Deprecation
 Ansible Modules for Dell Technologies PowerStore follows [Semantic Versioning](https://semver.org/).
 
