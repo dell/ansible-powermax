@@ -90,5 +90,14 @@ The modules are written in such a way that all requests are idempotent and hence
   * [Initiator module](https://github.com/dell/ansible-powermax/blob/main/docs/modules/initiator.rst)
   * [Intelligent Volume Placement](https://github.com/dell/ansible-powermax/blob/main/docs/modules/capacity_role.rst)
 
+
+## Support
+
+As Red Hat Ansible Certified Content, this collection is entitled to support through the Ansible Automation Platform (AAP) using the **Create issue** button on the top right corner. If a support case cannot be opened with Red Hat and the collection has been obtained either from Galaxy or GitHub, there may community help available on the [Ansible Forum](https://forum.ansible.com/).
+
+Alternatively, the support is available through [GitHub Issues](https://github.com/dell/ansible-powermax/issues) or at [Dell Community forum](https://www.dell.com/community/Automation/bd-p/Automation).
+
+
 ## License
+
 Ansible collection for PowerMax is released and licensed under the GPL-3.0 license. See [LICENSE](https://github.com/dell/ansible-powermax/blob/main/LICENSE) for the full terms. Ansible modules and modules utilities that are part of the Ansible collection for PowerMax are released and licensed under the GPL-3.0 license. See [LICENSE](https://github.com/dell/ansible-powermax/blob/main/LICENSE) for the full terms.
