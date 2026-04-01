@@ -21,7 +21,7 @@ The capabilities of Ansible modules are managing volumes, storage groups, ports,
 * [Branching strategy](https://github.com/dell/ansible-powermax/blob/main/docs/BRANCHING.md)
 * [List of adopters](https://github.com/dell/ansible-powermax/blob/main/docs/ADOPTERS.md)
 * [Maintainers](https://github.com/dell/ansible-powermax/blob/main/docs/MAINTAINERS.md)
-* [Support](https://github.com/dell/ansible-powermax/blob/main/docs/SUPPORT.md)
+* [Support](#Support)
 * [Security](https://github.com/dell/ansible-powermax/blob/main/docs/SECURITY.md)
 * [License](#license)
 * [Supported platforms](#supported-platforms)
