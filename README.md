@@ -21,7 +21,7 @@ The capabilities of Ansible modules are managing volumes, storage groups, ports,
 * [Branching strategy](https://github.com/dell/ansible-powermax/blob/main/docs/BRANCHING.md)
 * [List of adopters](https://github.com/dell/ansible-powermax/blob/main/docs/ADOPTERS.md)
 * [Maintainers](https://github.com/dell/ansible-powermax/blob/main/docs/MAINTAINERS.md)
-* [Support](https://github.com/dell/ansible-powermax/blob/main/docs/SUPPORT.md)
+* [Support](#Support)
 * [Security](https://github.com/dell/ansible-powermax/blob/main/docs/SECURITY.md)
 * [License](#license)
 * [Supported platforms](#supported-platforms)
@@ -50,9 +50,6 @@ The following tests are done on ansible-powermax collection
 
 * Unit tests.
 * Integration tests.
-
-## Support
-Refer [Support](https://github.com/dell/ansible-powermax/blob/main/docs/SUPPORT.md) documenetation for more information on the support from Dell Technologies.
 
 ## Release, Maintenance and Deprecation
 Ansible Modules for Dell Technologies PowerStore follows [Semantic Versioning](https://semver.org/).
@@ -90,5 +87,14 @@ The modules are written in such a way that all requests are idempotent and hence
   * [Initiator module](https://github.com/dell/ansible-powermax/blob/main/docs/modules/initiator.rst)
   * [Intelligent Volume Placement](https://github.com/dell/ansible-powermax/blob/main/docs/modules/capacity_role.rst)
 
+
+## Support
+
+The support is available through [GitHub Issues](https://github.com/dell/ansible-powermax/issues) or at [Dell Community forum](https://www.dell.com/community/Automation/bd-p/Automation).
+
+As Red Hat Ansible Certified Content, this collection is entitled to support through the Ansible Automation Platform (AAP) using the **Create issue** button on the top right corner. If a support case cannot be opened with Red Hat, and the collection was obtained from Ansible Galaxy or GitHub, you can seek community support through the [Ansible Forum](https://forum.ansible.com/).
+
+
 ## License
+
 Ansible collection for PowerMax is released and licensed under the GPL-3.0 license. See [LICENSE](https://github.com/dell/ansible-powermax/blob/main/LICENSE) for the full terms. Ansible modules and modules utilities that are part of the Ansible collection for PowerMax are released and licensed under the GPL-3.0 license. See [LICENSE](https://github.com/dell/ansible-powermax/blob/main/LICENSE) for the full terms.
