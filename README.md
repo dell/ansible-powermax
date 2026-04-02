@@ -90,9 +90,9 @@ The modules are written in such a way that all requests are idempotent and hence
 
 ## Support
 
-As Red Hat Ansible Certified Content, this collection is entitled to support through the Ansible Automation Platform (AAP) using the **Create issue** button on the top right corner. If a support case cannot be opened with Red Hat and the collection has been obtained either from Galaxy or GitHub, there may community help available on the [Ansible Forum](https://forum.ansible.com/).
+The support is available through [GitHub Issues](https://github.com/dell/ansible-powermax/issues) or at [Dell Community forum](https://www.dell.com/community/Automation/bd-p/Automation).
 
-Alternatively, the support is available through [GitHub Issues](https://github.com/dell/ansible-powermax/issues) or at [Dell Community forum](https://www.dell.com/community/Automation/bd-p/Automation).
+As Red Hat Ansible Certified Content, this collection is entitled to support through the Ansible Automation Platform (AAP) using the **Create issue** button on the top right corner. If a support case cannot be opened with Red Hat, and the collection was obtained from Ansible Galaxy or GitHub, you can seek community support through the [Ansible Forum](https://forum.ansible.com/).
 
 
 ## License
