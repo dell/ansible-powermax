@@ -13,7 +13,7 @@ Release Summary
 | Release Date: 2026-03-17
 | This release adds support for PowerMax 10.4.0.
 
-Major Changes
+Minor Changes
 -------------
 
 - Added support for PowerMax 10.4.0.

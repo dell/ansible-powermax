@@ -210,7 +210,7 @@ releases:
     release_date: '2025-10-22'
   4.0.2:
     changes:
-      major_changes:
+      minor_changes:
         - Added support for PowerMax 10.4.0.
       release_summary: '| Release Date: 2026-03-17
 
