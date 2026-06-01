@@ -28,7 +28,8 @@ class MockSnapshotApi:
         "new_snapshot_name": None,
         "target_sg_name": None,
         "link_status": None,
-        "restore": None
+        "restore": None,
+        "force": None
     }
 
     SNAPSHOT_DETAILS_1 = {
