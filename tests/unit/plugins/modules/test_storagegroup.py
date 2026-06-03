@@ -1831,3 +1831,210 @@ class TestStorageGroup(PowerMaxUnitBase):
         msg = "Error message"
         utils.close_connection = MagicMock(side_effect=MockApiException)
         self.capture_fail_json_method(msg, powermax_module_mock, "show_error_exit", msg)
+
+    # --- SRDF SG Naming Enhancement Tests ---
+
+    def test_add_volume_with_rdf_target_sg_name(self, powermax_module_mock):
+        """U-007: add_volume_storage_group uses explicit R2 name"""
+        sg_name = "test_sg"
+        srdf_protected_sg = dict(MockStorageGroupApi.STORAGEGROUP_RESPONSE_DETAILS)
+        srdf_protected_sg["unprotected"] = False
+        powermax_module_mock.module.params = dict(self.storage_group_args)
+        powermax_module_mock.module.params.update({
+            "serial_no": "000197600156",
+            "rdf_target_sg_name": "DR_test_sg",
+            "rdf_auto_resolve_target": False,
+            "volumes": [{"vol_name": "test_vol", "size": 1, "cap_unit": "GB"}],
+            "vol_state": "present-in-group",
+        })
+        powermax_module_mock.module.check_mode = False
+        powermax_module_mock.provisioning.get_storage_group = MagicMock(
+            return_value=srdf_protected_sg
+        )
+        powermax_module_mock.replication.get_storage_group_srdf_group_list = MagicMock(
+            return_value=[1]
+        )
+        powermax_module_mock.replication.get_rdf_group = MagicMock(
+            return_value={"remoteSymmetrix": "000297900330"}
+        )
+        powermax_module_mock.provisioning.get_volume_list = MagicMock(return_value=[])
+        powermax_module_mock.provisioning.add_new_volume_to_storage_group = MagicMock()
+        powermax_module_mock.common.get_array = MagicMock(
+            return_value={"ucode": "6079.999.999"}
+        )
+        powermax_module_mock.get_volumes_details_storagegroup = MagicMock(return_value=[])
+        changed, _ = powermax_module_mock.add_volume_storage_group(sg_name)
+        assert changed is True
+        call_kwargs = powermax_module_mock.provisioning.add_new_volume_to_storage_group.call_args
+        assert call_kwargs[1]["remote_array_1_sgs"] == "DR_test_sg"
+
+    def test_add_volume_with_auto_resolve(self, powermax_module_mock):
+        """U-008: add_volume_storage_group auto-resolves R2 name"""
+        sg_name = "test_sg"
+        srdf_protected_sg = dict(MockStorageGroupApi.STORAGEGROUP_RESPONSE_DETAILS)
+        srdf_protected_sg["unprotected"] = False
+        powermax_module_mock.module.params = dict(self.storage_group_args)
+        powermax_module_mock.module.params.update({
+            "serial_no": "000197600156",
+            "rdf_target_sg_name": None,
+            "rdf_auto_resolve_target": True,
+            "volumes": [{"vol_name": "test_vol", "size": 1, "cap_unit": "GB"}],
+            "vol_state": "present-in-group",
+        })
+        powermax_module_mock.module.check_mode = False
+        powermax_module_mock.provisioning.get_storage_group = MagicMock(
+            return_value=srdf_protected_sg
+        )
+        powermax_module_mock.replication.get_storage_group_srdf_group_list = MagicMock(
+            return_value=[1]
+        )
+        powermax_module_mock.replication.get_rdf_group = MagicMock(
+            return_value={"remoteSymmetrix": "000297900330"}
+        )
+        powermax_module_mock.replication.get_storage_group_replication_details = MagicMock(
+            return_value={
+                "remote_storage_groups": [
+                    {"rdfGroupNumber": 1, "remoteStorageGroupName": "DR_test_sg"}
+                ]
+            }
+        )
+        powermax_module_mock.provisioning.get_volume_list = MagicMock(return_value=[])
+        powermax_module_mock.provisioning.add_new_volume_to_storage_group = MagicMock()
+        powermax_module_mock.common.get_array = MagicMock(
+            return_value={"ucode": "6079.999.999"}
+        )
+        powermax_module_mock.get_volumes_details_storagegroup = MagicMock(return_value=[])
+        changed, _ = powermax_module_mock.add_volume_storage_group(sg_name)
+        assert changed is True
+        call_kwargs = powermax_module_mock.provisioning.add_new_volume_to_storage_group.call_args
+        assert call_kwargs[1]["remote_array_1_sgs"] == "DR_test_sg"
+
+    def test_add_volume_backward_compat(self, powermax_module_mock):
+        """U-009: add_volume_storage_group uses sg_name when no new params"""
+        sg_name = "test_sg"
+        srdf_protected_sg = dict(MockStorageGroupApi.STORAGEGROUP_RESPONSE_DETAILS)
+        srdf_protected_sg["unprotected"] = False
+        powermax_module_mock.module.params = dict(self.storage_group_args)
+        powermax_module_mock.module.params.update({
+            "serial_no": "000197600156",
+            "volumes": [{"vol_name": "test_vol", "size": 1, "cap_unit": "GB"}],
+            "vol_state": "present-in-group",
+        })
+        powermax_module_mock.module.check_mode = False
+        powermax_module_mock.provisioning.get_storage_group = MagicMock(
+            return_value=srdf_protected_sg
+        )
+        powermax_module_mock.replication.get_storage_group_srdf_group_list = MagicMock(
+            return_value=[1]
+        )
+        powermax_module_mock.replication.get_rdf_group = MagicMock(
+            return_value={"remoteSymmetrix": "000297900330"}
+        )
+        powermax_module_mock.provisioning.get_volume_list = MagicMock(return_value=[])
+        powermax_module_mock.provisioning.add_new_volume_to_storage_group = MagicMock()
+        powermax_module_mock.common.get_array = MagicMock(
+            return_value={"ucode": "6079.999.999"}
+        )
+        powermax_module_mock.get_volumes_details_storagegroup = MagicMock(return_value=[])
+        changed, _ = powermax_module_mock.add_volume_storage_group(sg_name)
+        assert changed is True
+        call_kwargs = powermax_module_mock.provisioning.add_new_volume_to_storage_group.call_args
+        assert call_kwargs[1]["remote_array_1_sgs"] == sg_name
+
+    def test_add_existing_vol_with_rdf_target(self, powermax_module_mock):
+        """U-010: add_existing_volumes_to_sg uses explicit R2 name"""
+        sg_name = "test_sg"
+        powermax_module_mock.module.params = dict(self.storage_group_args)
+        powermax_module_mock.module.params.update({
+            "serial_no": "000197600156",
+            "rdf_target_sg_name": "DR_test_sg",
+            "rdf_auto_resolve_target": False,
+            "volumes": [{"vol_id": "00001"}],
+            "vol_state": "present-in-group",
+        })
+        powermax_module_mock.module.check_mode = False
+        powermax_module_mock.provisioning.get_volumes_from_storage_group = MagicMock(
+            return_value=[]
+        )
+        powermax_module_mock.provisioning.get_volume = MagicMock(
+            return_value={"volume_identifier": "vol_1", "cap_gb": 1}
+        )
+        powermax_module_mock.replication.get_storage_group_srdf_group_list = MagicMock(
+            return_value=[1]
+        )
+        powermax_module_mock.replication.get_rdf_group = MagicMock(
+            return_value={"remoteSymmetrix": "000297900330"}
+        )
+        powermax_module_mock.provisioning.add_existing_volume_to_storage_group = MagicMock()
+        changed, _ = powermax_module_mock.add_existing_volumes_to_sg(
+            [{"vol_id": "00001"}], sg_name
+        )
+        assert changed is True
+        call_kwargs = powermax_module_mock.provisioning.add_existing_volume_to_storage_group.call_args
+        assert call_kwargs[1]["remote_array_1_sgs"] == ["DR_test_sg"]
+
+    def test_remove_vol_with_rdf_target(self, powermax_module_mock):
+        """U-011: remove_volumes_from_sg uses explicit R2 name"""
+        sg_name = "test_sg"
+        srdf_protected_sg = dict(MockStorageGroupApi.STORAGEGROUP_RESPONSE_DETAILS)
+        srdf_protected_sg["unprotected"] = False
+        powermax_module_mock.module.params = dict(self.storage_group_args)
+        powermax_module_mock.module.params.update({
+            "serial_no": "000197600156",
+            "rdf_target_sg_name": "DR_test_sg",
+            "rdf_auto_resolve_target": False,
+        })
+        powermax_module_mock.module.check_mode = False
+        powermax_module_mock.provisioning.get_volumes_from_storage_group = MagicMock(
+            return_value=["00001"]
+        )
+        powermax_module_mock.provisioning.get_storage_group = MagicMock(
+            return_value=srdf_protected_sg
+        )
+        powermax_module_mock.replication.get_storage_group_srdf_group_list = MagicMock(
+            return_value=[1]
+        )
+        powermax_module_mock.replication.get_rdf_group = MagicMock(
+            return_value={"remoteSymmetrix": "000297900330"}
+        )
+        powermax_module_mock.provisioning.remove_volume_from_storage_group = MagicMock()
+        powermax_module_mock.get_volumes_details_storagegroup = MagicMock(return_value=[])
+        changed, _ = powermax_module_mock.remove_volumes_from_sg(
+            [{"vol_id": "00001"}], sg_name
+        )
+        assert changed is True
+        call_kwargs = powermax_module_mock.provisioning.remove_volume_from_storage_group.call_args
+        assert call_kwargs[1]["remote_array_1_sgs"] == "DR_test_sg"
+
+    def test_add_volume_check_mode_with_rdf_target(self, powermax_module_mock):
+        """U-023: Check mode with rdf_target_sg_name makes no API calls"""
+        sg_name = "test_sg"
+        srdf_protected_sg = dict(MockStorageGroupApi.STORAGEGROUP_RESPONSE_DETAILS)
+        srdf_protected_sg["unprotected"] = False
+        powermax_module_mock.module.params = dict(self.storage_group_args)
+        powermax_module_mock.module.params.update({
+            "serial_no": "000197600156",
+            "rdf_target_sg_name": "DR_test_sg",
+            "rdf_auto_resolve_target": False,
+            "volumes": [{"vol_name": "test_vol", "size": 1, "cap_unit": "GB"}],
+            "vol_state": "present-in-group",
+        })
+        powermax_module_mock.module.check_mode = True
+        powermax_module_mock.provisioning.get_storage_group = MagicMock(
+            return_value=srdf_protected_sg
+        )
+        powermax_module_mock.replication.get_storage_group_srdf_group_list = MagicMock(
+            return_value=[1]
+        )
+        powermax_module_mock.replication.get_rdf_group = MagicMock(
+            return_value={"remoteSymmetrix": "000297900330"}
+        )
+        powermax_module_mock.provisioning.get_volume_list = MagicMock(return_value=[])
+        powermax_module_mock.provisioning.add_new_volume_to_storage_group = MagicMock()
+        powermax_module_mock.common.get_array = MagicMock(
+            return_value={"ucode": "6079.999.999"}
+        )
+        powermax_module_mock.get_volumes_details_storagegroup = MagicMock(return_value=[])
+        changed, _ = powermax_module_mock.add_volume_storage_group(sg_name)
+        assert changed is True
+        powermax_module_mock.provisioning.add_new_volume_to_storage_group.assert_not_called()
