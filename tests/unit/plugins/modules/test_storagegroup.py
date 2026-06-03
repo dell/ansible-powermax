@@ -1863,8 +1863,9 @@ class TestStorageGroup(PowerMaxUnitBase):
             return_value={"ucode": "6079.999.999"}
         )
         powermax_module_mock.get_volumes_details_storagegroup = MagicMock(return_value=[])
-        changed, _ = powermax_module_mock.add_volume_storage_group(sg_name)
+        changed, volume_details = powermax_module_mock.add_volume_storage_group(sg_name)
         assert changed is True
+        assert volume_details == []
         call_kwargs = powermax_module_mock.provisioning.add_new_volume_to_storage_group.call_args
         assert call_kwargs[1]["remote_array_1_sgs"] == "DR_test_sg"
 
@@ -1904,8 +1905,9 @@ class TestStorageGroup(PowerMaxUnitBase):
             return_value={"ucode": "6079.999.999"}
         )
         powermax_module_mock.get_volumes_details_storagegroup = MagicMock(return_value=[])
-        changed, _ = powermax_module_mock.add_volume_storage_group(sg_name)
+        changed, volume_details = powermax_module_mock.add_volume_storage_group(sg_name)
         assert changed is True
+        assert volume_details == []
         call_kwargs = powermax_module_mock.provisioning.add_new_volume_to_storage_group.call_args
         assert call_kwargs[1]["remote_array_1_sgs"] == "DR_test_sg"
 
@@ -1936,8 +1938,9 @@ class TestStorageGroup(PowerMaxUnitBase):
             return_value={"ucode": "6079.999.999"}
         )
         powermax_module_mock.get_volumes_details_storagegroup = MagicMock(return_value=[])
-        changed, _ = powermax_module_mock.add_volume_storage_group(sg_name)
+        changed, volume_details = powermax_module_mock.add_volume_storage_group(sg_name)
         assert changed is True
+        assert volume_details == []
         call_kwargs = powermax_module_mock.provisioning.add_new_volume_to_storage_group.call_args
         assert call_kwargs[1]["remote_array_1_sgs"] == sg_name
 
@@ -1966,10 +1969,11 @@ class TestStorageGroup(PowerMaxUnitBase):
             return_value={"remoteSymmetrix": "000297900330"}
         )
         powermax_module_mock.provisioning.add_existing_volume_to_storage_group = MagicMock()
-        changed, _ = powermax_module_mock.add_existing_volumes_to_sg(
+        changed, volume_details = powermax_module_mock.add_existing_volumes_to_sg(
             [{"vol_id": "00001"}], sg_name
         )
         assert changed is True
+        assert volume_details is not None
         call_kwargs = powermax_module_mock.provisioning.add_existing_volume_to_storage_group.call_args
         assert call_kwargs[1]["remote_array_1_sgs"] == ["DR_test_sg"]
 
@@ -1999,10 +2003,11 @@ class TestStorageGroup(PowerMaxUnitBase):
         )
         powermax_module_mock.provisioning.remove_volume_from_storage_group = MagicMock()
         powermax_module_mock.get_volumes_details_storagegroup = MagicMock(return_value=[])
-        changed, _ = powermax_module_mock.remove_volumes_from_sg(
+        changed, volume_details = powermax_module_mock.remove_volumes_from_sg(
             [{"vol_id": "00001"}], sg_name
         )
         assert changed is True
+        assert volume_details == []
         call_kwargs = powermax_module_mock.provisioning.remove_volume_from_storage_group.call_args
         assert call_kwargs[1]["remote_array_1_sgs"] == "DR_test_sg"
 
@@ -2035,6 +2040,7 @@ class TestStorageGroup(PowerMaxUnitBase):
             return_value={"ucode": "6079.999.999"}
         )
         powermax_module_mock.get_volumes_details_storagegroup = MagicMock(return_value=[])
-        changed, _ = powermax_module_mock.add_volume_storage_group(sg_name)
+        changed, volume_details = powermax_module_mock.add_volume_storage_group(sg_name)
         assert changed is True
+        assert volume_details == []
         powermax_module_mock.provisioning.add_new_volume_to_storage_group.assert_not_called()
