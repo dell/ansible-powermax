@@ -31,7 +31,7 @@ Requirements
 The below requirements are needed on the host that executes this module.
 
 - A Dell PowerMax storage system.
-- Ansible-core 2.17 or later.
+- Ansible\-core 2.17 or later.
 - Python 3.11 or 3.12.
 
 
@@ -52,9 +52,9 @@ Parameters
 
     If the TTL is not specified, the storage group snap details are returned.
 
-    However, to create a SG snap - TTL must be given.
+    However, to create a SG snap \- TTL must be given.
 
-    If the SG snap should not have any TTL - specify TTL as :literal:`None`.
+    If the SG snap should not have any TTL \- specify TTL as :literal:`None`.
 
 
   ttl_unit (optional, str, days)
@@ -99,13 +99,22 @@ Parameters
     Whether to restore a storage group to its snapshot.
 
 
+  force (optional, bool, False)
+    Whether to force delete the snapshot.
+
+    Force deletion is required when the snapshot has a different number of source volumes than the current storage group configuration.
+
+    This can occur when LUNs are added to a storage group after a snapshot is taken.
+
+    The :emphasis:`force` option is only supported with :emphasis:`snapshot\_id`\ , not with :emphasis:`generation`.
+
+
   state (True, str, None)
     Define whether the snapshot should exist or not.
 
 
   unispherehost (True, str, None)
     IP or FQDN of the Unisphere host
-
 
 
   verifycert (True, str, None)
@@ -131,7 +140,7 @@ Parameters
 
 
   serial_no (True, str, None)
-    The serial number of the PowerMax/VMAX array. It is a required parameter for all array-specific operations except for getting a list of arrays in the Gatherfacts module.
+    The serial number of the PowerMax/VMAX array. It is a required parameter for all array\-specific operations except for getting a list of arrays in the Gatherfacts module.
 
 
 
@@ -144,6 +153,7 @@ Notes
    - Paramters :emphasis:`generation` and :emphasis:`snapshot\_id` are mutually exclusive.
    - If :emphasis:`generation` or :emphasis:`snapshot\_id` is not provided then a list of generation against snapshot\_id is returned.
    - Use of :emphasis:`snapshot\_id` over :emphasis:`generation` is preferably recommended for PowerMax microcode version 5978.669.669 and onwards.
+   - The :emphasis:`force` option requires :emphasis:`snapshot\_id` and is not supported with :emphasis:`generation`.
    - The :emphasis:`check\_mode` is supported.
    - The modules present in this collection named as 'dellemc.powermax' are built to support the Dell PowerMax storage platform.
 
@@ -336,6 +346,19 @@ Examples
         snapshot_id: 135023964929
         state: "absent"
 
+    - name: Force delete a Storage Group Snapshot with disparate LUN config
+      dellemc.powermax.snapshot:
+        unispherehost: "{{unispherehost}}"
+        verifycert: "{{verifycert}}"
+        user: "{{user}}"
+        password: "{{password}}"
+        serial_no: "{{serial_no}}"
+        sg_name: "ansible_sg"
+        snapshot_name: "ansible_sg_snap"
+        snapshot_id: 135023964929
+        force: true
+        state: "absent"
+
 
 
 Return Values
@@ -365,8 +388,12 @@ sg_snap_details (When snapshot exists., complex, {'change_snap_link_status': '',
   Details of the snapshot.
 
 
-  generation/snapid (, int, )
-    The generation/snapshot ID of the snapshot.
+  generation (, int, )
+    The generation number of the snapshot.
+
+
+  snapid (, int, )
+    The snapshot ID of the snapshot.
 
 
   expired (, bool, )
@@ -386,7 +413,7 @@ sg_snap_details (When snapshot exists., complex, {'change_snap_link_status': '',
 
 
   non_shared_tracks (, int, )
-    Number of non-shared tracks.
+    Number of non\-shared tracks.
 
 
   num_source_volumes (, int, )

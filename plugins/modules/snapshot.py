@@ -85,6 +85,18 @@ options:
     - Whether to restore a storage group to its snapshot.
     type: bool
     version_added: '3.1.0'
+  force:
+    description:
+    - Whether to force delete the snapshot.
+    - Force deletion is required when the snapshot has a different number of
+      source volumes than the current storage group configuration.
+    - This can occur when LUNs are added to a storage group after a snapshot
+      is taken.
+    - The I(force) option is only supported with I(snapshot_id), not with
+      I(generation).
+    type: bool
+    default: false
+    version_added: '3.2.0'
   state:
     description:
     - Define whether the snapshot should exist or not.
@@ -97,6 +109,8 @@ notes:
     against snapshot_id is returned.
   - Use of I(snapshot_id) over I(generation) is preferably recommended for
     PowerMax microcode version 5978.669.669 and onwards.
+  - The I(force) option requires I(snapshot_id) and is not supported with
+    I(generation).
   - The I(check_mode) is supported.
 '''
 
@@ -279,6 +293,19 @@ EXAMPLES = r'''
     sg_name: "ansible_sg"
     snapshot_name: "ansible_sg_snap"
     snapshot_id: 135023964929
+    state: "absent"
+
+- name: Force delete a Storage Group Snapshot with disparate LUN config
+  dellemc.powermax.snapshot:
+    unispherehost: "{{unispherehost}}"
+    verifycert: "{{verifycert}}"
+    user: "{{user}}"
+    password: "{{password}}"
+    serial_no: "{{serial_no}}"
+    sg_name: "ansible_sg"
+    snapshot_name: "ansible_sg_snap"
+    snapshot_id: 135023964929
+    force: true
     state: "absent"
 '''
 
@@ -541,7 +568,7 @@ class Snapshot(object):
             self.show_error_exit(msg=error_message)
 
     def delete_sg_snapshot(self, sg_id, snap_name, generation=None,
-                           snap_id=None):
+                           snap_id=None, force=False):
         """Delete Storage Group Snapshot"""
         snapshot = None
         try:
@@ -569,7 +596,8 @@ class Snapshot(object):
                     self.replication.delete_storage_group_snapshot_by_snap_id(
                         sg_id,
                         snap_name,
-                        snap_id)
+                        snap_id,
+                        force=force)
             return True
         except Exception as e:
             error_message = (f'Delete storage group {sg_id} snapshot {snap_name} failed with '
@@ -758,6 +786,11 @@ class Snapshot(object):
                 generation=snapshot_params.get('generation'),
                 snap_id=snapshot_params.get('snapshot_id'))
 
+        if snapshot_params.get('force') and snapshot_params.get('snapshot_id') is None:
+            self.show_error_exit(
+                msg="The 'force' option is only supported with "
+                    "'snapshot_id', not with 'generation'.")
+
 
 def get_snapshot_parameters():
     return dict(
@@ -773,6 +806,7 @@ def get_snapshot_parameters():
         link_status=dict(required=False, choices=['linked', 'unlinked'],
                          type='str'),
         restore=dict(type='bool'),
+        force=dict(required=False, type='bool', default=False),
         state=dict(required=True, choices=['present', 'absent'],
                    type='str'),
     )
@@ -809,7 +843,8 @@ class SnapshotDeleteHandler():
                 sg_id=snapshot_params["sg_name"],
                 snap_name=snapshot_params["snapshot_name"],
                 generation=snapshot_params["generation"],
-                snap_id=snapshot_params["snapshot_id"])
+                snap_id=snapshot_params["snapshot_id"],
+                force=snapshot_params.get("force", False))
 
         SnapshotLinkHandler().handle(snapshot_obj, snapshot_params)
 
