@@ -103,6 +103,22 @@ options:
      - Describes the state of snapshot policy for an SG.
     type: str
     choices: [present-in-group, absent-in-group]
+  rdf_target_sg_name:
+    description:
+    - The name of the remote (R2) storage group on the target array.
+    - Used when the R2 storage group has a different name from the R1 (source) storage group.
+    - If not specified and I(rdf_auto_resolve_target) is false, the R1 storage group name is used.
+    - Applicable only for SRDF-protected storage groups.
+    type: str
+    required: false
+  rdf_auto_resolve_target:
+    description:
+    - When true, automatically queries the array to discover the actual remote storage group name.
+    - Ignored if I(rdf_target_sg_name) is specified.
+    - Applicable only for SRDF-protected storage groups.
+    type: bool
+    required: false
+    default: false
   host_io_limit:
     description:
     - Host I/O limit of the storage group.
@@ -201,6 +217,38 @@ EXAMPLES = r'''
         size: 1
         cap_unit: "GB"
     vol_state: "present-in-group"
+
+- name: Add volumes to SRDF-protected SG with different R2 name
+  dellemc.powermax.storagegroup:
+    unispherehost: "{{unispherehost}}"
+    verifycert: "{{verifycert}}"
+    user: "{{user}}"
+    password: "{{password}}"
+    serial_no: "{{serial_no}}"
+    sg_name: "prod_sg"
+    state: "present"
+    volumes:
+      - vol_name: "data_vol"
+        size: 10
+        cap_unit: "GB"
+    vol_state: "present-in-group"
+    rdf_target_sg_name: "DR_prod_sg"
+
+- name: Add volumes to SRDF-protected SG with auto-resolved R2 name
+  dellemc.powermax.storagegroup:
+    unispherehost: "{{unispherehost}}"
+    verifycert: "{{verifycert}}"
+    user: "{{user}}"
+    password: "{{password}}"
+    serial_no: "{{serial_no}}"
+    sg_name: "prod_sg"
+    state: "present"
+    volumes:
+      - vol_name: "data_vol"
+        size: 10
+        cap_unit: "GB"
+    vol_state: "present-in-group"
+    rdf_auto_resolve_target: true
 
 - name: Remove volumes from existing SG
   dellemc.powermax.storagegroup:
@@ -895,7 +943,11 @@ class StorageGroup(object):
                                 rdfg_details = self.replication.\
                                     get_rdf_group(rdf_number=rdfg_list[0])
                                 remote_array = rdfg_details['remoteSymmetrix']
-                                remote_array_sg = sg_name
+                                remote_array_sg = utils.resolve_remote_sg_name(
+                                    self.replication, sg_name,
+                                    explicit_target=self.module.params.get('rdf_target_sg_name'),
+                                    auto_resolve=self.module.params.get('rdf_auto_resolve_target', False),
+                                    rdfg_number=rdfg_list[0])
 
                                 msg = ("Creating volume with parameters:"
                                        "storage_group_id= ", sg_name,
@@ -930,11 +982,19 @@ class StorageGroup(object):
                                 rdfg_details = self.replication. \
                                     get_rdf_group(rdf_number=rdfg_list[0])
                                 remote_array_1 = rdfg_details['remoteSymmetrix']
-                                remote_array_1_sg = sg_name
+                                remote_array_1_sg = utils.resolve_remote_sg_name(
+                                    self.replication, sg_name,
+                                    explicit_target=self.module.params.get('rdf_target_sg_name'),
+                                    auto_resolve=self.module.params.get('rdf_auto_resolve_target', False),
+                                    rdfg_number=rdfg_list[0])
                                 rdfg_details = self.replication. \
                                     get_rdf_group(rdf_number=rdfg_list[1])
                                 remote_array_2 = rdfg_details['remoteSymmetrix']
-                                remote_array_2_sg = sg_name
+                                remote_array_2_sg = utils.resolve_remote_sg_name(
+                                    self.replication, sg_name,
+                                    explicit_target=self.module.params.get('rdf_target_sg_name'),
+                                    auto_resolve=self.module.params.get('rdf_auto_resolve_target', False),
+                                    rdfg_number=rdfg_list[1])
                                 msg = ("Creating volume with parameters:"
                                        "storage_group_id= ", sg_name,
                                        ", num_vols= ", 1,
@@ -1094,7 +1154,12 @@ class StorageGroup(object):
                 rdfg_details = self.replication.get_rdf_group(rdf_number=rdfg)
 
                 params["remote_array_" + str(i) + "_id"] = rdfg_details['remoteSymmetrix']
-                params["remote_array_" + str(i) + "_sgs"] = [sg_name]
+                resolved_sg = utils.resolve_remote_sg_name(
+                    self.replication, sg_name,
+                    explicit_target=self.module.params.get('rdf_target_sg_name'),
+                    auto_resolve=self.module.params.get('rdf_auto_resolve_target', False),
+                    rdfg_number=rdfg)
+                params["remote_array_" + str(i) + "_sgs"] = [resolved_sg]
 
             if not self.module.check_mode:
                 self.provisioning.add_existing_volume_to_storage_group(**params)
@@ -1162,11 +1227,19 @@ class StorageGroup(object):
                     rdfg_details = self.replication. \
                         get_rdf_group(rdf_number=rdfg_list[0])
                     remote_array_1 = rdfg_details['remoteSymmetrix']
-                    remote_array_1_sg = sg_name
+                    remote_array_1_sg = utils.resolve_remote_sg_name(
+                        self.replication, sg_name,
+                        explicit_target=self.module.params.get('rdf_target_sg_name'),
+                        auto_resolve=self.module.params.get('rdf_auto_resolve_target', False),
+                        rdfg_number=rdfg_list[0])
                     rdfg_details = self.replication. \
                         get_rdf_group(rdf_number=rdfg_list[1])
                     remote_array_2 = rdfg_details['remoteSymmetrix']
-                    remote_array_2_sg = sg_name
+                    remote_array_2_sg = utils.resolve_remote_sg_name(
+                        self.replication, sg_name,
+                        explicit_target=self.module.params.get('rdf_target_sg_name'),
+                        auto_resolve=self.module.params.get('rdf_auto_resolve_target', False),
+                        rdfg_number=rdfg_list[1])
                     for vol in volumes_to_remove:
                         if not self.module.check_mode:
                             self.provisioning.remove_volume_from_storage_group(
@@ -1188,7 +1261,11 @@ class StorageGroup(object):
                 rdfg_details = self.replication.\
                     get_rdf_group(rdf_number=rdfg_list[0])
                 remote_array = rdfg_details['remoteSymmetrix']
-                remote_array_sg = sg_name
+                remote_array_sg = utils.resolve_remote_sg_name(
+                    self.replication, sg_name,
+                    explicit_target=self.module.params.get('rdf_target_sg_name'),
+                    auto_resolve=self.module.params.get('rdf_auto_resolve_target', False),
+                    rdfg_number=rdfg_list[0])
 
             for vol in volumes_to_remove:
                 if not self.module.check_mode:
@@ -1892,6 +1969,8 @@ def get_storage_group_parameters():
                 'present-in-group',
                 'absent-in-group']),
         target_sg_name=dict(type='str'),
+        rdf_target_sg_name=dict(type='str', required=False),
+        rdf_auto_resolve_target=dict(type='bool', required=False, default=False),
         force=dict(type='bool'),
         host_io_limit=dict(required=False, type='dict',
                            options=dict(host_io_limit_mbps=dict(required=False, type='int'),
