@@ -342,6 +342,23 @@ def is_array_v4():
         return True
 
 
+def _find_remote_sg_by_rdfg(remote_sgs, rdfg_number, sg_name):
+    '''Helper to find remote SG matching a specific RDFG number.
+
+    Parameters:
+        remote_sgs    - list of remote storage group details
+        rdfg_number   - RDFG number to match
+        sg_name       - fallback SG name if not found
+
+    Returns:
+        str - the remote storage group name or None if not found
+    '''
+    for rsg in remote_sgs:
+        if rsg.get('rdfGroupNumber') == rdfg_number:
+            return rsg.get('remoteStorageGroupName', sg_name)
+    return None
+
+
 def resolve_remote_sg_name(replication, sg_name, explicit_target=None,
                            auto_resolve=False, rdfg_number=None):
     '''Resolve the remote (R2) storage group name for SRDF operations.
@@ -357,30 +374,43 @@ def resolve_remote_sg_name(replication, sg_name, explicit_target=None,
 
     Returns:
         str - the resolved remote storage group name
+
+    Raises:
+        ValueError - if multiple SRDF groups found and rdfg_number not specified
     '''
     if explicit_target:
         return explicit_target
 
-    if auto_resolve:
-        try:
-            details = replication.get_storage_group_replication_details(
-                storage_group_id=sg_name)
-            remote_sgs = details.get('remote_storage_groups', [])
-            if not remote_sgs:
-                return sg_name
-            if len(remote_sgs) == 1:
-                return remote_sgs[0].get(
-                    'remoteStorageGroupName', sg_name)
-            if rdfg_number is not None:
-                for rsg in remote_sgs:
-                    if rsg.get('rdfGroupNumber') == rdfg_number:
-                        return rsg.get(
-                            'remoteStorageGroupName', sg_name)
-            raise Exception(
-                "Multiple SRDF groups found for storage group "
-                "{0}. Specify rdfg_number or rdf_target_sg_name "
-                "to disambiguate.".format(sg_name))
-        except Exception:
-            raise
+    if not auto_resolve:
+        return sg_name
 
-    return sg_name
+    try:
+        details = replication.get_storage_group_replication_details(
+            storage_group_id=sg_name,
+            return_remote_sg_info=True)
+        remote_sgs = details.get('remote_storage_groups', [])
+        if not remote_sgs:
+            logging.getLogger(__name__).warning(
+                "auto_resolve: no remote_storage_groups returned "
+                "for %s, falling back to sg_name", sg_name)
+            return sg_name
+        if len(remote_sgs) == 1:
+            return remote_sgs[0].get(
+                'remoteStorageGroupName', sg_name)
+        if rdfg_number is not None:
+            matched_sg = _find_remote_sg_by_rdfg(
+                remote_sgs, rdfg_number, sg_name)
+            if matched_sg is not None:
+                return matched_sg
+        raise ValueError(
+            "Multiple SRDF groups found for storage group "
+            "{0}. Specify rdfg_number or rdf_target_sg_name "
+            "to disambiguate.".format(sg_name))
+    except ValueError:
+        raise
+    except Exception as e:
+        logging.getLogger(__name__).warning(
+            "auto_resolve: failed to query remote SG info "
+            "for %s (%s), falling back to sg_name",
+            sg_name, str(e))
+        return sg_name

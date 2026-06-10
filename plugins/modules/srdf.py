@@ -549,17 +549,24 @@ class SRDF(object):
                             " links using Bias for resiliency.")
                 self.show_error_exit(msg=errorMsg)
 
+            rdf_target_sg_name = self.module.params.get('rdf_target_sg_name')
             msg = ('Creating srdf_link with parameters:sg_name = ', sg_name,
                    ', remote_serial_no= ', remote_serial_no,
                    ', srdfmode= ', srdf_mode,
                    ', establish_flag= ', establish_flag,
                    ', rdfgroup_no= ', rdfg_number,
-                   ', async_flag= ', async_flag
+                   ', async_flag= ', async_flag,
+                   ', rdf_target_sg_name= ', rdf_target_sg_name
                    )
             LOG.info(msg)
             resp = {}
             if not self.module.check_mode:
-                if self.module.params['wait_for_completion'] is False:
+                if rdf_target_sg_name:
+                    resp = self._create_srdf_with_target_sg(
+                        sg_name, remote_serial_no, srdf_mode,
+                        establish_flag, rdfg_number, async_flag,
+                        rdf_target_sg_name)
+                elif self.module.params['wait_for_completion'] is False:
                     resp = self.replication.create_storage_group_srdf_pairings(
                         storage_group_id=sg_name,
                         remote_sid=remote_serial_no,
@@ -595,6 +602,50 @@ class SRDF(object):
             errorMsg = ("Create srdf_link for sg %s failed with error %s"
                         % (sg_name, str(e)))
             self.show_error_exit(msg=errorMsg)
+
+    def _create_srdf_with_target_sg(self, sg_name, remote_serial_no,
+                                    srdf_mode, establish_flag,
+                                    rdfg_number, async_flag,
+                                    rdf_target_sg_name):
+        """Create SRDF pair with explicit remote storage group name.
+
+        PyU4V hardcodes remoteStorageGroupName to sg_name, so we
+        build the payload directly when a custom target name is needed.
+        """
+        establish_sg = 'True' if establish_flag else 'False'
+        rdf_payload = {
+            'replicationMode': srdf_mode,
+            'remoteSymmId': remote_serial_no,
+            'remoteStorageGroupName': rdf_target_sg_name,
+            'establish': establish_sg}
+        if rdfg_number is not None:
+            rdf_payload['rdfgNumber'] = rdfg_number
+
+        wait_for_completion = self.module.params['wait_for_completion']
+        async_update = {'executionOption': 'ASYNCHRONOUS'}
+
+        if wait_for_completion:
+            rdf_payload.update(async_update)
+            job = self.replication.create_resource(
+                category='replication',
+                resource_level='symmetrix',
+                resource_level_id=self.replication.array_id,
+                resource_type='storagegroup',
+                resource_type_id=sg_name,
+                resource='rdf_group', payload=rdf_payload)
+            link_status = self.get_created_srdf_link_status(job)
+            LOG.info("The SRDF link status is: %s", link_status)
+            return self.get_srdf_link(sg_name)[0]
+        else:
+            if async_flag:
+                rdf_payload.update(async_update)
+            return self.replication.create_resource(
+                category='replication',
+                resource_level='symmetrix',
+                resource_level_id=self.replication.array_id,
+                resource_type='storagegroup',
+                resource_type_id=sg_name,
+                resource='rdf_group', payload=rdf_payload)
 
     def get_created_srdf_link_status(self, job):
         """Get created SRDF link status"""
