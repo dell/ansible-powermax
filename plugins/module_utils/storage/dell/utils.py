@@ -364,9 +364,13 @@ def resolve_remote_sg_name(replication, sg_name, explicit_target=None,
     if auto_resolve:
         try:
             details = replication.get_storage_group_replication_details(
-                storage_group_id=sg_name)
+                storage_group_id=sg_name,
+                return_remote_sg_info=True)
             remote_sgs = details.get('remote_storage_groups', [])
             if not remote_sgs:
+                logging.getLogger(__name__).warning(
+                    "auto_resolve: no remote_storage_groups returned "
+                    "for %s, falling back to sg_name", sg_name)
                 return sg_name
             if len(remote_sgs) == 1:
                 return remote_sgs[0].get(
@@ -380,7 +384,13 @@ def resolve_remote_sg_name(replication, sg_name, explicit_target=None,
                 "Multiple SRDF groups found for storage group "
                 "{0}. Specify rdfg_number or rdf_target_sg_name "
                 "to disambiguate.".format(sg_name))
-        except Exception:
-            raise
+        except Exception as e:
+            if 'Multiple SRDF groups' in str(e):
+                raise
+            logging.getLogger(__name__).warning(
+                "auto_resolve: failed to query remote SG info "
+                "for %s (%s), falling back to sg_name",
+                sg_name, str(e))
+            return sg_name
 
     return sg_name
