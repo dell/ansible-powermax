@@ -604,17 +604,14 @@ class SRDF(object):
             self.show_error_exit(msg=errorMsg)
 
     def _create_srdf_with_target_sg(self, sg_name, remote_serial_no,
-                                       srdf_mode, establish_flag,
-                                       rdfg_number, async_flag,
-                                       rdf_target_sg_name):
+                                    srdf_mode, establish_flag,
+                                    rdfg_number, async_flag,
+                                    rdf_target_sg_name):
         """Create SRDF pair with explicit remote storage group name.
 
         PyU4V hardcodes remoteStorageGroupName to sg_name, so we
         build the payload directly when a custom target name is needed.
         """
-        from PyU4V.utils.constants import (
-            REPLICATION, SYMMETRIX, STORAGEGROUP, RDFG, ASYNC_UPDATE)
-
         establish_sg = 'True' if establish_flag else 'False'
         rdf_payload = {
             'replicationMode': srdf_mode,
@@ -625,29 +622,30 @@ class SRDF(object):
             rdf_payload['rdfgNumber'] = rdfg_number
 
         wait_for_completion = self.module.params['wait_for_completion']
+        async_update = {'executionOption': 'ASYNCHRONOUS'}
 
         if wait_for_completion:
-            rdf_payload.update(ASYNC_UPDATE)
+            rdf_payload.update(async_update)
             job = self.replication.create_resource(
-                category=REPLICATION,
-                resource_level=SYMMETRIX,
+                category='replication',
+                resource_level='symmetrix',
                 resource_level_id=self.replication.array_id,
-                resource_type=STORAGEGROUP,
+                resource_type='storagegroup',
                 resource_type_id=sg_name,
-                resource=RDFG, payload=rdf_payload)
+                resource='rdf_group', payload=rdf_payload)
             link_status = self.get_created_srdf_link_status(job)
             LOG.info("The SRDF link status is: %s", link_status)
             return self.get_srdf_link(sg_name)[0]
         else:
             if async_flag:
-                rdf_payload.update(ASYNC_UPDATE)
+                rdf_payload.update(async_update)
             return self.replication.create_resource(
-                category=REPLICATION,
-                resource_level=SYMMETRIX,
+                category='replication',
+                resource_level='symmetrix',
                 resource_level_id=self.replication.array_id,
-                resource_type=STORAGEGROUP,
+                resource_type='storagegroup',
                 resource_type_id=sg_name,
-                resource=RDFG, payload=rdf_payload)
+                resource='rdf_group', payload=rdf_payload)
 
     def get_created_srdf_link_status(self, job):
         """Get created SRDF link status"""
