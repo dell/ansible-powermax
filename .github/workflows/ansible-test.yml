@@ -64,6 +64,8 @@ jobs:
             python: '3.13'
           - ansible: devel
             python: '3.11'
+          - ansible: devel
+            python: '3.12'
 
     steps:
       - name: Perform unit testing with ansible-test
@@ -99,6 +101,8 @@ jobs:
             python: '3.13'
           - ansible: devel
             python: '3.11'
+          - ansible: devel
+            python: '3.12'
 
     steps:
       - name: Perform sanity testing

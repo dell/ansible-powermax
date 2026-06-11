@@ -205,3 +205,16 @@
         snapshot_name: "{{ snapshot_name }}"
         snapshot_id: "{{ snapshot_id_1 }}"
         state: "{{ state_absent }}"
+
+    - name: Force delete Storage Group Snapshot with disparate LUN config
+      dellemc.powermax.snapshot:
+        unispherehost: "{{ unispherehost }}"
+        verifycert: "{{ verifycert }}"
+        user: "{{ user }}"
+        password: "{{ password }}"
+        serial_no: "{{ serial_no }}"
+        sg_name: "{{ sg_name }}"
+        snapshot_name: "{{ snapshot_name }}"
+        snapshot_id: "{{ snapshot_id_1 }}"
+        force: true
+        state: "{{ state_absent }}"

@@ -474,3 +474,82 @@ class TestSnapshot(PowerMaxUnitBase):
             MockSnapshotApi.get_error_message(
                 'no_id_exception'), snapshot_module_mock,
             'is_valid_generation_or_id', generation, snap_id)
+
+    def test_force_delete_snapshot_by_id(self, snapshot_module_mock):
+        self.snapshot_args.update(
+            {'state': 'absent',
+             'sg_name': MockSnapshotApi.SG_NAME,
+             'snapshot_name': MockSnapshotApi.SNAPSHOT_NAME,
+             'snapshot_id': MockSnapshotApi.SNAPSHOT_ID,
+             'force': True
+             })
+        snapshot_module_mock.module.params = self.snapshot_args
+        snapshot_module_mock.replication.get_snapshot_snap_id_details = MagicMock(return_value=MockSnapshotApi.SNAPSHOT_DETAILS_2)
+        snapshot_module_mock.u4v_conn.set_array_id = MagicMock(return_value=None)
+        SnapshotHandler().handle(snapshot_module_mock, snapshot_module_mock.module.params)
+        snapshot_module_mock.replication.delete_storage_group_snapshot_by_snap_id.assert_called_once_with(
+            MockSnapshotApi.SG_NAME,
+            MockSnapshotApi.SNAPSHOT_NAME,
+            MockSnapshotApi.SNAPSHOT_ID,
+            force=True)
+        assert snapshot_module_mock.module.exit_json.call_args[1]['changed'] is True
+
+    def test_force_delete_snapshot_by_id_check_mode(self, snapshot_module_mock):
+        self.snapshot_args.update(
+            {'state': 'absent',
+             'sg_name': MockSnapshotApi.SG_NAME,
+             'snapshot_name': MockSnapshotApi.SNAPSHOT_NAME,
+             'snapshot_id': MockSnapshotApi.SNAPSHOT_ID,
+             'force': True
+             })
+        snapshot_module_mock.module.params = self.snapshot_args
+        snapshot_module_mock.module.check_mode = True
+        snapshot_module_mock.replication.get_snapshot_snap_id_details = MagicMock(return_value=MockSnapshotApi.SNAPSHOT_DETAILS_2)
+        snapshot_module_mock.u4v_conn.set_array_id = MagicMock(return_value=None)
+        SnapshotHandler().handle(snapshot_module_mock, snapshot_module_mock.module.params)
+        snapshot_module_mock.replication.delete_storage_group_snapshot_by_snap_id.assert_not_called()
+
+    def test_force_delete_with_generation_validation_error(self, snapshot_module_mock):
+        self.snapshot_args.update(
+            {'state': 'absent',
+             'sg_name': MockSnapshotApi.SG_NAME,
+             'snapshot_name': MockSnapshotApi.SNAPSHOT_NAME,
+             'generation': 0,
+             'force': True
+             })
+        snapshot_module_mock.module.params = self.snapshot_args
+        snapshot_module_mock.u4v_conn.set_array_id = MagicMock(return_value=None)
+        SnapshotHandler().handle(snapshot_module_mock, snapshot_module_mock.module.params)
+        snapshot_module_mock.module.fail_json.assert_called()
+        fail_msg = snapshot_module_mock.module.fail_json.call_args[1]['msg']
+        assert 'force' in fail_msg.lower()
+
+    def test_force_delete_nonexistent_snapshot_idempotency(self, snapshot_module_mock):
+        self.snapshot_args.update(
+            {'state': 'absent',
+             'sg_name': MockSnapshotApi.SG_NAME,
+             'snapshot_name': MockSnapshotApi.SNAPSHOT_NAME,
+             'snapshot_id': MockSnapshotApi.SNAPSHOT_ID,
+             'force': True
+             })
+        snapshot_module_mock.module.params = self.snapshot_args
+        snapshot_module_mock.replication.get_snapshot_snap_id_details = MagicMock(side_effect=MockApiException)
+        snapshot_module_mock.u4v_conn.set_array_id = MagicMock(return_value=None)
+        SnapshotHandler().handle(snapshot_module_mock, snapshot_module_mock.module.params)
+        snapshot_module_mock.replication.delete_storage_group_snapshot_by_snap_id.assert_not_called()
+
+    def test_delete_without_force_backward_compat(self, snapshot_module_mock):
+        self.snapshot_args.update(
+            {'state': 'absent',
+             'sg_name': MockSnapshotApi.SG_NAME,
+             'snapshot_name': MockSnapshotApi.SNAPSHOT_NAME,
+             'snapshot_id': MockSnapshotApi.SNAPSHOT_ID
+             })
+        snapshot_module_mock.module.params = self.snapshot_args
+        snapshot_module_mock.replication.get_snapshot_snap_id_details = MagicMock(return_value=MockSnapshotApi.SNAPSHOT_DETAILS_2)
+        snapshot_module_mock.u4v_conn.set_array_id = MagicMock(return_value=None)
+        SnapshotHandler().handle(snapshot_module_mock, snapshot_module_mock.module.params)
+        snapshot_module_mock.replication.delete_storage_group_snapshot_by_snap_id.assert_called()
+        call_kwargs = snapshot_module_mock.replication.delete_storage_group_snapshot_by_snap_id.call_args
+        if call_kwargs[1]:
+            assert not call_kwargs[1].get('force', False)

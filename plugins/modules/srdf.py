@@ -108,9 +108,32 @@ options:
       True.
     required: false
     type: bool
+  rdf_target_sg_name:
+    description:
+    - The name of the remote (R2) storage group on the target array.
+    - Used when the R2 storage group should have a different name from the R1 (source) storage group.
+    - If not specified, the R1 storage group name is used as the R2 storage group name.
+    - Applicable only when creating an SRDF link.
+    required: false
+    type: str
 '''
 
 EXAMPLES = r'''
+- name: Create SRDF pair with a different R2 storage group name
+  register: Job_details_body
+  dellemc.powermax.srdf:
+    unispherehost: "{{unispherehost}}"
+    verifycert: "{{verifycert}}"
+    user: "{{user}}"
+    password: "{{password}}"
+    serial_no: "{{serial_no}}"
+    sg_name: "prod_sg"
+    remote_serial_no: "{{remote_serial_no}}"
+    srdf_mode: 'Synchronous'
+    srdf_state: 'Establish'
+    state: 'present'
+    rdf_target_sg_name: "DR_prod_sg"
+
 - name: Create and establish storagegroup SRDF/a pairing
   register: Job_details_body
   dellemc.powermax.srdf:
@@ -446,7 +469,8 @@ class SRDF(object):
             wait_for_completion=dict(type='bool', required=False,
                                      default=False),
             witness=dict(type='bool', required=False),
-            job_id=dict(type='str', required=False))
+            job_id=dict(type='str', required=False),
+            rdf_target_sg_name=dict(type='str', required=False))
 
     def get_srdf_link(self, sg_name):
         '''

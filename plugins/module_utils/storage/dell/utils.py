@@ -340,3 +340,47 @@ def is_array_v4():
     curr_version = PyU4V.__version__
     if curr_version.startswith("10"):
         return True
+
+
+def resolve_remote_sg_name(replication, sg_name, explicit_target=None,
+                           auto_resolve=False, rdfg_number=None):
+    '''Resolve the remote (R2) storage group name for SRDF operations.
+
+    Priority: explicit_target > auto_resolve > fallback to sg_name.
+
+    Parameters:
+        replication   - PyU4V replication object
+        sg_name       - local (R1) storage group name
+        explicit_target - user-provided R2 SG name (rdf_target_sg_name)
+        auto_resolve  - if True, query the array for the actual R2 name
+        rdfg_number   - RDFG number to match when auto-resolving
+
+    Returns:
+        str - the resolved remote storage group name
+    '''
+    if explicit_target:
+        return explicit_target
+
+    if auto_resolve:
+        try:
+            details = replication.get_storage_group_replication_details(
+                storage_group_id=sg_name)
+            remote_sgs = details.get('remote_storage_groups', [])
+            if not remote_sgs:
+                return sg_name
+            if len(remote_sgs) == 1:
+                return remote_sgs[0].get(
+                    'remoteStorageGroupName', sg_name)
+            if rdfg_number is not None:
+                for rsg in remote_sgs:
+                    if rsg.get('rdfGroupNumber') == rdfg_number:
+                        return rsg.get(
+                            'remoteStorageGroupName', sg_name)
+            raise Exception(
+                "Multiple SRDF groups found for storage group "
+                "{0}. Specify rdfg_number or rdf_target_sg_name "
+                "to disambiguate.".format(sg_name))
+        except Exception:
+            raise
+
+    return sg_name
