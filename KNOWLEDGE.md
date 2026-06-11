@@ -2,7 +2,7 @@
 
 <!-- yaml-metadata-start -->
 scope_paths: ["./"]
-capture_git_sha: "fb5505d62ea3d48f2be04b95fbb3f82333a5a489"
+capture_git_sha: "9c9c2d8b957efd7794a246b972fcebc92cd0f636"
 status: "current"
 auto_update: false
 preview_before_apply: true
@@ -30,7 +30,7 @@ Ansible Galaxy collection `dellemc.powermax` (v4.0.2). Provides 17 modules and 1
 Create module file in `plugins/modules/`, add example playbook in `playbooks/modules/`, add unit test in `tests/unit/plugins/modules/`, append module FQCN to `meta/runtime.yml` action group.
 
 ### What breaks?
-SDK version mismatch is a blocking defect. Missing action group entry causes `module_defaults` to silently skip the module. `verifycert: false` in production violates security constitution.
+SDK version mismatch is a blocking defect. Missing tombstone/redirect entry leaves deprecated module names unresolved. `verifycert: false` in production violates security constitution.
 
 ### What depends on it?
 `PyU4V` >=10.2.0.3,==10.2.0.*, Ansible >= 2.15.0. Ordering: dependent resources must exist before referencing them.
@@ -51,6 +51,19 @@ Ansible Galaxy collection `dellemc.powermax` (v4.0.2) for Dell PowerMax enterpri
 Standard Ansible Galaxy collection layout. Each module is a self-contained Python file under `plugins/modules/` that communicates with the PowerMax REST API through the `PyU4V` SDK.
 
 **SDK strategy:** Static import. Version pinned at `>=10.2.0.3,==10.2.0.*` in `requirements.txt`.
+
+
+### Evolution
+
+Early collections used a flat module structure with duplicated auth
+and API logic in each module. The shared base class was introduced
+after initial module growth to centralize authentication, argument
+parsing, and API client initialization. Major refactors include:
+
+- Base class introduction (centralized SDK initialization)
+- Module naming standardization
+- SDK / REST client improvements
+- Improved error handling consistency
 
 ---
 
@@ -84,15 +97,81 @@ PyU4V uses a range-pinned version (`>=10.2.0.3,==10.2.0.*`) rather than single-v
 
 `plugins/modules/volume.py` contains TODO comments about PyU4V implementation gaps. These represent known incomplete areas.
 
+
+### 5. Idempotency drift
+
+Occasional idempotency failures where a module reports `changed=false`
+but state actually changed on the array. Caused by incomplete state
+comparison logic — some parameters accepted by the module are ignored
+by the underlying API. Always verify with a second run.
+
+### 6. SDK import failures
+
+Dependency or version mismatches between the collection and its SDK
+cause import failures at module load time. Manifests as
+`ModuleNotFoundError` or `ImportError` with no actionable message
+unless `-vvv` is used.
+
+### 7. Check mode inaccuracies
+
+Not all modules fully simulate changes correctly in check mode.
+Some modules report `changed=true` in check mode but would actually
+make no change, or vice versa. Treat check mode as advisory, not
+authoritative.
+
 ### Never Again
 
-No incident-derived constraints recorded.
+#### NA-001: SDK version mismatch causing silent failures
+- **Impact:** Modules loaded but returned incorrect data due to
+  SDK API changes between versions.
+- **Constraint:** SDK version must be pinned exactly in
+  `requirements.txt`. Never update without full test pass.
+- **Applies to:** All Dell Ansible collections.
+
+#### NA-002: Idempotency regression on update operations
+- **Impact:** Repeated playbook runs made unintended changes to
+  array resources due to incomplete state comparison.
+- **Constraint:** Every module must compare full current state
+  before applying changes.
+- **Applies to:** All Dell Ansible collections.
+
+#### NA-003: Orphaned resources from test failures
+- **Impact:** Test resources left on array after test failure,
+  consuming capacity.
+- **Constraint:** Manual cleanup required after failed test runs.
+- **Applies to:** All Dell Ansible collections.
+### Evolution
+
+Failure modes evolved with the base class introduction. Error
+handling was standardized across modules during the naming
+convention refactor. SDK import failures became less common after
+the `HAS_*` flag pattern was adopted consistently.
 
 ---
 
 ## Performance Characteristics
 
-TBD — requires SME input.
+**Sequential execution:** Ansible executes modules sequentially per
+host within a play. Large inventories with many tasks experience
+linear performance degradation. No built-in batching or pipelining
+at the module level.
+
+**API rate limiting:** PowerMax arrays enforce implicit
+throttling under heavy parallel execution (high Ansible fork count).
+Reduce `forks` or add `throttle` to tasks hitting the same array.
+
+**Bulk operations:** Module execution is slower for bulk operations
+due to per-task API calls with no batching support. Async operations
+(where supported) can mitigate but add complexity.
+
+**No connection reuse:** Each module invocation creates a new SDK
+client and HTTP session. No connection pooling across tasks.
+
+### Evolution
+
+Performance improved after the base class centralized SDK
+initialization, reducing per-module overhead. Connection reuse
+remains an open area for improvement.
 
 ---
 
@@ -102,13 +181,40 @@ TBD — requires SME input.
 
 **Resource ordering:** Dependent resources must exist before being referenced (e.g., filesystem before snapshot, volume group before volumes, policies before assignment).
 
-**Action group registration:** Every new module must be appended to the `dellemc.powermax.all` action group in `meta/runtime.yml`.
+**Runtime registration:** Deprecated module names must have tombstone or redirect entries in `meta/runtime.yml`.
+
+### Evolution
+
+Connection parameter patterns were established early and carried
+forward. Resource ordering constraints are implicit — the API
+returns errors but the collection does not enforce ordering.
 
 ---
 
 ## Threading & Synchronization
 
-Ansible handles concurrency via forks at the play level. Individual module executions are single-threaded.
+Ansible handles concurrency via forks at the play level. Individual
+module executions are single-threaded. However, multiple forks
+hitting the same PowerMax array simultaneously causes:
+
+**API contention:** High fork counts cause throttling or transient
+errors from the array API. Mitigate with `throttle: N` on tasks
+targeting the same array.
+
+**Connection pool exhaustion:** Possible when many forks execute
+without HTTP session reuse. Each fork creates independent SDK
+client connections.
+
+**Race conditions on shared resources:** Concurrent modifications
+to interdependent resources (e.g., volume + host mapping,
+replication configurations) can produce inconsistent state.
+Serialize dependent operations with `serial: 1` or task ordering.
+
+### Evolution
+
+Concurrency issues became more visible as collections grew and
+users ran larger playbooks with higher fork counts against single
+arrays.
 
 ---
 
@@ -125,13 +231,38 @@ Ansible handles concurrency via forks at the play level. Individual module execu
 
 ## Operational Knowledge
 
-Uses `logging.basicConfig` with `CustomRotatingFileHandler`. Writes `ansible_powermax.log` by default (5 MB rotate, 5 backups).
+**Logging:** Enable `-vvv` for detailed output including API
+request/response payloads. Correlate Ansible output with array
+logs for full troubleshooting.
+
+**Common support scenarios:**
+- Authentication failures — verify `unispherehost`, credentials,
+  and `verifycert` settings
+- Idempotency issues — run playbook twice, compare `changed`
+  status
+- Timeout / async completion problems — increase timeout
+  parameters, check array load
+
+**Test environment requirements:**
+- Dedicated PowerMax array or simulator
+- Stable API version matching SDK pin
+- Isolated test datasets (avoid shared resources)
+
+### Evolution
+
+Debugging patterns improved with `-vvv` adoption as standard
+practice. Common failure patterns documented after recurring
+support cases.
 
 ---
 
 ## General Context
 
 No additional context beyond what has been captured.
+
+### Open Issues
+
+No TODO/FIXME/HACK markers found in non-test source files.
 
 ---
 

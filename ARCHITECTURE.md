@@ -4,7 +4,7 @@
 
 <!-- yaml-metadata-start -->
 scope_paths: ["./"]
-capture_git_sha: "fb5505d62ea3d48f2be04b95fbb3f82333a5a489"
+capture_git_sha: "9c9c2d8b957efd7794a246b972fcebc92cd0f636"
 status: "current"
 auto_update: false
 preview_before_apply: true
@@ -29,7 +29,7 @@ Published to Ansible Galaxy under the `dellemc` namespace. Uses the `PyU4V` Pyth
 | Modules | `plugins/modules/*.py` | One file per resource (17 modules) |
 | Module utilities | `plugins/module_utils/storage/dell/` | SDK init, connection factory, logger, error helpers |
 | Doc fragments | `plugins/doc_fragments/powermax.py` | Shared DOCUMENTATION fragment for connection params |
-| Runtime metadata | `meta/runtime.yml` | `requires_ansible`, action groups, tombstones |
+| Runtime metadata | `meta/runtime.yml` | `meta/runtime.yml` contains 16 redirect entries for deprecated `dellemc_powermax_*` prefixed module names. |
 | Execution env | `meta/execution-environment.yml` | EE definition |
 | Example playbooks | `playbooks/modules/` | One example playbook per module |
 | Unit tests | `tests/unit/plugins/modules/` | One test file per module |
@@ -99,8 +99,8 @@ Published to Ansible Galaxy under the `dellemc` namespace. Uses the `PyU4V` Pyth
 ## Known Constraints
 
 1. **SDK version coupling is strict** — each collection release is tested against exactly one SDK version (or tight range). Mismatch is a blocking defect.
-2. **`meta/runtime.yml` is source of truth for action groups** — every new module must be appended to the `dellemc.powermax.all` list.
-3. **Tombstone entries are permanent** — deprecated `dellemc_powermax_*` prefixed module names must not be removed.
+2. **`meta/runtime.yml` is source of truth** — tombstone/redirect entries for deprecated module names must not be removed.
+3. **Redirect entries are permanent** — deprecated `dellemc_powermax_*` prefixed module redirects must not be removed.
 4. **`verifycert: false` is lab-only** — production requires `true`.
 5. **Example playbooks are mandatory** — every module must ship a working example in `playbooks/modules/`.
 
