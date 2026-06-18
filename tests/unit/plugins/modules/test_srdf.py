@@ -87,17 +87,22 @@ class TestSRDF(PowerMaxUnitBase):
         assert call_kwargs[1]["storage_group_id"] == "test_sg"
 
     def test_create_srdf_link_with_rdf_target_sg_name(self, powermax_module_mock):
-        """U-018: create_srdf_link passes rdf_target_sg_name to SDK"""
+        """U-018: create_srdf_link with rdf_target_sg_name uses create_resource
+        to bypass PyU4V's hardcoded remoteStorageGroupName"""
         args = dict(self.srdf_args)
         args["rdf_target_sg_name"] = "DR_test_sg"
         powermax_module_mock.module.params = args
         powermax_module_mock.module.check_mode = False
-        powermax_module_mock.replication.create_storage_group_srdf_pairings = MagicMock(
+        powermax_module_mock.replication.create_resource = MagicMock(
             return_value=MockSRDFApi.JOB_DETAILS
         )
+        powermax_module_mock.replication.create_storage_group_srdf_pairings = MagicMock()
         result = powermax_module_mock.create_srdf_link()
         assert result is True
-        powermax_module_mock.replication.create_storage_group_srdf_pairings.assert_called_once()
+        powermax_module_mock.replication.create_resource.assert_called_once()
+        call_kwargs = powermax_module_mock.replication.create_resource.call_args
+        assert call_kwargs[1]["payload"]["remoteStorageGroupName"] == "DR_test_sg"
+        powermax_module_mock.replication.create_storage_group_srdf_pairings.assert_not_called()
 
     def test_create_srdf_link_empty_rdf_target(self, powermax_module_mock):
         """U-E10: empty rdf_target_sg_name treated as None"""
