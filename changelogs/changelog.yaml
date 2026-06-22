@@ -1,5 +1,15 @@
 ancestor: null
 releases:
+  4.1.0:
+    changes:
+      bugfixes:
+        - Fixed SonarQube issues in resolve_remote_sg_name() function
+        - Various code quality improvements and sanity fixes
+      minor_changes:
+        - Enhanced SRDF storage group support with different R1 and R2 names
+        - Improved snapshot force deletion functionality
+        - Enhanced exception handling for info alerts
+    release_date: '2026-06-22'
   1.0.0:
     modules:
       - description: Manage host (initiator group) on PowerMax/VMAX Storage System

@@ -1,7 +1,7 @@
 
 **Ansible Modules for Dell Technologies PowerMax**
 =========================================
-### Release Notes 4.0.2
+### Release Notes 4.1.0
 
 >   © 2025 Dell Inc. or its subsidiaries. All rights reserved. Dell
 >   and other trademarks are trademarks of Dell Inc. or its
@@ -26,6 +26,7 @@ Revision History
 
 | **Date**     | **Document revision** | **Description of changes**                      |
 |------------  |-----------------------|-------------------------------------------------|
+| June 2026 | 04                    | Ansible modules for Dell PowerMax release 4.1.0 |
 | March 2026 | 03                    | Ansible modules for Dell PowerMax release 4.0.2 |
 | October 2025 | 02                    | Ansible modules for Dell PowerMax release 4.0.1 |
 | June 2025 | 01                    | Ansible modules for Dell PowerMax release 4.0.0 |
@@ -58,7 +59,11 @@ New Features and Enhancements
 
 The Ansible modules for Dell PowerMax release has the following
 changes:
-- Added support for PowerMax 10.3.0 and 10.4.0.
+- Enhanced SRDF storage group support with different R1 and R2 names
+- Improved snapshot force deletion functionality
+- Enhanced exception handling for info alerts
+- Fixed SonarQube issues in resolve_remote_sg_name() function
+- Various code quality improvements and sanity fixes
 
 > **NOTE:** Unisphere Version 10.2 is compatible with PowerMax Python
 > library version 10.2.x.x and similarly Unisphere versions later than 10.2 will

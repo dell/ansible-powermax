@@ -4,6 +4,28 @@ Dellemc.Powermax Release Notes
 
 .. contents:: Topics
 
+v4.1.0
+======
+
+Release Summary
+---------------
+
+| Release Date: 2026-06-22
+| This release brings enhancements and bug fixes to the PowerMax Ansible Modules.
+
+Minor Changes
+-------------
+
+- Enhanced SRDF storage group support with different R1 and R2 names
+- Improved snapshot force deletion functionality
+- Enhanced exception handling for info alerts
+
+Bug Fixes
+---------
+
+- Fixed SonarQube issues in resolve_remote_sg_name() function
+- Various code quality improvements and sanity fixes
+
 v4.0.2
 ======
 
