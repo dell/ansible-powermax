@@ -6,7 +6,7 @@ This is the Ansible Galaxy collection for Dell PowerMax enterprise storage array
 
 - **Language:** Python
 - **Collection namespace:** `dellemc.powermax`
-- **Collection version:** 4.0.2
+- **Collection version:** 4.1.0
 - **SDK:** `PyU4V` v10.2.x
 - **License:** GNU General Public License v3.0
 
